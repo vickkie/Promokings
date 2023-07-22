@@ -48,7 +48,7 @@ const BottomTabNavigation = () => {
           tabBarIcon: ({ focused }) => {
             return (
               <Ionicons
-                name={"search-sharp"}
+                name={'search-sharp'}
                 size={24}
                 color={focused ? COLORS.primary : COLORS.gray}
               />
