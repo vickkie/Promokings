@@ -26,7 +26,7 @@ const BottomTabNavigation = () => {
   return (
     <Tab.Navigator screenOptions={screenOptions}>
       <Tab.Screen
-        name="Home"
+        name='Home'
         component={Home}
         options={{
           tabBarIcon: ({ focused }) => {
@@ -48,7 +48,7 @@ const BottomTabNavigation = () => {
           tabBarIcon: ({ focused }) => {
             return (
               <Ionicons
-                name={'search-sharp'}
+                name={"search-sharp"}
                 size={24}
                 color={focused ? COLORS.primary : COLORS.gray}
               />
