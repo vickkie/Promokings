@@ -26,7 +26,7 @@ const BottomTabNavigation = () => {
   return (
     <Tab.Navigator screenOptions={screenOptions}>
       <Tab.Screen
-        name='Home'
+        name="Home"
         component={Home}
         options={{
           tabBarIcon: ({ focused }) => {
