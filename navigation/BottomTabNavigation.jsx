@@ -64,7 +64,7 @@ const BottomTabNavigation = () => {
           tabBarIcon: ({ focused }) => {
             return (
               <Ionicons
-                name={focused ? 'person' : "person-outline"}
+                name={focused ? "person" : "person-outline"}
                 size={24}
                 color={focused ? COLORS.primary : COLORS.gray}
               />
