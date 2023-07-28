@@ -1,13 +1,24 @@
-import { View, Text } from 'react-native';
-import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet } from "react-native";
+import {COLORS, SIZES} from "../constants/index";
 
-const Home = () => {
-  return (
-    <SafeAreaView>
-      <Text>Home</Text>
-    </SafeAreaView>
-  )
-}
+const styles = StyleSheet.create({
+    appBarWrapper: {
+        marginHorizontal: 22,
+        marginTop: SIZES.small
+    },
 
-export default Home
+    appBar: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",   
+    },
+
+    location: {
+        fontFamily: "semibold",
+        fontSize: SIZES.medium,
+        color: COLORS.gray
+    }
+
+});
+
+export default styles;
