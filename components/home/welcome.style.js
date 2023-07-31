@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     }),
 
     searchContainer: {
-        flexDirection: "row",
+        flexDirection: 'row',
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: COLORS.secondary,
