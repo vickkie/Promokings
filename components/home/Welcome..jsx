@@ -5,6 +5,7 @@ import { COLORS, SIZES } from "../../constants";
 import { Feather, Ionicons } from "@expo/vector-icons";
 
 const Welcome = () => {
+  
   return (
     <View>
       <View style={styles.container}>
