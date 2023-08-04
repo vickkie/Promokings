@@ -3,8 +3,11 @@ import React from "react";
 import styles from "./welcome.style";
 import { COLORS, SIZES } from "../../constants";
 import { Feather, Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const Welcome = () => {
+
+  const navigation = useNavigation();
   
   return (
     <View>
@@ -27,7 +30,7 @@ const Welcome = () => {
             value=""
             style={styles.searchInput}
             placeholder="Search suitable options"
-            onPressIn={() => {}}
+            onPressIn={() => navigation.navigate("Search") }
           />
         </View>
 
