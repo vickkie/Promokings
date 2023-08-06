@@ -17,7 +17,7 @@ const Search = () => {
             value=""
             style={styles.searchInput}
             placeholder="Search suitable options"
-            onPressIn={() => navigation.navigate("Search")}
+            onPressIn={() => {} }
           />
         </View>
 

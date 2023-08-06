@@ -6,6 +6,7 @@ import { Ionicons, Fontisto } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native";
 import Welcome from "../components";
+import Carousel from "../components/home/Carousel";
 
 const Home = () => {
   return (
@@ -29,6 +30,7 @@ const Home = () => {
 
       <ScrollView>
         <Welcome />
+        <Carousel />
       </ScrollView>
 
     </SafeAreaView>
