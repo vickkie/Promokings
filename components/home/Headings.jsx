@@ -6,6 +6,7 @@ import {Ionicons} from '@expo/vector-icons';
 import { COLORS } from '../../constants';
 
 const Headings = () => {
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -16,6 +17,7 @@ const Headings = () => {
       </View>
     </View>
   )
+  
 }
 
 export default Headings;
