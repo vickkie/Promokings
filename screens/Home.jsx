@@ -7,6 +7,7 @@ import { TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native";
 import Welcome from "../components";
 import Carousel from "../components/home/Carousel";
+import Headings from "../components/home/Headings";
 
 const Home = () => {
   return (
@@ -31,6 +32,7 @@ const Home = () => {
       <ScrollView>
         <Welcome />
         <Carousel />
+        <Headings />
       </ScrollView>
 
     </SafeAreaView>
