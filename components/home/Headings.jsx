@@ -17,7 +17,7 @@ const Headings = () => {
       </View>
     </View>
   )
-  
+
 }
 
 export default Headings;

@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     },
 
     header: {
-        flexDirection: 'row',
+        flexDirection: "row",
         justifyContent: "space-between",
     },
 
