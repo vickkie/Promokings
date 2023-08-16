@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     container: {
         width: 182,
-        height: 350,
+        height: 390,
         marginEnd: SIZES.medium,
         backgroundColor: COLORS.secondary
     },
@@ -21,6 +21,33 @@ const styles = StyleSheet.create({
     image: {
         aspectRatio: 1,
         resizeMode: "cover"
+    },
+
+    details: {
+        padding: SIZES.small
+    },
+
+    title: {
+        fontFamily: "bold",
+        fontSize: SIZES.large,
+        marginBottom: 2
+    },
+
+    supplier: {
+        fontFamily: "regular",
+        fontSize: SIZES.small,
+        color: COLORS.gray
+    },
+
+    price: {
+        fontFamily: "bold",
+        fontSize: SIZES.medium,
+    },
+
+    addBtn: {
+        position: "absolute",
+        right: SIZES.small,
+        bottom: SIZES.small
     }
 });
 
