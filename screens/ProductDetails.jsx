@@ -1,10 +1,10 @@
 import { View, Text } from "react-native";
 import React from "react";
 import "./ProductDetails.style";
-import styles from "./ProductDetails.style";
+import styles from "./ProductDetails.style"
 import { Ionicons } from "@expo/vector-icons";
-import { TouchableOpacity, Image } from "react-native";
-import { COLORS } from "../constants";
+import { TouchableOpacity, Image } from "react-native"
+import { COLORS } from "../constants"
 
 const ProductDetails = ({navigation}) => {
   return (
