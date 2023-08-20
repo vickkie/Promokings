@@ -11,7 +11,7 @@ const ProductDetails = ({navigation}) => {
     <View style={styles.container}>
       <View style={styles.upperRow}>
         <TouchableOpacity onPress={() => navigation.goBack() }>
-          <Ionicons size={30} name="chevron-back-circle" />
+          <Ionicons size={30} name='chevron-back-circle' />
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => {} }>
