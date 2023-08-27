@@ -39,6 +39,41 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: SIZES.width - 44,
         top: 20
+    },
+
+    ratingRow: {
+        paddingBottom: SIZES.small,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: SIZES.width -10,
+        top: 5
+    },
+
+    rating: {
+        top: SIZES.large,
+        flexDirection: 'row',
+        justifyContent: "flex-start",
+        alignItems: "center",
+        marginHorizontal: SIZES.large
+    },
+
+    title: {
+        fontSize: SIZES.large,
+        fontFamily: "bold",
+        fontWeight: "700",
+    },
+
+    price: {
+        fontSize: SIZES.large,
+        fontFamily: "bold",
+        fontWeight: "700"
+    },
+
+    priceWrapper: {
+        backgroundColor: COLORS.secondary,
+        borderRadius: SIZES.large,
+        paddingHorizontal: 10,
     }
 });
 
