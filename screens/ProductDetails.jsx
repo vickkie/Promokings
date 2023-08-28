@@ -36,9 +36,12 @@ const ProductDetails = ({ navigation }) => {
 
         <View style={styles.ratingRow}>
           <View style={styles.rating}>
+
             {[1, 2, 3, 4, 5].map((index) => (
               <Ionicons key={index} name="star" color="gold" size={24} />
             ))}
+
+            
           </View>
         </View>
       </View>
