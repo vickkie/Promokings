@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     },
 
     titleRow: {
-        marginHorizontal: 20,
+        marginHorizontal: 19,
         paddingBottom: SIZES.small,
         flexDirection: "row",
         justifyContent: "space-between",
