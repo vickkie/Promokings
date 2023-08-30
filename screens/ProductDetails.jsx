@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import React from "react";
 import "./ProductDetails.style";
 import styles from "./ProductDetails.style";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { TouchableOpacity, Image } from "react-native";
 import { COLORS } from "../constants";
 
@@ -39,6 +39,17 @@ const ProductDetails = ({ navigation }) => {
             {[1, 2, 3, 4, 5].map((index) => (
               <Ionicons key={index} name="star" color="gold" size={24} />
             ))}
+            <Text> (4.9) </Text>
+          </View>
+
+          <View style={styles.rating}>
+            <TouchableOpacity onPress={() => {}}>
+              <SimpleLineIcons name="plus" size={20} />
+            </TouchableOpacity>
+            <Text> 1 </Text>
+            <TouchableOpacity onPress={() => {}}>
+              <SimpleLineIcons name="minus" size={20} />
+            </TouchableOpacity>
           </View>
         </View>
       </View>
