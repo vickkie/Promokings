@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import "./ProductDetails.style";
 import styles from "./ProductDetails.style";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
@@ -7,6 +7,18 @@ import { TouchableOpacity, Image } from "react-native";
 import { COLORS } from "../constants";
 
 const ProductDetails = ({ navigation }) => {
+  const [count, setCount] = useState(1);
+
+  const increment = () => {
+    setCount(count + 1);
+  };
+
+  const decrement = () => {
+    if (count > 1) {
+      setCount(count - 1);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.upperRow}>
@@ -43,11 +55,11 @@ const ProductDetails = ({ navigation }) => {
           </View>
 
           <View style={styles.rating}>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => increment()}>
               <SimpleLineIcons name="plus" size={20} />
             </TouchableOpacity>
-            <Text> 1 </Text>
-            <TouchableOpacity onPress={() => {}}>
+            <Text> {count} </Text>
+            <TouchableOpacity onPress={() => decrement()}>
               <SimpleLineIcons name="minus" size={20} />
             </TouchableOpacity>
           </View>
