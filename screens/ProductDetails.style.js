@@ -58,6 +58,17 @@ const styles = StyleSheet.create({
         marginHorizontal: SIZES.large
     },
 
+    descriptionWrapper: { 
+        marginTop: SIZES.large,
+        marginHorizontal: SIZES.large
+    },
+
+    description: {
+        fontFamily: 'bold',
+        fontSize: SIZES.large
+    },
+
+
     title: {
         fontSize: SIZES.large,
         fontFamily: "bold",

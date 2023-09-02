@@ -11,7 +11,10 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    // Font loading code...
+    bold: require('./assets/fonts/Poppins-Bold.ttf'),
+    regular: require('./assets/fonts/Poppins-Regular.ttf'),
+    semibold: require('./assets/fonts/Poppins-SemiBold.ttf'),
+    extrabold: require('./assets/fonts/Poppins-ExtraBold.ttf'),
   });
 
   const onLayoutRootView = useCallback(async () => {
