@@ -15,6 +15,8 @@ export default function App() {
     regular: require('./assets/fonts/Poppins-Regular.ttf'),
     semibold: require('./assets/fonts/Poppins-SemiBold.ttf'),
     extrabold: require('./assets/fonts/Poppins-ExtraBold.ttf'),
+    medium: require('./assets/fonts/Poppins-Medium.ttf'),
+    light: require('./assets/fonts/Poppins-Light.ttf'),
   });
 
   const onLayoutRootView = useCallback(async () => {
