@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     },
 
     descriptionWrapper: { 
-        marginTop: SIZES.large*2,
+        marginTop: SIZES.large*3,
         marginHorizontal: SIZES.large
     },
 
