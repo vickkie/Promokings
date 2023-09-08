@@ -2,7 +2,11 @@ import { View, Text } from "react-native";
 import React, { useState } from "react";
 import "./ProductDetails.style";
 import styles from "./ProductDetails.style";
-import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
+import {
+  Ionicons,
+  SimpleLineIcons,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { TouchableOpacity, Image } from "react-native";
 import { COLORS, SIZES } from "../constants";
 
@@ -78,12 +82,19 @@ const ProductDetails = ({ navigation }) => {
           </Text>
         </View>
 
-        <View style={{marginBottom: SIZES.small}}>
-              <View style={styles.location}>
-                
-              </View>
-        </View>
+        <View style={{ marginBottom: SIZES.small }}>
+          <View style={styles.location}>
+            <View style={{ flexDirection: "row" }}>
+              <Ionicons name="location-outline" size={20} />
+              <Text> Abuja, Nigeria</Text>
+            </View>
 
+            <View style={{ flexDirection: "row" }}>
+              <MaterialCommunityIcons name="truck-delivery-outline" size={20} />
+              <Text> Free Delivery</Text>
+            </View>
+          </View>
+        </View>
       </View>
     </View>
   );

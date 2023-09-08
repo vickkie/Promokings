@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     },
 
     upperRow: {
-        marginHorizontal: 19,
+        marginHorizontal: 20,
         flexDirection: "row",
         justifyContent: 'space-between',
         alignItems: "center",
@@ -32,13 +32,21 @@ const styles = StyleSheet.create({
     },
 
     titleRow: {
-        marginHorizontal: 19,
+        marginHorizontal: 20,
         paddingBottom: SIZES.small,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
         width: SIZES.width - 44,
         top: 20
+    },
+
+    cartRow: {
+        paddingBottom: SIZES.small,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+
     },
 
     ratingRow: {
@@ -57,6 +65,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginHorizontal: SIZES.large
     },
+
+    
 
     descriptionWrapper: { 
         marginTop: SIZES.large*3,
@@ -79,7 +89,10 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: 'center',
-        backgroundColor: COLORS.secondary
+        backgroundColor: COLORS.secondary,
+        padding: 5,
+        borderRadius: SIZES.large,
+        marginHorizontal: 12
     },
 
     title: {
