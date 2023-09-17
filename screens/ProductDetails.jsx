@@ -6,6 +6,7 @@ import {
   Ionicons,
   SimpleLineIcons,
   MaterialCommunityIcons,
+  Fontisto
 } from "@expo/vector-icons";
 import { TouchableOpacity, Image } from "react-native";
 import { COLORS, SIZES } from "../constants";
@@ -95,6 +96,18 @@ const ProductDetails = ({ navigation }) => {
             </View>
           </View>
         </View>
+
+        <View style={styles.cartRow}>
+              <TouchableOpacity onPress={() => {}} style={styles.cartBtn}>
+                <Text style={styles.cartTitle}>BUY NOW</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => {}} style={styles.addCart}>
+                <Fontisto name="shopping-bag" size={15} color={COLORS.lightWhite} />
+              </TouchableOpacity>
+        </View>
+
+
       </View>
     </View>
   );

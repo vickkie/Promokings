@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { SIZES, COLORS } from "../constants";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 const styles = StyleSheet.create({
     container: {
@@ -46,7 +47,33 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
+        width: SIZES.width 
+    },
 
+    cartBtn : {
+        width: SIZES.width*0.7,
+        backgroundColor: COLORS.black,
+        padding: SIZES.small,
+        borderRadius: SIZES.large,
+        marginLeft: 12
+    },
+
+    cartTitle: {
+        fontSize: SIZES.medium,
+        fontFamily: "bold",
+        fontWeight: "700",
+        color: COLORS.lightWhite,
+        marginLeft: SIZES.small
+    },
+
+    addCart: {
+        width: 37,
+        height: 37,
+        backgroundColor: COLORS.black,
+        borderRadius: 50,
+        alignItems: "center",
+        justifyContent: "center",
+        marginRight: 10
     },
 
     ratingRow: {
