@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import styles from "./home";
+import styles from "./search.style";
 import { Ionicons, Fontisto } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native";
