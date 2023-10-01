@@ -10,12 +10,10 @@ const ProductRow = () => {
 
   const {data} = useFetch();
 
-  console.log(data)
-
   return (
     <View style={styles.container}>
       <FlatList
-        data={products}
+        data={data}
         keyExtractor={(item) => item._id}
         horizontal
         renderItem={({ item }) => <ProductCardView /> }

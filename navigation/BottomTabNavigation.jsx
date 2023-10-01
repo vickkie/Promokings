@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {  Profile, Search } from "../screens";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants/index";
-import Home from "../screens/Home";
+import HomePage from "../screens/HomePage";
 
 const Tab = createBottomTabNavigator();
 
@@ -28,7 +28,7 @@ const BottomTabNavigation = () => {
     <Tab.Navigator screenOptions={screenOptions}>
       <Tab.Screen
         name="Home"
-        component={Home}
+        component={HomePage}
         options={{
           tabBarIcon: ({ focused }) => {
             return (

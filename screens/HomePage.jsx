@@ -1,7 +1,8 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import styles from "./search.style";
+
+import styles from "./Home";
 import { Ionicons, Fontisto } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native";
@@ -10,9 +11,10 @@ import Carousel from "../components/home/Carousel";
 import Headings from "../components/home/Headings";
 import ProductRow from "../components/products/ProductRow";
 
-const Home = () => {
+const HomePage = () => {
   return (
     <SafeAreaView>
+
       <View style={styles.appBarWrapper}>
         <View style={styles.appBar}>
           <Ionicons name="location-outline" size={24} />
@@ -41,4 +43,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomePage;
