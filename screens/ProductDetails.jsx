@@ -10,8 +10,14 @@ import {
 } from "@expo/vector-icons";
 import { TouchableOpacity, Image } from "react-native";
 import { COLORS, SIZES } from "../constants";
+import { useRoute } from "@react-navigation/native";
 
 const ProductDetails = ({ navigation }) => {
+
+  const route = useRoute();
+  const {item} = route.params;
+  console.log(item);
+
   const [count, setCount] = useState(1);
 
   const increment = () => {
@@ -39,15 +45,15 @@ const ProductDetails = ({ navigation }) => {
       <Image
         style={styles.image}
         source={{
-          uri: "https://media.istockphoto.com/id/1373329869/photo/modern-living-room-interior-3d-render.webp?b=1&s=170667a&w=0&k=20&c=npJvK3ITd99aF715CH3dzceECPdpzNhlnhBjv_xzL0Q=",
+          uri: item.imageUrl,
         }}
       />
 
       <View style={styles.details}>
         <View style={styles.titleRow}>
-          <Text style={styles.title}>Product</Text>
+          <Text style={styles.title}> {item.title} </Text>
           <View style={styles.priceWrapper}>
-            <Text style={styles.price}>$ 670.78</Text>
+            <Text style={styles.price}> ${item.price} </Text>
           </View>
         </View>
 
@@ -73,13 +79,7 @@ const ProductDetails = ({ navigation }) => {
         <View style={styles.descriptionWrapper}>
           <Text style={styles.description}>Description</Text>
           <Text style={styles.descText}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type
-            and scrambled it to make a type specimen book. It has survived not
-            only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s
-            with the release of Letraset sheets containing Lorem Ipsum passages
+           {item.description}
           </Text>
         </View>
 
@@ -87,7 +87,7 @@ const ProductDetails = ({ navigation }) => {
           <View style={styles.location}>
             <View style={{ flexDirection: "row" }}>
               <Ionicons name="location-outline" size={20} />
-              <Text> Abuja, Nigeria</Text>
+              <Text> {item.product_location} </Text>
             </View>
 
             <View style={{ flexDirection: "row" }}>

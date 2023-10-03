@@ -1,13 +1,11 @@
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, ActivityIndicator } from "react-native";
+import React from "react";
 import { COLORS, SIZES } from "../../constants";
 import ProductCardView from "./ProductCardView";
 import styles from "./ProductRow.style";
 import useFetch from "../../hook/useFetch";
-import { ActivityIndicator } from "react-native";
 
 const ProductRow = () => {
-  const products = [1, 2, 3, 4];
-
   const { data, isLoading, error } = useFetch();
 
   return (
