@@ -40,7 +40,15 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     
+    },
+
+    searchImage: {
+        height: SIZES.height - 300,
+        width: SIZES.width - 50,
+        resizeMode: "contain",
+        opacity: 0.6,
+        marginTop: 40
     }
 })
 
-export default styles
+export default styles;
