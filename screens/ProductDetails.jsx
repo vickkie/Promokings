@@ -2,6 +2,7 @@ import { View, Text } from "react-native";
 import React, { useState } from "react";
 import "./ProductDetails.style";
 import styles from "./ProductDetails.style";
+
 import {
   Ionicons,
   SimpleLineIcons,
@@ -29,6 +30,8 @@ const ProductDetails = ({ navigation }) => {
       setCount(count - 1);
     }
   };
+
+
 
   return (
     <View style={styles.container}>

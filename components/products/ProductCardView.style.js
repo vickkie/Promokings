@@ -1,19 +1,20 @@
-import { COLORS, SIZES} from '../../constants';
+import { COLORS, SIZES } from '../../constants';
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
         width: 182,
-        height: 390,
+        height: 300,
         marginEnd: SIZES.medium,
-        backgroundColor: COLORS.secondary
+        backgroundColor: COLORS.secondary,
+        marginBottom: 20
     },
 
     imageContainer: {
         flex: 1,
         width: 170,
-        marginLeft: SIZES.small/2,
-        marginTop: SIZES.small/2,
+        marginLeft: SIZES.small / 2,
+        marginTop: SIZES.small / 2,
         borderRadius: SIZES.small,
         overflow: "hidden",
     },

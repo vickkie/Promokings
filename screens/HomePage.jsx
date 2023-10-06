@@ -9,8 +9,12 @@ import Welcome from "../components";
 import Carousel from "../components/home/Carousel";
 import Headings from "../components/home/Headings";
 import ProductRow from "../components/products/ProductRow";
+import { useNavigation } from "@react-navigation/native";
 
 const HomePage = () => {
+
+  const navigation = useNavigation();
+
   return (
     <SafeAreaView>
       <View style={styles.appBarWrapper}>
@@ -26,6 +30,7 @@ const HomePage = () => {
             <TouchableOpacity>
               <Fontisto name="shopping-bag" size={24} />
             </TouchableOpacity>
+
           </View>
         </View>
       </View>

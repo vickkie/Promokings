@@ -14,12 +14,11 @@ const screenOptions = {
   headerShown: false,
 
   tabBarStyle: {
-    position: "absolute",
     left: 0,
     right: 0,
     bottom: 0,
     elevation: 0,
-    height: 70,
+    height: 60,
   },
 };
 
