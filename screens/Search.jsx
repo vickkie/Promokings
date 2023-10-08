@@ -7,6 +7,7 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import axios from "axios";
 import { FlatList } from "react-native";
+import SearchTile from "../components/products/SearchTile";
 const Search = () => {
   const [searchKey, setSearchKey] = useState("");
   const [searchResult, setSearchResult] = useState([]);
@@ -59,7 +60,8 @@ const Search = () => {
         ): (
           <FlatList keyExtractor={(item) => item._id}
           data={searchResult}
-          renderItem={({item}) => ( <Text>{item.title}</Text> ) }
+          renderItem={({item}) => (<SearchTile item = {item} />) }
+          style={{marginHorizontal: 12}}
           />
         )
       }
