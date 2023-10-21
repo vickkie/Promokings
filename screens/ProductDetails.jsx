@@ -2,12 +2,11 @@ import { View, Text } from "react-native";
 import React, { useState } from "react";
 import "./ProductDetails.style";
 import styles from "./ProductDetails.style";
-
 import {
   Ionicons,
   SimpleLineIcons,
   MaterialCommunityIcons,
-  Fontisto
+  Fontisto,
 } from "@expo/vector-icons";
 import { TouchableOpacity, Image } from "react-native";
 import { COLORS, SIZES } from "../constants";
@@ -16,7 +15,7 @@ import { useRoute } from "@react-navigation/native";
 const ProductDetails = ({ navigation }) => {
 
   const route = useRoute();
-  const {item} = route.params;
+  const { item } = route.params;
   console.log(item);
 
   const [count, setCount] = useState(1);
@@ -30,8 +29,7 @@ const ProductDetails = ({ navigation }) => {
       setCount(count - 1);
     }
   };
-
-
+  
 
   return (
     <View style={styles.container}>
@@ -81,9 +79,7 @@ const ProductDetails = ({ navigation }) => {
 
         <View style={styles.descriptionWrapper}>
           <Text style={styles.description}>Description</Text>
-          <Text style={styles.descText}>
-           {item.description}
-          </Text>
+          <Text style={styles.descText}>{item.description}</Text>
         </View>
 
         <View style={{ marginBottom: SIZES.small }}>
@@ -101,16 +97,14 @@ const ProductDetails = ({ navigation }) => {
         </View>
 
         <View style={styles.cartRow}>
-              <TouchableOpacity onPress={() => {}} style={styles.cartBtn}>
-                <Text style={styles.cartTitle}>BUY NOW</Text>
-              </TouchableOpacity>
+          <TouchableOpacity onPress={() => {}} style={styles.cartBtn}>
+            <Text style={styles.cartTitle}>BUY NOW</Text>
+          </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => {}} style={styles.addCart}>
-                <Fontisto name="shopping-bag" size={15} color={COLORS.lightWhite} />
-              </TouchableOpacity>
+          <TouchableOpacity onPress={() => {}} style={styles.addCart}>
+            <Fontisto name="shopping-bag" size={15} color={COLORS.lightWhite} />
+          </TouchableOpacity>
         </View>
-
-
       </View>
     </View>
   );
