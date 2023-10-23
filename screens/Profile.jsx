@@ -25,7 +25,7 @@ const Profile = () => {
             style={styles.profile}
           />
 
-          <Text style={styles.name}>Maaz junior</Text>
+          <Text style={styles.name}> {userData ? userData.name : "Please Login into your account"} </Text>
         </View>
       </View>
     </View>
