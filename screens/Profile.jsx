@@ -3,10 +3,10 @@ import { useState, useEffect } from "react";
 import styles from "./Profile.style";
 import { StatusBar } from "expo-status-bar";
 import { COLORS } from "../constants";
-const Profile = () => {
-
+import { TouchableOpacity } from "react-native";
+const Profile = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
-  const [userLogin, setUserLogin] = useState(false);
+  const [userLogin, setUserLogin] = useState(true);
 
   return (
     <View style={styles.container}>
@@ -25,7 +25,33 @@ const Profile = () => {
             style={styles.profile}
           />
 
-          <Text style={styles.name}> {userData ? userData.name : "Please Login into your account"} </Text>
+          <Text style={styles.name}>
+            {" "}
+            {userLogin === true
+              ? "Maazscript"
+              : "Please Login into your account"}{" "}
+          </Text>
+
+          {userLogin === false ? (
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <View style={styles.loginBtn}>
+                <Text style={styles.menuText}>L O G I N</Text>
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity>
+              <View style={styles.loginBtn}>
+                <Text style={styles.menuText}>goalmaaz@gmail.com</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+
+          {userLogin === false ? <View></View> : 
+          <View style={styles.menuWrapper}>
+            <TouchableOpacity onPress={() => {}}>
+
+            </TouchableOpacity>
+            </View>}
         </View>
       </View>
     </View>

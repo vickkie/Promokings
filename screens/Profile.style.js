@@ -34,6 +34,30 @@ const styles = StyleSheet.create({
         fontFamily: "bold",
         color: COLORS.primary,
         marginVertical: 6
+    },
+
+    loginBtn: {
+        backgroundColor: COLORS.secondary,
+        padding: 2,
+        borderWidth: 0.4,
+        borderColor: COLORS.primary,
+        borderRadius: SIZES.xxLarge,
+        paddingHorizontal: 12
+    },
+    menuText: {
+        fontFamily: "regular",
+        color: COLORS.gray,
+        fontWeight: "600",
+        fontSize: 14,
+        lineHeight: 26,
+        lineHeight: 26
+    },
+
+    menuWrapper: {
+        marginTop: SIZES.xLarge,
+        width: SIZES.width-SIZES.large,
+        backgroundColor: COLORS.lightWhite,
+        borderRadius: 12
     }
 
 });
