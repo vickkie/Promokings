@@ -50,6 +50,8 @@ const Profile = ({ navigation }) => {
           <View style={styles.menuWrapper}>
             <TouchableOpacity onPress={() => {}}>
 
+              <View style={styles.menuItem(0.2)}></View>
+
             </TouchableOpacity>
             </View>}
         </View>

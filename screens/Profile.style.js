@@ -58,7 +58,15 @@ const styles = StyleSheet.create({
         width: SIZES.width-SIZES.large,
         backgroundColor: COLORS.lightWhite,
         borderRadius: 12
-    }
+    },
+
+    menuItem: (borderBottomWidth) => ({
+        borderBottomWidth: borderBottomWidth,
+        flexDirection: "row",
+        paddingVertical: 15,
+        paddingHorizontal: 30,
+        borderColor: COLORS.gray
+    })
 
 });
 
