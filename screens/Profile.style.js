@@ -50,7 +50,8 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         fontSize: 14,
         lineHeight: 26,
-        lineHeight: 26
+        lineHeight: 26,
+        marginLeft: 20
     },
 
     menuWrapper: {
