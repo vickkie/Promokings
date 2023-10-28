@@ -24,8 +24,41 @@ const Profile = ({ navigation }) => {
           text: "Cancel", onPress: () => console.log('cancel pressed')
         },
         {
-          text: "Continue", onPress: () => console.log('Logout')
-        }
+          text: "Continue", onPress: () => console.log('Logout Pressed')
+        },
+        {defaultIndex: 1}
+      ]
+    )
+  }
+
+  const clearCache = () => {
+    Alert.alert(
+      "Clear Cache",
+      "Are you sure you want to delete all saved data on your account?",
+      [
+        {
+          text: "Cancel", onPress: () => console.log('cancel clear cache')
+        },
+        {
+          text: "Continue", onPress: () => console.log('clear cache Pressed')
+        },
+        {defaultIndex: 1}
+      ]
+    )
+  }
+
+  const deleteAccount = () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout",
+      [
+        {
+          text: "Cancel", onPress: () => console.log('cancel pressed')
+        },
+        {
+          text: "Continue", onPress: () => console.log('Logout Pressed')
+        },
+        {defaultIndex: 1}
       ]
     )
   }
@@ -105,7 +138,7 @@ const Profile = ({ navigation }) => {
                   </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => {}}>
+                <TouchableOpacity onPress={() => clearCache() }>
                   <View style={styles.menuItem(0.2)}>
                     <MaterialCommunityIcons
                       size={24}
