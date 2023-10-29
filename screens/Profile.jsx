@@ -49,14 +49,14 @@ const Profile = ({ navigation }) => {
 
   const deleteAccount = () => {
     Alert.alert(
-      "Logout",
-      "Are you sure you want to logout",
+      "Delete Account",
+      "Are you sure you want to delete your account?",
       [
         {
           text: "Cancel", onPress: () => console.log('cancel pressed')
         },
         {
-          text: "Continue", onPress: () => console.log('Logout Pressed')
+          text: "Continue", onPress: () => console.log('Account Deleted')
         },
         {defaultIndex: 1}
       ]
@@ -149,7 +149,7 @@ const Profile = ({ navigation }) => {
                   </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => {}}>
+                <TouchableOpacity onPress={() => deleteAccount() }>
                   <View style={styles.menuItem(0.2)}>
                     <AntDesign
                       size={24}
