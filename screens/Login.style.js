@@ -45,6 +45,14 @@ const styles = StyleSheet.create({
 
     iconStyle: {
         marginRight: 10
+    },
+
+    errorMessage: {
+        color: COLORS.red,
+        fontFamily: "regular",
+        fontSize: SIZES.xSmall,
+        marginLeft: 5,
+        marginTop: 5
     }
 
 

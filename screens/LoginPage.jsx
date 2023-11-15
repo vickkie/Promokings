@@ -28,13 +28,7 @@ const validationSchema = Yup.object().shape({
 const LoginPage = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
   const [response, setResponse] = useState(null);
-
-  const [input, setInput] = useState({
-    email: "",
-    password: "",
-  });
-
-  const [error, setError] = useState({});
+  const [obsecureText, setObsecureText] = useState(false);
 
   return (
     <ScrollView>
@@ -85,8 +79,57 @@ const LoginPage = ({ navigation }) => {
                       autoCapitalize="none"
                       autoCorrect={false}
                       style={{ flex: 1 }}
+                      value={values.email}
+                      onChangeText={handleChange("email")}
                     />
                   </View>
+
+                  {touched.email && errors.email && (
+                    <Text style={styles.errorMessage}>{errors.email}</Text>
+                  )}
+                </View>
+
+                <View style={styles.wrapper}>
+                  <Text style={styles.label}>Password</Text>
+
+                  <View
+                    style={styles.inputWrapper(
+                      touched.password ? COLORS.secondary : COLORS.offwhite
+                    )}
+                  >
+                    <MaterialCommunityIcons
+                      name="lock-outline"
+                      size={20}
+                      style={styles.iconStyle}
+                      color={COLORS.gray}
+                    />
+                    <TextInput
+                      secureTextEntry={obsecureText}
+                      placeholder="Password"
+                      onFocus={() => setFieldTouched("password")}
+                      onBlur={() => setFieldTouched("password", "")}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      style={{ flex: 1 }}
+                      value={values.password}
+                      onChangeText={handleChange("password")}
+                    />
+
+                    <TouchableOpacity
+                      onPress={() => {
+                        setObsecureText(!obsecureText);
+                      }}
+                    >
+                      <MaterialCommunityIcons
+                        size={18}
+                        name={obsecureText ? "eye-outline" : "eye-off-outline"}
+                      />
+                    </TouchableOpacity>
+                  </View>
+
+                  {touched.password && errors.password && (
+                    <Text style={styles.errorMessage}>{errors.password}</Text>
+                  )}
                 </View>
 
                 <Button title={"L O G I N"} onPress={() => {}} />
