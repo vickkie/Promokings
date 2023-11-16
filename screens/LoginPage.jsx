@@ -26,6 +26,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const LoginPage = ({ navigation }) => {
+
   const [loader, setLoader] = useState(false);
   const [response, setResponse] = useState(null);
   const [obsecureText, setObsecureText] = useState(false);
@@ -132,7 +133,7 @@ const LoginPage = ({ navigation }) => {
                   )}
                 </View>
 
-                <Button title={"L O G I N"} onPress={() => {}} />
+                <Button title={"L O G I N"} onPress={() => {}} isValid={isValid} />
               </View>
             )}
           </Formik>
