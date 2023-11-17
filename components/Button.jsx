@@ -4,7 +4,7 @@ import { COLORS } from "../constants";
 
 const Button = ({ onPress, title, isValid }) => {
   return (
-    <TouchableOpacity style={styles.btnStyle}>
+    <TouchableOpacity style={styles.btnStyle(isValid  === false ? COLORS.gray : COLORS.primary)}>
       <Text style={styles.btnText}>{title}</Text>
     </TouchableOpacity>
   );
@@ -19,13 +19,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 
-  btnStyle: {
-    height: 60,
-    width: "100%",
-    marginVertical: 20,
-    backgroundColor: COLORS.primary,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 12,
-  },
+  btnStyle: (backgroundColor) => (
+    {
+      height: 60,
+      width: "100%",
+      marginVertical: 20,
+      backgroundColor:  backgroundColor,
+      justifyContent: "center",
+      alignItems: "center",
+      borderRadius: 12,
+    }
+  )
 });
