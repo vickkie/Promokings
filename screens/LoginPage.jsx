@@ -4,6 +4,7 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
+  Alert
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -31,6 +32,24 @@ const LoginPage = ({ navigation }) => {
   const [response, setResponse] = useState(null);
   const [obsecureText, setObsecureText] = useState(false);
 
+  const inValidForm = () => {
+    Alert.alert(
+      "Invalid Form",
+      "Please provide required fields",
+      [
+        {
+          text: "Cancel",
+          onPress: () => {},
+        },
+        {
+          text: "Continue",
+          onPress: () => {}
+        },
+        { defaultIndex: 1 },
+      ]
+    );
+  };
+
   return (
     <ScrollView>
       <SafeAreaView style={{ marginHorizontal: 20 }}>
@@ -46,6 +65,7 @@ const LoginPage = ({ navigation }) => {
           <Formik
             initialValues={{ email: "", password: "" }}
             validationSchema={validationSchema}
+            onSubmit={(values) => console.log(values)}
           >
             {({
               handleChange,
@@ -133,7 +153,9 @@ const LoginPage = ({ navigation }) => {
                   )}
                 </View>
 
-                <Button title={"L O G I N"} onPress={() => {}} isValid={isValid} />
+                <Button title={"L O G I N"} onPress={isValid ? handleSubmit : inValidForm } isValid={isValid} />
+
+                <Text style={styles.registration} onPress={() => {}}>Create an Account</Text>
               </View>
             )}
           </Formik>

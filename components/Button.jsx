@@ -4,7 +4,7 @@ import { COLORS } from "../constants";
 
 const Button = ({ onPress, title, isValid }) => {
   return (
-    <TouchableOpacity style={styles.btnStyle(isValid  === false ? COLORS.gray : COLORS.primary)}>
+    <TouchableOpacity onPress={onPress} style={styles.btnStyle(isValid  === false ? COLORS.gray : COLORS.primary)}>
       <Text style={styles.btnText}>{title}</Text>
     </TouchableOpacity>
   );

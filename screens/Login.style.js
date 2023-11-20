@@ -53,8 +53,13 @@ const styles = StyleSheet.create({
         fontSize: SIZES.xSmall,
         marginLeft: 5,
         marginTop: 5
-    }
+    },
 
+    registration : {
+        marginTop: 10,
+        textAlign: "center",
+        marginBottom: 20
+    }
 
 });
 

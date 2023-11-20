@@ -9,6 +9,7 @@ import {
   MaterialCommunityIcons,
   SimpleLineIcons,
 } from "@expo/vector-icons";
+
 const Profile = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
@@ -44,6 +45,8 @@ const Profile = ({ navigation }) => {
       ]
     );
   };
+
+
 
   const deleteAccount = () => {
     Alert.alert(
