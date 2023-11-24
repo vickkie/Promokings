@@ -155,7 +155,7 @@ const LoginPage = ({ navigation }) => {
 
                 <Button title={"L O G I N"} onPress={isValid ? handleSubmit : inValidForm } isValid={isValid} />
 
-                <Text style={styles.registration} onPress={() => {}}>Create an Account</Text>
+                <Text style={styles.registration} onPress={() => navigation.navigate('Register') }>Create an Account</Text>
               </View>
             )}
           </Formik>

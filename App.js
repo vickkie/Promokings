@@ -9,6 +9,7 @@ import { Cart, NewRivals, ProductDetails } from './screens'; // Import the scree
 import LoginPage from './screens/LoginPage';
 import Orders from './screens/Orders';
 import Favourties from './screens/Favourties';
+import SignUp from './screens/SignUp';
 
 const Stack = createNativeStackNavigator();
 
@@ -83,6 +84,16 @@ export default function App() {
         <Stack.Screen
           component={Favourties}
           name='Favourite'
+          options={{
+            headerShown: false,
+          }}
+        />
+
+
+
+        <Stack.Screen
+          component={SignUp}
+          name='Register'
           options={{
             headerShown: false,
           }}
