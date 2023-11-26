@@ -32,6 +32,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const SignUp = ({ navigation }) => {
+  
   const [loader, setLoader] = useState(false);
   const [obsecureText, setObsecureText] = useState(false);
 

@@ -9,6 +9,7 @@ import axios from "axios";
 import { FlatList } from "react-native";
 import SearchTile from "../components/products/SearchTile";
 const Search = () => {
+  
   const [searchKey, setSearchKey] = useState("");
   const [searchResult, setSearchResult] = useState([]);
 

@@ -50,6 +50,11 @@ const LoginPage = ({ navigation }) => {
     );
   };
 
+  const login = (values) => {
+    setLoader(true);
+    console.log(values);
+  }
+
   return (
     <ScrollView>
       <SafeAreaView style={{ marginHorizontal: 20 }}>
@@ -65,7 +70,7 @@ const LoginPage = ({ navigation }) => {
           <Formik
             initialValues={{ email: "", password: "" }}
             validationSchema={validationSchema}
-            onSubmit={(values) => console.log(values)}
+            onSubmit={(values) => login(values)}
           >
             {({
               handleChange,
