@@ -4,7 +4,8 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
-  Alert
+  Alert,
+
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -158,7 +159,7 @@ const LoginPage = ({ navigation }) => {
                   )}
                 </View>
 
-                <Button title={"L O G I N"} onPress={isValid ? handleSubmit : inValidForm } isValid={isValid} />
+                <Button loader={loader} title={"L O G I N"} onPress={isValid ? handleSubmit : inValidForm } isValid={isValid} />
 
                 <Text style={styles.registration} onPress={() => navigation.navigate('Register') }>Create an Account</Text>
               </View>

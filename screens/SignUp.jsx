@@ -17,6 +17,7 @@ import * as Yup from "yup";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../constants";
 
+
 const validationSchema = Yup.object().shape({
   password: Yup.string()
     .min(8, "Password must be at least 8 character")
@@ -32,7 +33,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const SignUp = ({ navigation }) => {
-  
+
   const [loader, setLoader] = useState(false);
   const [obsecureText, setObsecureText] = useState(false);
 
