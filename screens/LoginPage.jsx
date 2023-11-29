@@ -58,7 +58,7 @@ const LoginPage = ({ navigation }) => {
 
   return (
     <ScrollView>
-      <SafeAreaView style={{ marginHorizontal: 20 }}>
+      <SafeAreaView style={{ marginHorizontal: 21 }}>
         <View>
           <BackBtn onPress={() => navigation.goBack()} />
           <Image
