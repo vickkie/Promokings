@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
-
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -17,6 +16,7 @@ import { Formik, validateYupSchema } from "formik";
 import * as Yup from "yup";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { COLORS } from "../constants";
+import axios from "axios";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
@@ -28,33 +28,63 @@ const validationSchema = Yup.object().shape({
 });
 
 const LoginPage = ({ navigation }) => {
-
   const [loader, setLoader] = useState(false);
   const [response, setResponse] = useState(null);
   const [obsecureText, setObsecureText] = useState(false);
 
   const inValidForm = () => {
-    Alert.alert(
-      "Invalid Form",
-      "Please provide required fields",
-      [
+    Alert.alert("Invalid Form", "Please provide required fields", [
+      {
+        text: "Cancel",
+        onPress: () => {},
+      },
+      {
+        text: "Continue",
+        onPress: () => {},
+      },
+      { defaultIndex: 1 },
+    ]);
+  };
+
+  const login = (value) => {
+    setLoader(true);
+
+    try {
+      const endpoint = "http://10.0.2.2:9000/api/login";
+      const data = value;
+      const response = axios.post(endpoint, data);
+
+      if (response.status === 200) {
+        setLoader(false);
+      } else {
+        Alert.alert("Error Logging", "Please provide valid user info", [
+          {
+            text: "Cancel",
+            onPress: () => {},
+          },
+          {
+            text: "Continue",
+            onPress: () => {},
+          },
+          { defaultIndex: 1 },
+        ]);
+      }
+    } catch (error) {
+      Alert.alert("Error ", "Opps Error Logging in try again", [
         {
           text: "Cancel",
           onPress: () => {},
         },
         {
           text: "Continue",
-          onPress: () => {}
+          onPress: () => {},
         },
         { defaultIndex: 1 },
-      ]
-    );
+      ]);
+    } finally {
+      setLoader(false);
+    }
   };
-
-  const login = (values) => {
-    setLoader(true);
-    console.log(values);
-  }
 
   return (
     <ScrollView>
@@ -159,9 +189,19 @@ const LoginPage = ({ navigation }) => {
                   )}
                 </View>
 
-                <Button loader={loader} title={"L O G I N"} onPress={isValid ? handleSubmit : inValidForm } isValid={isValid} />
+                <Button
+                  loader={loader}
+                  title={"L O G I N"}
+                  onPress={isValid ? handleSubmit : inValidForm}
+                  isValid={isValid}
+                />
 
-                <Text style={styles.registration} onPress={() => navigation.navigate('Register') }>Create an Account</Text>
+                <Text
+                  style={styles.registration}
+                  onPress={() => navigation.navigate("Register")}
+                >
+                  Create an Account
+                </Text>
               </View>
             )}
           </Formik>
