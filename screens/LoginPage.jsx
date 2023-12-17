@@ -46,16 +46,17 @@ const LoginPage = ({ navigation }) => {
     ]);
   };
 
-  const login = (value) => {
+  const login = async (value) => {
     setLoader(true);
 
     try {
       const endpoint = "http://10.0.2.2:9000/api/login";
       const data = value;
-      const response = axios.post(endpoint, data);
+      const response = await axios.post(endpoint, data);
 
       if (response.status === 200) {
         setLoader(false);
+        console.log(response.data);
       } else {
         Alert.alert("Error Logging", "Please provide valid user info", [
           {
