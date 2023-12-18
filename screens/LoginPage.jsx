@@ -29,7 +29,8 @@ const validationSchema = Yup.object().shape({
 
 const LoginPage = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
-  const [response, setResponse] = useState(null);
+  // const [response, setResponse] = useState(null);
+  const [responseData, setResponseData] = useState(null);
   const [obsecureText, setObsecureText] = useState(false);
 
   const inValidForm = () => {
@@ -56,7 +57,10 @@ const LoginPage = ({ navigation }) => {
 
       if (response.status === 200) {
         setLoader(false);
-        console.log(response.data);
+        setResponseData(response.data);
+
+        // await AsyncStorage.setItem(`user${responseData._id}`);
+        console.log(`user${responseData._id}`);
       } else {
         Alert.alert("Error Logging", "Please provide valid user info", [
           {
