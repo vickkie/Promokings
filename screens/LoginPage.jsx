@@ -18,6 +18,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { COLORS } from "../constants";
 import axios from "axios";
 
+
 const validationSchema = Yup.object().shape({
   password: Yup.string()
     .min(8, "Password must be at least 8 character")
@@ -27,9 +28,10 @@ const validationSchema = Yup.object().shape({
     .required("Required"),
 });
 
+
 const LoginPage = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
-  // const [response, setResponse] = useState(null);
+  const [response, setResponse] = useState(null);
   const [responseData, setResponseData] = useState(null);
   const [obsecureText, setObsecureText] = useState(false);
 
@@ -145,7 +147,6 @@ const LoginPage = ({ navigation }) => {
                       onChangeText={handleChange("email")}
                     />
                   </View>
-
                   {touched.email && errors.email && (
                     <Text style={styles.errorMessage}>{errors.email}</Text>
                   )}
