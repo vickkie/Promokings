@@ -9,10 +9,51 @@ import {
   MaterialCommunityIcons,
   SimpleLineIcons,
 } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Profile = ({ navigation }) => {
+  
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
+
+
+  useEffect(() => {
+    checkExistingUser();
+  }, []);
+
+  const checkExistingUser = async () => {
+    const id = await AsyncStorage.getItem("id");
+    const userId = `user${JSON.parse(id)}`;
+
+    try {
+      const currentUser = await AsyncStorage.getItem(userId);
+      if (currentUser !== null) {
+        const parsedData = JSON.parse(currentUser);
+        setUserData(parsedData);
+        setUserLogin(true);
+      } else {
+        navigation.navigate("Login");
+      }
+    } catch (error) {
+      console.log("Error retrieving data:", error);
+    }
+  };
+
+  const  userLogout = async () => {
+
+    const id = await AsyncStorage.getItem("id");
+    const userId = `user${JSON.parse(id)}`;
+
+    try {
+
+    await AsyncStorage.removeItem([userId, "id"]);
+    navigation.replace("Bottom Navigation");
+
+    } catch(err) {
+      console.log('Error loggin out the user:', err);
+    }
+
+  }
 
   const logout = () => {
     Alert.alert("Logout", "Are you sure you want to logout", [
@@ -22,7 +63,7 @@ const Profile = ({ navigation }) => {
       },
       {
         text: "Continue",
-        onPress: () => console.log("Logout Pressed"),
+        onPress: () => userLogout()
       },
       { defaultIndex: 1 },
     ]);
@@ -45,8 +86,6 @@ const Profile = ({ navigation }) => {
       ]
     );
   };
-
-
 
   const deleteAccount = () => {
     Alert.alert(

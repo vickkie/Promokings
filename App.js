@@ -5,11 +5,12 @@ import { useCallback } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomTabNavigation from './navigation/BottomTabNavigation';
-import { Cart, NewRivals, ProductDetails } from './screens'; // Import the screens properly
+import { Cart, Home, NewRivals, ProductDetails } from './screens'; // Import the screens properly
 import LoginPage from './screens/LoginPage';
 import Orders from './screens/Orders';
 import Favourties from './screens/Favourties';
 import SignUp from './screens/SignUp';
+import HomePage from './screens/HomePage';
 
 const Stack = createNativeStackNavigator();
 
@@ -98,6 +99,15 @@ export default function App() {
             headerShown: false,
           }}
         />
+
+<Stack.Screen
+          component={HomePage}
+          name='Home'
+          options={{
+            headerShown: false,
+          }}
+        />
+
 
 
       </Stack.Navigator>

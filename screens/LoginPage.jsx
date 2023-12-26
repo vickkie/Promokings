@@ -17,7 +17,7 @@ import * as Yup from "yup";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { COLORS } from "../constants";
 import axios from "axios";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
@@ -28,10 +28,10 @@ const validationSchema = Yup.object().shape({
     .required("Required"),
 });
 
-
 const LoginPage = ({ navigation }) => {
+
   const [loader, setLoader] = useState(false);
-  const [response, setResponse] = useState(null);
+  // const [response, setResponse] = useState(null);
   const [responseData, setResponseData] = useState(null);
   const [obsecureText, setObsecureText] = useState(false);
 
@@ -60,8 +60,15 @@ const LoginPage = ({ navigation }) => {
       if (response.status === 200) {
         setLoader(false);
         setResponseData(response.data);
+        await AsyncStorage.setItem(
+          `user${responseData._id}`,
+          JSON.stringify(responseData)
+        );
+        await AsyncStorage.setItem("id", JSON.stringify(responseData._id));
+        navigation.replace("Bottom Navigation");
+        // const newUser = await AsyncStorage.getItem(`user${responseData._id}`);
+        // console.log((newUser));
 
-        // await AsyncStorage.setItem(`user${responseData._id}`);
         console.log(`user${responseData._id}`);
       } else {
         Alert.alert("Error Logging", "Please provide valid user info", [
