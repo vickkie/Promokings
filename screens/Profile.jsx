@@ -46,7 +46,7 @@ const Profile = ({ navigation }) => {
 
     try {
 
-    await AsyncStorage.removeItem([userId, "id"]);
+    await AsyncStorage.multiRemove([userId, "id"]);
     navigation.replace("Bottom Navigation");
 
     } catch(err) {
