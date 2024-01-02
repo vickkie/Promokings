@@ -16,7 +16,8 @@ const Search = () => {
   const handleSearch = async() => {
     try {
       const response = await axios.get(
-        `http://10.0.2.2:9000/api/products/search/${searchKey}`
+        // `http://10.0.2.2:9000/api/products/search/${searchKey}`
+        `https://furniture-backend-eta.vercel.app/api/products/search/${searchKey}`
       );
         setSearchResult(response.data)
     } catch (error) {

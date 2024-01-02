@@ -16,6 +16,7 @@ import { Formik, validateYupSchema } from "formik";
 import * as Yup from "yup";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../constants";
+import axios from "axios";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
@@ -28,11 +29,12 @@ const validationSchema = Yup.object().shape({
 
   location: Yup.string().min(3, "Provide your location").required("Required"),
 
-  username: Yup.string().min(3, "Provide a valid username").required("Required"),
+  username: Yup.string()
+    .min(3, "Provide a valid username")
+    .required("Required"),
 });
 
 const SignUp = ({ navigation }) => {
-
   const [loader, setLoader] = useState(false);
   const [obsecureText, setObsecureText] = useState(false);
 
@@ -50,10 +52,23 @@ const SignUp = ({ navigation }) => {
     ]);
   };
 
-  const userName = "Maaz";
-  const userAge = 21;
 
+  const registerUser = async (value) => {
+    setLoader(true);
+   
+    // `http://10.0.2.2:9000/api
+    try {
+      const endpoint = "https://furniture-backend-eta.vercel.app/api/register";
+      const data = value;
+      const response = await axios.post(endpoint, data);
 
+      if (response.status === 201) {
+        navigation.replace("Login");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <ScrollView>
@@ -66,16 +81,21 @@ const SignUp = ({ navigation }) => {
               height: SIZES.height / 3,
               width: SIZES.width - 60,
               resizeMode: "contain",
-              marginBottom: SIZES.xxLarge
+              marginBottom: SIZES.xxLarge,
             }}
           />
 
           <Text style={styles.title}>Unlimited Luxurious Furniture</Text>
 
           <Formik
-            initialValues={{ email: "", password: "", location: "", username: "" }}
+            initialValues={{
+              email: "",
+              password: "",
+              location: "",
+              username: "",
+            }}
             validationSchema={validationSchema}
-            onSubmit={(values) => console.log(values)}
+            onSubmit={(values) => registerUser(values)}
           >
             {({
               handleChange,
@@ -89,8 +109,7 @@ const SignUp = ({ navigation }) => {
               touched,
             }) => (
               <View>
-
-<View style={styles.wrapper}>
+                <View style={styles.wrapper}>
                   <Text style={styles.label}>UserName</Text>
 
                   <View
@@ -106,18 +125,18 @@ const SignUp = ({ navigation }) => {
                     />
                     <TextInput
                       placeholder="Username"
-                      onFocus={() => setFieldTouched("usernamme")}
-                      onBlur={() => setFieldTouched("usernamme", "")}
+                      onFocus={() => setFieldTouched("username")}
+                      onBlur={() => setFieldTouched("username", "")}
                       autoCapitalize="none"
                       autoCorrect={false}
                       style={{ flex: 1 }}
-                      value={values.usernamme}
-                      onChangeText={handleChange("email")}
+                      value={values.username}
+                      onChangeText={handleChange("username")}
                     />
                   </View>
 
-                  {touched.usernamme && errors.usernamme && (
-                    <Text style={styles.errorMessage}>{errors.usernamme}</Text>
+                  {touched.username && errors.username && (
+                    <Text style={styles.errorMessage}>{errors.username}</Text>
                   )}
                 </View>
 
@@ -152,7 +171,6 @@ const SignUp = ({ navigation }) => {
                   )}
                 </View>
 
-                
                 <View style={styles.wrapper}>
                   <Text style={styles.label}>Location</Text>
 
@@ -231,6 +249,7 @@ const SignUp = ({ navigation }) => {
                   title={"S I G N U P"}
                   onPress={isValid ? handleSubmit : inValidForm}
                   isValid={isValid}
+                  loader={loader}
                 />
 
                 {/* <Text style={styles.registration} onPress={() => {}}>Create an Account</Text> */}

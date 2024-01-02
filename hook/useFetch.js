@@ -13,7 +13,7 @@ const useFetch = () => {
         setIsLoading(true);
 
         try {
-            const response = await axios.get('http://10.0.2.2:9000/api/products');
+            const response = await axios.get('https://furniture-backend-eta.vercel.app/api/products');
             setData(response.data);
             setIsLoading(false);
 

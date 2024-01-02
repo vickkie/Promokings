@@ -52,7 +52,7 @@ const LoginPage = ({ navigation }) => {
   const login = async (value) => {
     setLoader(true);
     try {
-      const endpoint = "http://10.0.2.2:9000/api/login";
+      const endpoint = "https://furniture-backend-eta.vercel.app/api/login";
       const data = value;
       const response = await axios.post(endpoint, data);
 

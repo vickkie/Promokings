@@ -42,7 +42,6 @@ const HomePage = () => {
   };
 
 
-
   return (
     <SafeAreaView>
       <View style={styles.appBarWrapper}>
