@@ -21,7 +21,7 @@ const Search = () => {
       );
         setSearchResult(response.data)
     } catch (error) {
-      console.log("failed to ftech products", error);
+      console.log("failed to fetch products", error);
     }
   };
 
@@ -63,7 +63,7 @@ const Search = () => {
           <FlatList keyExtractor={(item) => item._id}
           data={searchResult}
           renderItem={({item}) => (<SearchTile item = {item} />) }
-          style={{marginHorizontal: 12}}
+          style={{marginHorizontal: 15}}
           />
         )
       }

@@ -65,14 +65,14 @@ const Profile = ({ navigation }) => {
         text: "Continue",
         onPress: () => userLogout()
       },
-      { defaultIndex: 1 },
+
     ]);
   };
 
   const clearCache = () => {
     Alert.alert(
       "Clear Cache",
-      "Are you sure you want to delete all saved data on your account?",
+      "Are you sure you want to delete all saved data on your account?", 
       [
         {
           text: "Cancel",
@@ -82,7 +82,7 @@ const Profile = ({ navigation }) => {
           text: "Continue",
           onPress: () => console.log("clear cache Pressed"),
         },
-        { defaultIndex: 1 },
+
       ]
     );
   };

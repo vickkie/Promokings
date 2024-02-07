@@ -6,6 +6,7 @@ import { Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const SearchTile = ({ item }) => {
+
   const navigation = useNavigation();
 
   return (
