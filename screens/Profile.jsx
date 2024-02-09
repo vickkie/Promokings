@@ -57,7 +57,7 @@ const Profile = ({ navigation }) => {
   const logout = () => {
     Alert.alert("Logout", "Are you sure you want to logout", [
       {
-        text: "X",
+        text: "Cancel",
         onPress: () => console.log("cancel pressed"),
       },
       {
@@ -74,7 +74,7 @@ const Profile = ({ navigation }) => {
       "Are you sure you want to delete all saved data on your account?", 
       [
         {
-          text: "X",
+          text: "Cancel",
           onPress: () => console.log("cancel clear cache"),
         },
         {
