@@ -16,7 +16,6 @@ const Profile = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
 
-
   useEffect(() => {
     checkExistingUser();
   }, []);
@@ -58,7 +57,7 @@ const Profile = ({ navigation }) => {
   const logout = () => {
     Alert.alert("Logout", "Are you sure you want to logout", [
       {
-        text: "Cancel",
+        text: "X",
         onPress: () => console.log("cancel pressed"),
       },
       {
@@ -75,7 +74,7 @@ const Profile = ({ navigation }) => {
       "Are you sure you want to delete all saved data on your account?", 
       [
         {
-          text: "Cancel",
+          text: "X",
           onPress: () => console.log("cancel clear cache"),
         },
         {
