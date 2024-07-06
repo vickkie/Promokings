@@ -1,0 +1,26 @@
+/*
+Theme Name: Riode
+Theme URI: https://d-themes.com/wordpress/riode
+Author: D-THEMES
+Author URI: https://d-themes.com/
+Description: Riode eCommerce Responsive Wordpress Theme.
+Version: 1.4.9
+Tested up to: 5.8
+Requires PHP: 5.6
+License: Commercial
+License URI: http://themeforest.net/licenses/regular_extended
+Tags: e-commerce, one-column, two-columns, three-columns, four-columns, full-width-template, left-sidebar, right-sidebar, custom-menu, custom-background, custom-colors, custom-header, custom-logo, editor-style, featured-images, flexible-header, microformats, post-formats, rtl-language-support, theme-options, translation-ready, accessibility-ready
+Text Domain: riode
+*/
+
+/*************** ADD YOUR CUSTOM CSS HERE  ***************/
+
+.bypostauthor { display: block; }
+
+.gallery-caption,
+.wp-caption-text {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  padding-top: 10px;
+}
