@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -22,15 +20,16 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.maazjr.furnitureapp"
+      "package": "com.uzitrake.promonative"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "bb889b22-f75b-4aa5-a3b8-f974db0e1c3a"
+        "projectId": "6d4ab8d5-3b4a-45fa-84a4-5dbd69dda829"
       }
-    }
+    },
+    "owner": "uzitrake"
   }
 }
