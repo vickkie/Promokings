@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     top: SIZES.large,
     alignItems: "center",
     gap: 6,
-    paddingTop: 9,
+    paddingTop: 12,
   },
   descriptionWrapper: {
     marginTop: SIZES.large + 2,

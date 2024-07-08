@@ -3,5 +3,6 @@ import Profile from "./Profile";
 import Home from "./Home";
 import Cart from "./Cart";
 import ProductDetails from "../components/products/ProductDetails";
+import NewRivals from "./NewRivals";
 
-export { Home, Search, Profile, Cart, ProductDetails };
+export { Home, Search, Profile, Cart, ProductDetails, NewRivals };

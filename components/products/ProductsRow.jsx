@@ -1,20 +1,35 @@
-import { FlatList, Text, View, SafeAreaView } from "react-native";
-import React from "react";
+import { FlatList, Text, View, SafeAreaView, ActivityIndicator } from "react-native";
+import React, { useEffect } from "react";
 import { COLORS, SIZES } from "../../constants";
 import styles from "./productsRow.style";
 import ProductsCardView from "./ProductsCardView";
+import useFetch from "../../hook/useFetch";
 
 const ProductsRow = () => {
-  const products = [1, 2, 3, 4];
+  const { data, isLoading, error } = useFetch();
+
+  // Ensure data is treated as an array to avoid accessing .length of undefined
+  const dataArray = Array.isArray(data) ? data : [];
+
+  const keyExtractor = (item) => item._id;
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={products}
-        renderItem={({ item }) => <ProductsCardView />}
-        horizontal
-        contentContainerStyle={{ columnGap: SIZES.medium }}
-      />
+      {isLoading ? (
+        <ActivityIndicator size={SIZES.xxLarge} color={COLORS.primary} />
+      ) : error ? (
+        <Text>Error: {error}</Text>
+      ) : dataArray.length === 0 ? (
+        <Text>No products found.</Text>
+      ) : (
+        <FlatList
+          data={dataArray}
+          keyExtractor={keyExtractor}
+          renderItem={({ item }) => <ProductsCardView item={item} />}
+          horizontal
+          contentContainerStyle={{ columnGap: SIZES.medium }}
+        />
+      )}
     </View>
   );
 };

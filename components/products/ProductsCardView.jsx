@@ -5,29 +5,27 @@ import styles from "./productcardview.style";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-const ProductsCardView = () => {
+const ProductsCardView = ({ item }) => {
   const navigation = useNavigation();
+
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate("ProductDetails");
+        navigation.navigate("ProductDetails", { item });
       }}
     >
       <View style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image
-            source={{ uri: "https://promokings.co.ke/wp-content/uploads/2023/04/promo-signage.jpg" }}
-            style={styles.image}
-          />
+          <Image source={{ uri: item.imageUrl }} style={styles.image} />
         </View>
         <View style={styles.details}>
           <Text style={styles.title} numberOfLines={1}>
-            Board design
+            {item.title}
           </Text>
           <Text style={styles.supplier} numberOfLines={1}>
-            Product
+            Supplier: {item.supplier}
           </Text>
-          <Text style={styles.price}>Kshs 300</Text>
+          <Text style={styles.price}>Price: Kshs {item.price}</Text>
         </View>
         <TouchableOpacity style={styles.addBtn}>
           <Ionicons name="heart-outline" size={24}></Ionicons>

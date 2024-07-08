@@ -1,4 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from "react-native";
+import { useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
 import { Ionicons, SimpleLineIcons, Fontisto } from "@expo/vector-icons";
 import { COLORS } from "../../constants";
@@ -6,8 +7,13 @@ import styles from "./productdetails.style";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const ProductDetails = ({ navigation }) => {
+  const route = useRoute();
+  const { item } = route.params;
+
+  console.log(item);
+
   const [isWished, setIsWished] = useState(false);
-  const [count, setCount] = useState(9);
+  const [count, setCount] = useState(1);
 
   const increment = () => {
     setCount(count + 1);
@@ -40,14 +46,16 @@ const ProductDetails = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <Image
-          source={{ uri: "https://promokings.co.ke/wp-content/uploads/2023/04/promo-signage.jpg" }}
+          source={{
+            uri: item.imageUrl,
+          }}
           style={styles.image}
         />
         <View style={styles.details}>
           <View style={styles.titleRow}>
             <Text style={styles.title}>Product details</Text>
             <View style={styles.priceWrapper}>
-              <Text style={styles.price}>Ksh 300</Text>
+              <Text style={styles.price}>{item.price}</Text>
             </View>
           </View>
           <View style={styles.ratingRow}>
@@ -75,11 +83,7 @@ const ProductDetails = ({ navigation }) => {
           </View>
 
           <View style={styles.descriptionWrapper}>
-            <Text style={styles.description}>
-              Elevate your events and promotions with our Premium Custom Banner, designed to make a lasting impression.
-              Whether you're hosting a corporate event, celebrating a special occasion, or running a marketing campaign,
-              our banners provide the perfect blend of durability and vibrant display quality.
-            </Text>
+            <Text style={styles.description}>{item.description}</Text>
             <Text style={styles.descText}></Text>
           </View>
 
