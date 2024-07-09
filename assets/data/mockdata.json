@@ -1,0 +1,74 @@
+[
+  {
+    "_id": "668bced305770c7873076e8f",
+    "title": "GoPro HERO11 Black",
+    "supplier": "GoPro Inc.",
+    "price": "$399.00",
+    "imageUrl": "https://promokings.co.ke/wp-content/uploads/2022/08/053-grey-6699.jpg",
+    "description": "Capture stunning 5.3K video and photos with the GoPro HERO11 Black. Featuring HyperSmooth 4.0 video stabilization and waterproof up to 33 feet.",
+    "product_location": "Warehouse E, Floor 4",
+    "createdAt": "2024-07-08T11:34:43.955Z",
+    "updatedAt": "2024-07-08T16:11:51.015Z",
+    "__v": 0
+  },
+  {
+    "_id": "668bcec905770c7873076e8d",
+    "title": "Sony WH-1000XM4 Wireless Noise-Canceling Headphones",
+    "supplier": "Sony Electronics Inc.",
+    "price": "$348.00",
+    "imageUrl": "https://promokings.co.ke/wp-content/uploads/2023/02/umbrellas-.jpg",
+    "description": "Experience exceptional sound quality with industry-leading noise cancellation. The WH-1000XM4 headphones offer up to 30 hours of battery life and touch controls.",
+    "product_location": "Warehouse C, Floor 2",
+    "createdAt": "2024-07-08T11:34:33.951Z",
+    "updatedAt": "2024-07-08T16:09:14.973Z",
+    "__v": 0
+  },
+  {
+    "_id": "668bcebe05770c7873076e8b",
+    "title": "Nest Learning Thermostat (3rd Generation)",
+    "supplier": "Google Nest",
+    "price": "$129.00",
+    "imageUrl": "https://promokings.co.ke/wp-content/uploads/2022/11/wrist-band-01-scaled.jpg",
+    "description": "Save energy and stay comfortable with the Nest Learning Thermostat. It learns your schedule and temperature preferences to keep your home cozy.",
+    "product_location": "Warehouse D, Floor 3",
+    "createdAt": "2024-07-08T11:34:22.988Z",
+    "updatedAt": "2024-07-08T16:17:41.142Z",
+    "__v": 0
+  },
+  {
+    "_id": "668bcea105770c7873076e89",
+    "title": "Dyson Pure Cool Me Air Purifier",
+    "supplier": "Dyson Technology Ltd.",
+    "price": "$699.00",
+    "imageUrl": "https://promokings.co.ke/wp-content/uploads/2022/08/jute-447-3-4685.jpg",
+    "description": "Breathe easy with the Dyson Pure Cool Me air purifier. It projects purified air where you need it most, creating a personal zone of clean air.",
+    "product_location": "Warehouse F, Floor 5",
+    "createdAt": "2024-07-08T11:33:53.777Z",
+    "updatedAt": "2024-07-08T16:13:31.873Z",
+    "__v": 0
+  },
+  {
+    "_id": "668bce9505770c7873076e87",
+    "title": "Apple iPhone 13 Pro Max",
+    "supplier": "Apple Inc.",
+    "price": "$999.00",
+    "imageUrl": "https://promokings.co.ke/wp-content/uploads/2023/01/491-white-red-8530.jpg",
+    "description": "The iPhone 13 Pro Max introduces a pro-level camera system, a brighter Super Retina XDR display, and the power of A15 Bionic chip. Available in five stunning colors.",
+    "product_location": "Warehouse A, Floor 1",
+    "createdAt": "2024-07-08T11:33:41.492Z",
+    "updatedAt": "2024-07-08T16:15:27.300Z",
+    "__v": 0
+  },
+  {
+    "_id": "668bb8c505770c7873076e82",
+    "title": "Core Water",
+    "supplier": "GreenPlanet Supplies Inc.",
+    "price": "$15.99",
+    "imageUrl": "https://hydratewithcore.com/wp-content/uploads/2023/04/core-hydration-plus-product-lineup-768x537.jpg",
+    "description": "Our premium reusable water bottle is made from recycled materials and features a leak-proof design. Perfect for eco-conscious individuals looking to reduce plastic waste.",
+    "product_location": "Warehouse B, Floor 2",
+    "createdAt": "2024-07-08T10:00:37.039Z",
+    "updatedAt": "2024-07-08T10:00:37.039Z",
+    "__v": 0
+  }
+]

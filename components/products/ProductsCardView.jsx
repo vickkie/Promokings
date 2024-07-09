@@ -25,9 +25,9 @@ const ProductsCardView = ({ item }) => {
           <Text style={styles.supplier} numberOfLines={1}>
             Supplier: {item.supplier}
           </Text>
-          <Text style={styles.price}>Price: Kshs {item.price}</Text>
+          <Text style={styles.price}>Kshs {parseInt(item.price.replace("$", ""))}</Text>
         </View>
-        <TouchableOpacity style={styles.addBtn}>
+        <TouchableOpacity style={styles.addBtn} onPress={() => {}}>
           <Ionicons name="heart-outline" size={24}></Ionicons>
         </TouchableOpacity>
       </View>

@@ -37,6 +37,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: COLORS.primary,
   },
+
+  searchNone: {
+    // flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    height: SIZES.height - 100,
+  },
+  noFoundImage: {
+    // flex: 1,
+    width: 300,
+    height: 300,
+    aspectRatio: 1,
+    margin: "auto",
+    alignSelf: "center",
+  },
+  flatlist: {
+    marginHorizontal: 3,
+    marginBottom: 79,
+  },
 });
 
 export default styles;

@@ -1,44 +1,85 @@
 import React, { useRef, useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
+import { View, FlatList, Text, TouchableOpacity, TextInput, Image, ScrollView } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import styles from "./search.styles";
+import styles from "./search.style";
 import { COLORS, SIZES } from "../constants";
+
+import axios from "axios";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import SearchTile from "../components/products/SearchTile";
 
 const Search = () => {
   const inputRef = useRef(null); // Create a ref for the TextInput
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState("");
+  const [searchResults, setSearchResults] = useState("");
 
   useEffect(() => {
-    // Check if the component has just been mounted the focus from home search
+    // Check if the component has just been mounted then focus from home search
     if (!inputRef.current) return;
     inputRef.current.focus(); // Focus the TextInput
   }, [navigation]);
 
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get(`http://192.168.100.229:3000/api/products/search/${searchText}`);
+
+      setSearchResults(response.data);
+
+      //response.data
+
+      console.log("======================");
+      console.log(response.data);
+      console.log("======================");
+    } catch (error) {
+      console.log("Failed to get products");
+    }
+  };
+
   return (
-    <SafeAreaView>
-      <View name="" style={styles.searchContainer}>
-        <TouchableOpacity>
-          <Feather name="search" style={styles.searchIcon}></Feather>
-        </TouchableOpacity>
-        <View style={styles.searchWrapper}>
-          <TextInput
-            ref={inputRef}
-            value={searchText} // Control the value with state
-            onChangeText={(text) => setSearchText(text)}
-            style={styles.searchInput}
-            placeholder="Search..."
-          ></TextInput>
-        </View>
-        <View style={styles.searchBtn}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView>
+        <View name="" style={styles.searchContainer}>
           <TouchableOpacity>
-            <Ionicons name="search-circle" size={SIZES.xxLarge - 10}></Ionicons>
+            <Feather name="search" style={styles.searchIcon}></Feather>
           </TouchableOpacity>
+          <View style={styles.searchWrapper}>
+            <TextInput
+              ref={inputRef}
+              value={searchText}
+              onChangeText={(text) => setSearchText(text)}
+              style={styles.searchInput}
+              placeholder="Search..."
+              onFocus={() => inputRef.current.focus()}
+            ></TextInput>
+          </View>
+          <View style={styles.searchBtn}>
+            <TouchableOpacity
+              onPress={() => {
+                handleSearch();
+              }}
+            >
+              <Ionicons name="ios-search-circle" size={SIZES.xxLarge - 10} color={COLORS.white}></Ionicons>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+
+        {searchResults.length === 0 ? (
+          <View style={{ flex: 1 }}>
+            <Image source={require("../assets/images/Pose23.png")} style={styles.searchImage} />
+          </View>
+        ) : (
+          <FlatList
+            keyExtractor={(item) => item._id}
+            data={searchResults}
+            renderItem={({ item }) => <SearchTile item={item} />}
+            style={styles.flatlist}
+          />
+        )}
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 };
 

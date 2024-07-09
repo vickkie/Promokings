@@ -18,7 +18,11 @@ const ProductsRow = () => {
       {isLoading ? (
         <ActivityIndicator size={SIZES.xxLarge} color={COLORS.primary} />
       ) : error ? (
-        <Text>Error: {error}</Text>
+        <View style={styles.errorBox}>
+          <Text style={styles.errorMessage}>
+            Sorry could not connect,{`\n`}Error: {error}
+          </Text>
+        </View>
       ) : dataArray.length === 0 ? (
         <Text>No products found.</Text>
       ) : (
