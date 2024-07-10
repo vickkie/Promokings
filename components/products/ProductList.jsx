@@ -5,14 +5,36 @@ import useFetch from "../../hook/useFetch";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./productlist.style";
 import ProductsCardView from "./ProductsCardView";
-import { Ionicons, SimpleLineIcons, Fontisto } from "@expo/vector-icons";
-import Animated from "react-native-reanimated";
+import { Ionicons } from "@expo/vector-icons";
+import Animated, { useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 
 const ProductList = () => {
   const { data, isLoading, error, refetch } = useFetch();
+  const scrollY = useSharedValue(0);
+  const scrollRef = React.useRef(null);
 
   const handleRefetch = () => {
     refetch();
+  };
+
+  //Animated scroll to top details ->
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y;
+    },
+  });
+
+  const buttonStyle = useAnimatedStyle(() => {
+    return {
+      opacity: scrollY.value > 100 ? 1 : 0,
+    };
+  });
+
+  const scrollTop = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollToOffset({ offset: 0, animated: true });
+    }
   };
 
   if (isLoading) {
@@ -47,16 +69,26 @@ const ProductList = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        keyExtractor={(item) => item._id.toString()}
-        contentContainerStyle={({ columnGap: SIZES.medium }, styles.container)}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        numColumns={2}
-        data={data}
-        renderItem={({ item }) => <ProductsCardView item={item} />}
-      />
-    </View>
+    <>
+      <Animated.View style={styles.container}>
+        <Animated.FlatList
+          ref={scrollRef}
+          onScroll={scrollHandler}
+          scrollEventThrottle={16}
+          keyExtractor={(item) => item._id.toString()}
+          contentContainerStyle={[{ columnGap: SIZES.medium }, styles.container]}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          numColumns={2}
+          data={data}
+          renderItem={({ item }) => <ProductsCardView item={item} />}
+        />
+      </Animated.View>
+      <Animated.View style={[styles.toTopButton, buttonStyle]}>
+        <TouchableOpacity onPress={scrollTop}>
+          <Ionicons name="arrow-up-circle-outline" size={32} color={COLORS.white} />
+        </TouchableOpacity>
+      </Animated.View>
+    </>
   );
 };
 

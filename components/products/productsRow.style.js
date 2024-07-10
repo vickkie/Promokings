@@ -7,16 +7,36 @@ const styles = StyleSheet.create({
     marginBottom: 44,
     marginHorizontal: 12,
   },
-  errorBox: {
+  errorContainer: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
-    height: "auto",
+    justifyContent: "center",
+    alignContent: "center",
   },
   errorMessage: {
     fontFamily: "bold",
-    textAlign: "center",
+  },
+
+  retryButton: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 14,
+    marginTop: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  retryButtonText: {
+    color: "#fff",
     fontSize: SIZES.medium,
+    textAlign: "center",
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    alignContent: "center",
+    height: SIZES.height,
   },
 });
 

@@ -11,8 +11,7 @@ const Welcome = () => {
   return (
     <View>
       <View style={styles.container}>
-        <Text style={styles.welcomeTxt(COLORS.black, SIZES.xSmall)}>For all of your</Text>
-        <Text style={styles.welcomeTxt(COLORS.primary, SIZES.xSmall)}> promotional items</Text>
+        <Text style={styles.welcomeTxt(COLORS.primary, SIZES.xSmall)}>For all of your promotional items</Text>
       </View>
       <View name="" style={styles.searchContainer}>
         <TouchableOpacity>
@@ -28,7 +27,7 @@ const Welcome = () => {
         </View>
         <View style={styles.searchBtn}>
           <TouchableOpacity>
-            <Ionicons name="camera" color={COLORS.lightWhite} size={SIZES.medium + 10}></Ionicons>
+            <Ionicons name="cart-outline" color={COLORS.lightWhite} size={SIZES.medium + 10}></Ionicons>
           </TouchableOpacity>
         </View>
       </View>

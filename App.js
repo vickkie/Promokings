@@ -47,7 +47,6 @@ export default function App(params) {
         ></Stack.Screen>
         <Stack.Screen name="Cart" component={Cart} options={{ headerShown: false }}></Stack.Screen>
         <Stack.Screen name="ProductDetails" component={ProductDetails} options={{ headerShown: false }}></Stack.Screen>
-
         <Stack.Screen name="ProductList" component={NewRivals} options={{ headerShown: false }}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>

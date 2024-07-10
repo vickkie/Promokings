@@ -5,6 +5,7 @@ import { Ionicons, SimpleLineIcons, Fontisto } from "@expo/vector-icons";
 import { COLORS } from "../../constants";
 import styles from "./productdetails.style";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Animated from "react-native-reanimated";
 
 const ProductDetails = ({ navigation }) => {
   const route = useRoute();
@@ -43,12 +44,8 @@ const ProductDetails = ({ navigation }) => {
             )}
           </TouchableOpacity>
         </View>
-        <Image
-          source={{
-            uri: item.imageUrl,
-          }}
-          style={styles.image}
-        />
+        <Animated.Image source={{ uri: item.imageUrl }} sharedTransitionTag={`${item._id}`} style={styles.image} />
+
         <View style={styles.details}>
           <View style={styles.titleRow}>
             <Text style={styles.title}>Product details</Text>

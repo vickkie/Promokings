@@ -4,6 +4,7 @@ import { COLORS, SIZES } from "../../constants";
 import styles from "./productcardview.style";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import Animated, { SharedTransition } from "react-native-reanimated";
 
 const ProductsCardView = ({ item }) => {
   const navigation = useNavigation();
@@ -11,12 +12,15 @@ const ProductsCardView = ({ item }) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate("ProductDetails", { item });
+        navigation.navigate("ProductDetails", {
+          item: item,
+          itemid: item._id,
+        });
       }}
     >
       <View style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image source={{ uri: item.imageUrl }} style={styles.image} />
+          <Animated.Image source={{ uri: item.imageUrl }} style={styles.image} sharedTransitionTag={`${item._id}`} />
         </View>
         <View style={styles.details}>
           <Text style={styles.title} numberOfLines={1}>
@@ -27,6 +31,7 @@ const ProductsCardView = ({ item }) => {
           </Text>
           <Text style={styles.price}>Kshs {parseInt(item.price.replace("$", ""))}</Text>
         </View>
+
         <TouchableOpacity style={styles.addBtn} onPress={() => {}}>
           <Ionicons name="heart-outline" size={24}></Ionicons>
         </TouchableOpacity>

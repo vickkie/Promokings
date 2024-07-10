@@ -44,7 +44,9 @@ const BottomTabNavigation = () => {
         component={Search}
         options={{
           tabBarIcon: ({ focused }) => {
-            return <Ionicons name={"search-sharp"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />;
+            return (
+              <Ionicons name={"search-circle-outline"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
+            );
           },
         }}
       ></Tab.Screen>
@@ -55,7 +57,7 @@ const BottomTabNavigation = () => {
           tabBarIcon: ({ focused }) => {
             return (
               <Ionicons
-                name={focused ? "person" : "person-outline"}
+                name={focused ? "person-circle-outline" : "ios-person-circle-outline"}
                 size={24}
                 color={focused ? COLORS.primary : COLORS.gray2}
               />

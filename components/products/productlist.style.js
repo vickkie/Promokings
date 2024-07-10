@@ -44,6 +44,14 @@ const styles = StyleSheet.create({
     fontSize: SIZES.medium,
     textAlign: "center",
   },
+  toTopButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    backgroundColor: "black",
+    padding: 10,
+    borderRadius: 100,
+  },
 });
 
 export default styles;
