@@ -1,27 +1,19 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-// const dontenv = require("dotenv");
-// const mock = require("../assets/data/mockdata.json");
+import { BACKEND_PORT } from "@env"; // Import the env variable in react native defined in babel.conf
 
 const useFetch = () => {
-  // dontenv.config();
-
-  // console.log(mock);
-
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-
-  // const port = process.env.BACKEND_PORT;
 
   const fetchData = async () => {
     setIsLoading(true);
     setError(null); // Reset error state before fetching data
 
     try {
-      const response = await axios.get(`http://192.168.100.229:3000/api/products`);
-      // const response = await axios.get(`${port}/api/products`);
-      // const response = { data: mock }; // Mocking the API responsea
+      const response = await axios.get(`${BACKEND_PORT}/api/products`); // Use the environment variable
+      // const response = await axios.get(`http://192.168.100.250:3001/api/products`);
       setData(response.data);
     } catch (error) {
       setError(error.message);

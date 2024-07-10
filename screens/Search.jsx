@@ -10,6 +10,8 @@ import axios from "axios";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import SearchTile from "../components/products/SearchTile";
 
+import { BACKEND_PORT } from "@env";
+
 const Search = () => {
   const inputRef = useRef(null); // Create a ref for the TextInput
   const navigation = useNavigation();
@@ -24,7 +26,7 @@ const Search = () => {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get(`http://192.168.100.229:3000/api/products/search/${searchText}`);
+      const response = await axios.get(`${BACKEND_PORT}/api/products/search/${searchText}`);
 
       setSearchResults(response.data);
 
@@ -68,7 +70,7 @@ const Search = () => {
 
         {searchResults.length === 0 ? (
           <View style={{ flex: 1 }}>
-            <Image source={require("../assets/images/Pose23.png")} style={styles.searchImage} />
+            <Image source={require("../assets/images/no-found.png")} style={styles.noFoundImage} />
           </View>
         ) : (
           <FlatList

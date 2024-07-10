@@ -22,7 +22,7 @@ const Home = () => {
                 <Text style={styles.cartNumber}>33</Text>
               </View>
 
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => {}}>
                 <Fontisto name="shopping-bag-1" style={styles.cartBag} size={24}></Fontisto>
               </TouchableOpacity>
             </View>

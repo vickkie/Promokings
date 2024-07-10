@@ -28,7 +28,7 @@ const Welcome = () => {
         </View>
         <View style={styles.searchBtn}>
           <TouchableOpacity>
-            <Ionicons name="camera-outline" size={SIZES.medium + 10}></Ionicons>
+            <Ionicons name="camera" color={COLORS.lightWhite} size={SIZES.medium + 10}></Ionicons>
           </TouchableOpacity>
         </View>
       </View>

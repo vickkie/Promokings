@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./productlist.style";
 import ProductsCardView from "./ProductsCardView";
 import { Ionicons, SimpleLineIcons, Fontisto } from "@expo/vector-icons";
+import Animated from "react-native-reanimated";
 
 const ProductList = () => {
   const { data, isLoading, error, refetch } = useFetch();
