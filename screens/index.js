@@ -5,5 +5,25 @@ import Cart from "./Cart";
 import ProductDetails from "../components/products/ProductDetails";
 import NewRivals from "./NewRivals";
 import ProductList from "../components/products/ProductList";
+import LoginPage from "./LoginPage";
+import Orders from "./Orders";
+import Favourites from "./Favourites";
+import BackBtn from "../components/BackBtn";
+import CustomButton from "../components/Button";
+import Register from "./Register";
 
-export { Home, Search, Profile, Cart, ProductDetails, NewRivals, ProductList };
+export {
+  Home,
+  Search,
+  Profile,
+  Cart,
+  ProductDetails,
+  NewRivals,
+  ProductList,
+  LoginPage,
+  Favourites,
+  Orders,
+  BackBtn,
+  CustomButton,
+  Register,
+};
