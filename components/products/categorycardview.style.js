@@ -3,16 +3,16 @@ import { COLORS, SIZES } from "../../constants";
 
 const styles = StyleSheet.create({
   container: {
-    width: 132,
-    height: 140,
+    width: SIZES.width / 2 - 18,
+    height: SIZES.width / 2,
     marginEnd: 10,
     borderRadius: SIZES.medium,
     backgroundColor: COLORS.secondary,
-    marginBottom: SIZES.medium,
+    marginBottom: SIZES.small,
   },
   imageContainer: {
     flex: 1,
-    width: 120,
+    width: SIZES.width / 2 - 30,
     marginTop: SIZES.small / 2,
     marginLeft: SIZES.small / 2,
     overflow: "hidden",
