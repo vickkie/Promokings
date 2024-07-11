@@ -11,6 +11,7 @@ import Favourites from "./Favourites";
 import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
 import Register from "./Register";
+import Categories from "./Categories";
 
 export {
   Home,
@@ -26,4 +27,5 @@ export {
   BackBtn,
   CustomButton,
   Register,
+  Categories,
 };

@@ -8,11 +8,47 @@ import { Ionicons, AntDesign, SimpleLineIcons, MaterialCommunityIcons } from "@e
 import { COLORS, SIZES } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const Profile = () => {
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
 
   const navigation = useNavigation();
+
+  useEffect(() => {
+    checkExistingUser();
+  }, []);
+
+  const checkExistingUser = async () => {
+    const id = await AsyncStorage.getItem("id");
+    const userId = `user${JSON.parse(id)}`;
+
+    try {
+      const currentUser = await AsyncStorage.getItem(userId);
+      if (currentUser !== null) {
+        const parsedData = JSON.parse(currentUser);
+        setUserData(parsedData);
+        setUserLogin(true);
+      } else {
+        navigation.navigate("Login");
+      }
+    } catch (error) {
+      console.log("Error retrieving data:", error);
+    }
+  };
+
+  const userLogout = async () => {
+    const id = await AsyncStorage.getItem("id");
+    const userId = `user${JSON.parse(id)}`;
+
+    try {
+      await AsyncStorage.multiRemove([userId, "id"]);
+      navigation.replace("Bottom Navigation");
+    } catch (err) {
+      console.log("Error loggin out the user:", err);
+    }
+  };
 
   const logout = () => {
     Alert.alert(
@@ -29,6 +65,7 @@ const Profile = () => {
         {
           text: "Continue",
           onPress: () => {
+            userLogout();
             console.log("Logout continue");
           },
         },
@@ -88,11 +125,11 @@ const Profile = () => {
       <View style={styles.container}>
         <View style={styles.container}>
           <StatusBar backgroundColor={COLORS.gray} />
-          <View style={{ width: "100%" }}>
+          <View style={{ width: "100%", height: SIZES.height / 3.3, overflow: "hidden" }}>
             <Image source={require("../assets/images/profilecover.webp")} style={styles.cover} />
           </View>
           <View style={styles.profileContainer}>
-            <Image source={require("../assets/images/profile.webp")} style={styles.profile} />
+            <Image source={require("../assets/images/profile-picture.webp")} style={styles.profile} />
             <Text style={styles.name}>{userLogin === true ? userData.name : "Please login to account"}</Text>
 
             {userLogin === false ? (
@@ -107,7 +144,7 @@ const Profile = () => {
               </TouchableOpacity>
             ) : (
               <View style={styles.loginBtn}>
-                <Text style={styles.menuText}>Promokings@gmail.com</Text>
+                <Text style={styles.menuText}>{userData.email}</Text>
               </View>
             )}
 

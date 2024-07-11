@@ -10,7 +10,6 @@ import Animated from "react-native-reanimated";
 const ProductDetails = ({ navigation }) => {
   const route = useRoute();
   const { item } = route.params;
-
   const [isWished, setIsWished] = useState(false);
   const [count, setCount] = useState(1);
 
@@ -29,6 +28,8 @@ const ProductDetails = ({ navigation }) => {
     setIsWished(!isWished);
   };
 
+  const transitionTag = item._id ? `${item._id}` : null;
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -44,7 +45,7 @@ const ProductDetails = ({ navigation }) => {
             )}
           </TouchableOpacity>
         </View>
-        <Animated.Image source={{ uri: item.imageUrl }} sharedTransitionTag={`${item._id}`} style={styles.image} />
+        <Animated.Image source={{ uri: item.imageUrl }} sharedTransitionTag={transitionTag} style={styles.image} />
 
         <View style={styles.details}>
           <View style={styles.titleRow}>

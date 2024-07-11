@@ -9,13 +9,15 @@ import { Ionicons } from "@expo/vector-icons";
 import Animated, { useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 
 const ProductList = () => {
-  const { data, isLoading, error, refetch } = useFetch();
+  const { data, isLoading, error, refetch } = useFetch("products");
   const scrollY = useSharedValue(0);
   const scrollRef = React.useRef(null);
 
   const handleRefetch = () => {
     refetch();
   };
+
+  console.log(data._id);
 
   //Animated scroll to top details ->
 

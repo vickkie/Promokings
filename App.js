@@ -9,7 +9,7 @@ import { useFonts } from "expo-font";
 import * as Splashscreen from "expo-splash-screen";
 import { useCallback } from "react";
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
-import { Cart, ProductDetails, NewRivals, LoginPage, Favourites, Orders, Register } from "./screens";
+import { Cart, ProductDetails, NewRivals, LoginPage, Favourites, Orders, Register, Categories } from "./screens";
 
 enableScreens();
 enableLayoutAnimations(true);
@@ -40,7 +40,7 @@ export default function App(params) {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name="Bottom Navigations"
+          name="Bottom Navigation"
           component={BottomTabNavigation}
           options={{ headerShown: false }}
         ></Stack.Screen>
@@ -48,6 +48,7 @@ export default function App(params) {
         <Stack.Screen name="ProductDetails" component={ProductDetails} options={{ headerShown: false }}></Stack.Screen>
         <Stack.Screen name="ProductList" component={NewRivals} options={{ headerShown: false }}></Stack.Screen>
         <Stack.Screen name="Favourites" component={Favourites} options={{ headerShown: false }}></Stack.Screen>
+        <Stack.Screen name="Categories" component={Categories} options={{ headerShown: true }}></Stack.Screen>
         <Stack.Screen name="Cart" component={Cart} options={{ headerShown: false }}></Stack.Screen>
         <Stack.Screen name="Orders" component={Orders} options={{ headerShown: false }}></Stack.Screen>
         <Stack.Screen name="Register" component={Register} options={{ headerShown: false }}></Stack.Screen>

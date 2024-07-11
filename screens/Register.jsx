@@ -40,6 +40,15 @@ const Register = ({ navigation }) => {
     ]);
   };
 
+  const successRegister = () => {
+    Alert.alert(
+      "Registration Successful",
+      "You have successfully registered!",
+      [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+      { cancelable: false }
+    );
+  };
+
   const registerUser = async (value) => {
     setLoader(true);
 
@@ -49,6 +58,7 @@ const Register = ({ navigation }) => {
       const response = await axios.post(endpoint, data);
 
       if (response.status === 201) {
+        successRegister();
         navigation.replace("Login");
       }
     } catch (err) {

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { BACKEND_PORT } from "@env"; // Import the env variable in react native defined in babel.conf
 
-const useFetch = () => {
+const useFetch = (endpoint) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -12,8 +12,7 @@ const useFetch = () => {
     setError(null); // Reset error state before fetching data
 
     try {
-      const response = await axios.get(`${BACKEND_PORT}/api/products`); // Use the environment variable
-      // const response = await axios.get(`http://192.168.100.250:3001/api/products`);
+      const response = await axios.get(`${BACKEND_PORT}/api/${endpoint}`); // Use the environment variable
       setData(response.data);
     } catch (error) {
       setError(error.message);
@@ -24,7 +23,7 @@ const useFetch = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [endpoint]);
 
   const refetch = () => {
     setIsLoading(true);

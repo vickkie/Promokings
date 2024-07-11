@@ -38,25 +38,32 @@ const LoginPage = ({ navigation }) => {
     ]);
   };
 
-  const login = async (value) => {
+  const login = async (values) => {
     setLoader(true);
     try {
       const endpoint = `${BACKEND_PORT}/api/login`;
-      const data = value;
+      const data = values;
+
       const response = await axios.post(endpoint, data);
 
-      if (response.status === 200) {
+      // Check if the response has a 'data' property and if it contains expected fields
+      if (response.data && response.data.hasOwnProperty("_id")) {
         setLoader(false);
         setResponseData(response.data);
-        await AsyncStorage.setItem(`user${responseData._id}`, JSON.stringify(responseData));
-        await AsyncStorage.setItem("id", JSON.stringify(responseData._id));
-        navigation.replace("Bottom Navigation");
-        // const newUser = await AsyncStorage.getItem(`user${responseData._id}`);
-        // console.log((newUser));
+        try {
+          await AsyncStorage.setItem("id", JSON.stringify(response.data._id));
+          await AsyncStorage.setItem(`user${response.data._id}`, JSON.stringify(response.data));
+        } catch (error) {
+          console.error("Failed to save user data:", error);
+          // Display an error message if saving data fails
+          Alert.alert("Error Saving Data", "There was an error saving your data. Please try again.");
+          return;
+        }
 
-        console.log(`user${responseData._id}`);
+        navigation.replace("Bottom Navigation");
       } else {
-        Alert.alert("Error Logging", "Please provide valid user info", [
+        // Display an error message if the response does not meet expectations
+        Alert.alert("Error Logging", "Unexpected response. Please try again.", [
           {
             text: "Cancel",
             onPress: () => {},
@@ -69,7 +76,8 @@ const LoginPage = ({ navigation }) => {
         ]);
       }
     } catch (error) {
-      Alert.alert("Error ", "Opps Error Logging in try again", [
+      console.log(error);
+      Alert.alert("Error ", "Oops! Error logging in. Please try again.", [
         {
           text: "Cancel",
           onPress: () => {},

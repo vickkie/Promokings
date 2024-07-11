@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
   profileContainer: {
     flex: 1,
     alignItems: "center",
+    minHeight: SIZES.height / 1.5,
   },
   profile: {
     height: 155,

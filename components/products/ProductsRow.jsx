@@ -7,7 +7,7 @@ import useFetch from "../../hook/useFetch";
 import { Ionicons } from "@expo/vector-icons";
 
 const ProductsRow = () => {
-  const { data, isLoading, error, refetch } = useFetch();
+  const { data, isLoading, error, refetch } = useFetch("products");
 
   // Ensure data is treated as an array to avoid accessing .length of undefined
   const dataArray = Array.isArray(data) ? data : [];

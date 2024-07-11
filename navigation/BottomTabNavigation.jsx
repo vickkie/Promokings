@@ -1,9 +1,9 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Home, Search, Profile } from "../screens";
+import { Home, Search, Profile, Categories } from "../screens";
 import { COLORS } from "../constants/index";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
 
@@ -30,8 +30,24 @@ const BottomTabNavigation = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <Ionicons
-                name={focused ? "home" : "home-outline"}
+              <MaterialCommunityIcons
+                name={focused ? "home-circle" : "home-circle-outline"}
+                size={24}
+                color={focused ? COLORS.primary : COLORS.gray2}
+              />
+            );
+          },
+        }}
+      ></Tab.Screen>
+
+      <Tab.Screen
+        name="Categories"
+        component={Categories}
+        options={{
+          tabBarIcon: ({ focused }) => {
+            return (
+              <MaterialCommunityIcons
+                name={focused ? "view-grid" : "view-grid-outline"}
                 size={24}
                 color={focused ? COLORS.primary : COLORS.gray2}
               />
@@ -45,11 +61,16 @@ const BottomTabNavigation = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <Ionicons name={"search-circle-outline"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
+              <Ionicons
+                name={focused ? "search-circle" : "search-circle-outline"}
+                size={24}
+                color={focused ? COLORS.primary : COLORS.gray2}
+              />
             );
           },
         }}
       ></Tab.Screen>
+
       <Tab.Screen
         name="Profile"
         component={Profile}
