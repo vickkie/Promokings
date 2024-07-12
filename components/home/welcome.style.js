@@ -18,9 +18,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: COLORS.secondary,
     borderRadius: SIZES.medium,
-    marginVertical: SIZES.medium,
-    marginHorizontal: SIZES.medium,
-    height: 40,
+    marginVertical: SIZES.small,
+    marginHorizontal: SIZES.small,
+    height: 50,
   },
   searchIcon: {
     marginHorizontal: 10,
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.medium,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: COLORS.primary,
+    // backgroundColor: COLORS.primary,
   },
 });
 

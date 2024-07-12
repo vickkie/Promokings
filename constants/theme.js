@@ -15,6 +15,8 @@ const COLORS = {
   red: "#e81e4d",
   green: "#00C135",
   lightWhite: "#FAFAFC",
+
+  hyperlight: "#F0F5F9",
 };
 
 const SIZES = {

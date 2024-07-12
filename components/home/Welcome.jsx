@@ -5,29 +5,30 @@ import styles from "./welcome.style";
 import { COLORS, SIZES } from "../../constants";
 
 import { useNavigation } from "@react-navigation/native";
+import Icon from "../../constants/icons";
 
 const Welcome = () => {
   const navigation = useNavigation();
   return (
     <View>
-      <View style={styles.container}>
+      {/* <View style={styles.container}>
         <Text style={styles.welcomeTxt(COLORS.primary, SIZES.xSmall)}>For all of your promotional items</Text>
-      </View>
+      </View> */}
       <View name="" style={styles.searchContainer}>
         <TouchableOpacity>
-          <Feather name="search" style={styles.searchIcon}></Feather>
+          <Icon name="search" size={24} style={styles.searchIcon} />
         </TouchableOpacity>
         <View style={styles.searchWrapper}>
           <TextInput
             value=""
             onPressIn={() => navigation.navigate("Search")}
             style={styles.searchInput}
-            placeholder="what are you looking for"
+            placeholder="Search for cloths, watches, etc "
           ></TextInput>
         </View>
         <View style={styles.searchBtn}>
           <TouchableOpacity>
-            <Ionicons name="cart-outline" color={COLORS.lightWhite} size={SIZES.medium + 10}></Ionicons>
+            <Icon name="tuning" size={24} />
           </TouchableOpacity>
         </View>
       </View>

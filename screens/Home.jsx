@@ -10,6 +10,7 @@ import ProductsRow from "../components/products/ProductsRow";
 import { useNavigation } from "@react-navigation/native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Icon from "../constants/icons";
 
 const Home = () => {
   const [userData, setUserData] = useState(null);
@@ -44,7 +45,9 @@ const Home = () => {
     <SafeAreaView>
       <View style={styles.appBarWrapper}>
         <View style={styles.appBar}>
-          <Ionicons name="location-outline" size={24}></Ionicons>
+          <TouchableOpacity style={styles.buttonWrap}>
+            <Icon name="menu" size={24} />
+          </TouchableOpacity>
           <Text style={styles.location}> {userData ? userData.username : " Nairobi"} </Text>
 
           <View style={{ alignItems: "flex-end" }}>
@@ -53,14 +56,14 @@ const Home = () => {
                 <Text style={styles.cartNumber}>33</Text>
               </View>
 
-              <TouchableOpacity onPress={() => {}}>
-                <Fontisto name="shopping-bag-1" style={styles.cartBag} size={24}></Fontisto>
+              <TouchableOpacity onPress={() => {}} style={styles.buttonWrap}>
+                <Icon name="cart" size={24} />
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </View>
-      <ScrollView>
+      <ScrollView style={{ backgroundColor: "white" }}>
         <Welcome />
         <Carousel />
         <Headings />

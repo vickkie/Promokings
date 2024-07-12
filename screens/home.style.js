@@ -51,6 +51,11 @@ const styles = StyleSheet.create({
     top: 0,
     alignItems: "center",
   },
+  buttonWrap: {
+    backgroundColor: COLORS.hyperlight,
+    padding: 15,
+    borderRadius: 100,
+  },
 });
 
 export default styles;
