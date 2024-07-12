@@ -7,17 +7,21 @@ import styles from "./productlist.style";
 import ProductsCardView from "./ProductsCardView";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
+import { useRoute } from "@react-navigation/native";
 
 const ProductList = () => {
-  const { data, isLoading, error, refetch } = useFetch("products");
+  const route = useRoute();
+  const { routeParam } = route.params; // Accessing routeParam from route.params
+  const { data, isLoading, error, refetch } = useFetch(routeParam);
+
+  // console.log("route ", routeParam);
+
   const scrollY = useSharedValue(0);
   const scrollRef = React.useRef(null);
 
   const handleRefetch = () => {
     refetch();
   };
-
-  console.log(data._id);
 
   //Animated scroll to top details ->
 
@@ -50,7 +54,7 @@ const ProductList = () => {
   if (data.length === 0) {
     return (
       <View style={styles.errorContainer}>
-        <Text style={styles.errorMessage}>Sorry no products found</Text>
+        <Text style={styles.errorMessage}>Sorry no products available</Text>
         <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
           <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
           <Text style={styles.retryButtonText}>Retry Again</Text>
@@ -60,6 +64,7 @@ const ProductList = () => {
   }
 
   if (error) {
+    console.log(error);
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorMessage}>Error loading products</Text>
@@ -71,14 +76,14 @@ const ProductList = () => {
   }
 
   return (
-    <>
+    <View>
       <Animated.View style={styles.container}>
         <Animated.FlatList
           ref={scrollRef}
           onScroll={scrollHandler}
           scrollEventThrottle={16}
-          keyExtractor={(item) => item._id.toString()}
-          contentContainerStyle={[{ columnGap: SIZES.medium }, styles.container]}
+          keyExtractor={(item) => item._id}
+          contentContainerStyle={[{ columnGap: SIZES.medium }, styles.flatlistContainer]}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           numColumns={2}
           data={data}
@@ -90,7 +95,7 @@ const ProductList = () => {
           <Ionicons name="arrow-up-circle-outline" size={32} color={COLORS.white} />
         </TouchableOpacity>
       </Animated.View>
-    </>
+    </View>
   );
 };
 

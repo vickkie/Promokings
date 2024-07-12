@@ -7,11 +7,9 @@
     "icon": "./assets/promoking-logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/promoking-logo.png",
+      "image": "./assets/images/promo/pwa-maskable-512x512.png",
       // "resizeMode": "contain",
-      "height": "100",
-      "width": "100",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#fff"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {

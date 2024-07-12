@@ -2,19 +2,18 @@ import { Text, TouchableOpacity, View, Image } from "react-native";
 import React from "react";
 import { COLORS, SIZES } from "../../constants";
 import styles from "./categorycardview.style";
-import { Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 const CategoryCardView = ({ item }) => {
   const navigation = useNavigation();
 
+  const routeParam = `products/category/${item.title}`;
+
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate("ProductDetails", {
-          item: item,
-          itemid: item._id,
-        });
+        navigation.navigate("ProductList", { routeParam });
       }}
     >
       <View style={styles.container}>
@@ -28,7 +27,7 @@ const CategoryCardView = ({ item }) => {
         </View>
 
         <TouchableOpacity style={styles.addBtn} onPress={() => {}}>
-          <Ionicons name="heart-outline" size={24}></Ionicons>
+          <MaterialCommunityIcons name="asterisk" size={24}></MaterialCommunityIcons>
         </TouchableOpacity>
       </View>
     </TouchableOpacity>

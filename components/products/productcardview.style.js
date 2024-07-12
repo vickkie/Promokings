@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     marginEnd: 10,
     borderRadius: SIZES.medium,
     backgroundColor: COLORS.secondary,
-    marginBottom: SIZES.medium,
+    // marginBottom: SIZES.medium,
   },
   imageContainer: {
     flex: 1,

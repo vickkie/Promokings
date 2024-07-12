@@ -6,6 +6,8 @@ import styles from "./headings.style";
 import { useNavigation } from "@react-navigation/native";
 
 const Headings = () => {
+  const routeParam = "products";
+
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
@@ -13,7 +15,7 @@ const Headings = () => {
         <Text style={styles.headerTitle}>Top products</Text>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("ProductList");
+            navigation.navigate("ProductList", { routeParam });
           }}
         >
           <Ionicons name="ios-grid" size={24} color={COLORS.primary}></Ionicons>

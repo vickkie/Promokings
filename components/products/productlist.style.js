@@ -8,6 +8,12 @@ const styles = StyleSheet.create({
     paddingLeft: SIZES.small / 2,
     width: SIZES.width,
   },
+
+  flatlistContainer: {
+    paddingTop: SIZES.xxLarge,
+    paddingLeft: SIZES.small / 2,
+    width: SIZES.width,
+  },
   loadingContainer: {
     flex: 1,
     alignItems: "center",
