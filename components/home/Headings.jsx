@@ -4,6 +4,7 @@ import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "./headings.style";
 import { useNavigation } from "@react-navigation/native";
+import Icon from "../../constants/icons";
 
 const Headings = () => {
   const routeParam = "products";
@@ -18,7 +19,7 @@ const Headings = () => {
             navigation.navigate("ProductList", { routeParam });
           }}
         >
-          <Ionicons name="ios-grid" size={24} color={COLORS.primary}></Ionicons>
+          <Icon name="carousel" size={26} />
         </TouchableOpacity>
       </View>
     </View>

@@ -1,9 +1,8 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Home, Search, Profile, Categories } from "../screens";
 import { COLORS } from "../constants/index";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import Icon from "../constants/icons";
 
 const Tab = createBottomTabNavigator();
 
@@ -17,7 +16,8 @@ const screenOptions = {
     right: 0,
     left: 0,
     elevation: 0,
-    height: 70,
+    height: 90,
+    borderRadius: 100,
   },
 };
 
@@ -30,11 +30,7 @@ const BottomTabNavigation = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <MaterialCommunityIcons
-                name={focused ? "home-circle" : "home-circle-outline"}
-                size={24}
-                color={focused ? COLORS.primary : COLORS.gray2}
-              />
+              <Icon name={focused ? "homefilled" : "home"} size={24} color={focused ? COLORS.themey : COLORS.gray2} />
             );
           },
         }}
@@ -46,8 +42,8 @@ const BottomTabNavigation = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <MaterialCommunityIcons
-                name={focused ? "view-grid" : "view-grid-outline"}
+              <Icon
+                name={focused ? "menu2filled" : "menu2"}
                 size={24}
                 color={focused ? COLORS.primary : COLORS.gray2}
               />
@@ -61,8 +57,8 @@ const BottomTabNavigation = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <Ionicons
-                name={focused ? "search-circle" : "search-circle-outline"}
+              <Icon
+                name={focused ? "searchcirclefilled" : "searchcircle"}
                 size={24}
                 color={focused ? COLORS.primary : COLORS.gray2}
               />
@@ -77,8 +73,8 @@ const BottomTabNavigation = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <Ionicons
-                name={focused ? "person-circle-outline" : "ios-person-circle-outline"}
+              <Icon
+                name={focused ? "usercirclefilled" : "usercircle"}
                 size={24}
                 color={focused ? COLORS.primary : COLORS.gray2}
               />

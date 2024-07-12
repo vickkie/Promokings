@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
   },
   supplier: {
     fontSize: SIZES.medium,
+    paddingVertical: SIZES.small - 7,
   },
   addBtn: {
     position: "absolute",

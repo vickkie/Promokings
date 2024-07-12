@@ -4,7 +4,7 @@ import { COLORS, SIZES } from "../../constants";
 const styles = StyleSheet.create({
   container: {
     marginTop: SIZES.small,
-    marginBottom: 44,
+    marginBottom: 32,
     marginHorizontal: 12,
   },
   errorContainer: {
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   retryButtonText: {
-    color: "#fff",
+    color: COLORS.white,
     fontSize: SIZES.medium,
     textAlign: "center",
   },

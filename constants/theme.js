@@ -3,7 +3,8 @@ const { height, width } = Dimensions.get("window");
 
 const COLORS = {
   primary: "#2A4D50",
-  secondary: "#DDF0FF",
+  // secondary: "#DDF0FF",
+  secondary: "#e6d270",
   tertiary: "#FF7754",
 
   gray: "#83829A",
@@ -16,6 +17,10 @@ const COLORS = {
   green: "#00C135",
   lightWhite: "#FAFAFC",
 
+  themey: "#e6d270",
+  themeg: "#F0F5F9",
+  themeb: "#000",
+  themew: "#fff",
   hyperlight: "#F0F5F9",
 };
 
