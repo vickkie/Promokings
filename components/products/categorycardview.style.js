@@ -3,18 +3,18 @@ import { COLORS, SIZES } from "../../constants";
 
 const styles = StyleSheet.create({
   container: {
-    width: SIZES.width / 2 - 18,
+    width: SIZES.width / 2 - 14,
     height: SIZES.width / 2,
-    marginEnd: 10,
+    marginEnd: 6,
     borderRadius: SIZES.medium,
     backgroundColor: COLORS.secondary,
     marginBottom: SIZES.small,
   },
   imageContainer: {
     flex: 1,
-    width: SIZES.width / 2 - 30,
-    marginTop: SIZES.small / 2,
-    marginLeft: SIZES.small / 2,
+    width: SIZES.width / 2 - 24,
+    marginTop: SIZES.small / 2 - 3,
+    marginLeft: SIZES.xxSmall,
     overflow: "hidden",
     borderRadius: SIZES.small,
   },
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     padding: SIZES.small,
   },
   title: {
-    fontFamily: "bold",
+    fontFamily: "semibold",
     fontSize: SIZES.medium,
     marginBottom: 2,
   },

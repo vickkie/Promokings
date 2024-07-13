@@ -17,6 +17,7 @@ const Search = () => {
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState("");
+  const [noData, setNodata] = useState(false);
 
   useEffect(() => {
     // Check if the component has just been mounted then focus from home search
@@ -28,9 +29,14 @@ const Search = () => {
     try {
       const response = await axios.get(`${BACKEND_PORT}/api/products/search/${searchText}`);
 
-      setSearchResults(response.data);
+      // Check if response.data is empty and set setNodata(true) if it is
+      if (!response.data || response.data.length === 0) {
+        setNodata(true);
+      } else {
+        setNodata(false);
+      }
 
-      //response.data
+      setSearchResults(response.data);
 
       console.log("======================");
       console.log(response.data);
@@ -41,7 +47,7 @@ const Search = () => {
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={styles.searchRoot}>
       <SafeAreaView>
         <View name="" style={styles.searchContainer}>
           <TouchableOpacity>
@@ -51,9 +57,14 @@ const Search = () => {
             <TextInput
               ref={inputRef}
               value={searchText}
-              onChangeText={(text) => setSearchText(text)}
+              onChangeText={(text) => {
+                setSearchText(text);
+                setNodata(false);
+                // handleSearch();
+              }}
+              onSubmitEditing={handleSearch}
               style={styles.searchInput}
-              placeholder="Search..."
+              placeholder="Search items..."
               onFocus={() => inputRef.current.focus()}
             ></TextInput>
           </View>
@@ -63,11 +74,18 @@ const Search = () => {
                 handleSearch();
               }}
             >
-              <Ionicons name="ios-search-circle" size={SIZES.xxLarge - 10} color={COLORS.white}></Ionicons>
+              <Ionicons name="ios-search-circle" size={SIZES.xxLarge - 6} color={COLORS.white}></Ionicons>
             </TouchableOpacity>
           </View>
         </View>
 
+        {noData === true ? (
+          <View style={styles.noresult}>
+            <Text style={styles.nodataText}>No results found</Text>
+          </View>
+        ) : (
+          <></>
+        )}
         {searchResults.length === 0 ? (
           <View style={{ flex: 1 }}>
             <Image source={require("../assets/images/no-found.png")} style={styles.noFoundImage} />

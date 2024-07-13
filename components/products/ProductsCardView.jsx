@@ -29,7 +29,7 @@ const ProductsCardView = ({ item }) => {
             {item.title}
           </Text>
           <Text style={styles.supplier} numberOfLines={1}>
-            Supplier: {item.supplier}
+            {item.supplier}
           </Text>
           <Text style={styles.price}>Kshs {parseInt(item.price.replace("$", ""))}</Text>
         </View>

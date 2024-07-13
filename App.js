@@ -9,7 +9,7 @@ import { useFonts } from "expo-font";
 import * as Splashscreen from "expo-splash-screen";
 import { useCallback } from "react";
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
-import { Cart, ProductDetails, NewRivals, LoginPage, Favourites, Orders, Register, Categories } from "./screens";
+import { Cart, ProductDetails, Products, LoginPage, Favourites, Orders, Register, Categories } from "./screens";
 
 enableScreens();
 enableLayoutAnimations(true);
@@ -47,7 +47,7 @@ export default function App(params) {
         ></Stack.Screen>
         <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }}></Stack.Screen>
         <Stack.Screen name="ProductDetails" component={ProductDetails} options={{ headerShown: false }}></Stack.Screen>
-        <Stack.Screen name="ProductList" component={NewRivals} options={{ headerShown: false }}></Stack.Screen>
+        <Stack.Screen name="ProductList" component={Products} options={{ headerShown: false }}></Stack.Screen>
         <Stack.Screen name="Favourites" component={Favourites} options={{ headerShown: false }}></Stack.Screen>
         <Stack.Screen name="Categories" component={Categories} options={{ headerShown: true }}></Stack.Screen>
         <Stack.Screen name="Cart" component={Cart} options={{ headerShown: false }}></Stack.Screen>

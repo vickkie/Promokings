@@ -9,11 +9,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: COLORS.secondary,
+    backgroundColor: COLORS.themeg,
     borderRadius: SIZES.medium,
     marginVertical: SIZES.medium,
     marginHorizontal: SIZES.medium,
-    height: 40,
+    height: 50,
   },
   searchIcon: {
     marginHorizontal: 10,
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   },
   searchWrapper: {
     flex: 1,
-    backgroundColor: COLORS.secondary,
+    backgroundColor: COLORS.themeg,
     marginRight: 10,
     borderRadius: SIZES.medium,
   },
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.medium,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.themey,
   },
 
   searchNone: {
@@ -55,6 +55,15 @@ const styles = StyleSheet.create({
   flatlist: {
     marginHorizontal: 3,
     marginBottom: 79,
+  },
+  searchRoot: { flex: 1, backgroundColor: "white" },
+  noresult: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  nodataText: {
+    fontFamily: "semibold",
+    fontSize: SIZES.medium,
   },
 });
 

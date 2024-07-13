@@ -4,9 +4,10 @@ import { COLORS, SIZES } from "../../constants";
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    paddingTop: SIZES.xxLarge,
-    paddingLeft: SIZES.small / 2,
+    paddingTop: SIZES.xxSmall,
     width: SIZES.width,
+    paddingTop: 67,
+    paddingHorizontal: 2,
   },
   loadingContainer: {
     flex: 1,
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
   },
 
   separator: {
-    height: 16,
+    height: 3,
   },
   errorContainer: {
     flex: 1,
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
   },
 
   retryButton: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.themey,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 14,

@@ -1,22 +1,24 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { Ionicons } from "@expo/vector-icons";
+import Icon from "../constants/icons";
 import { COLORS, SIZES } from "../constants";
 
 const BackBtn = ({ onPress }) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.backBtn}>
-      <Ionicons name="chevron-back-circle" size={35} color={COLORS.primary} />
+      <Icon name="backbutton" size={25} color={COLORS.primary} />
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   backBtn: {
+    backgroundColor: COLORS.hyperlight,
+    borderRadius: 100,
+    justifyContent: "center",
     alignItems: "center",
-    position: "absolute",
-    zIndex: 999,
-    top: SIZES.large - 10,
+    padding: 15,
+    maxWidth: 55,
   },
 });
 

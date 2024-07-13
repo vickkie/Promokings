@@ -8,34 +8,43 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontFamily: "bold",
+    textTransform: "uppercase",
+    fontSize: SIZES.large,
     textAlign: "center",
-    color: COLORS.white,
+    color: COLORS.themeb,
   },
   container: {
     flex: 1,
-    backgroundColor: COLORS.lightWhite,
+    backgroundColor: COLORS.black,
   },
   wrapper: {
     flex: 1,
-    backgroundColor: COLORS.lightWhite,
+    backgroundColor: COLORS.white,
   },
 
   upperRow: {
-    width: SIZES.width - 30,
-    marginHorizontal: SIZES.medium,
+    width: SIZES.width - 20,
+    marginHorizontal: SIZES.xSmall,
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     position: "absolute",
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.themeg,
     borderRadius: SIZES.large,
-    top: SIZES.large,
+    top: SIZES.xxSmall,
     zIndex: 999,
-    height: 40,
+    height: 120,
   },
   backBtn: {
-    position: "absolute",
     left: 10,
+  },
+  buttonWrap: {
+    backgroundColor: COLORS.white,
+    padding: 15,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    marginEnd: 10,
   },
 });
 

@@ -10,6 +10,7 @@ import CartIcon from "../assets/svg/cart.svg";
 import TuningIcon from "../assets/svg/tuning-2.svg";
 import CarouselIcon from "../assets/svg/carousel.svg";
 import HeartIcon from "../assets/svg/heart.svg";
+import Backbutton from "../assets/svg/backbutton.svg";
 
 import HomeFilledIcon from "../assets/svg/home-filled.svg";
 import UserCircleFilledIcon from "../assets/svg/user-circle-filled.svg";
@@ -23,6 +24,7 @@ const iconMap = {
   user: UserIcon,
   menu: MenuIcon,
   cart: CartIcon,
+  backbutton: Backbutton,
   tuning: TuningIcon,
   carousel: CarouselIcon,
   homefilled: HomeFilledIcon,
@@ -32,8 +34,8 @@ const iconMap = {
   menu2filled: Menu2filledIcon,
   searchcircle: SearchCircleIcon,
   searchcirclefilled: SearchCircleFilledIcon,
-  hearticon: HeartIcon,
-  heartfilledicon: HeartFilledIcon,
+  heart: HeartIcon,
+  heartfilled: HeartFilledIcon,
 };
 
 const Icon = ({ name, size = 24, ...props }) => {

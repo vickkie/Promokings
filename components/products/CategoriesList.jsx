@@ -46,18 +46,16 @@ const CategoriesList = () => {
   }
 
   return (
-    <>
-      <View style={styles.container}>
-        <FlatList
-          keyExtractor={(item) => item._id.toString()}
-          contentContainerStyle={[{ columnGap: SIZES.medium }, styles.container]}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
-          numColumns={2}
-          data={data}
-          renderItem={({ item }) => <CategoryCardView item={item} />}
-        />
-      </View>
-    </>
+    <View style={styles.container}>
+      <FlatList
+        keyExtractor={(item) => item._id.toString()}
+        contentContainerStyle={[{ columnGap: SIZES.medium }, styles.container]}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        numColumns={2}
+        data={data}
+        renderItem={({ item }) => <CategoryCardView item={item} />}
+      />
+    </View>
   );
 };
 

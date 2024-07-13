@@ -4,7 +4,7 @@ import { COLORS, SIZES } from "../../constants";
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    paddingTop: SIZES.xxLarge,
+    paddingTop: SIZES.xxLarge + 30,
     paddingLeft: SIZES.small / 2,
     width: SIZES.width,
   },

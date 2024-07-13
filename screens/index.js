@@ -3,7 +3,7 @@ import Profile from "./Profile";
 import Home from "./Home";
 import Cart from "./Cart";
 import ProductDetails from "../components/products/ProductDetails";
-import NewRivals from "./NewRivals";
+import Products from "./Products";
 import ProductList from "../components/products/ProductList";
 import LoginPage from "./LoginPage";
 import Orders from "./Orders";
@@ -19,7 +19,7 @@ export {
   Profile,
   Cart,
   ProductDetails,
-  NewRivals,
+  Products,
   ProductList,
   LoginPage,
   Favourites,
