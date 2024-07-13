@@ -11,12 +11,17 @@ import TuningIcon from "../assets/svg/tuning-2.svg";
 import CarouselIcon from "../assets/svg/carousel.svg";
 import HeartIcon from "../assets/svg/heart.svg";
 import Backbutton from "../assets/svg/backbutton.svg";
+import Location from "../assets/svg/location.svg";
 
 import HomeFilledIcon from "../assets/svg/home-filled.svg";
 import UserCircleFilledIcon from "../assets/svg/user-circle-filled.svg";
 import Menu2filledIcon from "../assets/svg/menu2-filled.svg";
 import SearchCircleFilledIcon from "../assets/svg/search-circle-filled.svg";
 import HeartFilledIcon from "../assets/svg/heart-filled.svg";
+import CloseCircleIcon from "../assets/svg/close-circle.svg";
+import DeleteIcon from "../assets/svg/delete.svg";
+import MinusIcon from "../assets/svg/minus-circle.svg";
+import AddIcon from "../assets/svg/add-circle.svg";
 
 const iconMap = {
   home: HomeIcon,
@@ -36,6 +41,11 @@ const iconMap = {
   searchcirclefilled: SearchCircleFilledIcon,
   heart: HeartIcon,
   heartfilled: HeartFilledIcon,
+  close: CloseCircleIcon,
+  location: Location,
+  delete: DeleteIcon,
+  minus: MinusIcon,
+  add: AddIcon,
 };
 
 const Icon = ({ name, size = 24, ...props }) => {
