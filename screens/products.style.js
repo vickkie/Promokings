@@ -42,6 +42,34 @@ const styles = StyleSheet.create({
     marginEnd: 10,
     marginStart: 10,
   },
+  lovebuy: {
+    flexDirection: "row",
+  },
+  buttonWrap1: {
+    backgroundColor: COLORS.hyperlight,
+    padding: 15,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 4,
+  },
+  spaceRight: {},
+  numbers: {
+    padding: 3,
+    width: 20,
+    height: 20,
+    backgroundColor: COLORS.red,
+    color: COLORS.themew,
+    borderRadius: 100,
+    position: "absolute",
+    top: "-10%",
+    left: "-10%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  number: {
+    color: COLORS.white,
+  },
 });
 
 export default styles;
