@@ -7,7 +7,8 @@ const useDelete = (baseEndpoint) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [errorStatus, setErrorStatus] = useState(null);
 
-  const deleteData = async (id) => {
+  // In useDelete.js
+  const deleteData = async (id, onSuccessCallback) => {
     setIsDeleting(true);
     setErrorStatus(null); // Reset error state before updating data
 
@@ -16,6 +17,9 @@ const useDelete = (baseEndpoint) => {
       const response = await axios.delete(`${BACKEND_PORT}/api/${baseEndpoint}/${id}`); // Use the environment variable
 
       setDeleteStatus(response.status);
+      if (onSuccessCallback) {
+        onSuccessCallback(); // Call the callback function
+      }
     } catch (error) {
       setErrorStatus(error.message);
       setDeleteStatus(null); // Reset deleteStatus in case of error

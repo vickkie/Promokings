@@ -6,7 +6,7 @@ import Icon from "../../constants/icons";
 import useUpdate from "../../hook/useUpdate";
 import useDelete from "../../hook/useDelete";
 
-const CartCardView = ({ item }) => {
+const CartCardView = ({ item, handleRefetch }) => {
   const navigation = useNavigation();
 
   // Destructure the cart item details
@@ -20,7 +20,7 @@ const CartCardView = ({ item }) => {
 
   // Initialize the useUpdate hook with the endpoint to update the quantity
   const { updateStatus, isLoading, error, reupdate } = useUpdate(`carts/update/${item._id}`);
-  const { deleteStatus, isDeleting, errorStatus, redelete } = useDelete(`carts/item`);
+  const { deleteStatus, isDeleting, errorStatus, redelete } = useDelete(`carts/item`, handleRefetch);
 
   useEffect(() => {
     if (updateStatus === 200) {
@@ -29,6 +29,7 @@ const CartCardView = ({ item }) => {
 
   useEffect(() => {
     if (deleteStatus === 200) {
+      handleRefetch();
       console.log("Deleted successfully");
     } else if (errorStatus) {
       console.warn(errorStatus);

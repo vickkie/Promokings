@@ -56,7 +56,7 @@ const CartList = () => {
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         numColumns={1}
         data={products}
-        renderItem={({ item }) => <CartCardVIew item={item} />}
+        renderItem={({ item }) => <CartCardVIew item={item} handleRefetch={handleRefetch} />}
       />
     </View>
   );
