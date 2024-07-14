@@ -6,24 +6,24 @@ import Icon from "../../constants/icons";
 import useUpdate from "../../hook/useUpdate";
 import useDelete from "../../hook/useDelete";
 
-const CartCardView = ({ item, handleRefetch }) => {
+const CartCardView = ({ item, handleRefetch, onUpdateTotal }) => {
+  // Ensure onUpdateTotal is destructured from props
   const navigation = useNavigation();
 
-  // Destructure the cart item details
   const { cartItem, quantity, size } = item;
   const { _id, title, price, imageUrl } = cartItem;
 
-  const parsedPrice = parseFloat(price.replace(/[^0-9.-]+/g, "")); // Convert price to number
+  const parsedPrice = parseFloat(price.replace(/[^0-9.-]+/g, ""));
   const [isWished, setIsWished] = useState(false);
   const [count, setCount] = useState(quantity);
   const [totalPrice, setTotalPrice] = useState(parsedPrice * quantity);
 
-  // Initialize the useUpdate hook with the endpoint to update the quantity
-  const { updateStatus, isLoading, error, reupdate } = useUpdate(`carts/update/${item._id}`);
+  const { updateStatus, isLoading, error, reupdate } = useUpdate(`carts/update/${_id}`);
   const { deleteStatus, isDeleting, errorStatus, redelete } = useDelete(`carts/item`, handleRefetch);
 
   useEffect(() => {
     if (updateStatus === 200) {
+      // Handle successful update here if needed
     }
   }, [updateStatus]);
 
@@ -39,20 +39,23 @@ const CartCardView = ({ item, handleRefetch }) => {
   const increment = () => {
     const newCount = count + 1;
     setCount(newCount);
-    setTotalPrice(parsedPrice * newCount);
+    const newTotalPrice = parsedPrice * newCount;
+    setTotalPrice(newTotalPrice);
     reupdate({ quantity: newCount });
+    onUpdateTotal(_id, newTotalPrice); // Correctly calling onUpdateTotal here
   };
 
   const decrement = () => {
     if (count > 1) {
       const newCount = count - 1;
       setCount(newCount);
-      setTotalPrice(parsedPrice * newCount);
+      const newTotalPrice = parsedPrice * newCount;
+      setTotalPrice(newTotalPrice);
       reupdate({ quantity: newCount });
+      onUpdateTotal(_id, newTotalPrice); // And here
     }
   };
 
-  // Function to toggle the heart state
   const addWishlist = () => {
     setIsWished(!isWished);
   };
@@ -64,19 +67,15 @@ const CartCardView = ({ item, handleRefetch }) => {
       [
         {
           text: "Cancel",
-          onPress: () => {
-            console.log("Cancelled logout");
-          },
+          onPress: () => console.log("Cancelled"),
           style: "cancel",
         },
         {
           text: "Continue",
-          onPress: () => {
-            redelete(id);
-          },
+          onPress: () => redelete(id),
         },
       ],
-      { cancelable: true } // allows the alert to be dismissed by tapping outside of it
+      { cancelable: true }
     );
   };
 

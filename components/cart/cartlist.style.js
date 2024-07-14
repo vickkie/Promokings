@@ -3,7 +3,7 @@ import { COLORS, SIZES } from "../../constants";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: COLORS.themeg,
     marginTop: 260,
     width: SIZES.width - 20,
@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.medium,
     marginTop: 5,
     backgroundColor: COLORS.themeg,
+    paddingBottom: 5,
   },
   separator: {
     marginTop: 4,
@@ -54,6 +55,33 @@ const styles = StyleSheet.create({
   },
   retryButtonText: {
     paddingTop: 10,
+  },
+  subtotalWrapper: {
+    backgroundColor: COLORS.themeg,
+    width: SIZES.width - 20,
+    marginHorizontal: 10,
+    borderRadius: SIZES.medium,
+    marginTop: 20,
+    flexDirection: "column",
+  },
+  topSubtotal: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 15,
+    paddingVertical: 13,
+  },
+  centerSubtotal: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 15,
+    paddingVertical: 13,
+  },
+  subtotalHeader: {
+    fontFamily: "bold",
+    fontSize: SIZES.medium,
+  },
+  additionalHeader: {
+    fontFamily: "semibold",
   },
 });
 

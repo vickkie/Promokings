@@ -50,8 +50,9 @@ const Cart = () => {
             </View>
           </View>
         </View>
-
-        <CartList />
+        <ScrollView>
+          <CartList />
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
