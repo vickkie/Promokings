@@ -1,16 +1,15 @@
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import BackBtn from "../components/BackBtn";
-import { Image } from "react-native";
-import styles from "./loginpage.style";
-import { Formik, validateYupSchema } from "formik";
+import { Formik } from "formik";
 import * as Yup from "yup";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { COLORS } from "../constants";
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from "../components/auth/AuthContext";
+import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
+import styles from "./loginpage.style";
+import { COLORS } from "../constants";
 import { BACKEND_PORT } from "@env";
 
 const validationSchema = Yup.object().shape({
@@ -19,9 +18,8 @@ const validationSchema = Yup.object().shape({
 });
 
 const LoginPage = ({ navigation }) => {
+  const { login } = useContext(AuthContext);
   const [loader, setLoader] = useState(false);
-  // const [response, setResponse] = useState(null);
-  const [responseData, setResponseData] = useState(null);
   const [obsecureText, setObsecureText] = useState(false);
 
   const inValidForm = () => {
@@ -38,7 +36,7 @@ const LoginPage = ({ navigation }) => {
     ]);
   };
 
-  const login = async (values) => {
+  const handleLogin = async (values) => {
     setLoader(true);
     try {
       const endpoint = `${BACKEND_PORT}/api/login`;
@@ -46,23 +44,11 @@ const LoginPage = ({ navigation }) => {
 
       const response = await axios.post(endpoint, data);
 
-      // Check if the response has a 'data' property and if it contains expected fields
       if (response.data && response.data.hasOwnProperty("_id")) {
         setLoader(false);
-        setResponseData(response.data);
-        try {
-          await AsyncStorage.setItem("id", JSON.stringify(response.data._id));
-          await AsyncStorage.setItem(`user${response.data._id}`, JSON.stringify(response.data));
-        } catch (error) {
-          console.error("Failed to save user data:", error);
-          // Display an error message if saving data fails
-          Alert.alert("Error Saving Data", "There was an error saving your data. Please try again.");
-          return;
-        }
-
+        await login(response.data);
         navigation.replace("Bottom Navigation");
       } else {
-        // Display an error message if the response does not meet expectations
         Alert.alert("Error Logging", "Unexpected response. Please try again.", [
           {
             text: "Cancel",
@@ -99,29 +85,17 @@ const LoginPage = ({ navigation }) => {
         <View>
           <BackBtn onPress={() => navigation.goBack()} />
           <Image source={require("../assets/images/promoshop.png")} style={styles.cover} />
-
           <Text style={styles.title}>Promokings Login</Text>
 
           <Formik
             initialValues={{ email: "", password: "" }}
             validationSchema={validationSchema}
-            onSubmit={(values) => login(values)}
+            onSubmit={handleLogin}
           >
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              errors,
-              isLoading,
-              isValid,
-              setFieldTouched,
-              touched,
-            }) => (
+            {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldTouched, touched }) => (
               <View>
                 <View style={styles.wrapper}>
                   <Text style={styles.label}>Email</Text>
-
                   <View style={styles.inputWrapper(touched.email ? COLORS.secondary : COLORS.offwhite)}>
                     <MaterialCommunityIcons
                       name="email-outline"
@@ -145,7 +119,6 @@ const LoginPage = ({ navigation }) => {
 
                 <View style={styles.wrapper}>
                   <Text style={styles.label}>Password</Text>
-
                   <View style={styles.inputWrapper(touched.password ? COLORS.secondary : COLORS.offwhite)}>
                     <MaterialCommunityIcons
                       name="lock-outline"
@@ -164,7 +137,6 @@ const LoginPage = ({ navigation }) => {
                       value={values.password}
                       onChangeText={handleChange("password")}
                     />
-
                     <TouchableOpacity
                       onPress={() => {
                         setObsecureText(!obsecureText);
@@ -173,7 +145,6 @@ const LoginPage = ({ navigation }) => {
                       <MaterialCommunityIcons size={18} name={obsecureText ? "eye-outline" : "eye-off-outline"} />
                     </TouchableOpacity>
                   </View>
-
                   {touched.password && errors.password && <Text style={styles.errorMessage}>{errors.password}</Text>}
                 </View>
 

@@ -1,13 +1,27 @@
 import { FlatList, Text, View, ActivityIndicator, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { COLORS, SIZES } from "../../constants";
-import useFetch from "../../hook/useFetch";
 import styles from "./cartlist.style";
 import { Ionicons } from "@expo/vector-icons";
 import CartCardVIew from "./CartCardVIew";
 
+import useFetch from "../../hook/useFetch";
+import { AuthContext } from "../auth/AuthContext";
+
 const CartList = () => {
-  const { data, isLoading, error, refetch } = useFetch("carts/find/668f9d41346eff0a5c6253fd");
+  const { userData, userLogin, productCount } = useContext(AuthContext);
+
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    if (!userLogin) {
+      setUserId(1);
+    } else if (userData && userData._id) {
+      setUserId(userData._id);
+    }
+  }, [userLogin, userData]);
+
+  const { data, isLoading, error, refetch } = useFetch(`carts/find/${userId}`);
 
   const handleRefetch = () => {
     refetch();
@@ -15,7 +29,7 @@ const CartList = () => {
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={styles.errorcontainer}>
         <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
@@ -23,19 +37,15 @@ const CartList = () => {
 
   if (data.length === 0) {
     return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorMessage}>Sorry no categories found</Text>
-        <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
-          <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
-          <Text style={styles.retryButtonText}>Retry Again</Text>
-        </TouchableOpacity>
+      <View style={styles.errorcontainer}>
+        <Text style={styles.errorMessage}>Cart is empty</Text>
       </View>
     );
   }
 
   if (error) {
     return (
-      <View style={styles.errorContainer}>
+      <View style={styles.errorcontainer}>
         <Text style={styles.errorMessage}>Error loading cart</Text>
         <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
           <Text style={styles.retryButtonText}>Retry Fetch</Text>
@@ -44,7 +54,7 @@ const CartList = () => {
     );
   }
 
-  // Extract products from the response data
+  // Extracting products from the response data
   const products = data[0]?.products || [];
 
   return (

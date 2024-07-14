@@ -1,5 +1,5 @@
 import { Text, TouchableOpacity, View, ScrollView, Image } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, Fontisto } from "@expo/vector-icons";
 import styles from "./home.style";
@@ -9,37 +9,14 @@ import Headings from "../components/home/Headings";
 import ProductsRow from "../components/products/ProductsRow";
 import { useNavigation } from "@react-navigation/native";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "../constants/icons";
+import { AuthContext } from "../components/auth/AuthContext";
 import { COLORS, SIZES } from "../constants";
+import useFetch from "../hook/useFetch";
 
 const Home = () => {
-  const [userData, setUserData] = useState(null);
-  const [userLogin, setUserLogin] = useState(false);
-
+  const { userData, userLogin, productCount } = useContext(AuthContext);
   const navigation = useNavigation();
-
-  useEffect(() => {
-    checkExistingUser();
-  }, []);
-
-  const checkExistingUser = async () => {
-    const id = await AsyncStorage.getItem("id");
-    const userId = `user${JSON.parse(id)}`;
-
-    try {
-      const currentUser = await AsyncStorage.getItem(userId);
-      if (currentUser !== null) {
-        const parsedData = JSON.parse(currentUser);
-        setUserData(parsedData);
-        setUserLogin(true);
-      } else {
-        console.log("user data not available");
-      }
-    } catch (error) {
-      console.log("Error retrieving data:", error);
-    }
-  };
 
   return (
     <SafeAreaView style={styles.topSafeview}>
@@ -54,7 +31,7 @@ const Home = () => {
               <View style={{ alignItems: "flex-end", marginRight: 5 }}>
                 <View style={styles.cartContainer}>
                   <View style={styles.cartWrapper}>
-                    <Text style={styles.cartNumber}>0</Text>
+                    <Text style={styles.cartNumber}>{productCount}</Text>
                   </View>
 
                   <TouchableOpacity

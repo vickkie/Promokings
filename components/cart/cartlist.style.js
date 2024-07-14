@@ -30,6 +30,31 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginEnd: 10,
   },
+  errorMessage: {
+    fontFamily: "semibold",
+    fontSize: SIZES.medium,
+    textAlign: "center",
+  },
+  errorcontainer: {
+    backgroundColor: COLORS.themew,
+    marginTop: 260,
+    width: SIZES.width - 20,
+    marginHorizontal: 10,
+    borderRadius: SIZES.medium,
+    justifyContent: "center",
+    alignItems: "center",
+    height: SIZES.height / 2,
+  },
+  retryButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: COLORS.themeg,
+    borderRadius: SIZES.medium,
+    padding: 20,
+  },
+  retryButtonText: {
+    paddingTop: 10,
+  },
 });
 
 export default styles;

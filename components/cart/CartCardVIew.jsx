@@ -58,7 +58,26 @@ const CartCardView = ({ item, handleRefetch }) => {
   };
 
   const deleteItem = (id) => {
-    redelete(id);
+    Alert.alert(
+      "Remove item",
+      "Are you sure you want to remove item from cart?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => {
+            console.log("Cancelled logout");
+          },
+          style: "cancel",
+        },
+        {
+          text: "Continue",
+          onPress: () => {
+            redelete(id);
+          },
+        },
+      ],
+      { cancelable: true } // allows the alert to be dismissed by tapping outside of it
+    );
   };
 
   return (

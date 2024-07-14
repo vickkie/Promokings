@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import styles from "./cart.style";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
@@ -6,11 +6,15 @@ import { COLORS } from "../constants/index";
 import { Ionicons } from "@expo/vector-icons";
 import CartList from "../components/cart/CartList";
 import { useNavigation } from "@react-navigation/native";
+
 import BackBtn from "../components/BackBtn";
 import Icon from "../constants/icons";
+import { AuthContext } from "../components/auth/AuthContext";
 
 const Cart = () => {
   const navigation = useNavigation();
+
+  const { userLogin, userData } = useContext(AuthContext);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -35,7 +39,7 @@ const Cart = () => {
             <View style={styles.location}>
               <TouchableOpacity style={styles.locationName}>
                 <Icon name="location" size={24} />
-                <Text> Nairobi</Text>
+                {userLogin ? <Text>{userData.location}</Text> : <Text> Nairobi</Text>}
               </TouchableOpacity>
               <TouchableOpacity style={styles.rightLocation} onPress={() => navigation.navigate("Profile")}>
                 <Text>change</Text>
