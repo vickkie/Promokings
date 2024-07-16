@@ -14,7 +14,7 @@ const CartList = ({ onItemCountChange }) => {
 
   const [userId, setUserId] = useState(null);
   const [totals, setTotals] = useState({ subtotal: 0 });
-  const [additionalFees, setAdditionalFees] = useState(20);
+  const [additionalFees, setAdditionalFees] = useState(0);
   const [itemCount, setItemCount] = useState(0);
 
   useEffect(() => {
