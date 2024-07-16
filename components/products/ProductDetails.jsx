@@ -169,7 +169,7 @@ const ProductDetails = ({ navigation }) => {
                 {!errorHere === true ? (
                   <Fontisto name="shopping-bag" color={COLORS.lightWhite} size={17} />
                 ) : (
-                  <Ionicons name="close-circle-outline" color={COLORS.red} size={32} />
+                  <Ionicons name="ios-close-circle-outline" color={COLORS.red} size={32} />
                 )}
               </TouchableOpacity>
             </View>
