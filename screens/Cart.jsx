@@ -15,6 +15,14 @@ const Cart = () => {
   const navigation = useNavigation();
 
   const { userLogin, userData } = useContext(AuthContext);
+  const [itemCount, setItemCount] = useState(0);
+
+  const handleItemCountChange = (count) => {
+    console.log("Item count:", itemCount);
+
+    setItemCount(count);
+    // Handle the item count as needed
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -35,7 +43,12 @@ const Cart = () => {
 
           <View style={styles.lowerheader}>
             <Text style={styles.heading}>My cart</Text>
-            <Text style={styles.statement}>0 items in my cart</Text>
+
+            {itemCount !== 0 ? (
+              <Text style={styles.statement}> {itemCount} items in my cart</Text>
+            ) : (
+              <Text style={styles.statement}>0 items in my cart</Text>
+            )}
             <View style={styles.location}>
               <TouchableOpacity style={styles.locationName}>
                 <Icon name="location" size={24} />
@@ -51,7 +64,7 @@ const Cart = () => {
           </View>
         </View>
         <ScrollView>
-          <CartList />
+          <CartList onItemCountChange={handleItemCountChange} />
         </ScrollView>
       </View>
     </SafeAreaView>

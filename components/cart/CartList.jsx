@@ -8,11 +8,12 @@ import useFetch from "../../hook/useFetch";
 import { AuthContext } from "../auth/AuthContext";
 import { ScrollView } from "react-native-gesture-handler";
 
-const CartList = () => {
+const CartList = ({ onItemCountChange }) => {
   const { userData, userLogin } = useContext(AuthContext);
 
   const [userId, setUserId] = useState(null);
   const [totals, setTotals] = useState({ subtotal: 0, additionalFees: 0 });
+  const [itemCount, setItemCount] = useState(0);
 
   useEffect(() => {
     if (!userLogin) {
@@ -27,6 +28,12 @@ const CartList = () => {
   useEffect(() => {
     if (!isLoading && data.length !== 0) {
       const products = data[0]?.products || [];
+
+      // Calculate item count
+      setItemCount(products.length);
+
+      console.log(itemCount);
+
       const initialTotals = products.reduce((acc, item) => {
         if (item.cartItem && item.cartItem.price) {
           const parsedPrice = parseFloat(item.cartItem.price.replace(/[^0-9.-]+/g, ""));
@@ -42,6 +49,10 @@ const CartList = () => {
   }, [isLoading, data]);
 
   const estimatedAmount = totals.subtotal + totals.additionalFees;
+
+  useEffect(() => {
+    onItemCountChange(itemCount);
+  }, [itemCount, onItemCountChange]);
 
   const handleRefetch = () => {
     refetch();

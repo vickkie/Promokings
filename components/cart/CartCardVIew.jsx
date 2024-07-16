@@ -1,5 +1,5 @@
 import { TouchableOpacity, Text, View, Image, Alert } from "react-native";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, memo } from "react";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./cartcardview.style";
 import Icon from "../../constants/icons";
@@ -7,7 +7,7 @@ import useUpdate from "../../hook/useUpdate";
 import useDelete from "../../hook/useDelete";
 import { AuthContext } from "../auth/AuthContext";
 
-const CartCardView = ({ item, handleRefetch, onUpdateTotal }) => {
+const CartCardView = memo(({ item, handleRefetch, onUpdateTotal }) => {
   const navigation = useNavigation();
   const { userData } = useContext(AuthContext);
   const userId = userData ? userData._id : null;
@@ -149,6 +149,6 @@ const CartCardView = ({ item, handleRefetch, onUpdateTotal }) => {
       </View>
     </View>
   );
-};
+});
 
 export default CartCardView;
