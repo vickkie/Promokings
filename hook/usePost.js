@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { BACKEND_PORT } from "@env"; // Import the env variable in react native defined in babel.conf
 
-const useUpdate = (endpoint) => {
+const usePost = (endpoint) => {
   const [updateStatus, setUpdateStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -15,7 +15,9 @@ const useUpdate = (endpoint) => {
     setError(null); // Reset error state before updating data
 
     try {
-      const response = await axios.post(`${BACKEND_PORT}/api/${endpoint}`, data); // Use the environment variable
+      const response = await axios.post(`${BACKEND_PORT}/api/${endpoint}`, data);
+
+      console.log(data);
       setUpdateStatus(response.status);
     } catch (error) {
       setError(error.message);
@@ -31,11 +33,12 @@ const useUpdate = (endpoint) => {
     }
   }, [endpoint, data]);
 
-  const reupdate = (newData) => {
-    setData(newData);
+  const addCart = (data) => {
+    setData(data);
+    console.log(data);
   };
 
-  return { updateStatus, isLoading, error, reupdate };
+  return { updateStatus, isLoading, error, addCart };
 };
 
-export default useUpdate;
+export default usePost;

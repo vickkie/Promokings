@@ -193,6 +193,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginBottom: 20,
   },
+  errorContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    height: 30,
+    color: "red",
+  },
 });
 
 export default styles;
