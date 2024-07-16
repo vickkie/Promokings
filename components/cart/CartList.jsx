@@ -12,8 +12,11 @@ const CartList = ({ onItemCountChange }) => {
   const { userData, userLogin } = useContext(AuthContext);
 
   const [userId, setUserId] = useState(null);
-  const [totals, setTotals] = useState({ subtotal: 0, additionalFees: 0 });
+  const [totals, setTotals] = useState(0);
+  const [additionalFees, setAdditionalFees] = useState(20);
   const [itemCount, setItemCount] = useState(0);
+
+  //todo check user login
 
   useEffect(() => {
     if (!userLogin) {
@@ -24,6 +27,8 @@ const CartList = ({ onItemCountChange }) => {
   }, [userLogin, userData]);
 
   const { data, isLoading, error, refetch } = useFetch(`carts/find/${userId}`);
+
+  //todo Calculate changes in product quantity and total amounts
 
   useEffect(() => {
     if (!isLoading && data.length !== 0) {
@@ -48,7 +53,7 @@ const CartList = ({ onItemCountChange }) => {
     }
   }, [isLoading, data]);
 
-  const estimatedAmount = totals.subtotal + totals.additionalFees;
+  const estimatedAmount = totals.subtotal + additionalFees;
 
   useEffect(() => {
     onItemCountChange(itemCount);
@@ -58,14 +63,13 @@ const CartList = ({ onItemCountChange }) => {
     refetch();
   };
 
-  const updateTotalAmount = (itemId, newTotalPrice) => {
-    setTotals((prevTotals) => {
-      const updatedTotals = { ...prevTotals, [itemId]: newTotalPrice };
-      const subtotal = Object.keys(updatedTotals)
-        .filter((key) => key !== "subtotal" && key !== "additionalFees" && key !== "estimatedAmount")
-        .reduce((acc, key) => acc + updatedTotals[key], 0);
-      return { ...updatedTotals, subtotal };
-    });
+  //todo : update the new total price
+
+  const updateTotalAmount = (adjustment) => {
+    setTotals((prevTotals) => ({
+      ...prevTotals,
+      subtotal: prevTotals.subtotal + adjustment,
+    }));
   };
 
   if (isLoading) {
@@ -112,7 +116,7 @@ const CartList = ({ onItemCountChange }) => {
           </View>
           <View style={styles.centerSubtotal}>
             <Text style={styles.additionalHeader}>Additional fees</Text>
-            <Text style={styles.amounts}>KES {totals.additionalFees || 0}</Text>
+            <Text style={styles.amounts}>KES {additionalFees || 0}</Text>
           </View>
           <View style={styles.centerSubtotal}>
             <Text style={styles.subtotalHeader}>Estimated Amount</Text>

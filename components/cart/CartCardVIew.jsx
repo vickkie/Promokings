@@ -46,9 +46,10 @@ const CartCardView = memo(({ item, handleRefetch, onUpdateTotal }) => {
     const newCount = count + 1;
     setCount(newCount);
     const newTotalPrice = parsedPrice * newCount;
+    const adjustment = newTotalPrice - totalPrice;
     setTotalPrice(newTotalPrice);
-    incrementUpdate({ userId, cartItem: _id }); // Pass userId and cartItem
-    onUpdateTotal(_id, newTotalPrice);
+    incrementUpdate({ userId, cartItem: _id }); // Update backend
+    onUpdateTotal(adjustment); // Notify parent of adjustment
   };
 
   const decrement = () => {
@@ -56,9 +57,10 @@ const CartCardView = memo(({ item, handleRefetch, onUpdateTotal }) => {
       const newCount = count - 1;
       setCount(newCount);
       const newTotalPrice = parsedPrice * newCount;
+      const adjustment = newTotalPrice - totalPrice;
       setTotalPrice(newTotalPrice);
-      decrementUpdate({ userId, cartItem: _id }); // Pass userId and cartItem
-      onUpdateTotal(_id, newTotalPrice);
+      decrementUpdate({ userId, cartItem: _id }); // Update backend
+      onUpdateTotal(adjustment); // Notify parent of adjustment
     }
   };
 
