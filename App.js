@@ -11,6 +11,7 @@ import { useCallback } from "react";
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
 import { Cart, ProductDetails, Products, LoginPage, Favourites, Orders, Register, Categories } from "./screens";
 import { AuthProvider } from "./components/auth/AuthContext";
+import { CartProvider } from "./contexts/CartContext";
 
 enableScreens();
 enableLayoutAnimations(true);
@@ -40,27 +41,29 @@ export default function App(params) {
 
   return (
     <AuthProvider>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Bottom Navigation"
-            component={BottomTabNavigation}
-            options={{ headerShown: false }}
-          ></Stack.Screen>
-          <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }}></Stack.Screen>
-          <Stack.Screen
-            name="ProductDetails"
-            component={ProductDetails}
-            options={{ headerShown: false }}
-          ></Stack.Screen>
-          <Stack.Screen name="ProductList" component={Products} options={{ headerShown: false }}></Stack.Screen>
-          <Stack.Screen name="Favourites" component={Favourites} options={{ headerShown: false }}></Stack.Screen>
-          <Stack.Screen name="Categories" component={Categories} options={{ headerShown: true }}></Stack.Screen>
-          <Stack.Screen name="Cart" component={Cart} options={{ headerShown: false }}></Stack.Screen>
-          <Stack.Screen name="Orders" component={Orders} options={{ headerShown: false }}></Stack.Screen>
-          <Stack.Screen name="Register" component={Register} options={{ headerShown: false }}></Stack.Screen>
-        </Stack.Navigator>
-      </NavigationContainer>
+      <CartProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Bottom Navigation"
+              component={BottomTabNavigation}
+              options={{ headerShown: false }}
+            ></Stack.Screen>
+            <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen
+              name="ProductDetails"
+              component={ProductDetails}
+              options={{ headerShown: false }}
+            ></Stack.Screen>
+            <Stack.Screen name="ProductList" component={Products} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="Favourites" component={Favourites} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="Categories" component={Categories} options={{ headerShown: true }}></Stack.Screen>
+            <Stack.Screen name="Cart" component={Cart} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="Orders" component={Orders} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="Register" component={Register} options={{ headerShown: false }}></Stack.Screen>
+          </Stack.Navigator>
+        </NavigationContainer>
+      </CartProvider>
     </AuthProvider>
   );
 }

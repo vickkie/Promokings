@@ -10,19 +10,12 @@ import { useNavigation } from "@react-navigation/native";
 import BackBtn from "../components/BackBtn";
 import Icon from "../constants/icons";
 import { AuthContext } from "../components/auth/AuthContext";
+import { useCart } from "../contexts/CartContext";
 
 const Cart = () => {
   const navigation = useNavigation();
-
-  const { userLogin, userData } = useContext(AuthContext);
-  const [itemCount, setItemCount] = useState(0);
-
-  const handleItemCountChange = (count) => {
-    console.log("Item count:", itemCount);
-
-    setItemCount(count);
-    // Handle the item count as needed
-  };
+  const { userLogin, userData } = React.useContext(AuthContext);
+  const { itemCount, handleItemCountChange } = useCart();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -36,7 +29,11 @@ const Cart = () => {
             <TouchableOpacity style={styles.buttonWrap}>
               <Icon name="cart" size={26} />
               <View style={styles.numbers}>
-                <Text style={styles.number}>0</Text>
+                {itemCount !== 0 ? (
+                  <Text style={styles.number}>{itemCount}</Text>
+                ) : (
+                  <Text style={styles.number}>0</Text>
+                )}
               </View>
             </TouchableOpacity>
           </View>

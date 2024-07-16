@@ -30,7 +30,7 @@ const CartList = ({ onItemCountChange }) => {
       const products = data[0]?.products || [];
 
       // Calculate item count
-      setItemCount(products.length);
+      setItemCount(products.length - 1);
 
       console.log(itemCount);
 

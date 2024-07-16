@@ -13,10 +13,36 @@ import Icon from "../constants/icons";
 import { AuthContext } from "../components/auth/AuthContext";
 import { COLORS, SIZES } from "../constants";
 import useFetch from "../hook/useFetch";
+import { useCart } from "../contexts/CartContext";
 
 const Home = () => {
   const { userData, userLogin, productCount } = useContext(AuthContext);
   const navigation = useNavigation();
+  // const { itemCount, handleItemCountChange } = useCart();
+
+  const [itemCount, setItemCount] = useState(0);
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    if (!userLogin) {
+      setUserId(1);
+    } else if (userData && userData._id) {
+      setUserId(userData._id);
+    }
+  }, [userLogin, userData]);
+
+  const { data, isLoading } = useFetch(`carts/find/${userId}`);
+
+  useEffect(() => {
+    if (!isLoading && data.length !== 0) {
+      const products = data[0]?.products || [];
+
+      // Calculate item count
+      setItemCount(products.length - 1);
+
+      console.log(itemCount);
+    }
+  }, [isLoading, data]);
 
   return (
     <SafeAreaView style={styles.topSafeview}>
@@ -31,7 +57,7 @@ const Home = () => {
               <View style={{ alignItems: "flex-end", marginRight: 5 }}>
                 <View style={styles.cartContainer}>
                   <View style={styles.cartWrapper}>
-                    <Text style={styles.cartNumber}>{productCount}</Text>
+                    <Text style={styles.cartNumber}>{itemCount}</Text>
                   </View>
 
                   <TouchableOpacity
