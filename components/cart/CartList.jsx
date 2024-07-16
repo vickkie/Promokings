@@ -117,7 +117,9 @@ const CartList = ({ onItemCountChange }) => {
       <TouchableOpacity
         style={styles.checkoutBtnWrapper}
         onPress={() => {
-          navigation.navigate("Checkout", { estimatedAmount });
+          if (estimatedAmount > 0) {
+            navigation.navigate("Checkout", { estimatedAmount });
+          }
         }}
       >
         <View style={styles.checkoutBtn}>

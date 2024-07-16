@@ -93,8 +93,8 @@ const CartCardView = memo(({ item, handleRefetch, onUpdateTotal }) => {
         style={styles.imageContainer}
         onPress={() => {
           navigation.navigate("ProductDetails", {
-            item: item,
-            itemid: item._id,
+            item: cartItem,
+            itemid: cartItem._id,
           });
 
           console.log(item._id);

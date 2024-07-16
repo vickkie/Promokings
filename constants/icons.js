@@ -22,6 +22,8 @@ import CloseCircleIcon from "../assets/svg/close-circle.svg";
 import DeleteIcon from "../assets/svg/delete.svg";
 import MinusIcon from "../assets/svg/minus-circle.svg";
 import AddIcon from "../assets/svg/add-circle.svg";
+import DownIcon from "../assets/svg/down.svg";
+import UpIcon from "../assets/svg/up.svg";
 
 const iconMap = {
   home: HomeIcon,
@@ -46,6 +48,8 @@ const iconMap = {
   delete: DeleteIcon,
   minus: MinusIcon,
   add: AddIcon,
+  up: UpIcon,
+  down: DownIcon,
 };
 
 const Icon = ({ name, size = 24, ...props }) => {

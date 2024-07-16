@@ -8,9 +8,9 @@
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/images/promo/pwa-maskable-512x512.png",
-      // "resizeMode": "contain",
       "backgroundColor": "#fff"
     },
+    
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
