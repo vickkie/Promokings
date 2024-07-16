@@ -10,10 +10,11 @@ import { AuthContext } from "../auth/AuthContext";
 import { ScrollView } from "react-native-gesture-handler";
 
 const CartList = () => {
-  const { userData, userLogin, productCount } = useContext(AuthContext);
+  const { userData, userLogin } = useContext(AuthContext);
 
   const [userId, setUserId] = useState(null);
-  const [totals, setTotals] = useState({});
+  const [totals, setTotals] = useState({ subtotal: 0, additionalFees: 0 });
+  const [estimatedAmount, setestimatedAmount] = useState(0);
 
   useEffect(() => {
     if (!userLogin) {
@@ -25,15 +26,36 @@ const CartList = () => {
 
   const { data, isLoading, error, refetch } = useFetch(`carts/find/${userId}`);
 
+  useEffect(() => {
+    if (!isLoading && data.length !== 0) {
+      const products = data[0]?.products || [];
+      const initialTotals = products.reduce((acc, item) => {
+        const parsedPrice = parseFloat(item.cartItem.price.replace(/[^0-9.-]+/g, ""));
+        const totalPrice = parsedPrice * item.quantity;
+        return { ...acc, [item._id]: totalPrice };
+      }, {});
+
+      const initialSubtotal = Object.values(initialTotals).reduce((acc, price) => acc + price, 0);
+      setTotals((prevTotals) => ({ ...prevTotals, ...initialTotals, subtotal: initialSubtotal }));
+    }
+  }, [isLoading, data]);
+
+  useEffect(() => {
+    setestimatedAmount(totals.subtotal + totals.additionalFees);
+  });
+
   const handleRefetch = () => {
     refetch();
   };
 
   const updateTotalAmount = (itemId, newTotalPrice) => {
-    setTotals((prevTotals) => ({
-      ...prevTotals,
-      [itemId]: newTotalPrice,
-    }));
+    setTotals((prevTotals) => {
+      const updatedTotals = { ...prevTotals, [itemId]: newTotalPrice };
+      const subtotal = Object.keys(updatedTotals)
+        .filter((key) => key !== "subtotal" && key !== "additionalFees" && key !== "estimatedAmount")
+        .reduce((acc, key) => acc + updatedTotals[key], 0);
+      return { ...updatedTotals, subtotal };
+    });
   };
 
   if (isLoading) {
@@ -55,53 +77,40 @@ const CartList = () => {
     );
   }
 
-  // if (!isLoading && data.length === 0) {
-  //   return (
-  //     <View style={styles.errorcontainer}>
-  //       <Text style={styles.errorMessage}>Cart is empty</Text>
-  //     </View>
-  //   );
-  // }
-
-  // Extracting products from the response data
   const products = data[0]?.products || [];
 
-  return (
-    <View>
-      <View style={styles.container}>
-        {/* {console.log(products)} */}
-
-        <FlatList
-          keyExtractor={(item) => item._id.toString()}
-          contentContainerStyle={[{ columnGap: SIZES.medium }, styles.wrapper]}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
-          numColumns={1}
-          data={products}
-          renderItem={({ item }) => (
-            <CartCardVIew
-              item={item}
-              handleRefetch={handleRefetch}
-              onUpdateTotal={updateTotalAmount} // Passing the callback function
-            />
-          )}
-        />
-      </View>
-      <View style={styles.subtotalWrapper}>
-        <View style={styles.topSubtotal}>
-          <Text style={styles.additionalHeader}>Subtotal amount</Text>
-          <Text style={styles.amounts}>KES {totals.subtotal || 0}</Text>
+  if (!isLoading && data.length !== 0) {
+    return (
+      <View>
+        <View style={styles.container}>
+          <FlatList
+            keyExtractor={(item) => item._id.toString()}
+            contentContainerStyle={[{ columnGap: SIZES.medium }, styles.wrapper]}
+            ItemSeparatorComponent={() => <View style={styles.separator} />}
+            numColumns={1}
+            data={products}
+            renderItem={({ item }) => (
+              <CartCardVIew item={item} handleRefetch={handleRefetch} onUpdateTotal={updateTotalAmount} />
+            )}
+          />
         </View>
-        <View style={styles.centerSubtotal}>
-          <Text style={styles.additionalHeader}>Additional fees</Text>
-          <Text style={styles.amounts}>KES {totals.additionalFees || 0}</Text>
-        </View>
-        <View style={styles.centerSubtotal}>
-          <Text style={styles.subtotalHeader}>Estimated Amount</Text>
-          <Text style={styles.amounts}>KES {totals.estimatedAmount || 0}</Text>
+        <View style={styles.subtotalWrapper}>
+          <View style={styles.topSubtotal}>
+            <Text style={styles.additionalHeader}>Subtotal amount</Text>
+            <Text style={styles.amounts}>KES {totals.subtotal || 0}</Text>
+          </View>
+          <View style={styles.centerSubtotal}>
+            <Text style={styles.additionalHeader}>Additional fees</Text>
+            <Text style={styles.amounts}>KES {totals.additionalFees || 0}</Text>
+          </View>
+          <View style={styles.centerSubtotal}>
+            <Text style={styles.subtotalHeader}>Estimated Amount</Text>
+            <Text style={styles.amounts}>KES {estimatedAmount || 0}</Text>
+          </View>
         </View>
       </View>
-    </View>
-  );
+    );
+  }
 };
 
 export default CartList;

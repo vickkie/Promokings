@@ -31,7 +31,13 @@ const ProductsRow = () => {
           </TouchableOpacity>
         </View>
       ) : dataArray.length === 0 ? (
-        <Text>No products found.</Text>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorMessage}>No products at the moment</Text>
+          <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
+            <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
+            <Text style={styles.retryButtonText}>Retry</Text>
+          </TouchableOpacity>
+        </View>
       ) : (
         <FlatList
           data={dataArray}

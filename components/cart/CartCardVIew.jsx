@@ -7,19 +7,17 @@ import useUpdate from "../../hook/useUpdate";
 import useDelete from "../../hook/useDelete";
 
 const CartCardView = ({ item, handleRefetch, onUpdateTotal }) => {
-  // Ensure onUpdateTotal is destructured from props
   const navigation = useNavigation();
 
   const { cartItem, quantity, size } = item;
   const { _id, title, price, imageUrl } = cartItem;
 
   const parsedPrice = parseFloat(price.replace(/[^0-9.-]+/g, ""));
-  const [isWished, setIsWished] = useState(false);
   const [count, setCount] = useState(quantity);
   const [totalPrice, setTotalPrice] = useState(parsedPrice * quantity);
 
-  const { updateStatus, isLoading, error, reupdate } = useUpdate(`carts/update/${_id}`);
-  const { deleteStatus, isDeleting, errorStatus, redelete } = useDelete(`carts/item`, handleRefetch);
+  const { updateStatus, reupdate } = useUpdate(`carts/update/${_id}`);
+  const { deleteStatus, errorStatus, redelete } = useDelete(`carts/item`, handleRefetch);
 
   useEffect(() => {
     if (updateStatus === 200) {
@@ -42,7 +40,7 @@ const CartCardView = ({ item, handleRefetch, onUpdateTotal }) => {
     const newTotalPrice = parsedPrice * newCount;
     setTotalPrice(newTotalPrice);
     reupdate({ quantity: newCount });
-    onUpdateTotal(_id, newTotalPrice); // Correctly calling onUpdateTotal here
+    onUpdateTotal(_id, newTotalPrice);
   };
 
   const decrement = () => {
@@ -52,7 +50,7 @@ const CartCardView = ({ item, handleRefetch, onUpdateTotal }) => {
       const newTotalPrice = parsedPrice * newCount;
       setTotalPrice(newTotalPrice);
       reupdate({ quantity: newCount });
-      onUpdateTotal(_id, newTotalPrice); // And here
+      onUpdateTotal(_id, newTotalPrice);
     }
   };
 

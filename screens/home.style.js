@@ -104,12 +104,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
     borderTopLeftRadius: SIZES.medium,
     borderTopRightRadius: SIZES.medium,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   lowerWelcomeWrapper: {
     backgroundColor: COLORS.themeg,
     borderRadius: SIZES.medium,
-    borderTopLeftRadius: SIZES.medium,
-    borderTopRightRadius: SIZES.medium,
   },
   topSafeview: {
     flex: 1,
