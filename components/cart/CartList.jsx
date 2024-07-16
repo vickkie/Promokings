@@ -4,7 +4,6 @@ import { COLORS, SIZES } from "../../constants";
 import styles from "./cartlist.style";
 import { Ionicons } from "@expo/vector-icons";
 import CartCardVIew from "./CartCardVIew";
-
 import useFetch from "../../hook/useFetch";
 import { AuthContext } from "../auth/AuthContext";
 import { ScrollView } from "react-native-gesture-handler";
@@ -14,7 +13,6 @@ const CartList = () => {
 
   const [userId, setUserId] = useState(null);
   const [totals, setTotals] = useState({ subtotal: 0, additionalFees: 0 });
-  const [estimatedAmount, setestimatedAmount] = useState(0);
 
   useEffect(() => {
     if (!userLogin) {
@@ -30,9 +28,12 @@ const CartList = () => {
     if (!isLoading && data.length !== 0) {
       const products = data[0]?.products || [];
       const initialTotals = products.reduce((acc, item) => {
-        const parsedPrice = parseFloat(item.cartItem.price.replace(/[^0-9.-]+/g, ""));
-        const totalPrice = parsedPrice * item.quantity;
-        return { ...acc, [item._id]: totalPrice };
+        if (item.cartItem && item.cartItem.price) {
+          const parsedPrice = parseFloat(item.cartItem.price.replace(/[^0-9.-]+/g, ""));
+          const totalPrice = parsedPrice * item.quantity;
+          return { ...acc, [item._id]: totalPrice };
+        }
+        return acc;
       }, {});
 
       const initialSubtotal = Object.values(initialTotals).reduce((acc, price) => acc + price, 0);
@@ -40,9 +41,7 @@ const CartList = () => {
     }
   }, [isLoading, data]);
 
-  useEffect(() => {
-    setestimatedAmount(totals.subtotal + totals.additionalFees);
-  });
+  const estimatedAmount = totals.subtotal + totals.additionalFees;
 
   const handleRefetch = () => {
     refetch();
@@ -88,6 +87,7 @@ const CartList = () => {
             contentContainerStyle={[{ columnGap: SIZES.medium }, styles.wrapper]}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
             numColumns={1}
+            scrollEnabled={false}
             data={products}
             renderItem={({ item }) => (
               <CartCardVIew item={item} handleRefetch={handleRefetch} onUpdateTotal={updateTotalAmount} />
@@ -111,6 +111,8 @@ const CartList = () => {
       </View>
     );
   }
+
+  return null;
 };
 
 export default CartList;

@@ -6,13 +6,16 @@ const useUpdate = (endpoint) => {
   const [updateStatus, setUpdateStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [data, setData] = useState(null);
 
   const updateData = async () => {
+    if (!data) return;
+
     setIsLoading(true);
     setError(null); // Reset error state before updating data
 
     try {
-      const response = await axios.put(`${BACKEND_PORT}/api/${endpoint}`); // Use the environment variable
+      const response = await axios.put(`${BACKEND_PORT}/api/${endpoint}`, data); // Use the environment variable
       setUpdateStatus(response.status);
     } catch (error) {
       setError(error.message);
@@ -23,14 +26,13 @@ const useUpdate = (endpoint) => {
   };
 
   useEffect(() => {
-    if (endpoint) {
+    if (endpoint && data) {
       updateData();
     }
-  }, [endpoint]);
+  }, [endpoint, data]);
 
-  const reupdate = () => {
-    setIsLoading(true);
-    updateData();
+  const reupdate = (newData) => {
+    setData(newData);
   };
 
   return { updateStatus, isLoading, error, reupdate };

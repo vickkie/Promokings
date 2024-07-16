@@ -1,29 +1,37 @@
 import { TouchableOpacity, Text, View, Image, Alert } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./cartcardview.style";
 import Icon from "../../constants/icons";
 import useUpdate from "../../hook/useUpdate";
 import useDelete from "../../hook/useDelete";
+import { AuthContext } from "../auth/AuthContext";
 
 const CartCardView = ({ item, handleRefetch, onUpdateTotal }) => {
   const navigation = useNavigation();
+  const { userData } = useContext(AuthContext);
+  const userId = userData ? userData._id : null;
 
-  const { cartItem, quantity, size } = item;
+  const { cartItem, quantity, size } = item || {};
+
+  if (!cartItem) return null; // Return null if cartItem is null or undefined
+
   const { _id, title, price, imageUrl } = cartItem;
 
   const parsedPrice = parseFloat(price.replace(/[^0-9.-]+/g, ""));
   const [count, setCount] = useState(quantity);
   const [totalPrice, setTotalPrice] = useState(parsedPrice * quantity);
+  const [isWished, setIsWished] = useState(false);
 
-  const { updateStatus, reupdate } = useUpdate(`carts/update/${_id}`);
+  const { updateStatus: incrementStatus, reupdate: incrementUpdate } = useUpdate("carts/increment");
+  const { updateStatus: decrementStatus, reupdate: decrementUpdate } = useUpdate("carts/decrement");
   const { deleteStatus, errorStatus, redelete } = useDelete(`carts/item`, handleRefetch);
 
   useEffect(() => {
-    if (updateStatus === 200) {
+    if (incrementStatus === 200 || decrementStatus === 200) {
       // Handle successful update here if needed
     }
-  }, [updateStatus]);
+  }, [incrementStatus, decrementStatus]);
 
   useEffect(() => {
     if (deleteStatus === 200) {
@@ -39,7 +47,7 @@ const CartCardView = ({ item, handleRefetch, onUpdateTotal }) => {
     setCount(newCount);
     const newTotalPrice = parsedPrice * newCount;
     setTotalPrice(newTotalPrice);
-    reupdate({ quantity: newCount });
+    incrementUpdate({ userId, cartItem: _id }); // Pass userId and cartItem
     onUpdateTotal(_id, newTotalPrice);
   };
 
@@ -49,7 +57,7 @@ const CartCardView = ({ item, handleRefetch, onUpdateTotal }) => {
       setCount(newCount);
       const newTotalPrice = parsedPrice * newCount;
       setTotalPrice(newTotalPrice);
-      reupdate({ quantity: newCount });
+      decrementUpdate({ userId, cartItem: _id }); // Pass userId and cartItem
       onUpdateTotal(_id, newTotalPrice);
     }
   };
