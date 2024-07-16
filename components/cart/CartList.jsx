@@ -6,17 +6,16 @@ import { Ionicons } from "@expo/vector-icons";
 import CartCardVIew from "./CartCardVIew";
 import useFetch from "../../hook/useFetch";
 import { AuthContext } from "../auth/AuthContext";
-import { ScrollView } from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/native";
 
 const CartList = ({ onItemCountChange }) => {
   const { userData, userLogin } = useContext(AuthContext);
+  const navigation = useNavigation();
 
   const [userId, setUserId] = useState(null);
-  const [totals, setTotals] = useState(0);
+  const [totals, setTotals] = useState({ subtotal: 0 });
   const [additionalFees, setAdditionalFees] = useState(20);
   const [itemCount, setItemCount] = useState(0);
-
-  //todo check user login
 
   useEffect(() => {
     if (!userLogin) {
@@ -28,16 +27,11 @@ const CartList = ({ onItemCountChange }) => {
 
   const { data, isLoading, error, refetch } = useFetch(`carts/find/${userId}`);
 
-  //todo Calculate changes in product quantity and total amounts
-
   useEffect(() => {
     if (!isLoading && data.length !== 0) {
       const products = data[0]?.products || [];
 
-      // Calculate item count
-      setItemCount(products.length - 1);
-
-      console.log(itemCount);
+      setItemCount(products.length);
 
       const initialTotals = products.reduce((acc, item) => {
         if (item.cartItem && item.cartItem.price) {
@@ -53,7 +47,7 @@ const CartList = ({ onItemCountChange }) => {
     }
   }, [isLoading, data]);
 
-  const estimatedAmount = totals.subtotal + additionalFees;
+  const estimatedAmount = (totals.subtotal || 0) + (additionalFees || 0);
 
   useEffect(() => {
     onItemCountChange(itemCount);
@@ -62,8 +56,6 @@ const CartList = ({ onItemCountChange }) => {
   const handleRefetch = () => {
     refetch();
   };
-
-  //todo : update the new total price
 
   const updateTotalAmount = (adjustment) => {
     setTotals((prevTotals) => ({
@@ -93,41 +85,47 @@ const CartList = ({ onItemCountChange }) => {
 
   const products = data[0]?.products || [];
 
-  if (!isLoading && data.length !== 0) {
-    return (
-      <View>
-        <View style={styles.container}>
-          <FlatList
-            keyExtractor={(item) => item._id.toString()}
-            contentContainerStyle={[{ columnGap: SIZES.medium }, styles.wrapper]}
-            ItemSeparatorComponent={() => <View style={styles.separator} />}
-            numColumns={1}
-            scrollEnabled={false}
-            data={products}
-            renderItem={({ item }) => (
-              <CartCardVIew item={item} handleRefetch={handleRefetch} onUpdateTotal={updateTotalAmount} />
-            )}
-          />
+  return (
+    <View>
+      <View style={styles.container}>
+        <FlatList
+          keyExtractor={(item) => item._id.toString()}
+          contentContainerStyle={[{ columnGap: SIZES.medium }, styles.wrapper]}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          numColumns={1}
+          scrollEnabled={false}
+          data={products}
+          renderItem={({ item }) => (
+            <CartCardVIew item={item} handleRefetch={handleRefetch} onUpdateTotal={updateTotalAmount} />
+          )}
+        />
+      </View>
+      <View style={styles.subtotalWrapper}>
+        <View style={styles.topSubtotal}>
+          <Text style={styles.additionalHeader}>Subtotal amount</Text>
+          <Text style={styles.amounts}>KES {totals.subtotal.toFixed(2)}</Text>
         </View>
-        <View style={styles.subtotalWrapper}>
-          <View style={styles.topSubtotal}>
-            <Text style={styles.additionalHeader}>Subtotal amount</Text>
-            <Text style={styles.amounts}>KES {totals.subtotal || 0}</Text>
-          </View>
-          <View style={styles.centerSubtotal}>
-            <Text style={styles.additionalHeader}>Additional fees</Text>
-            <Text style={styles.amounts}>KES {additionalFees || 0}</Text>
-          </View>
-          <View style={styles.centerSubtotal}>
-            <Text style={styles.subtotalHeader}>Estimated Amount</Text>
-            <Text style={styles.amounts}>KES {estimatedAmount || 0}</Text>
-          </View>
+        <View style={styles.centerSubtotal}>
+          <Text style={styles.additionalHeader}>Additional fees</Text>
+          <Text style={styles.amounts}>KES {additionalFees.toFixed(2)}</Text>
+        </View>
+        <View style={styles.centerSubtotal}>
+          <Text style={styles.subtotalHeader}>Estimated Amount</Text>
+          <Text style={[styles.amounts, styles.totalAmount]}>KES {estimatedAmount.toFixed(2)}</Text>
         </View>
       </View>
-    );
-  }
-
-  return null;
+      <TouchableOpacity
+        style={styles.checkoutBtnWrapper}
+        onPress={() => {
+          navigation.navigate("Checkout", { estimatedAmount });
+        }}
+      >
+        <View style={styles.checkoutBtn}>
+          <Text style={styles.checkoutTxt}>Checkout</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
 };
 
 export default CartList;

@@ -1,5 +1,5 @@
 import { Text, TouchableOpacity, View, ScrollView, Image } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, Fontisto } from "@expo/vector-icons";
 import styles from "./home.style";
@@ -7,7 +7,7 @@ import { Welcome } from "../components/home";
 import Carousel from "../components/home/Carousel";
 import Headings from "../components/home/Headings";
 import ProductsRow from "../components/products/ProductsRow";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 import Icon from "../constants/icons";
 import { AuthContext } from "../components/auth/AuthContext";
@@ -31,16 +31,18 @@ const Home = () => {
     }
   }, [userLogin, userData]);
 
-  const { data, isLoading } = useFetch(`carts/find/${userId}`);
+  const { data, isLoading, refetch } = useFetch(`carts/find/${userId}`);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [userId])
+  );
 
   useEffect(() => {
     if (!isLoading && data.length !== 0) {
       const products = data[0]?.products || [];
-
-      // Calculate item count
-      setItemCount(products.length - 1);
-
-      console.log(itemCount);
+      setItemCount(products.length);
     }
   }, [isLoading, data]);
 

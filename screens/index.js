@@ -12,6 +12,7 @@ import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
 import Register from "./Register";
 import Categories from "./Categories";
+import Checkout from "./Checkout";
 
 export {
   Home,
@@ -28,4 +29,5 @@ export {
   CustomButton,
   Register,
   Categories,
+  Checkout,
 };

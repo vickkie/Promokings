@@ -83,6 +83,24 @@ const styles = StyleSheet.create({
   additionalHeader: {
     fontFamily: "semibold",
   },
+  totalAmount: {
+    fontFamily: "bold",
+  },
+  checkoutBtn: {
+    marginHorizontal: 10,
+    backgroundColor: COLORS.green,
+    height: SIZES.xxLarge + 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: SIZES.medium,
+    borderRadius: SIZES.large,
+    marginTop: SIZES.small,
+  },
+  checkoutTxt: {
+    color: COLORS.white,
+    fontFamily: "semibold",
+    fontSize: SIZES.large,
+  },
 });
 
 export default styles;

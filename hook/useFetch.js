@@ -12,9 +12,9 @@ const useFetch = (endpoint) => {
     setError(null); // Reset error state before fetching data
 
     try {
-      const response = await axios.get(`${BACKEND_PORT}/api/${endpoint}`); // Use the environment variable
+      const response = await axios.get(`${BACKEND_PORT}/api/${endpoint}`);
+      // console.log(BACKEND_PORT);
 
-      console.log(BACKEND_PORT);
       setData(response.data);
     } catch (error) {
       setError(error.message);
