@@ -5,7 +5,8 @@ import { BACKEND_PORT } from "@env"; // Import the env variable in react native 
 const usePost = (endpoint) => {
   const [updateStatus, setUpdateStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [data, setData] = useState(null);
 
   const updateData = async () => {
@@ -17,10 +18,11 @@ const usePost = (endpoint) => {
     try {
       const response = await axios.post(`${BACKEND_PORT}/api/${endpoint}`, data);
 
-      console.log(data);
+      // console.log(data);
       setUpdateStatus(response.status);
     } catch (error) {
-      setError(error.message);
+      setError(true);
+      setError(errorMessage.message);
       setUpdateStatus(null); // Reset updateStatus in case of error
     } finally {
       setIsLoading(false);
@@ -35,10 +37,11 @@ const usePost = (endpoint) => {
 
   const addCart = (data) => {
     setData(data);
-    console.log(data);
+    updateData();
+    // console.log(data);
   };
 
-  return { updateStatus, isLoading, error, addCart };
+  return { updateStatus, isLoading, error, errorMessage, addCart };
 };
 
 export default usePost;

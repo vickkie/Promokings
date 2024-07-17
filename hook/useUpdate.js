@@ -15,7 +15,7 @@ const useUpdate = (endpoint) => {
     setError(null); // Reset error state before updating data
 
     try {
-      const response = await axios.post(`${BACKEND_PORT}/api/${endpoint}`, data); // Use the environment variable
+      const response = await axios.put(`${BACKEND_PORT}/api/${endpoint}`, data); // Use the environment variable
       setUpdateStatus(response.status);
     } catch (error) {
       setError(error.message);

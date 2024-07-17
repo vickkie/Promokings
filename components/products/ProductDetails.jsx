@@ -1,14 +1,14 @@
 import { Text, TouchableOpacity, View, Image, ScrollView, ActivityIndicator } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import React, { useState, useContext, useEffect } from "react";
-import { Ionicons, SimpleLineIcons, Fontisto } from "@expo/vector-icons";
+import { Ionicons, Fontisto } from "@expo/vector-icons";
 import { COLORS } from "../../constants";
 import styles from "./productdetails.style";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Animated from "react-native-reanimated";
 import Icon from "../../constants/icons";
 import usePost from "../../hook/usePost";
 import { AuthContext } from "../auth/AuthContext";
+import useFetch from "../../hook/useFetch";
 
 const ProductDetails = ({ navigation }) => {
   const route = useRoute();
@@ -17,35 +17,44 @@ const ProductDetails = ({ navigation }) => {
   const [count, setCount] = useState(1);
   const [selectedSize, setSelectedSize] = useState("M");
   const [isExpanded, setIsExpanded] = useState(false);
+  const [feedback, setFeedback] = useState(null); // Added for feedback handling
 
   const sizes = ["XS", "S", "M", "L", "XL"];
   const parsedPrice = parseFloat(item.price.replace(/[^0-9.-]+/g, ""));
   const [shortDescription, setShortDescription] = useState("");
 
-  const { isLoading, updateStatus, error, addCart } = usePost("carts/");
+  const { isLoading, error, addCart } = usePost("carts/");
+  const [itemDescription, setItemDescription] = useState(item.description || ".");
   const [quantity, setQuantity] = useState(1);
 
-  const { userData, userLogin, productCount } = useContext(AuthContext);
+  const { userData, userLogin } = useContext(AuthContext);
   const [userId, setUserId] = useState(null);
-  const [errorHere, setErrorHere] = useState(false);
+  const { data, refetch } = useFetch(`products/${item._id}`);
+  useEffect(() => {
+    if (data) {
+      setItemDescription(data.description);
+    }
+  }, [data, refetch, itemDescription]);
 
   useEffect(() => {
     if (!userLogin) {
-      setUserId(1); // Default user ID for demonstration purposes
+      setUserId(1); // Default user ID for demonstration purposes && test
     } else if (userData && userData._id) {
       setUserId(userData._id);
     }
   }, [userLogin, userData]);
 
   const processDescription = () => {
-    const splitDescription = item.description.split(". ");
-    const firstLine = splitDescription[0];
-    setShortDescription(firstLine);
+    if (itemDescription) {
+      const splitDescription = itemDescription.split(". ");
+      const firstLine = splitDescription[0];
+      setShortDescription(firstLine);
+    }
   };
 
   useEffect(() => {
     processDescription();
-  }, [item.description]);
+  }, [itemDescription]);
 
   const increment = () => {
     setCount(count + 1);
@@ -61,7 +70,7 @@ const ProductDetails = ({ navigation }) => {
     setIsWished(!isWished);
   };
 
-  const addToCart = () => {
+  const addToCart = async () => {
     if (userId && item._id) {
       const cartData = {
         userId: userId,
@@ -69,10 +78,22 @@ const ProductDetails = ({ navigation }) => {
         quantity: quantity,
         size: selectedSize,
       };
-      addCart(cartData);
-      setErrorHere(false);
+      try {
+        addCart(cartData);
+        if (error !== true) {
+          // console.log(error);
+          setFeedback({ status: "success", message: "Added to cart" });
+        } else {
+          setFeedback({ status: "error", message: "Failed to add to cart" });
+        }
+      } catch (error) {
+        setFeedback({ status: "error", message: "Failed to add to cart" });
+      } finally {
+        setTimeout(() => setFeedback(null), 5000); // Revert after 5 seconds
+      }
     } else {
-      setErrorHere(true);
+      setFeedback({ status: "error", message: "Failed to add to cart" });
+      setTimeout(() => setFeedback(null), 5000); // Revert after 5 seconds
     }
   };
 
@@ -152,24 +173,27 @@ const ProductDetails = ({ navigation }) => {
               </View>
             )}
             <View style={styles.cartRow}>
-              <TouchableOpacity
-                onPress={() => {
-                  addToCart();
-                }}
-                style={styles.cartBtn}
-              >
-                {!isLoading ? (
-                  <Text style={styles.cartTitle}>Order now</Text>
-                ) : (
+              <TouchableOpacity onPress={addToCart} style={styles.cartBtn}>
+                {isLoading ? (
                   <ActivityIndicator size="small" color={COLORS.white} />
+                ) : feedback ? (
+                  <Text style={styles.cartTitle}>{feedback.status === "error" ? "Failed to add" : "Success"}</Text>
+                ) : (
+                  <Text style={styles.cartTitle}>Order now</Text>
                 )}
               </TouchableOpacity>
 
               <TouchableOpacity onPress={addToCart} style={styles.addBtn}>
-                {!errorHere === true ? (
-                  <Fontisto name="shopping-bag" color={COLORS.lightWhite} size={17} />
+                {isLoading ? (
+                  <ActivityIndicator size="small" color={COLORS.lightWhite} />
+                ) : feedback ? (
+                  feedback.status === "error" ? (
+                    <Ionicons name="ios-close-circle-outline" color={COLORS.red} size={32} />
+                  ) : (
+                    <Ionicons name="ios-checkmark-circle-outline" color={COLORS.green} size={32} />
+                  )
                 ) : (
-                  <Ionicons name="ios-close-circle-outline" color={COLORS.red} size={32} />
+                  <Fontisto name="shopping-bag" color={COLORS.lightWhite} size={17} />
                 )}
               </TouchableOpacity>
             </View>
