@@ -23,13 +23,20 @@ const ProductDetails = ({ navigation }) => {
   const parsedPrice = parseFloat(item.price.replace(/[^0-9.-]+/g, ""));
   const [shortDescription, setShortDescription] = useState("");
 
-  const { isLoading, error, addCart } = usePost("carts/");
-  const [itemDescription, setItemDescription] = useState(item.description || ".");
-  const [quantity, setQuantity] = useState(1);
+  const { isLoading: isLoadingCart, error: cartError, addCart } = usePost("carts/");
+  const {
+    updateStatus,
+    isLoading: isLoadingFavourites,
+    error: favouritesError,
+    errorMessage,
+    addCart: addFavourite,
+  } = usePost(`favourites`);
 
+  const [itemDescription, setItemDescription] = useState(item.description || ".");
   const { userData, userLogin } = useContext(AuthContext);
   const [userId, setUserId] = useState(null);
   const { data, refetch } = useFetch(`products/${item._id}`);
+
   useEffect(() => {
     if (data) {
       setItemDescription(data.description);
@@ -66,8 +73,27 @@ const ProductDetails = ({ navigation }) => {
     }
   };
 
-  const addWishlist = () => {
+  const addWishlist = async () => {
     setIsWished(!isWished);
+
+    if (userLogin && item._id) {
+      const cartData = {
+        userId: userId,
+        favouriteItem: item._id,
+      };
+      try {
+        addFavourite(cartData);
+        if (updateStatus == 200) {
+          console.log("item with id ", id, "added");
+          setFeedback({ status: "success", message: "Added to Wishlist" });
+        }
+      } catch (error) {
+        console.log(error);
+        setFeedback({ status: "error", message: "Failed to add to Wishlist" });
+      } finally {
+        setTimeout(() => setFeedback(null), 5000);
+      }
+    }
   };
 
   const addToCart = async () => {
@@ -75,13 +101,12 @@ const ProductDetails = ({ navigation }) => {
       const cartData = {
         userId: userId,
         cartItem: item._id,
-        quantity: quantity,
+        quantity: count,
         size: selectedSize,
       };
       try {
         addCart(cartData);
-        if (error !== true) {
-          // console.log(error);
+        if (cartError !== true) {
           setFeedback({ status: "success", message: "Added to cart" });
         } else {
           setFeedback({ status: "error", message: "Failed to add to cart" });
@@ -106,7 +131,11 @@ const ProductDetails = ({ navigation }) => {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons name="chevron-back-circle" size={32} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={addWishlist}>
+          <TouchableOpacity
+            onPress={() => {
+              addWishlist();
+            }}
+          >
             {isWished ? (
               <Ionicons name="heart" size={32} color={COLORS.primary} />
             ) : (
@@ -174,17 +203,19 @@ const ProductDetails = ({ navigation }) => {
             )}
             <View style={styles.cartRow}>
               <TouchableOpacity onPress={addToCart} style={styles.cartBtn}>
-                {isLoading ? (
+                {isLoadingCart ? (
                   <ActivityIndicator size="small" color={COLORS.white} />
                 ) : feedback ? (
-                  <Text style={styles.cartTitle}>{feedback.status === "error" ? "Failed to add" : "Success"}</Text>
+                  <Text style={styles.cartTitle}>
+                    {feedback.status === "error" ? "Failed to add" : "Added to cart successfully"}
+                  </Text>
                 ) : (
                   <Text style={styles.cartTitle}>Order now</Text>
                 )}
               </TouchableOpacity>
 
               <TouchableOpacity onPress={addToCart} style={styles.addBtn}>
-                {isLoading ? (
+                {isLoadingCart ? (
                   <ActivityIndicator size="small" color={COLORS.lightWhite} />
                 ) : feedback ? (
                   feedback.status === "error" ? (

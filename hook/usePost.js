@@ -18,7 +18,7 @@ const usePost = (endpoint) => {
     try {
       const response = await axios.post(`${BACKEND_PORT}/api/${endpoint}`, data);
 
-      // console.log(data);
+      // console.log(response.status);
       setUpdateStatus(response.status);
     } catch (error) {
       setError(true);
@@ -38,7 +38,6 @@ const usePost = (endpoint) => {
   const addCart = (data) => {
     setData(data);
     updateData();
-    // console.log(data);
   };
 
   return { updateStatus, isLoading, error, errorMessage, addCart };

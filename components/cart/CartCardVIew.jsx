@@ -4,8 +4,9 @@ import { useNavigation } from "@react-navigation/native";
 import styles from "./cartcardview.style";
 import Icon from "../../constants/icons";
 import useUpdate from "../../hook/useUpdate";
-import useDelete from "../../hook/useDelete";
 import { AuthContext } from "../auth/AuthContext";
+import useDelete from "../../hook/useDelete";
+import usePost from "../../hook/usePost";
 
 const CartCardView = memo(({ item, handleRefetch, onUpdateTotal }) => {
   const navigation = useNavigation();
@@ -26,6 +27,7 @@ const CartCardView = memo(({ item, handleRefetch, onUpdateTotal }) => {
   const { updateStatus: incrementStatus, reupdate: incrementUpdate } = useUpdate("carts/increment");
   const { updateStatus: decrementStatus, reupdate: decrementUpdate } = useUpdate("carts/decrement");
   const { deleteStatus, errorStatus, redelete } = useDelete(`carts/item`, handleRefetch);
+  const { updateStatus, isLoading, error, errorMessage, addCart } = usePost(`favourites`);
 
   useEffect(() => {
     if (incrementStatus === 200 || decrementStatus === 200) {
@@ -48,7 +50,7 @@ const CartCardView = memo(({ item, handleRefetch, onUpdateTotal }) => {
     const newTotalPrice = parsedPrice * newCount;
     const adjustment = newTotalPrice - totalPrice;
     setTotalPrice(newTotalPrice);
-    incrementUpdate({ userId, cartItem: _id }); // Update backend
+    incrementUpdate({ userId, cartItem: _id });
     onUpdateTotal(adjustment); // Notify parent of adjustment
   };
 
@@ -64,8 +66,23 @@ const CartCardView = memo(({ item, handleRefetch, onUpdateTotal }) => {
     }
   };
 
-  const addWishlist = () => {
+  const addWishlist = async (id) => {
     setIsWished(!isWished);
+    console.log(item._id);
+    if (userId && id) {
+      const cartData = {
+        userId: userId,
+        favouriteItem: id,
+      };
+      try {
+        addCart(cartData);
+        if (updateStatus == 200) {
+          console.log("item with id ", id, "added");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   const deleteItem = (id) => {
@@ -109,13 +126,18 @@ const CartCardView = memo(({ item, handleRefetch, onUpdateTotal }) => {
             {title}
           </Text>
           <View style={styles.lovehate}>
-            <TouchableOpacity style={styles.lovebuttons} onPress={addWishlist}>
+            <TouchableOpacity
+              style={styles.lovebuttons}
+              onPress={() => {
+                // console.log(cartItem._id);
+                addWishlist(cartItem._id);
+              }}
+            >
               <Icon name="heart" size={18}></Icon>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.lovebuttons}
               onPress={() => {
-                console.log(item._id);
                 deleteItem(item._id);
               }}
             >
