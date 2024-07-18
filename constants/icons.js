@@ -3,15 +3,19 @@ import HomeIcon from "../assets/svg/home.svg";
 import SearchIcon from "../assets/svg/search.svg";
 import SearchCircleIcon from "../assets/svg/search-circle.svg";
 import UserIcon from "../assets/svg/user.svg";
+import UserIconHand from "../assets/svg/user-handup.svg";
 import UserCircleIcon from "../assets/svg/user-circle.svg";
 import MenuIcon from "../assets/svg/menu.svg";
 import Menu2Icon from "../assets/svg/menu2.svg";
 import CartIcon from "../assets/svg/cart.svg";
+import TrolleyIcon from "../assets/svg/cart-trolley.svg";
 import TuningIcon from "../assets/svg/tuning-2.svg";
 import CarouselIcon from "../assets/svg/carousel.svg";
 import HeartIcon from "../assets/svg/heart.svg";
 import Backbutton from "../assets/svg/backbutton.svg";
 import Location from "../assets/svg/location.svg";
+import PencilIcon from "../assets/svg/pencil.svg";
+import Delivery from "../assets/svg/delivery.svg";
 
 import HomeFilledIcon from "../assets/svg/home-filled.svg";
 import UserCircleFilledIcon from "../assets/svg/user-circle-filled.svg";
@@ -50,6 +54,10 @@ const iconMap = {
   add: AddIcon,
   up: UpIcon,
   down: DownIcon,
+  userhandup: UserIconHand,
+  delivery: Delivery,
+  trolley: TrolleyIcon,
+  pencil: PencilIcon,
 };
 
 const Icon = ({ name, size = 24, ...props }) => {

@@ -13,6 +13,7 @@ import CustomButton from "../components/Button";
 import Register from "./Register";
 import Categories from "./Categories";
 import Checkout from "./Checkout";
+import UserDetails from "./UserDetails";
 
 export {
   Home,
@@ -30,4 +31,5 @@ export {
   Register,
   Categories,
   Checkout,
+  UserDetails,
 };

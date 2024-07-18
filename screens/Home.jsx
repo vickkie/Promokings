@@ -79,7 +79,7 @@ const Home = () => {
 
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate("Profile");
+                  navigation.navigate("UserDetails");
                 }}
                 style={[styles.buttonWrap2, {}]}
               >

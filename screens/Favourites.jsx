@@ -8,7 +8,7 @@ import FavouritesList from "../components/favourites/FavouritesList";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
 import { useCart } from "../contexts/CartContext";
-import { useWish } from "../contexts/WishContext";
+import { useWish } from "../contexts/WishContext"; 
 
 const Favourites = () => {
   const navigation = useNavigation();

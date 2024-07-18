@@ -8,6 +8,7 @@ import { COLORS, SIZES } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
 import Toast from "react-native-toast-message";
+import Icon from "../constants/icons";
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -114,22 +115,29 @@ const Profile = () => {
 
           {userData && (
             <View style={styles.menuWrapper}>
+              <TouchableOpacity onPress={() => navigation.navigate("UserDetails")}>
+                <View style={styles.menuItem(0.5)}>
+                  <Icon name="userhandup" size={24} color={COLORS.primary} />
+                  <Text style={styles.menuText}>My profile</Text>
+                </View>
+              </TouchableOpacity>
               <TouchableOpacity onPress={() => navigation.navigate("Favourites")}>
                 <View style={styles.menuItem(0.5)}>
                   <MaterialCommunityIcons name="heart-outline" size={24} color={COLORS.primary} />
                   <Text style={styles.menuText}>Favourites</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.navigate("Orders")}>
-                <View style={styles.menuItem(0.5)}>
-                  <MaterialCommunityIcons name="truck-cargo-container" size={24} color={COLORS.primary} />
-                  <Text style={styles.menuText}>Orders</Text>
-                </View>
-              </TouchableOpacity>
+
               <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
                 <View style={styles.menuItem(0.5)}>
-                  <MaterialCommunityIcons name="cart" size={24} color={COLORS.primary} />
+                  <Icon name="trolley" size={24} color={COLORS.primary} />
                   <Text style={styles.menuText}>Cart</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate("Orders")}>
+                <View style={styles.menuItem(0.5)}>
+                  <Icon name="delivery" size={26} color={COLORS.primary} />
+                  <Text style={styles.menuText}>Orders</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={clearCache}>

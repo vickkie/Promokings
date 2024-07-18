@@ -37,13 +37,31 @@ const AuthProvider = ({ children }) => {
     await AsyncStorage.setItem(`user${data._id}`, JSON.stringify(data));
   };
 
-  const userLogout = async () => {
+  const logout = async () => {
     setUserData(null);
     setUserLogin(false);
     await AsyncStorage.removeItem("id");
   };
 
-  return <AuthContext.Provider value={{ userData, userLogin, login, userLogout }}>{children}</AuthContext.Provider>;
+  const userLogout = () => {
+    logout();
+  };
+
+  const updateUserData = (updatedData) => {
+    setUserData(updatedData);
+    // AsyncStorage.setItem(`user${updatedData._id}`, JSON.stringify(updatedData));
+  };
+
+  const authContextValue = {
+    userData,
+    userLogin,
+    userLogout,
+    login,
+    logout,
+    updateUserData,
+  };
+
+  return <AuthContext.Provider value={authContextValue}>{children}</AuthContext.Provider>;
 };
 
 export { AuthContext, AuthProvider };
