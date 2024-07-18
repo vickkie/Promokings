@@ -47,9 +47,9 @@ const AuthProvider = ({ children }) => {
     logout();
   };
 
-  const updateUserData = (updatedData) => {
+  const updateUserData = async (updatedData) => {
     setUserData(updatedData);
-    // AsyncStorage.setItem(`user${updatedData._id}`, JSON.stringify(updatedData));
+    await AsyncStorage.setItem(`user${updatedData._id}`, JSON.stringify(updatedData));
   };
 
   const authContextValue = {

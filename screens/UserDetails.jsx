@@ -11,6 +11,8 @@ import * as Yup from "yup";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
 import Button from "../components/Button";
+import * as ImagePicker from "expo-image-picker";
+import useFetch from "../hook/useFetch";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Provide a valid email address").required("Required"),
@@ -21,6 +23,7 @@ const validationSchema = Yup.object().shape({
 const UserDetails = () => {
   const navigation = useNavigation();
   const [loader, setLoader] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(null);
 
   const [userId, setUserId] = useState(null);
   const { userData, userLogin, updateUserData } = useContext(AuthContext);
@@ -32,6 +35,8 @@ const UserDetails = () => {
       return;
     } else if (userData && userData._id) {
       setUserId(userData._id);
+      console.log("user profile pic", userData.profilePicture);
+      setProfilePicture(userData.profilePicture);
     }
   }, [userLogin, userData]);
 
@@ -41,6 +46,8 @@ const UserDetails = () => {
       { text: "Continue", onPress: () => {} },
     ]);
   };
+
+  const renewData = () => {};
 
   const successUpdate = () => {
     Alert.alert(
@@ -54,17 +61,62 @@ const UserDetails = () => {
   const updateUserProfile = async (values) => {
     setLoader(true);
     try {
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("email", values.email);
+      formData.append("location", values.location);
+      formData.append("username", values.username);
+      formData.append("userId", userId);
+
+      // If a profile picture is selected, append it to formData
+      if (profilePicture) {
+        const fileType = profilePicture.split(".").pop();
+        formData.append("profilePicture", {
+          uri: profilePicture,
+          name: `profilePicture.${fileType}`,
+          type: `image/${fileType}`,
+        });
+      }
+
       const endpoint = `${BACKEND_PORT}/api/user/updateProfile`;
-      const response = await axios.put(endpoint, { ...values, userId: userId });
+      const response = await axios.put(endpoint, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       if (response.status === 200) {
-        updateUserData(response.data); // Update user data in context with response data
+        console.log("Updated User Data:", response.data);
+        await updateUserData(response.data); // Update user data in context with response data
         successUpdate();
       }
     } catch (err) {
       console.log(err);
     }
     setLoader(false);
+  };
+
+  const pickImage = async () => {
+    let result = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (result.granted === false) {
+      alert("Permission to access gallery is required!");
+      return;
+    }
+
+    let pickerResult = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    console.log("Picker Result:", pickerResult);
+
+    if (!pickerResult.canceled && pickerResult.assets && pickerResult.assets.length > 0) {
+      const pickedUri = pickerResult.assets[0].uri;
+      console.log("Picked Image URI:", pickedUri);
+      setProfilePicture(pickedUri);
+    }
   };
 
   return (
@@ -86,12 +138,12 @@ const UserDetails = () => {
       <ScrollView>
         <View style={styles.detailsWrapper}>
           <View style={styles.imageWrapper}>
-            {userLogin && userData.profilePicture ? (
-              <Image source={{ uri: userData.profilePicture }} style={styles.profileImage} />
+            {profilePicture ? (
+              <Image source={{ uri: `${BACKEND_PORT}${profilePicture}` }} style={styles.profileImage} />
             ) : (
               <Image source={require("../assets/images/profile.webp")} style={styles.profileImage} />
             )}
-            <TouchableOpacity style={styles.editpencil}>
+            <TouchableOpacity style={styles.editpencil} onPress={pickImage}>
               <View styles={styles.pencilWrapper}>
                 <Icon name="pencil" size={25} />
               </View>
