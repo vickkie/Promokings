@@ -5,11 +5,11 @@ const WishContext = createContext();
 export const WishProvider = ({ children }) => {
   const [wishCount, setwishCount] = useState(10);
 
-  const handlewishCountChange = (count) => {
+  const handleWishCountChange = (count) => {
     setwishCount(count);
   };
 
-  return <WishContext.Provider value={{ wishCount, handlewishCountChange }}>{children}</WishContext.Provider>;
+  return <WishContext.Provider value={{ wishCount, handleWishCountChange }}>{children}</WishContext.Provider>;
 };
 
 export const useWish = () => useContext(WishContext);

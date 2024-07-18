@@ -3,19 +3,18 @@ import styles from "./favourites.style";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { COLORS } from "../constants/index";
-import { Ionicons } from "@expo/vector-icons";
+import Icon from "../constants/icons";
 import FavouritesList from "../components/favourites/FavouritesList";
 import { useNavigation } from "@react-navigation/native";
-
-import BackBtn from "../components/BackBtn";
-import Icon from "../constants/icons";
 import { AuthContext } from "../components/auth/AuthContext";
 import { useCart } from "../contexts/CartContext";
+import { useWish } from "../contexts/WishContext";
 
 const Favourites = () => {
   const navigation = useNavigation();
-  const { userLogin, userData } = React.useContext(AuthContext);
+  const { userLogin, userData } = useContext(AuthContext);
   const { itemCount, handleItemCountChange } = useCart();
+  const { wishCount, handleWishCountChange } = useWish();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -29,8 +28,8 @@ const Favourites = () => {
               <TouchableOpacity style={styles.buttonWrap}>
                 <Icon name="heart" size={26} />
                 <View style={styles.numbers}>
-                  {itemCount !== 0 ? (
-                    <Text style={styles.number}>{itemCount}</Text>
+                  {wishCount !== 0 ? (
+                    <Text style={styles.number}>{wishCount}</Text>
                   ) : (
                     <Text style={styles.number}>0</Text>
                   )}
@@ -59,14 +58,14 @@ const Favourites = () => {
             <Text style={styles.heading}>My WishList</Text>
 
             {itemCount !== 0 ? (
-              <Text style={styles.statement}> Products i like ( {itemCount} )</Text>
+              <Text style={styles.statement}> Products I like ( {wishCount} )</Text>
             ) : (
               <Text style={styles.statement}>Like more products</Text>
             )}
           </View>
         </View>
         <ScrollView>
-          <FavouritesList onItemCountChange={handleItemCountChange} />
+          <FavouritesList onWishCountChange={handleWishCountChange} onItemCountChange={handleItemCountChange} />
         </ScrollView>
       </View>
     </SafeAreaView>

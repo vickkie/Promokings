@@ -2,20 +2,23 @@ import { FlatList, Text, View, ActivityIndicator, TouchableOpacity } from "react
 import React, { useContext, useState, useEffect } from "react";
 import { COLORS, SIZES } from "../../constants";
 import styles from "./favourtiteslist.style";
-import { Ionicons } from "@expo/vector-icons";
 import FavouritesCardVIew from "./FavouritesCardVIew";
 import { AuthContext } from "../auth/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import useFetch from "../../hook/useFetch";
+import { useCart } from "../../contexts/CartContext";
+import { useWish } from "../../contexts/WishContext";
 
-const FavouritesList = ({ onFavouriteCountChange }) => {
+const FavouritesList = ({ onWishCountChange, onItemCountChange }) => {
   const { userData, userLogin } = useContext(AuthContext);
   const navigation = useNavigation();
+  const { itemCount, handleItemCountChange } = useCart();
+  const { wishCount, handleWishCountChange } = useWish();
 
   const [userId, setUserId] = useState(null);
   const [totals, setTotals] = useState({ subtotal: 0 });
   const [additionalFees, setAdditionalFees] = useState(0);
-  const [favouriteCount, setFavouriteCount] = useState(0);
+  const [favouriteCount, setWishCount] = useState(0);
 
   useEffect(() => {
     if (!userLogin) {
@@ -30,7 +33,7 @@ const FavouritesList = ({ onFavouriteCountChange }) => {
   useEffect(() => {
     if (!isLoading && data !== undefined && data !== null) {
       const products = data.products || [];
-      setFavouriteCount(products.length);
+      setWishCount(products.length);
 
       const initialTotals = products.reduce((acc, item) => {
         if (item.favouriteItem && item.favouriteItem.price) {
@@ -58,6 +61,14 @@ const FavouritesList = ({ onFavouriteCountChange }) => {
       subtotal: prevTotals.subtotal + adjustment,
     }));
   };
+
+  useEffect(() => {
+    handleItemCountChange(itemCount);
+  }, [itemCount, onItemCountChange]);
+
+  useEffect(() => {
+    handleWishCountChange(favouriteCount);
+  }, [favouriteCount, onWishCountChange]);
 
   if (isLoading) {
     return (

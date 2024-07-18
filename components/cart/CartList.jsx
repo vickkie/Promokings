@@ -2,7 +2,6 @@ import { FlatList, Text, View, ActivityIndicator, TouchableOpacity } from "react
 import React, { useContext, useState, useEffect } from "react";
 import { COLORS, SIZES } from "../../constants";
 import styles from "./cartlist.style";
-import { Ionicons } from "@expo/vector-icons";
 import CartCardVIew from "./CartCardVIew";
 import useFetch from "../../hook/useFetch";
 import { AuthContext } from "../auth/AuthContext";
@@ -50,7 +49,7 @@ const CartList = ({ onItemCountChange }) => {
   const estimatedAmount = (totals.subtotal || 0) + (additionalFees || 0);
 
   useEffect(() => {
-    onItemCountChange(itemCount); 
+    onItemCountChange(itemCount);
   }, [itemCount, onItemCountChange]);
 
   const handleRefetch = () => {

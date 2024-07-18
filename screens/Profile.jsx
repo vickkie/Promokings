@@ -7,6 +7,7 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
+import Toast from "react-native-toast-message";
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -72,11 +73,20 @@ const Profile = () => {
           text: "Continue",
           onPress: () => {
             userLogout();
+            showToast("success", "You have been  logged out", "Thankyou for being with us ");
           },
         },
       ],
       { cancelable: true } // allows the alert to be dismissed by tapping outside of it
     );
+  };
+
+  const showToast = (type, text1, text2) => {
+    Toast.show({
+      type: type,
+      text1: text1,
+      text2: text2 ? text2 : "",
+    });
   };
 
   return (
