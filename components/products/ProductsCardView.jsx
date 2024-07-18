@@ -4,14 +4,15 @@ import { COLORS, SIZES } from "../../constants";
 import styles from "./productcardview.style";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import Animated, { SharedTransition } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import usePost from "../../hook/usePost";
 import { AuthContext } from "../auth/AuthContext";
+import Toast from "react-native-toast-message";
 
 const ProductsCardView = ({ item }) => {
   const navigation = useNavigation();
   const [isWished, setIsWished] = useState(false);
-  const [feedback, setFeedback] = useState(null); // Added for feedback handling
+  const [feedback, setFeedback] = useState(null);
   const {
     updateStatus,
     isLoading: isLoadingFavourites,
@@ -40,18 +41,25 @@ const ProductsCardView = ({ item }) => {
         favouriteItem: item._id,
       };
       try {
-        addFavourite(cartData);
+        await addFavourite(cartData);
         if (updateStatus == 200) {
-          console.log("item with id ", id, "added");
-          setFeedback({ status: "success", message: "Added to Wishlist" });
+          showToast("success", "Success", "Added to your wishlist");
         }
       } catch (error) {
         console.log(error);
-        setFeedback({ status: "error", message: "Failed to add to Wishlist" });
+        showToast("error", "Ooops, Failed to add to Wishlist", "Try again later");
       } finally {
         setTimeout(() => setFeedback(null), 5000);
       }
     }
+  };
+
+  const showToast = (type, text1, text2) => {
+    Toast.show({
+      type: type,
+      text1: text1,
+      text2: text2 ? text2 : "",
+    });
   };
 
   const transitionTag = item._id ? `${item._id}` : null;
@@ -79,12 +87,7 @@ const ProductsCardView = ({ item }) => {
           <Text style={styles.price}>Kshs {parseInt(item.price.replace("$", ""))}</Text>
         </View>
 
-        <TouchableOpacity
-          style={styles.addBtn}
-          onPress={() => {
-            addWishlist();
-          }}
-        >
+        <TouchableOpacity style={styles.addBtn} onPress={addWishlist}>
           {isWished ? (
             <Ionicons name="heart" size={32} color={COLORS.primary} />
           ) : (

@@ -6,8 +6,13 @@ import ProductList from "../components/products/ProductList";
 import Icon from "../constants/icons";
 import { COLORS } from "../constants";
 import { array } from "yup";
+import { useCart } from "../contexts/CartContext";
+import { useWish } from "../contexts/WishContext";
 
 const Products = ({ navigation }) => {
+  const { itemCount } = useCart();
+  const { wishCount } = useWish();
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.wrapper}>
@@ -20,14 +25,22 @@ const Products = ({ navigation }) => {
             <TouchableOpacity onPress={() => navigation.navigate("Favourites")} style={styles.buttonWrap1}>
               <Icon size={30} name="heart" />
               <View style={styles.numbers}>
-                <Text style={styles.number}>23</Text>
+                {wishCount !== 0 ? (
+                  <Text style={styles.number}>{wishCount}</Text>
+                ) : (
+                  <Text style={styles.number}>0</Text>
+                )}
               </View>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => navigation.navigate("Cart")} style={styles.buttonWrap1}>
               <Icon size={30} name="cart" />
               <View style={styles.numbers}>
-                <Text style={styles.number}>0</Text>
+                {itemCount !== 0 ? (
+                  <Text style={styles.number}>{itemCount}</Text>
+                ) : (
+                  <Text style={styles.number}>0</Text>
+                )}
               </View>
             </TouchableOpacity>
           </View>

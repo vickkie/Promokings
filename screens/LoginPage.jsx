@@ -29,7 +29,7 @@ const LoginPage = ({ navigation }) => {
         onPress: () => {},
       },
       {
-        text: "Continue",
+        text: "Retry",
         onPress: () => {},
       },
       { defaultIndex: 1 },
@@ -41,6 +41,8 @@ const LoginPage = ({ navigation }) => {
     try {
       const endpoint = `${BACKEND_PORT}/api/login`;
       const data = values;
+
+      // console.log(endpoint, data);
 
       const response = await axios.post(endpoint, data);
 
@@ -69,7 +71,7 @@ const LoginPage = ({ navigation }) => {
           onPress: () => {},
         },
         {
-          text: "Continue",
+          text: "Retry",
           onPress: () => {},
         },
         { defaultIndex: 1 },

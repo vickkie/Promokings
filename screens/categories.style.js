@@ -46,6 +46,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginEnd: 10,
   },
+  numbers: {
+    padding: 3,
+    width: 20,
+    height: 20,
+    backgroundColor: COLORS.themey,
+    color: COLORS.themew,
+    borderRadius: 100,
+    position: "absolute",
+    top: "-6%",
+    left: "-5%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  number: {
+    color: COLORS.white,
+  },
 });
 
 export default styles;

@@ -9,6 +9,7 @@ import Icon from "../../constants/icons";
 import usePost from "../../hook/usePost";
 import { AuthContext } from "../auth/AuthContext";
 import useFetch from "../../hook/useFetch";
+import Toast from "react-native-toast-message";
 
 const ProductDetails = ({ navigation }) => {
   const route = useRoute();
@@ -84,14 +85,11 @@ const ProductDetails = ({ navigation }) => {
       try {
         addFavourite(cartData);
         if (updateStatus == 200) {
-          console.log("item with id ", id, "added");
-          setFeedback({ status: "success", message: "Added to Wishlist" });
+          showToast("success", "Success", "Added to Wishlist ⭐⭐");
         }
       } catch (error) {
-        console.log(error);
-        setFeedback({ status: "error", message: "Failed to add to Wishlist" });
-      } finally {
-        setTimeout(() => setFeedback(null), 5000);
+        // console.log(error);
+        showToast("error", "Error occurred", "Failed to add to wishlist");
       }
     }
   };
@@ -120,6 +118,14 @@ const ProductDetails = ({ navigation }) => {
       setFeedback({ status: "error", message: "Failed to add to cart" });
       setTimeout(() => setFeedback(null), 5000); // Revert after 5 seconds
     }
+  };
+
+  const showToast = (type, text1, text2) => {
+    Toast.show({
+      type: type,
+      text1: text1,
+      text2: text2,
+    });
   };
 
   const transitionTag = item._id ? `${item._id}` : null;

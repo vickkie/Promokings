@@ -67,18 +67,6 @@ const FavouritesList = ({ onFavouriteCountChange }) => {
     );
   }
 
-  // if (error) {
-  //   console.error(error);
-  //   return (
-  //     <View style={styles.errorcontainer}>
-  //       <Text style={styles.errorMessage}>Error loading favourites</Text>
-  //       <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
-  //         <Text style={styles.retryButtonText}>Retry Fetch</Text>
-  //       </TouchableOpacity>
-  //     </View>
-  //   );
-  // }
-
   const products = (data && data.products) || [];
 
   return (

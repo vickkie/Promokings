@@ -12,13 +12,13 @@ const styles = StyleSheet.create({
   flatlistContainer: {
     paddingTop: SIZES.xxLarge,
     paddingLeft: SIZES.small / 2,
-    width: SIZES.width,
+    width: SIZES.width - SIZES.small,
+    flex: 1,
   },
   loadingContainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    alignContent: "center",
     height: SIZES.height,
   },
 

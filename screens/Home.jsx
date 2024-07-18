@@ -18,7 +18,7 @@ import { useCart } from "../contexts/CartContext";
 const Home = () => {
   const { userData, userLogin, productCount } = useContext(AuthContext);
   const navigation = useNavigation();
-  // const { itemCount, handleItemCountChange } = useCart();
+  const { itemCount: itemCountG, handleItemCountChange } = useCart();
 
   const [itemCount, setItemCount] = useState(0);
   const [userId, setUserId] = useState(null);
@@ -45,6 +45,10 @@ const Home = () => {
       setItemCount(products.length);
     }
   }, [isLoading, data]);
+
+  useEffect(() => {
+    handleItemCountChange(itemCount);
+  }, [itemCount]);
 
   return (
     <SafeAreaView style={styles.topSafeview}>

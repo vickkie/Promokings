@@ -50,7 +50,7 @@ const CartList = ({ onItemCountChange }) => {
   const estimatedAmount = (totals.subtotal || 0) + (additionalFees || 0);
 
   useEffect(() => {
-    onItemCountChange(itemCount);
+    onItemCountChange(itemCount); 
   }, [itemCount, onItemCountChange]);
 
   const handleRefetch = () => {

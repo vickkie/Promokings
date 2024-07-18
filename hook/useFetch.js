@@ -14,7 +14,6 @@ const useFetch = (endpoint) => {
     try {
       const response = await axios.get(`${BACKEND_PORT}/api/${endpoint}`);
       // console.log(BACKEND_PORT);
-
       setData(response.data);
     } catch (error) {
       setError(error.message);

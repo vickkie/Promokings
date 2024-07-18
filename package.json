@@ -30,6 +30,7 @@
     "react-native-screens": "~3.22.0",
     "react-native-snap-carousel": "^4.0.0-beta.6",
     "react-native-svg": "13.9.0",
+    "react-native-toast-message": "^2.2.0",
     "react-native-webview": "13.2.2",
     "yap": "^0.0.2",
     "yup": "^1.4.0"
