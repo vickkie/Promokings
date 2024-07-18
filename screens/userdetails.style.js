@@ -25,8 +25,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themeg,
   },
   wrapper: {
-    // flex: 1,
-    backgroundColor: COLORS.white,
     flexDirection: "column",
   },
 
@@ -36,31 +34,24 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "center",
-    position: "absolute",
+    // position: "absolute",
     backgroundColor: COLORS.themew,
     borderRadius: SIZES.large,
     top: SIZES.xxSmall,
-    zIndex: 999,
+    zIndex: 2,
     minHeight: 140,
   },
   upperButtons: {
     width: SIZES.width - 20,
     marginHorizontal: SIZES.xSmall,
     flexDirection: "row",
-    // justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
     marginHorizontal: SIZES.xSmall,
-    top: SIZES.xxSmall,
+    top: SIZES.medium,
   },
   backBtn: {
     left: 10,
-  },
-  topprofileheading: {
-    fontSize: SIZES.medium,
-    textAlign: "center",
-    color: COLORS.themeb,
-    fontFamily: "semibold",
-    left: SIZES.width / 6,
   },
   buttonWrap: {
     backgroundColor: COLORS.themeg,
@@ -69,12 +60,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginEnd: 10,
+    position: "absolute",
+    zIndex: 9,
+    top: 10,
+    left: 10,
+  },
+  topprofileheading: {
+    fontSize: SIZES.medium,
+    textAlign: "center",
+    color: COLORS.themeb,
+    fontFamily: "semibold",
+    // paddingTop: 20,
   },
 
   lowerheader: {
     flexDirection: "column",
     justifyContent: "flex-start",
-    flex: 1,
     width: SIZES.width - 20,
     paddingTop: 20,
     paddingBottom: 20,
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
   detailsWrapper: {
     width: SIZES.width - 12,
     marginHorizontal: 6,
-    marginTop: 170,
+    marginTop: SIZES.xSmall,
     backgroundColor: COLORS.themew,
     borderRadius: SIZES.medium,
   },
@@ -207,6 +208,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
+  },
+  changePasswordButton: {
+    alignSelf: "center",
+    paddingVertical: SIZES.xxSmall,
+  },
+  submitBtn: {
+    backgroundColor: COLORS.themey,
+  },
+  changePasswordButtonText: {
+    fontFamily: "medium",
   },
 });
 

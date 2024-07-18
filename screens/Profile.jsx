@@ -89,7 +89,7 @@ const Profile = () => {
           },
         },
       ],
-      { cancelable: true } // allows the alert to be dismissed by tapping outside of it
+      { cancelable: true }
     );
   };
 
@@ -98,6 +98,7 @@ const Profile = () => {
       type: type,
       text1: text1,
       text2: text2 ? text2 : "",
+      visibilityTime: 3000,
     });
   };
 

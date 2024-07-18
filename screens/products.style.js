@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     padding: 3,
     width: 20,
     height: 20,
-    backgroundColor: COLORS.red,
+    backgroundColor: COLORS.themey,
     color: COLORS.themew,
     borderRadius: 100,
     position: "absolute",

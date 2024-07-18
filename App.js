@@ -73,8 +73,8 @@ export default function App() {
               <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
               <Stack.Screen name="UserDetails" component={UserDetails} options={{ headerShown: false }} />
             </Stack.Navigator>
+            <Toast />
           </NavigationContainer>
-          <Toast />
         </WishProvider>
       </CartProvider>
     </AuthProvider>

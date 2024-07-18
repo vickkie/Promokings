@@ -13,22 +13,16 @@ import { BACKEND_PORT } from "@env";
 import Button from "../components/Button";
 import * as ImagePicker from "expo-image-picker";
 import useFetch from "../hook/useFetch";
-
-const validationSchema = Yup.object().shape({
-  email: Yup.string().email("Provide a valid email address").required("Required"),
-  location: Yup.string().min(3, "Provide your location").required("Required"),
-  username: Yup.string().min(3, "Provide a valid username").required("Required"),
-});
+import ButtonMain from "../components/ButtonMain";
 
 const UserDetails = () => {
   const navigation = useNavigation();
   const [loader, setLoader] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
-
+  const [localProfilePicture, setLocalProfilePicture] = useState(null); // New state variable for local image URI
   const [userId, setUserId] = useState(null);
   const { userData, userLogin, updateUserData } = useContext(AuthContext);
-
-  const [localProfilePicture, setLocalProfilePicture] = useState(null);
+  const [showPasswordFields, setShowPasswordFields] = useState(false); // State for toggling password fields
 
   useEffect(() => {
     if (!userLogin) {
@@ -37,7 +31,6 @@ const UserDetails = () => {
       return;
     } else if (userData && userData._id) {
       setUserId(userData._id);
-      console.log("user profile pic", userData.profilePicture);
       setProfilePicture(userData.profilePicture);
     }
   }, [userLogin, userData]);
@@ -69,13 +62,19 @@ const UserDetails = () => {
       formData.append("userId", userId);
 
       // If a profile picture is selected, append it to formData
-      if (profilePicture) {
-        const fileType = profilePicture.split(".").pop();
+      if (localProfilePicture) {
+        const fileType = localProfilePicture.split(".").pop();
         formData.append("profilePicture", {
-          uri: profilePicture,
+          uri: localProfilePicture,
           name: `profilePicture.${fileType}`,
           type: `image/${fileType}`,
         });
+      }
+
+      // Append password fields if provided
+      if (showPasswordFields) {
+        formData.append("currentPassword", values.currentPassword);
+        formData.append("newPassword", values.newPassword);
       }
 
       const endpoint = `${BACKEND_PORT}/api/user/updateProfile`;
@@ -86,10 +85,9 @@ const UserDetails = () => {
       });
 
       if (response.status === 200) {
-        console.log("Updated User Data:", response.data);
         await updateUserData(response.data); // Update user data in context with response data
         successUpdate();
-        setLocalProfilePicture(null); //RESETTing after success update
+        setLocalProfilePicture(null); // Clear the local URI
       }
     } catch (err) {
       console.log(err);
@@ -111,24 +109,45 @@ const UserDetails = () => {
       quality: 1,
     });
 
-    console.log("Picker Result:", pickerResult);
-
     if (!pickerResult.canceled && pickerResult.assets && pickerResult.assets.length > 0) {
       const pickedUri = pickerResult.assets[0].uri;
-      console.log("Picked Image URI:", pickedUri);
-      setProfilePicture(pickedUri);
-      setLocalProfilePicture(pickedUri); //setting local imG
+      setLocalProfilePicture(pickedUri);
     }
+  };
+
+  // Dynamic validation schema
+  const getValidationSchema = (showPasswordFields) => {
+    return Yup.object().shape({
+      email: Yup.string().email("Provide a valid email address").required("Required"),
+      location: Yup.string().min(3, "Provide your location").required("Required"),
+      username: Yup.string().min(3, "Provide a valid username").required("Required"),
+      currentPassword: showPasswordFields
+        ? Yup.string().min(6, "Password must be at least 6 characters").required("Required")
+        : Yup.string(),
+      newPassword: showPasswordFields
+        ? Yup.string().min(6, "Password must be at least 6 characters").required("Required")
+        : Yup.string(),
+      confirmPassword: showPasswordFields
+        ? Yup.string()
+            .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
+            .required("Required")
+        : Yup.string(),
+    });
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.wrapper}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack();
+          }}
+          style={[styles.backBtn, styles.buttonWrap]}
+        >
+          <Icon name="backbutton" size={26} />
+        </TouchableOpacity>
         <View style={styles.upperRow}>
           <View style={styles.upperButtons}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
-              <Icon name="backbutton" size={26} />
-            </TouchableOpacity>
             <Text style={styles.topprofileheading}>Profile settings</Text>
           </View>
           <View style={styles.lowerheader}>
@@ -140,11 +159,10 @@ const UserDetails = () => {
       <ScrollView>
         <View style={styles.detailsWrapper}>
           <View style={styles.imageWrapper}>
-            {profilePicture ? (
-              <Image
-                source={{ uri: localProfilePicture ? localProfilePicture : `${BACKEND_PORT}${profilePicture}` }}
-                style={styles.profileImage}
-              />
+            {localProfilePicture ? (
+              <Image source={{ uri: localProfilePicture }} style={styles.profileImage} />
+            ) : profilePicture ? (
+              <Image source={{ uri: `${BACKEND_PORT}${profilePicture}` }} style={styles.profileImage} />
             ) : (
               <Image source={require("../assets/images/userDefault.webp")} style={styles.profileImage} />
             )}
@@ -160,8 +178,11 @@ const UserDetails = () => {
                 email: userData.email || "",
                 location: userData.location || "",
                 username: userData.username || "",
+                currentPassword: "",
+                newPassword: "",
+                confirmPassword: "",
               }}
-              validationSchema={validationSchema}
+              validationSchema={getValidationSchema(showPasswordFields)}
               onSubmit={(values) => updateUserProfile(values)}
             >
               {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldTouched, touched }) => (
@@ -214,7 +235,80 @@ const UserDetails = () => {
                     </View>
                     {touched.location && errors.location && <Text style={styles.errorMessage}>{errors.location}</Text>}
                   </View>
-                  <Button
+                  <TouchableOpacity
+                    style={styles.changePasswordButton}
+                    onPress={() => setShowPasswordFields(!showPasswordFields)}
+                  >
+                    <Text style={styles.changePasswordButtonText}>
+                      {showPasswordFields ? "Cancel Change Password" : "Change Password ?"}
+                    </Text>
+                  </TouchableOpacity>
+                  {showPasswordFields && (
+                    <>
+                      <View style={styles.wrapper}>
+                        <Text style={styles.label}>Current Password</Text>
+                        <View
+                          style={[styles.inputWrapper, touched.currentPassword && { borderColor: COLORS.secondary }]}
+                        >
+                          <TextInput
+                            placeholder="Enter current password"
+                            onFocus={() => setFieldTouched("currentPassword")}
+                            onBlur={() => setFieldTouched("currentPassword", "")}
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            secureTextEntry
+                            style={{ flex: 1 }}
+                            value={values.currentPassword}
+                            onChangeText={handleChange("currentPassword")}
+                          />
+                        </View>
+                        {touched.currentPassword && errors.currentPassword && (
+                          <Text style={styles.errorMessage}>{errors.currentPassword}</Text>
+                        )}
+                      </View>
+                      <View style={styles.wrapper}>
+                        <Text style={styles.label}>New Password</Text>
+                        <View style={[styles.inputWrapper, touched.newPassword && { borderColor: COLORS.secondary }]}>
+                          <TextInput
+                            placeholder="Enter new password"
+                            onFocus={() => setFieldTouched("newPassword")}
+                            onBlur={() => setFieldTouched("newPassword", "")}
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            secureTextEntry
+                            style={{ flex: 1 }}
+                            value={values.newPassword}
+                            onChangeText={handleChange("newPassword")}
+                          />
+                        </View>
+                        {touched.newPassword && errors.newPassword && (
+                          <Text style={styles.errorMessage}>{errors.newPassword}</Text>
+                        )}
+                      </View>
+                      <View style={styles.wrapper}>
+                        <Text style={styles.label}>Confirm New Password</Text>
+                        <View
+                          style={[styles.inputWrapper, touched.confirmPassword && { borderColor: COLORS.secondary }]}
+                        >
+                          <TextInput
+                            placeholder="Confirm new password"
+                            onFocus={() => setFieldTouched("confirmPassword")}
+                            onBlur={() => setFieldTouched("confirmPassword", "")}
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            secureTextEntry
+                            style={{ flex: 1 }}
+                            value={values.confirmPassword}
+                            onChangeText={handleChange("confirmPassword")}
+                          />
+                        </View>
+                        {touched.confirmPassword && errors.confirmPassword && (
+                          <Text style={styles.errorMessage}>{errors.confirmPassword}</Text>
+                        )}
+                      </View>
+                    </>
+                  )}
+                  <ButtonMain
                     title={"Update Profile"}
                     onPress={isValid ? handleSubmit : inValidForm}
                     isValid={isValid}
@@ -224,11 +318,7 @@ const UserDetails = () => {
               )}
             </Formik>
           ) : (
-            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-              <View style={styles.loginBtn}>
-                <Text style={styles.menuText}>LOGIN</Text>
-              </View>
-            </TouchableOpacity>
+            <Text>Please login to edit your profile.</Text>
           )}
         </View>
       </ScrollView>
