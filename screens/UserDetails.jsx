@@ -28,6 +28,8 @@ const UserDetails = () => {
   const [userId, setUserId] = useState(null);
   const { userData, userLogin, updateUserData } = useContext(AuthContext);
 
+  const [localProfilePicture, setLocalProfilePicture] = useState(null);
+
   useEffect(() => {
     if (!userLogin) {
       setUserId(1);
@@ -46,8 +48,6 @@ const UserDetails = () => {
       { text: "Continue", onPress: () => {} },
     ]);
   };
-
-  const renewData = () => {};
 
   const successUpdate = () => {
     Alert.alert(
@@ -89,6 +89,7 @@ const UserDetails = () => {
         console.log("Updated User Data:", response.data);
         await updateUserData(response.data); // Update user data in context with response data
         successUpdate();
+        setLocalProfilePicture(null); //RESETTing after success update
       }
     } catch (err) {
       console.log(err);
@@ -116,6 +117,7 @@ const UserDetails = () => {
       const pickedUri = pickerResult.assets[0].uri;
       console.log("Picked Image URI:", pickedUri);
       setProfilePicture(pickedUri);
+      setLocalProfilePicture(pickedUri); //setting local imG
     }
   };
 
@@ -139,9 +141,12 @@ const UserDetails = () => {
         <View style={styles.detailsWrapper}>
           <View style={styles.imageWrapper}>
             {profilePicture ? (
-              <Image source={{ uri: `${BACKEND_PORT}${profilePicture}` }} style={styles.profileImage} />
+              <Image
+                source={{ uri: localProfilePicture ? localProfilePicture : `${BACKEND_PORT}${profilePicture}` }}
+                style={styles.profileImage}
+              />
             ) : (
-              <Image source={require("../assets/images/profile.webp")} style={styles.profileImage} />
+              <Image source={require("../assets/images/userDefault.webp")} style={styles.profileImage} />
             )}
             <TouchableOpacity style={styles.editpencil} onPress={pickImage}>
               <View styles={styles.pencilWrapper}>

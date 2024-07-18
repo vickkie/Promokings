@@ -8,6 +8,7 @@ import Carousel from "../components/home/Carousel";
 import Headings from "../components/home/Headings";
 import ProductsRow from "../components/products/ProductsRow";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { BACKEND_PORT } from "@env";
 
 import Icon from "../constants/icons";
 import { AuthContext } from "../components/auth/AuthContext";
@@ -83,13 +84,13 @@ const Home = () => {
                 }}
                 style={[styles.buttonWrap2, {}]}
               >
-                {!userLogin ? (
-                  <Icon name="user" size={24} color="#fff" />
-                ) : (
+                {userLogin !== null && userData && userData.profilePicture !== null ? (
                   <Image
-                    source={require("../assets/images/profile.webp")}
+                    source={{ uri: `${BACKEND_PORT}${userData.profilePicture}` }}
                     style={{ height: 52, width: 52, borderRadius: 100 }}
                   />
+                ) : (
+                  <Icon name="user" size={24} color="#fff" />
                 )}
               </TouchableOpacity>
             </View>

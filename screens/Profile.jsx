@@ -1,18 +1,29 @@
-import React, { useContext } from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Alert } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { ScrollView, View, Text, Image, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import styles from "./profile.style";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import styles from "./profile.style";
 import { COLORS, SIZES } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
 import Toast from "react-native-toast-message";
 import Icon from "../constants/icons";
+import { BACKEND_PORT } from "@env";
 
 const Profile = () => {
   const navigation = useNavigation();
-  const { userData, userLogout } = useContext(AuthContext);
+  const { userData, userLogout, userLogin } = useContext(AuthContext);
+
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    if (!userLogin) {
+      setUserId(1);
+    } else if (userData && userData._id) {
+      setUserId(userData._id);
+    }
+  }, [userLogin, userData]);
 
   const clearCache = () => {
     Alert.alert(
@@ -74,7 +85,7 @@ const Profile = () => {
           text: "Continue",
           onPress: () => {
             userLogout();
-            showToast("success", "You have been  logged out", "Thankyou for being with us ");
+            showToast("success", "You have been logged out", "Thank you for being with us");
           },
         },
       ],
@@ -98,7 +109,11 @@ const Profile = () => {
           <Image source={require("../assets/images/profilecover.webp")} style={styles.cover} />
         </View>
         <View style={styles.profileContainer}>
-          <Image source={require("../assets/images/profile-picture.webp")} style={styles.profile} />
+          {userLogin !== null && userData && userData.profilePicture !== null ? (
+            <Image source={{ uri: `${BACKEND_PORT}${userData.profilePicture}` }} style={styles.profile} />
+          ) : (
+            <Image source={require("../assets/images/userDefault.webp")} style={styles.profile} />
+          )}
           <Text style={styles.name}>{userData ? userData.name : "Please login to account"}</Text>
 
           {userData ? (
