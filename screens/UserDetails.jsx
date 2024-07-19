@@ -318,7 +318,7 @@ const UserDetails = () => {
               )}
             </Formik>
           ) : (
-            <Text>Please login to edit your profile.</Text>
+            <Text style={styles.pleaseLogin}>Please login to edit your profile.</Text>
           )}
         </View>
       </ScrollView>

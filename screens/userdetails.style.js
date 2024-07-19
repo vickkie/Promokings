@@ -219,6 +219,12 @@ const styles = StyleSheet.create({
   changePasswordButtonText: {
     fontFamily: "medium",
   },
+  pleaseLogin: {
+    fontFamily: "regular",
+    textAlign: "center",
+    marginVertical: SIZES.xxLarge,
+    fontSize: SIZES.medium,
+  },
 });
 
 export default styles;

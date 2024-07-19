@@ -75,7 +75,7 @@ const ProductsCardView = ({ item }) => {
     >
       <View style={styles.container}>
         <View style={styles.imageContainer}>
-          <Animated.Image source={{ uri: item.imageUrl }} style={styles.image} sharedTransitionTag={transitionTag} />
+          <Image source={{ uri: item.imageUrl }} style={styles.image} sharedTransitionTag={transitionTag} />
         </View>
         <View style={styles.details}>
           <Text style={styles.title} numberOfLines={1}>

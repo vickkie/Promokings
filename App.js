@@ -26,7 +26,7 @@ import { CartProvider } from "./contexts/CartContext";
 import { WishProvider } from "./contexts/WishContext";
 
 enableScreens();
-enableLayoutAnimations(true);
+// enableLayoutAnimations(true);
 
 const Stack = createNativeStackNavigator();
 
