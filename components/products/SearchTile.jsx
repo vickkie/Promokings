@@ -1,6 +1,5 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
 import React from "react";
-import { COLORS, SIZES, SHADOWS } from "../../constants";
 import styles from "./searchtile.style";
 import Animated from "react-native-reanimated";
 

@@ -2,11 +2,8 @@ import React, { useState, useContext, useEffect } from "react";
 import styles from "./categories.style";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { COLORS } from "../constants/index";
-import { Ionicons } from "@expo/vector-icons";
 import CategoriesList from "../components/products/CategoriesList";
 import { useNavigation } from "@react-navigation/native";
-import BackBtn from "../components/BackBtn";
 import Icon from "../constants/icons";
 import { useCart } from "../contexts/CartContext";
 

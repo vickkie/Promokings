@@ -7,18 +7,26 @@ import Icon from "../constants/icons";
 const Tab = createBottomTabNavigator();
 
 const screenOptions = {
-  toBarShowLabel: false,
+  tabBarShowLabel: true,
   tabBarHideOnKeyboard: true,
   headerShown: false,
-  tabBarStyles: {
+  tabBarStyle: {
     position: "absolute",
     bottom: 0,
     right: 0,
     left: 0,
     elevation: 0,
-    height: 90,
+    height: 50,
     borderRadius: 100,
+    borderWidth: 1,
+    borderColor: COLORS.themey,
   },
+  tabBarLabelStyle: {
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  tabBarActiveTintColor: COLORS.themeb,
+  tabBarInactiveTintColor: COLORS.gray2,
 };
 
 const BottomTabNavigation = () => {
@@ -28,60 +36,50 @@ const BottomTabNavigation = () => {
         name="Home"
         component={Home}
         options={{
-          tabBarIcon: ({ focused }) => {
-            return (
-              <Icon name={focused ? "homefilled" : "home"} size={24} color={focused ? COLORS.themey : COLORS.gray2} />
-            );
-          },
+          tabBarIcon: ({ focused }) => (
+            <Icon name={focused ? "homefilled" : "home"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
+          ),
+          tabBarLabel: "Home",
         }}
-      ></Tab.Screen>
-
+      />
       <Tab.Screen
         name="Categories"
         component={Categories}
         options={{
-          tabBarIcon: ({ focused }) => {
-            return (
-              <Icon
-                name={focused ? "menu2filled" : "menu2"}
-                size={24}
-                color={focused ? COLORS.primary : COLORS.gray2}
-              />
-            );
-          },
+          tabBarIcon: ({ focused }) => (
+            <Icon name={focused ? "menu2filled" : "menu2"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
+          ),
+          tabBarLabel: "Categories",
         }}
-      ></Tab.Screen>
+      />
       <Tab.Screen
         name="Search"
         component={Search}
         options={{
-          tabBarIcon: ({ focused }) => {
-            return (
-              <Icon
-                name={focused ? "searchcirclefilled" : "searchcircle"}
-                size={24}
-                color={focused ? COLORS.primary : COLORS.gray2}
-              />
-            );
-          },
+          tabBarIcon: ({ focused }) => (
+            <Icon
+              name={focused ? "searchcirclefilled" : "searchcircle"}
+              size={24}
+              color={focused ? COLORS.primary : COLORS.gray2}
+            />
+          ),
+          tabBarLabel: "Search",
         }}
-      ></Tab.Screen>
-
+      />
       <Tab.Screen
         name="Profile"
         component={Profile}
         options={{
-          tabBarIcon: ({ focused }) => {
-            return (
-              <Icon
-                name={focused ? "usercirclefilled" : "usercircle"}
-                size={24}
-                color={focused ? COLORS.primary : COLORS.gray2}
-              />
-            );
-          },
+          tabBarIcon: ({ focused }) => (
+            <Icon
+              name={focused ? "usercirclefilled" : "usercircle"}
+              size={24}
+              color={focused ? COLORS.primary : COLORS.gray2}
+            />
+          ),
+          tabBarLabel: "Profile",
         }}
-      ></Tab.Screen>
+      />
     </Tab.Navigator>
   );
 };

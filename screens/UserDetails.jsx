@@ -10,9 +10,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
-import Button from "../components/Button";
 import * as ImagePicker from "expo-image-picker";
-import useFetch from "../hook/useFetch";
 import ButtonMain from "../components/ButtonMain";
 import Toast from "react-native-toast-message";
 

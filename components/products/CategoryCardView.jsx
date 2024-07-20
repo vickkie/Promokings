@@ -1,6 +1,5 @@
 import { Text, TouchableOpacity, View, Image } from "react-native";
 import React from "react";
-import { COLORS, SIZES } from "../../constants";
 import styles from "./categorycardview.style";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";

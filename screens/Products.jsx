@@ -4,8 +4,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./products.style";
 import ProductList from "../components/products/ProductList";
 import Icon from "../constants/icons";
-import { COLORS } from "../constants";
-import { array } from "yup";
 import { useCart } from "../contexts/CartContext";
 import { useWish } from "../contexts/WishContext";
 

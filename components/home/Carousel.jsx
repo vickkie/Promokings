@@ -6,8 +6,8 @@ import { COLORS } from "../../constants";
 // Use React.memo to prevent unnecessary re-renders
 const Carousel = () => {
   const sliders = [
-    require("../../assets/images/promo/banner2.webp"),
     require("../../assets/images/promo/Banner-x.webp"),
+    require("../../assets/images/promo/banner2.webp"),
     // require("../../assets/images/promo/banner3.webp"),
     require("../../assets/images/promo/banner1.webp"),
     require("../../assets/images/promo/banner4.webp"),

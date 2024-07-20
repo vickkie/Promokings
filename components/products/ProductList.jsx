@@ -17,10 +17,6 @@ const ProductList = () => {
   const scrollRef = useRef(null);
   const [showScrollTopButton, setShowScrollTopButton] = useState(false);
 
-  const handleRefetch = () => {
-    refetch();
-  };
-
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     try {
@@ -55,7 +51,7 @@ const ProductList = () => {
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorMessage}>Sorry, no products available</Text>
-        <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
+        <TouchableOpacity onPress={refetch} style={styles.retryButton}>
           <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
           <Text style={styles.retryButtonText}>Retry Again</Text>
         </TouchableOpacity>
@@ -67,7 +63,7 @@ const ProductList = () => {
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorMessage}>Error loading products</Text>
-        <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
+        <TouchableOpacity onPress={refetch} style={styles.retryButton}>
           <Text style={styles.retryButtonText}>Retry Fetch</Text>
         </TouchableOpacity>
       </View>

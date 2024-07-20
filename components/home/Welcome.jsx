@@ -1,8 +1,6 @@
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { View, TouchableOpacity, TextInput } from "react-native";
 import React from "react";
 import styles from "./welcome.style";
-import { COLORS, SIZES } from "../../constants";
 
 import { useNavigation } from "@react-navigation/native";
 import Icon from "../../constants/icons";
@@ -11,9 +9,6 @@ const Welcome = () => {
   const navigation = useNavigation();
   return (
     <View>
-      {/* <View style={styles.container}>
-        <Text style={styles.welcomeTxt(COLORS.primary, SIZES.xSmall)}>For all of your promotional items</Text>
-      </View> */}
       <View name="" style={styles.searchContainer}>
         <TouchableOpacity>
           <Icon name="search" size={24} style={styles.searchIcon} />
