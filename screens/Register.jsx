@@ -71,7 +71,7 @@ const Register = ({ navigation }) => {
       <SafeAreaView style={{ marginHorizontal: 20 }}>
         <View>
           <BackBtn onPress={() => navigation.goBack()} />
-          <Image source={require("../assets/images/promoshop.png")} style={styles.cover} />
+          <Image source={require("../assets/images/promoshop1.webp")} style={styles.cover} />
 
           <Text style={styles.title}>Promokings SignUp</Text>
 

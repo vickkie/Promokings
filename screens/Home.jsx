@@ -1,7 +1,6 @@
 import { Text, TouchableOpacity, View, ScrollView, Image } from "react-native";
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons, Fontisto } from "@expo/vector-icons";
 import styles from "./home.style";
 import { Welcome } from "../components/home";
 import Carousel from "../components/home/Carousel";
@@ -12,7 +11,6 @@ import { BACKEND_PORT } from "@env";
 
 import Icon from "../constants/icons";
 import { AuthContext } from "../components/auth/AuthContext";
-import { COLORS, SIZES } from "../constants";
 import useFetch from "../hook/useFetch";
 import { useCart } from "../contexts/CartContext";
 
@@ -51,6 +49,18 @@ const Home = () => {
     handleItemCountChange(itemCount);
   }, [itemCount]);
 
+  const renderProfilePicture = () => {
+    if (!userLogin) {
+      // User not logged in
+      return <Icon name="user" size={24} color="#000" />;
+    }
+    if (userData && userData.profilePicture) {
+      return <Image source={{ uri: `${BACKEND_PORT}${userData.profilePicture}` }} style={styles.profilePicture} />;
+    }
+
+    return <Image source={require("../assets/images/userDefault.webp")} style={styles.profilePicture} />;
+  };
+
   return (
     <SafeAreaView style={styles.topSafeview}>
       <View style={styles.topWelcomeWrapper}>
@@ -78,20 +88,8 @@ const Home = () => {
                 </View>
               </View>
 
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("UserDetails");
-                }}
-                style={[styles.buttonWrap2, {}]}
-              >
-                {userLogin !== null && userData && userData.profilePicture !== null ? (
-                  <Image
-                    source={{ uri: `${BACKEND_PORT}${userData.profilePicture}` }}
-                    style={{ height: 52, width: 52, borderRadius: 100 }}
-                  />
-                ) : (
-                  <Icon name="user" size={24} color="#fff" />
-                )}
+              <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap2}>
+                {renderProfilePicture()}
               </TouchableOpacity>
             </View>
           </View>

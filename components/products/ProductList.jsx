@@ -1,4 +1,4 @@
-import { FlatList, Text, View, ActivityIndicator, TouchableOpacity } from "react-native";
+import { FlatList, Text, View, ActivityIndicator, TouchableOpacity, RefreshControl } from "react-native";
 import React, { useRef, useState, useCallback } from "react";
 import { COLORS, SIZES } from "../../constants";
 import useFetch from "../../hook/useFetch";
@@ -12,6 +12,7 @@ const ProductList = () => {
   const route = useRoute();
   const { routeParam } = route.params; // Accessing routeParam from route.params
   const { data, isLoading, error, refetch } = useFetch(routeParam);
+  const [refreshing, setRefreshing] = useState(false);
 
   const scrollRef = useRef(null);
   const [showScrollTopButton, setShowScrollTopButton] = useState(false);
@@ -19,6 +20,17 @@ const ProductList = () => {
   const handleRefetch = () => {
     refetch();
   };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    try {
+      refetch(); // Call refetch as synchronous
+    } catch (error) {
+      console.error("Failed to refresh data", error);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch]);
 
   const handleScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y;
@@ -52,7 +64,6 @@ const ProductList = () => {
   }
 
   if (error) {
-    console.log(error);
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorMessage}>Error loading products</Text>
@@ -75,6 +86,7 @@ const ProductList = () => {
         numColumns={2}
         data={data}
         renderItem={({ item }) => <ProductsCardView item={item} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
       {showScrollTopButton && (
         <View style={styles.toTopButton}>

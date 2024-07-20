@@ -3,15 +3,15 @@ import { StyleSheet, View } from "react-native";
 import { SliderBox } from "react-native-image-slider-box";
 import { COLORS } from "../../constants";
 
+// Use React.memo to prevent unnecessary re-renders
 const Carousel = () => {
   const sliders = [
-    require("../../assets/images/promo/banner22.webp"),
-    require("../../assets/images/promo/banner3.webp"),
+    require("../../assets/images/promo/banner2.webp"),
+    require("../../assets/images/promo/Banner-x.webp"),
+    // require("../../assets/images/promo/banner3.webp"),
     require("../../assets/images/promo/banner1.webp"),
     require("../../assets/images/promo/banner4.webp"),
     require("../../assets/images/promo/final-banner.webp"),
-
-    "https://promokings.co.ke/wp-content/uploads/2023/04/promo-signage.jpg",
   ];
 
   return (

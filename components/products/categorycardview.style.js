@@ -3,23 +3,23 @@ import { COLORS, SIZES } from "../../constants";
 
 const styles = StyleSheet.create({
   container: {
-    width: SIZES.width / 2 - 14,
+    width: SIZES.width - 14,
     height: SIZES.width / 2,
     marginEnd: 6,
     borderRadius: SIZES.medium,
-    backgroundColor: COLORS.secondary,
+    backgroundColor: COLORS.themeg,
     marginBottom: SIZES.small,
   },
   imageContainer: {
     flex: 1,
-    width: SIZES.width / 2 - 24,
+    width: SIZES.width - 19,
     marginTop: SIZES.small / 2 - 3,
-    marginLeft: SIZES.xxSmall,
+    marginLeft: SIZES.xxSmall - 4,
     overflow: "hidden",
     borderRadius: SIZES.small,
   },
   image: {
-    aspectRatio: 1,
+    aspectRatio: 2,
     resizeMode: "cover",
   },
   details: {

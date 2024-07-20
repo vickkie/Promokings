@@ -102,6 +102,19 @@ const Profile = () => {
     });
   };
 
+  const renderProfilePicture = () => {
+    if (!userLogin) {
+      // User not logged in
+      <Image source={require("../assets/images/userDefault.webp")} style={styles.profile} />;
+    }
+
+    if (userData && userData.profilePicture) {
+      return <Image source={{ uri: `${BACKEND_PORT}${userData.profilePicture}` }} style={styles.profile} />;
+    }
+
+    return <Image source={require("../assets/images/userDefault.webp")} style={styles.profile} />;
+  };
+
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
@@ -110,11 +123,9 @@ const Profile = () => {
           <Image source={require("../assets/images/profilecover.webp")} style={styles.cover} />
         </View>
         <View style={styles.profileContainer}>
-          {userLogin !== null && userData && userData.profilePicture !== null ? (
-            <Image source={{ uri: `${BACKEND_PORT}${userData.profilePicture}` }} style={styles.profile} />
-          ) : (
-            <Image source={require("../assets/images/userDefault.webp")} style={styles.profile} />
-          )}
+          <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap2}>
+            {renderProfilePicture()}
+          </TouchableOpacity>
           <Text style={styles.name}>{userData ? userData.name : "Please login to account"}</Text>
 
           {userData ? (

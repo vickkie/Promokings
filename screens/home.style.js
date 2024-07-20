@@ -116,6 +116,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themeg,
     borderRadius: SIZES.medium,
   },
+  profilePicture: {
+    height: 52,
+    width: 52,
+    borderRadius: 100,
+  },
 });
 
 export default styles;

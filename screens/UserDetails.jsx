@@ -14,6 +14,7 @@ import Button from "../components/Button";
 import * as ImagePicker from "expo-image-picker";
 import useFetch from "../hook/useFetch";
 import ButtonMain from "../components/ButtonMain";
+import Toast from "react-native-toast-message";
 
 const UserDetails = () => {
   const navigation = useNavigation();
@@ -21,7 +22,7 @@ const UserDetails = () => {
   const [profilePicture, setProfilePicture] = useState(null);
   const [localProfilePicture, setLocalProfilePicture] = useState(null); // New state variable for local image URI
   const [userId, setUserId] = useState(null);
-  const { userData, userLogin, updateUserData } = useContext(AuthContext);
+  const { userData, userLogin, updateUserData, userLogout } = useContext(AuthContext);
   const [showPasswordFields, setShowPasswordFields] = useState(false); // State for toggling password fields
 
   useEffect(() => {
@@ -135,6 +136,38 @@ const UserDetails = () => {
     });
   };
 
+  const showToast = (type, text1, text2) => {
+    Toast.show({
+      type: type,
+      text1: text1,
+      text2: text2 ? text2 : "",
+      visibilityTime: 3000,
+    });
+  };
+
+  const logout = () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => {},
+          style: "cancel",
+        },
+        {
+          text: "Continue",
+          onPress: () => {
+            userLogout();
+            showToast("success", "You have been logged out", "Thank you for being with us");
+            navigation.navigate("Home");
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.wrapper}>
@@ -150,6 +183,9 @@ const UserDetails = () => {
           <View style={styles.upperButtons}>
             <Text style={styles.topprofileheading}>Profile settings</Text>
           </View>
+          <TouchableOpacity onPress={logout} style={styles.outWrap}>
+            <Icon name="logout" size={26} />
+          </TouchableOpacity>
           <View style={styles.lowerheader}>
             <Text style={styles.heading}>Edit your profile</Text>
             <Text style={styles.statement}>You can edit your profile from here</Text>
@@ -172,7 +208,7 @@ const UserDetails = () => {
               </View>
             </TouchableOpacity>
           </View>
-          {userLogin ? (
+          {userLogin && userData !== null ? (
             <Formik
               initialValues={{
                 email: userData.email || "",

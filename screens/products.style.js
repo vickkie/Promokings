@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
 
   wrapper: {
     flex: 1,
-    backgroundColor: COLORS.themeg,
+    backgroundColor: COLORS.themew,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     position: "absolute",
-    backgroundColor: COLORS.themew,
+    backgroundColor: COLORS.themeg,
     borderRadius: SIZES.large,
     top: SIZES.small,
     minHeight: 100,
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     fontSize: SIZES.large,
   },
   buttonWrap: {
-    backgroundColor: COLORS.hyperlight,
+    backgroundColor: COLORS.white,
     padding: 15,
     borderRadius: 100,
     justifyContent: "center",
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   buttonWrap1: {
-    backgroundColor: COLORS.hyperlight,
+    backgroundColor: COLORS.white,
     padding: 15,
     borderRadius: 100,
     justifyContent: "center",

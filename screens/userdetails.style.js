@@ -142,6 +142,7 @@ const styles = StyleSheet.create({
     marginTop: SIZES.xSmall,
     backgroundColor: COLORS.themew,
     borderRadius: SIZES.medium,
+    minHeight: SIZES.height - 200,
   },
   profileImage: {
     position: "relative",
@@ -224,6 +225,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: SIZES.xxLarge,
     fontSize: SIZES.medium,
+  },
+  outWrap: {
+    backgroundColor: COLORS.themeg,
+    padding: 15,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: 10,
+    right: 10,
   },
 });
 

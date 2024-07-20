@@ -28,6 +28,7 @@ import MinusIcon from "../assets/svg/minus-circle.svg";
 import AddIcon from "../assets/svg/add-circle.svg";
 import DownIcon from "../assets/svg/down.svg";
 import UpIcon from "../assets/svg/up.svg";
+import LogoutIcon from "../assets/svg/logout.svg";
 
 const iconMap = {
   home: HomeIcon,
@@ -58,6 +59,7 @@ const iconMap = {
   delivery: Delivery,
   trolley: TrolleyIcon,
   pencil: PencilIcon,
+  logout: LogoutIcon,
 };
 
 const Icon = ({ name, size = 24, ...props }) => {

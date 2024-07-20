@@ -21,7 +21,7 @@ const ProductDetails = ({ navigation }) => {
   const [feedback, setFeedback] = useState(null); // Added for feedback handling
 
   const sizes = ["XS", "S", "M", "L", "XL"];
-  const parsedPrice = parseFloat(item.price.replace(/[^0-9.-]+/g, ""));
+  const parsedPrice = item.price ? parseFloat(item.price.replace(/[^0-9.-]+/g, "")) : 0;
   const [shortDescription, setShortDescription] = useState("");
 
   const { isLoading: isLoadingCart, error: cartError, addCart } = usePost("carts/");
@@ -95,7 +95,7 @@ const ProductDetails = ({ navigation }) => {
   };
 
   const addToCart = async () => {
-    if (userId && item._id) {
+    if (userId && userLogin && item._id) {
       const cartData = {
         userId: userId,
         cartItem: item._id,

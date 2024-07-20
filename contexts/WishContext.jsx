@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState } from "react";
 const WishContext = createContext();
 
 export const WishProvider = ({ children }) => {
-  const [wishCount, setwishCount] = useState(10);
+  const [wishCount, setwishCount] = useState(0);
 
   const handleWishCountChange = (count) => {
     setwishCount(count);
