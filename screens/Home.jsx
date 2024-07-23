@@ -55,7 +55,8 @@ const Home = () => {
       return <Icon name="user" size={24} color="#000" />;
     }
     if (userData && userData.profilePicture) {
-      return <Image source={{ uri: `${BACKEND_PORT}${userData.profilePicture}` }} style={styles.profilePicture} />;
+      // console.log(userData.profilePicture);
+      return <Image source={{ uri: `${userData.profilePicture}` }} style={styles.profilePicture} />;
     }
 
     return <Image source={require("../assets/images/userDefault.webp")} style={styles.profilePicture} />;

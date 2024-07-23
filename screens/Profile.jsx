@@ -109,7 +109,7 @@ const Profile = () => {
     }
 
     if (userData && userData.profilePicture) {
-      return <Image source={{ uri: `${BACKEND_PORT}${userData.profilePicture}` }} style={styles.profile} />;
+      return <Image source={{ uri: `${userData.profilePicture}` }} style={styles.profile} />;
     }
 
     return <Image source={require("../assets/images/userDefault.webp")} style={styles.profile} />;
@@ -119,7 +119,7 @@ const Profile = () => {
     <ScrollView>
       <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor={COLORS.gray} />
-        <View style={{ width: "100%", height: SIZES.height / 3.3, overflow: "hidden" }}>
+        <View style={{ width: "100%", height: SIZES.height / 4, overflow: "hidden" }}>
           <Image source={require("../assets/images/profilecover.webp")} style={styles.cover} />
         </View>
         <View style={styles.profileContainer}>

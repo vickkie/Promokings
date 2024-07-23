@@ -9,10 +9,15 @@ import { AuthContext } from "../components/auth/AuthContext";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import axiosRetry from "axios-retry";
+
 import { BACKEND_PORT } from "@env";
 import * as ImagePicker from "expo-image-picker";
 import ButtonMain from "../components/ButtonMain";
 import Toast from "react-native-toast-message";
+
+// Global axios-retry
+axiosRetry(axios, { retries: 3 });
 
 const UserDetails = () => {
   const navigation = useNavigation();
@@ -77,6 +82,7 @@ const UserDetails = () => {
       }
 
       const endpoint = `${BACKEND_PORT}/api/user/updateProfile`;
+
       const response = await axios.put(endpoint, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -196,7 +202,7 @@ const UserDetails = () => {
             {localProfilePicture ? (
               <Image source={{ uri: localProfilePicture }} style={styles.profileImage} />
             ) : profilePicture ? (
-              <Image source={{ uri: `${BACKEND_PORT}${profilePicture}` }} style={styles.profileImage} />
+              <Image source={{ uri: `${profilePicture}` }} style={styles.profileImage} />
             ) : (
               <Image source={require("../assets/images/userDefault.webp")} style={styles.profileImage} />
             )}

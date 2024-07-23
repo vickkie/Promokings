@@ -5,10 +5,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.lightWhite,
+    paddingBottom: 60,
   },
 
   cover: {
-    height: 290,
+    height: 250,
     width: "100%",
     resizeMode: "cover",
   },
@@ -25,6 +26,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.primary,
     resizeMode: "cover",
     marginTop: -90,
+    // marginBottom: 50,
   },
   name: {
     fontFamily: "bold",
