@@ -74,6 +74,24 @@ npm start
 - requires a backend
 - dm to get access to full code
 
+5. building to apk or aab file
+
+preview version apk
+
+```
+  eas build -p android --profile preview
+
+```
+
+or
+
+custom profile
+
+```
+eas build -p android --profile <your profile>
+
+```
+
 ### Contributing
 
 If you'd like to contribute to this project, please follow the guidelines outlined in MIT license
