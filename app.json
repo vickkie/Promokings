@@ -4,7 +4,7 @@
     "slug": "promokings",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/promoking-logo.png",
+    "icon": "./assets/promoking-logoq.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/images/promo/pwa-maskable-512x512.png",
@@ -17,17 +17,17 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/promoking-logo.png",
+        "foregroundImage": "./assets/promoking-logoq.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.uzitrake.promokings"
     },
     "web": {
-      "favicon": "./assets/promoking-logo.png"
+      "favicon": "./assets/promoking-logoq.png"
     },
     "extra": {
       "eas": {
-        "projectId": "6d4ab8d5-3b4a-45fa-84a4-5dbd69dda829"
+        "projectId": "ad23615f-cdde-436a-abe8-7754069538dc"
       }
     },
     "owner": "uzitrake"

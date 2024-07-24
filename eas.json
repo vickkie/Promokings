@@ -3,6 +3,9 @@
     "preview": {
       "android": {
         "buildType": "apk"
+      },
+      "env":{
+        "BACKEND_PORT":"https://promokings-backend.vercel.app"
       }
     },
     "internal": {
