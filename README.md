@@ -1,6 +1,6 @@
 ## PromoKings App
-![epromoking](https://github.com/user-attachments/assets/bf9b6685-4d2d-45c6-9daa-c22613c8c148)
 
+![epromoking](https://github.com/user-attachments/assets/bf9b6685-4d2d-45c6-9daa-c22613c8c148)
 
 ### Overview
 
@@ -68,6 +68,11 @@ npm start
 
 
 ```
+
+4. more Requirements
+
+- requires a backend
+- dm to get access to full code
 
 ### Contributing
 
