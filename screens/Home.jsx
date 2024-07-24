@@ -14,6 +14,7 @@ import { AuthContext } from "../components/auth/AuthContext";
 import useFetch from "../hook/useFetch";
 import { useCart } from "../contexts/CartContext";
 import { COLORS } from "../constants";
+import LatestProducts from "../components/products/LatestProducts";
 
 const Home = () => {
   const { userData, userLogin, productCount } = useContext(AuthContext);
@@ -115,8 +116,10 @@ const Home = () => {
 
             <View style={styles.lowerWelcome}>
               <Carousel />
-              <Headings />
+              <Headings heading={"Top products"} />
               <ProductsRow />
+              <Headings heading={"Latest Products"} />
+              <LatestProducts />
             </View>
           </View>
         </ScrollView>

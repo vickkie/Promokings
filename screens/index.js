@@ -14,6 +14,7 @@ import Register from "./Register";
 import Categories from "./Categories";
 import Checkout from "./Checkout";
 import UserDetails from "./UserDetails";
+import LatestProducts from "../components/products/LatestProducts";
 
 export {
   Home,
@@ -32,4 +33,5 @@ export {
   Categories,
   Checkout,
   UserDetails,
+  LatestProducts,
 };

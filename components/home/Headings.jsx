@@ -6,14 +6,14 @@ import styles from "./headings.style";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "../../constants/icons";
 
-const Headings = () => {
+const Headings = ({ heading }) => {
   const routeParam = "products";
 
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Top products</Text>
+        <Text style={styles.headerTitle}>{heading}</Text>
         <TouchableOpacity
           onPress={() => {
             navigation.navigate("ProductList", { routeParam });

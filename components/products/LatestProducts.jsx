@@ -6,8 +6,8 @@ import ProductsCardView from "./ProductsCardView";
 import useFetch from "../../hook/useFetch";
 import { Ionicons } from "@expo/vector-icons";
 
-const ProductsRow = () => {
-  const { data, isLoading, error, refetch } = useFetch("products?limit=10&offset=0");
+const LatestProducts = () => {
+  const { data, isLoading, error, refetch } = useFetch("products?limit=10&offset=10");
 
   // Ensure data is treated as an array to avoid accessing .length of undefined
   const dataArray = Array.isArray(data) ? data : [];
@@ -19,7 +19,7 @@ const ProductsRow = () => {
   const keyExtractor = (item) => item._id;
 
   return (
-    <View style={[styles.container, { marginBottom: 20 }]}>
+    <View style={[styles.container, { marginBottom: 52 }]}>
       {isLoading ? (
         <ActivityIndicator size={SIZES.xxLarge} color={COLORS.primary} />
       ) : error ? (
@@ -43,12 +43,12 @@ const ProductsRow = () => {
           data={dataArray}
           keyExtractor={keyExtractor}
           renderItem={({ item }) => <ProductsCardView item={item} />}
-          horizontal
           contentContainerStyle={{ columnGap: 2 }}
+          horizontal
         />
       )}
     </View>
   );
 };
 
-export default ProductsRow;
+export default LatestProducts;

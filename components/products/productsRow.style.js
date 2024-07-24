@@ -4,7 +4,6 @@ import { COLORS, SIZES } from "../../constants";
 const styles = StyleSheet.create({
   container: {
     marginTop: SIZES.small,
-    marginBottom: 52,
     marginHorizontal: 6,
   },
   errorContainer: {
