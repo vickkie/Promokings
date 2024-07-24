@@ -13,12 +13,13 @@ const BackBtn = ({ onPress }) => {
 
 const styles = StyleSheet.create({
   backBtn: {
-    backgroundColor: COLORS.hyperlight,
+    backgroundColor: COLORS.white,
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
     padding: 15,
     maxWidth: 55,
+    marginTop: 10,
   },
 });
 

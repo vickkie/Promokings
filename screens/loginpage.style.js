@@ -3,10 +3,10 @@ import { COLORS, SIZES } from "../constants";
 
 const styles = StyleSheet.create({
   cover: {
-    height: SIZES.height / 3,
+    height: SIZES.height / 3.8,
     width: SIZES.width - 60,
     resizeMode: "contain",
-    marginBottom: SIZES.xxLarge,
+    marginBottom: SIZES.medium,
   },
 
   title: {
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     alignItems: "center",
     textAlign: "center",
-    marginBottom: SIZES.xxLarge,
+    marginBottom: SIZES.xLarge,
   },
 
   wrapper: {

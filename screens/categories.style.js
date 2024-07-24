@@ -23,8 +23,8 @@ const styles = StyleSheet.create({
   },
 
   upperRow: {
-    width: SIZES.width - 20,
-    marginHorizontal: SIZES.xSmall,
+    width: SIZES.width - 14,
+    marginHorizontal: SIZES.xSmall - 4,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

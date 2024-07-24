@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     // marginTop: SIZES.small - 2,
     backgroundColor: COLORS.white,
     borderRadius: SIZES.medium,
-    marginTop: 40,
+    marginTop: 10,
   },
   appBar: {
     flexDirection: "row",
@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.themeg,
     borderRadius: SIZES.medium,
+    marginTop: SIZES.xxSmall,
   },
   profilePicture: {
     height: 52,

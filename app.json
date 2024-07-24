@@ -7,20 +7,26 @@
     "icon": "./assets/promoking-logoq.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/images/promo/pwa-maskable-512x512.png",
+      "image": "./assets/promoking-logoq.png",
       "backgroundColor": "#fff"
     },
-    
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIStatusBarHidden": false, 
+        "UIStatusBarStyle": "UIStatusBarStyleDefault" 
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/promoking-logoq.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.uzitrake.promokings"
+      "package": "com.uzitrake.promokings",
+      "statusBar": {
+        "visible": true 
+      }
     },
     "web": {
       "favicon": "./assets/promoking-logoq.png"

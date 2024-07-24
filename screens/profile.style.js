@@ -33,12 +33,27 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     marginVertical: 3,
   },
+  loginhere: {
+    paddingTop: SIZES.medium,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: SIZES.xLarge,
+    flexDirection: "column",
+  },
+  regText: {
+    color: "#0e26f1",
+    fontSize: SIZES.medium,
+    textDecorationStyle: "solid",
+    textDecorationLine: "underline",
+    fontFamily: "medium",
+  },
   loginBtn: {
     backgroundColor: COLORS.secondary,
     padding: 2,
     borderWidth: 0.4,
     borderColor: COLORS.primary,
     borderRadius: SIZES.xxLarge,
+    width: SIZES.width / 4,
   },
   menuText: {
     fontFamily: "regular",

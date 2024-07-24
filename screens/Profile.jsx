@@ -118,7 +118,7 @@ const Profile = () => {
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
-        <StatusBar backgroundColor={COLORS.gray} />
+        <StatusBar backgroundColor={COLORS.themey} />
         <View style={{ width: "100%", height: SIZES.height / 4, overflow: "hidden" }}>
           <Image source={require("../assets/images/profilecover.webp")} style={styles.cover} />
         </View>
@@ -133,11 +133,17 @@ const Profile = () => {
               <Text style={styles.menuText}>{userData.email}</Text>
             </View>
           ) : (
-            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-              <View style={styles.loginBtn}>
-                <Text style={styles.menuText}>LOGIN</Text>
-              </View>
-            </TouchableOpacity>
+            <View style={styles.loginhere}>
+              <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                <View style={styles.loginBtn}>
+                  <Text style={styles.menuText}>LOGIN</Text>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+                <Text style={styles.regText}>Don't have an account? Register</Text>
+              </TouchableOpacity>
+            </View>
           )}
 
           {userData && (

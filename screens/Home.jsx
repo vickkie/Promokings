@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View, ScrollView, Image } from "react-native";
+import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar } from "react-native";
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./home.style";
@@ -13,6 +13,7 @@ import Icon from "../constants/icons";
 import { AuthContext } from "../components/auth/AuthContext";
 import useFetch from "../hook/useFetch";
 import { useCart } from "../contexts/CartContext";
+import { COLORS } from "../constants";
 
 const Home = () => {
   const { userData, userLogin, productCount } = useContext(AuthContext);
@@ -64,6 +65,7 @@ const Home = () => {
 
   return (
     <SafeAreaView style={styles.topSafeview}>
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.themey} />
       <View style={styles.topWelcomeWrapper}>
         <View style={styles.appBarWrapper}>
           <View style={styles.appBar}>
