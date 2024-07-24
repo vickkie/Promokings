@@ -1,6 +1,6 @@
 ## PromoKings App
+![epromoking](https://github.com/user-attachments/assets/bf9b6685-4d2d-45c6-9daa-c22613c8c148)
 
-mtp://OPPO_SDM660-MTP__SN%3A2C48185F_c1b0acd4/Internal%20shared%20storage/epromoking.jpg
 
 ### Overview
 
