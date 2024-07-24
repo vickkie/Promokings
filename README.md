@@ -1,5 +1,7 @@
 ## PromoKings App
 
+mtp://OPPO_SDM660-MTP__SN%3A2C48185F_c1b0acd4/Internal%20shared%20storage/epromoking.jpg
+
 ### Overview
 
 The **PromoKings App** is a React Native application designed to deliver a seamless experience in product purchasing. This project uses Expo for development and includes multiple dependencies to enhance functionality and user experience.
