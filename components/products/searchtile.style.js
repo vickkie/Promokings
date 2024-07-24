@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     padding: SIZES.medium,
     borderRadius: SIZES.medium,
     backgroundColor: COLORS.white,
-    ...SHADOWS.medium,
+    ...SHADOWS.small,
     shadowColor: COLORS.lightWhite,
     marginHorizontal: SIZES.small,
     marginTop: SIZES.small,

@@ -10,6 +10,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     borderRadius: SIZES.medium,
   },
+  none: {
+    display: "none",
+  },
   wrapper: {
     marginHorizontal: 10,
     borderRadius: SIZES.medium,

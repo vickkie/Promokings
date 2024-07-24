@@ -10,7 +10,14 @@ const SearchTile = ({ item }) => {
 
   return (
     <View>
-      <TouchableOpacity onPress={() => navigation.navigate("ProductDetails", (item = { item }))}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("ProductDetails", {
+            item: item,
+            itemid: item._id,
+          });
+        }}
+      >
         <View style={styles.container}>
           <Animated.Image source={{ uri: item.imageUrl }} style={styles.image} sharedTransitionTag={`${item.id}`} />
           <View style={styles.textContainer}>

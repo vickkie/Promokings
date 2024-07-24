@@ -89,7 +89,7 @@ const CartList = ({ onItemCountChange }) => {
       <View style={styles.container}>
         <FlatList
           keyExtractor={(item) => item._id.toString()}
-          contentContainerStyle={[{ columnGap: SIZES.medium }, styles.wrapper]}
+          contentContainerStyle={[{ columnGap: SIZES.medium }, products.length > 0 ? styles.wrapper : styles.none]}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           numColumns={1}
           scrollEnabled={false}

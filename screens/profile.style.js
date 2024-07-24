@@ -16,7 +16,11 @@ const styles = StyleSheet.create({
   profileContainer: {
     flex: 1,
     alignItems: "center",
-    minHeight: SIZES.height / 1.5,
+    minHeight: SIZES.height / 1.5 + 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: COLORS.lightWhite,
+    marginTop: -20,
   },
   profile: {
     height: 155,
@@ -41,7 +45,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   regText: {
-    color: "#0e26f1",
+    color: "#000",
     fontSize: SIZES.medium,
     textDecorationStyle: "solid",
     textDecorationLine: "underline",
@@ -54,6 +58,14 @@ const styles = StyleSheet.create({
     borderColor: COLORS.primary,
     borderRadius: SIZES.xxLarge,
     width: SIZES.width / 4,
+  },
+
+  nameBtn: {
+    backgroundColor: COLORS.secondary,
+    padding: 2,
+    borderWidth: 0.4,
+    borderColor: COLORS.primary,
+    borderRadius: SIZES.xxLarge,
   },
   menuText: {
     fontFamily: "regular",

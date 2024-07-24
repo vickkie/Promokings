@@ -37,10 +37,6 @@ const Search = () => {
       }
 
       setSearchResults(response.data);
-
-      console.log("======================");
-      console.log(response.data);
-      console.log("======================");
     } catch (error) {
       console.log("Failed to get products");
     }

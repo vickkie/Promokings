@@ -120,7 +120,7 @@ const Profile = () => {
       <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor={COLORS.themey} />
         <View style={{ width: "100%", height: SIZES.height / 4, overflow: "hidden" }}>
-          <Image source={require("../assets/images/profilecover.webp")} style={styles.cover} />
+          <Image source={require("../assets/images/abstract1.webp")} style={styles.cover} />
         </View>
         <View style={styles.profileContainer}>
           <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap2}>
@@ -129,7 +129,7 @@ const Profile = () => {
           <Text style={styles.name}>{userData ? userData.name : "Please login to account"}</Text>
 
           {userData ? (
-            <View style={styles.loginBtn}>
+            <View style={styles.nameBtn}>
               <Text style={styles.menuText}>{userData.email}</Text>
             </View>
           ) : (

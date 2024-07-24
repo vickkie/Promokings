@@ -4,10 +4,10 @@
     "slug": "promokings",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/promoking-logoq.png",
+    "icon": "./assets/icon-home.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/promoking-logoq.png",
+      "image": "./assets/splash-main.png",
       "backgroundColor": "#fff"
     },
     "assetBundlePatterns": ["**/*"],
@@ -20,7 +20,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/promoking-logoq.png",
+        "foregroundImage": "./assets/icon-home.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.uzitrake.promokings",

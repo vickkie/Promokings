@@ -25,6 +25,7 @@ const screenOptions = {
   tabBarLabelStyle: {
     fontSize: 12,
     fontWeight: "bold",
+    fontFamily: "medium",
   },
   tabBarActiveTintColor: COLORS.themeb,
   tabBarInactiveTintColor: COLORS.gray2,
