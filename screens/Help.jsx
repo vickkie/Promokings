@@ -15,6 +15,8 @@ const Help = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const { userData } = useContext(AuthContext);
   const [userId, setUserId] = useState(null);
+  const [isPreviewVisible, setIsPreviewVisible] = useState(false);
+
   useEffect(() => {
     if (userData && userData._id) {
       setUserId(userData._id);
@@ -66,6 +68,7 @@ const Help = () => {
 
     if (!result.canceled) {
       setSelectedImage(result.uri);
+      setIsPreviewVisible(true); // Show the preview box
     }
   };
 
@@ -93,7 +96,7 @@ const Help = () => {
 
       try {
         await push(userMessagesRef, {
-          _id: uuid.v4(), // Use UUID for unique message ID
+          _id: uuid.v4(),
           text,
           createdAt: createdAt.getTime(),
           user,
@@ -104,6 +107,7 @@ const Help = () => {
       }
 
       setSelectedImage(null);
+      setIsPreviewVisible(false);
     });
 
     await Promise.all(messagePromises);
@@ -111,9 +115,15 @@ const Help = () => {
 
   return (
     <View style={styles.container}>
+      {isPreviewVisible && (
+        <View style={styles.previewBox}>
+          <Text style={{ textAlign: "center", fontWeight: "600", marginBottom: -10 }}>Picked image</Text>
+          <Image source={{ uri: selectedImage }} style={styles.previewImage} />
+        </View>
+      )}
       <ImageBackground
         resizeMode="cover"
-        source={require("../assets/images/chatbg.png")}
+        source={require("../assets/images/chat-glass.png")}
         style={styles.backgroundImage}
       >
         <GiftedChat
@@ -252,5 +262,25 @@ const styles = StyleSheet.create({
     fontSize: SIZES.small,
     fontWeight: "bold",
     color: "#333",
+  },
+  previewBox: {
+    position: "absolute",
+    top: 20,
+    left: 10,
+    height: 170,
+    width: 150,
+    backgroundColor: COLORS.themey,
+    borderRadius: 10,
+    overflow: "hidden",
+    zIndex: 10,
+    borderStyle: "solid",
+    borderColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  previewImage: {
+    width: "96%",
+    height: "96%",
+    resizeMode: "contain",
   },
 });
