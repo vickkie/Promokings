@@ -29,6 +29,8 @@ import { AuthProvider } from "./components/auth/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
 import { WishProvider } from "./contexts/WishContext";
 
+import { chatScreenOptions, faqScreenOptions } from "./screens_options/AppHeaderOptions";
+
 enableScreens();
 // enableLayoutAnimations(true);
 
@@ -77,9 +79,9 @@ export default function App() {
               <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
               <Stack.Screen name="UserDetails" component={UserDetails} options={{ headerShown: false }} />
               <Stack.Screen name="Message" component={MessageCenter} options={{ headerShown: false }} />
-              <Stack.Screen name="Help" component={Help} options={{ headerShown: true }} />
+              <Stack.Screen name="Help" component={Help} options={chatScreenOptions} />
               <Stack.Screen name="About" component={About} options={{ headerShown: true }} />
-              <Stack.Screen name="Faqs" component={Faqs} options={{ headerShown: true }} />
+              <Stack.Screen name="Faqs" component={Faqs} options={{}} />
             </Stack.Navigator>
             <Toast />
           </NavigationContainer>
