@@ -20,6 +20,10 @@ import {
   Categories,
   Checkout,
   UserDetails,
+  MessageCenter,
+  Help,
+  About,
+  Faqs,
 } from "./screens";
 import { AuthProvider } from "./components/auth/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
@@ -72,6 +76,10 @@ export default function App() {
               <Stack.Screen name="Orders" component={Orders} options={{ headerShown: false }} />
               <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
               <Stack.Screen name="UserDetails" component={UserDetails} options={{ headerShown: false }} />
+              <Stack.Screen name="Message" component={MessageCenter} options={{ headerShown: false }} />
+              <Stack.Screen name="Help" component={Help} options={{ headerShown: true }} />
+              <Stack.Screen name="About" component={About} options={{ headerShown: true }} />
+              <Stack.Screen name="Faqs" component={Faqs} options={{ headerShown: true }} />
             </Stack.Navigator>
             <Toast />
           </NavigationContainer>

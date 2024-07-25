@@ -9,7 +9,6 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
 import Toast from "react-native-toast-message";
 import Icon from "../constants/icons";
-import { BACKEND_PORT } from "@env";
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -171,6 +170,12 @@ const Profile = () => {
                 <View style={styles.menuItem(0.5)}>
                   <Icon name="delivery" size={26} color={COLORS.primary} />
                   <Text style={styles.menuText}>Orders</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate("Message")}>
+                <View style={styles.menuItem(0.5)}>
+                  <Icon name="message" size={26} color={COLORS.primary} />
+                  <Text style={styles.menuText}>Message Center</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={clearCache}>

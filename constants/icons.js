@@ -29,6 +29,14 @@ import AddIcon from "../assets/svg/add-circle.svg";
 import DownIcon from "../assets/svg/down.svg";
 import UpIcon from "../assets/svg/up.svg";
 import LogoutIcon from "../assets/svg/logout.svg";
+import Message from "../assets/svg/message-circle.svg";
+import MessageHelp from "../assets/svg/message-help.svg";
+import MessageFilled from "../assets/svg/message-filled.svg";
+import Customerservice from "../assets/svg/customer-service.svg";
+import Bellfilled from "../assets/svg/bell-filled.svg";
+import Faqs from "../assets/svg/faqs.svg";
+import Forward from "../assets/svg/forward.svg";
+import CameraFilled from "../assets/svg/camera-filled.svg";
 
 const iconMap = {
   home: HomeIcon,
@@ -60,6 +68,14 @@ const iconMap = {
   trolley: TrolleyIcon,
   pencil: PencilIcon,
   logout: LogoutIcon,
+  message: Message,
+  messagehelp: MessageHelp,
+  messagefilled: MessageFilled,
+  customerservice: Customerservice,
+  bellfilled: Bellfilled,
+  faqs: Faqs,
+  forward: Forward,
+  camerafilled: CameraFilled,
 };
 
 const Icon = ({ name, size = 24, ...props }) => {

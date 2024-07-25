@@ -15,6 +15,10 @@ import Categories from "./Categories";
 import Checkout from "./Checkout";
 import UserDetails from "./UserDetails";
 import LatestProducts from "../components/products/LatestProducts";
+import MessageCenter from "./MessageCenter";
+import Help from "./Help";
+import About from "./About";
+import Faqs from "./Faqs";
 
 export {
   Home,
@@ -34,4 +38,8 @@ export {
   Checkout,
   UserDetails,
   LatestProducts,
+  MessageCenter,
+  Help,
+  About,
+  Faqs,
 };
