@@ -37,6 +37,7 @@ import Bellfilled from "../assets/svg/bell-filled.svg";
 import Faqs from "../assets/svg/faqs.svg";
 import Forward from "../assets/svg/forward.svg";
 import CameraFilled from "../assets/svg/camera-filled.svg";
+import SendFilled from "../assets/svg/send-filled.svg";
 
 const iconMap = {
   home: HomeIcon,
@@ -76,6 +77,7 @@ const iconMap = {
   faqs: Faqs,
   forward: Forward,
   camerafilled: CameraFilled,
+  sendfilled: SendFilled,
 };
 
 const Icon = ({ name, size = 24, ...props }) => {

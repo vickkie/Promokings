@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { StyleSheet, View, Button } from "react-native";
-import { GiftedChat, Actions } from "react-native-gifted-chat";
+import { StyleSheet, View, ImageBackground, TouchableOpacity } from "react-native";
+import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
 import { AuthContext } from "../components/auth/AuthContext";
 import { db } from "../components/auth/firebase";
 import { ref, onValue, push } from "firebase/database";
@@ -21,7 +21,7 @@ const Help = () => {
 
       // Fetch messages specific to the user
       const userMessagesRef = ref(db, `messages/${userData._id}`);
-      onValue(userMessagesRef, (snapshot) => {
+      const handleValueChange = (snapshot) => {
         const data = snapshot.val();
         if (data) {
           const parsedMessages = Object.keys(data)
@@ -29,12 +29,19 @@ const Help = () => {
               _id: key,
               ...data[key],
             }))
-            .sort((a, b) => b.createdAt - a.createdAt);
+            .sort((a, b) => b.createdAt - a.createdAt); // sorting latest first
           setMessages(parsedMessages);
         } else {
-          setMessages([]); // Set messages to empty if no data found
+          setMessages([]); // Sets messages to empty if no data found
         }
+      };
+
+      const unsubscribe = onValue(userMessagesRef, handleValueChange, {
+        onlyOnce: false, // Ensures it keeps listening for changes
       });
+
+      // Clean up listener on unmount
+      return () => unsubscribe();
     }
   }, [userData]);
 
@@ -59,54 +66,120 @@ const Help = () => {
   };
 
   const handleSend = async (newMessages = []) => {
+    if (newMessages.length === 0) return;
+
+    console.log("Sending messages:", newMessages);
+
     const messagePromises = newMessages.map(async (message) => {
       const { text, createdAt, user } = message;
       const userMessagesRef = ref(db, `messages/${userData._id}`);
 
       let imageUrl = null;
       if (selectedImage) {
-        const storage = getStorage();
-        const response = await fetch(selectedImage);
-        const blob = await response.blob();
-        const imageRef = storageRef(storage, `images/${selectedImage.split("/").pop()}`);
-        await uploadBytes(imageRef, blob);
-        imageUrl = await getDownloadURL(imageRef);
+        try {
+          const storage = getStorage();
+          const response = await fetch(selectedImage);
+          const blob = await response.blob();
+          const imageRef = storageRef(storage, `images/${selectedImage.split("/").pop()}`);
+          await uploadBytes(imageRef, blob);
+          imageUrl = await getDownloadURL(imageRef);
+        } catch (error) {
+          console.error("Error uploading image:", error);
+        }
       }
 
-      return push(userMessagesRef, {
-        text,
-        createdAt: createdAt.getTime(),
-        user,
-        image: imageUrl,
-      });
+      try {
+        await push(userMessagesRef, {
+          text,
+          createdAt: createdAt.getTime(),
+          user,
+          image: imageUrl,
+        });
+        // console.log("Message pushed to database");
+      } catch (error) {
+        // console.error("Error pushing message to database:", error);
+      }
+
+      // Clear selected image after sending
+      setSelectedImage(null);
     });
 
     // Wait for all message promises to complete
     await Promise.all(messagePromises);
 
-    // Assuming successful send, optimistic UI update is handled by GiftedChat
-    setMessages((prevMessages) => GiftedChat.append(prevMessages, newMessages));
-    setSelectedImage(null); // Reset the selected image
+    // Refresh messages list
+    //! Remove this block, it is not needed. GiftedChat handles the message update automatically.
+    // setMessages((prevMessages) => {
+    //   const newMessagesWithExisting = [...prevMessages, ...newMessages];
+    //   return GiftedChat.append(newMessagesWithExisting, newMessages);
+    // });
   };
 
   return (
     <View style={styles.container}>
-      <Button title="Pick an Image" onPress={pickImage} />
-      <GiftedChat
-        messages={messages}
-        onSend={handleSend}
-        user={{
-          _id: userId,
-        }}
-        icon={() => {
-          <Icon name="camerafilled" size={24} color={COLORS.black} />;
-        }}
-        onPressActionButton={pickImage}
-        renderAvatar={null}
-        renderActions={(props) => {
-          <Actions {...props} containerStyle={styles.bottomsend} />;
-        }}
-      />
+      <ImageBackground
+        resizeMode="cover"
+        source={require("../assets/images/chatbg.png")}
+        style={styles.backgroundImage}
+      >
+        <GiftedChat
+          messages={messages}
+          onSend={handleSend}
+          user={{
+            _id: userId,
+          }}
+          icon={() => <Icon name="camerafilled" size={29} />}
+          onPressActionButton={pickImage}
+          renderAvatar={() => <Icon name="user" size={23} />}
+          renderActions={(props) => (
+            <Actions
+              {...props}
+              containerStyle={styles.actionsContainer}
+              onPressActionButton={pickImage}
+              icon={() => <Icon name="camerafilled" size={30} />}
+            />
+          )}
+          timeTextStyle={{ right: { color: COLORS.lightWhite } }}
+          bottomOffset={40}
+          renderSend={(props) => {
+            const { text, user, onSend } = props;
+            return (
+              <TouchableOpacity
+                style={styles.sendBtn}
+                onPress={() => {
+                  if (text && onSend) {
+                    onSend(
+                      {
+                        text: text.trim(),
+                        user,
+                        _id: userId,
+                      },
+                      true
+                    );
+                  }
+                }}
+              >
+                <Icon name="sendfilled" size={20} color={COLORS.white} />
+              </TouchableOpacity>
+            );
+          }}
+          renderInputToolbar={(props) => <InputToolbar {...props} containerStyle={styles.inputBox} />}
+          renderBubble={(props) => (
+            <Bubble
+              {...props}
+              textStyle={{ right: { color: COLORS.white } }}
+              wrapperStyle={{
+                left: {
+                  backgroundColor: COLORS.white,
+                },
+                right: {
+                  marginBottom: 5,
+                },
+              }}
+            />
+          )}
+        />
+      </ImageBackground>
     </View>
   );
 };
@@ -116,13 +189,36 @@ export default Help;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    zIndex: 2,
   },
-  bottomsend: {
+  backgroundImage: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
+  actionsContainer: {
     position: "absolute",
-    bottom: 5,
     right: 50,
-    zIndex: 999900,
+    bottom: 5,
+    zIndex: 9999,
   },
-  icon: {},
+  sendBtn: {
+    height: 40,
+    width: 40,
+    borderRadius: 40,
+    backgroundColor: COLORS.themey,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 5,
+  },
+  inputBox: {
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 2,
+    borderRadius: 20,
+    paddingTop: 5,
+    bottom: 5,
+  },
+  bottomSpacer: {
+    paddingBottom: 20,
+  },
 });
