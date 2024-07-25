@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { StyleSheet, View, ImageBackground, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text } from "react-native";
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
 import { AuthContext } from "../components/auth/AuthContext";
 import { db } from "../components/auth/firebase";
@@ -7,7 +7,7 @@ import { ref, onValue, push } from "firebase/database";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 import Icon from "../constants/icons";
-import { COLORS } from "../constants";
+import { COLORS, SIZES } from "../constants";
 import uuid from "react-native-uuid";
 
 const Help = () => {
@@ -127,16 +127,19 @@ const Help = () => {
           icon={() => <Icon name="camerafilled" size={29} />}
           onPressActionButton={pickImage}
           renderAvatar={(props) => {
-            const { currentMessage } = props;
-            const avatarUri = currentMessage.user && currentMessage.user.avatar;
             return (
-              // <View style={styles.avatarContainer}>
-              //   <Image source={{ uri: avatarUri }} style={styles.avatarImage} />
-              // </View>
-              <TouchableOpacity style={{ marginBottom: 10 }}>
-                <Icon name="user" size={29} />
-              </TouchableOpacity>
+              <View style={styles.avatarContainer}>
+                <Image source={require("../assets/icon-home.png")} style={styles.avatarImage} />
+              </View>
             );
+          }}
+          renderUsername={(props) => {
+            const { currentMessage } = props;
+            const username = currentMessage.user ? currentMessage.user.name : "default";
+            return <Text style={styles.usernameText}>{username}</Text>;
+          }}
+          renderLoading={(props) => {
+            return <Text style={styles.usernameText}>Loading...</Text>;
           }}
           renderActions={(props) => (
             <Actions
@@ -240,5 +243,14 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+  },
+  avatarContainer: {
+    borderRadius: 100,
+    marginBottom: 10,
+  },
+  usernameText: {
+    fontSize: SIZES.small,
+    fontWeight: "bold",
+    color: "#333",
   },
 });
