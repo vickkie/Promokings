@@ -9,6 +9,28 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
 import Toast from "react-native-toast-message";
 import Icon from "../constants/icons";
+import * as FileSystem from "expo-file-system";
+
+// Function to clear cache
+const clearCache = async () => {
+  try {
+    const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory);
+    await Promise.all(files.map((file) => FileSystem.deleteAsync(FileSystem.documentDirectory + file)));
+    console.log("Cache cleared");
+    Toast.show({
+      type: "success",
+      text1: "Cache cleared",
+      text2: "All cached data has been removed.",
+    });
+  } catch (error) {
+    console.error("Failed to clear cache", error);
+    Toast.show({
+      type: "error",
+      text1: "Error clearing cache",
+      text2: "There was an issue clearing the cache. Please try again later.",
+    });
+  }
+};
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -24,7 +46,7 @@ const Profile = () => {
     }
   }, [userLogin, userData]);
 
-  const clearCache = () => {
+  const handleClearCache = () => {
     Alert.alert(
       "Clear cache",
       "Delete all our saved data on your device?",
@@ -38,8 +60,8 @@ const Profile = () => {
         },
         {
           text: "Continue",
-          onPress: () => {
-            console.log("Cache cleared");
+          onPress: async () => {
+            await clearCache(); // Clear the cache
           },
         },
       ],
@@ -104,7 +126,7 @@ const Profile = () => {
   const renderProfilePicture = () => {
     if (!userLogin) {
       // User not logged in
-      <Image source={require("../assets/images/userDefault.webp")} style={styles.profile} />;
+      return <Image source={require("../assets/images/userDefault.webp")} style={styles.profile} />;
     }
 
     if (userData && userData.profilePicture) {
@@ -178,7 +200,7 @@ const Profile = () => {
                   <Text style={styles.menuText}>Message Center</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={clearCache}>
+              <TouchableOpacity onPress={handleClearCache}>
                 <View style={styles.menuItem(0.5)}>
                   <MaterialCommunityIcons name="reload" size={24} color={COLORS.primary} />
                   <Text style={styles.menuText}>Clear cache</Text>

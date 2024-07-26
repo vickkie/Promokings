@@ -1,25 +1,47 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
+import { Text, TouchableOpacity, View, Image } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { COLORS, SIZES } from "../../constants";
 import styles from "./productcardview.style";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import Animated from "react-native-reanimated";
 import usePost from "../../hook/usePost";
 import { AuthContext } from "../auth/AuthContext";
 import Toast from "react-native-toast-message";
+import * as FileSystem from "expo-file-system";
+
+// Function to cache image
+const cacheImage = async (uri) => {
+  try {
+    // Create a safe filename
+    const fileName = encodeURIComponent(uri.replace(/[^a-zA-Z0-9]/g, "_"));
+    const fileUri = FileSystem.documentDirectory + fileName;
+    const { exists } = await FileSystem.getInfoAsync(fileUri);
+    if (!exists) {
+      // console.log(`Downloading image to ${fileUri}`);
+      await FileSystem.downloadAsync(uri, fileUri);
+    } else {
+      // console.log(`Image already cached at ${fileUri}`);
+    }
+    return fileUri;
+  } catch (error) {
+    console.error(`Failed to cache image from ${uri}`, error);
+    return uri; // Fallback to the original URL if caching fails
+  }
+};
 
 const ProductsCardView = ({ item }) => {
   const navigation = useNavigation();
   const [isWished, setIsWished] = useState(false);
   const [feedback, setFeedback] = useState(null);
+  const [imageUri, setImageUri] = useState(null);
+
   const {
     updateStatus,
     isLoading: isLoadingFavourites,
     error: favouritesError,
     errorMessage,
     addCart: addFavourite,
-  } = usePost(`favourites`);
+  } = usePost("favourites");
 
   const { userData, userLogin } = useContext(AuthContext);
   const [userId, setUserId] = useState(null);
@@ -32,6 +54,16 @@ const ProductsCardView = ({ item }) => {
     }
   }, [userLogin, userData]);
 
+  useEffect(() => {
+    const loadImage = async () => {
+      if (item.imageUrl) {
+        const cachedUri = await cacheImage(item.imageUrl);
+        setImageUri(cachedUri);
+      }
+    };
+    loadImage();
+  }, [item.imageUrl]);
+
   const addWishlist = async () => {
     setIsWished(!isWished);
 
@@ -42,7 +74,7 @@ const ProductsCardView = ({ item }) => {
       };
       try {
         await addFavourite(cartData);
-        if (updateStatus == 200) {
+        if (updateStatus === 200) {
           showToast("success", "Success", "Added to your wishlist");
         }
       } catch (error) {
@@ -75,7 +107,7 @@ const ProductsCardView = ({ item }) => {
     >
       <View style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image source={{ uri: item.imageUrl }} style={styles.image} sharedTransitionTag={transitionTag} />
+          <Image source={{ uri: imageUri || item.imageUrl }} style={styles.image} sharedTransitionTag={transitionTag} />
         </View>
         <View style={styles.details}>
           <Text style={styles.title} numberOfLines={1}>

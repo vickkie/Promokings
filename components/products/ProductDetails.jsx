@@ -4,7 +4,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { Ionicons, Fontisto } from "@expo/vector-icons";
 import { COLORS } from "../../constants";
 import styles from "./productdetails.style";
-import Animated from "react-native-reanimated";
+// import Animated from "react-native-reanimated";
 import Icon from "../../constants/icons";
 import usePost from "../../hook/usePost";
 import { AuthContext } from "../auth/AuthContext";
@@ -150,7 +150,7 @@ const ProductDetails = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <View style={styles.imageWrapper}>
-          <Animated.Image source={{ uri: item.imageUrl }} sharedTransitionTag={transitionTag} style={styles.image} />
+          <Image source={{ uri: item.imageUrl }} sharedTransitionTag={transitionTag} style={styles.image} />
         </View>
         <View style={styles.containerWrapper}>
           <View style={styles.details}>

@@ -1,6 +1,5 @@
 import "react-native-gesture-handler";
 import { enableScreens } from "react-native-screens";
-import { enableLayoutAnimations } from "react-native-reanimated";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StyleSheet, Text, View } from "react-native";
@@ -33,7 +32,6 @@ import { WishProvider } from "./contexts/WishContext";
 import { chatScreenOptions, faqScreenOptions, systemScreenOptions } from "./screens_options/AppHeaderOptions";
 
 enableScreens();
-// enableLayoutAnimations(true);
 
 const Stack = createNativeStackNavigator();
 

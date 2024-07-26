@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
 import React from "react";
 import styles from "./searchtile.style";
-import Animated from "react-native-reanimated";
+// import Animated from "react-native-reanimated";
 
 import { useNavigation } from "@react-navigation/native";
 
@@ -19,7 +19,7 @@ const SearchTile = ({ item }) => {
         }}
       >
         <View style={styles.container}>
-          <Animated.Image source={{ uri: item.imageUrl }} style={styles.image} sharedTransitionTag={`${item.id}`} />
+          <Image source={{ uri: item.imageUrl }} style={styles.image} sharedTransitionTag={`${item.id}`} />
           <View style={styles.textContainer}>
             <Text style={styles.productTitle}>{item.title}</Text>
           </View>
