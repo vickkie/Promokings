@@ -166,11 +166,22 @@ const ProductDetails = ({ navigation }) => {
                     .trim()}`}
                 </Text>
               </View>
-              <View style={styles.rating}>
-                {[1, 2, 3, 4, 5].map((index) => (
-                  <Ionicons key={index} name="star" size={16} color="gold" />
-                ))}
-                <Text style={styles.ratingText}>(5.0)</Text>
+              <View>
+                <TouchableOpacity
+                  onPress={() => {
+                    userLogin
+                      ? navigation.navigate("Help", {
+                          item_id: item._id,
+                          item_name: item.title,
+                          item_image: item.imageUrl,
+                        })
+                      : showToast("error", "Oops!", "Please log in to continue your inquiry.");
+                  }}
+                  style={styles.helpBtn}
+                >
+                  <Text style={styles.helpBtnText}>Inquire</Text>
+                  <Icon name="messagefilled" size={37} />
+                </TouchableOpacity>
               </View>
             </View>
             <View style={styles.sizeWrapper}>

@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
   ratingRow: {
     paddingBottom: SIZES.small,
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     gap: 40,
     flexDirection: "row",
     alignItems: "center",
@@ -78,6 +78,11 @@ const styles = StyleSheet.create({
   ratingText: {
     color: COLORS.gray,
     fontFamily: "bold",
+  },
+  helpBtnText: {
+    color: COLORS.gray,
+    fontFamily: "bold",
+    fontSize: SIZES.medium,
   },
 
   toggleAmount: {
@@ -198,6 +203,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: 30,
     color: "red",
+  },
+  helpBtn: {
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    gap: 5,
+    padding: SIZES.small,
   },
 });
 
