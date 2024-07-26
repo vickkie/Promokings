@@ -24,7 +24,7 @@ const cacheImage = async (uri) => {
     }
     return fileUri;
   } catch (error) {
-    console.error(`Failed to cache image from ${uri}`, error);
+    // console.error(`Failed to cache image from ${uri}`, error);
     return uri; // Fallback to the original URL if caching fails
   }
 };
@@ -78,7 +78,7 @@ const ProductsCardView = ({ item }) => {
           showToast("success", "Success", "Added to your wishlist");
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
         showToast("error", "Ooops, Failed to add to Wishlist", "Try again later");
       } finally {
         setTimeout(() => setFeedback(null), 5000);

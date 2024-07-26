@@ -22,7 +22,7 @@ const ProductList = () => {
     try {
       refetch(); // Call refetch as synchronous
     } catch (error) {
-      console.error("Failed to refresh data", error);
+      // console.error("Failed to refresh data", error);
     } finally {
       setRefreshing(false);
     }

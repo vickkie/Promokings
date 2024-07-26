@@ -17,14 +17,14 @@ const clearCache = async () => {
   try {
     const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory);
     await Promise.all(files.map((file) => FileSystem.deleteAsync(FileSystem.documentDirectory + file)));
-    console.log("Cache cleared");
+    // console.log("Cache cleared");
     Toast.show({
       type: "success",
       text1: "Cache cleared",
       text2: "All cached data has been removed.",
     });
   } catch (error) {
-    console.error("Failed to clear cache", error);
+    // console.error("Failed to clear cache", error);
     Toast.show({
       type: "error",
       text1: "Error clearing cache",
@@ -56,7 +56,7 @@ const Profile = () => {
         {
           text: "Cancel",
           onPress: () => {
-            console.log("Cancelled clear cache");
+            // console.log("Cancelled clear cache");
           },
           style: "cancel",
         },
@@ -78,7 +78,9 @@ const Profile = () => {
       [
         {
           text: "Cancel",
-          onPress: () => console.log("Cancelled delete"),
+          onPress: () => {
+            // console.log("Cancelled delete")
+          },
           style: "cancel",
         },
         {

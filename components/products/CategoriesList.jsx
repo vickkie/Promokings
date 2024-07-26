@@ -15,7 +15,7 @@ const CategoriesList = () => {
     try {
       refetch(); // Call refetch, assuming it's synchronous
     } catch (error) {
-      console.error("Failed to refresh data", error);
+      // console.error("Failed to refresh data", error);
     } finally {
       setRefreshing(false); // Ensure refreshing state is reset
     }

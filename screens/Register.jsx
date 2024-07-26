@@ -44,7 +44,14 @@ const Register = ({ navigation }) => {
     Alert.alert(
       "Registration Successful",
       "You have successfully registered!",
-      [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+      [
+        {
+          text: "OK",
+          onPress: () => {
+            // console.log("OK Pressed")
+          },
+        },
+      ],
       { cancelable: false }
     );
   };

@@ -50,7 +50,14 @@ const UserDetails = () => {
     Alert.alert(
       "Update Successful",
       "Your profile has been updated!",
-      [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+      [
+        {
+          text: "OK",
+          onPress: () => {
+            // console.log("OK Pressed")
+          },
+        },
+      ],
       { cancelable: false }
     );
   };

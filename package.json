@@ -39,7 +39,6 @@
     "react-native-uuid": "^2.0.2",
     "react-native-webview": "13.2.2",
     "uuid": "^10.0.0",
-    "yap": "^0.0.2",
     "yup": "^1.4.0"
   },
   "devDependencies": {

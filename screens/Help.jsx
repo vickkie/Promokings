@@ -112,7 +112,7 @@ const Help = () => {
           await uploadBytes(imageRef, blob);
           imageUrl = await getDownloadURL(imageRef);
         } catch (error) {
-          console.error("Error uploading image:", error);
+          // console.error("Error uploading image:", error);
         }
       }
 
@@ -127,7 +127,7 @@ const Help = () => {
 
         setIsSending(false);
       } catch (error) {
-        console.error("Error pushing message to database:", error);
+        // console.error("Error pushing message to database:", error);
       }
 
       // Invalidate the state variables after sending
@@ -145,7 +145,7 @@ const Help = () => {
 
   return (
     <View style={styles.container}>
-      {console.log(isPreviewVisible)}
+      {/* {console.log(isPreviewVisible)} */}
       {isPreviewVisible && (
         <View style={styles.previewBox} key={isPreviewVisible ? "visible" : "hidden"}>
           <Text style={{ paddingStart: 2, fontWeight: "600", marginBottom: -10 }}>Picked image</Text>

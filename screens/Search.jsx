@@ -38,7 +38,7 @@ const Search = () => {
 
       setSearchResults(response.data);
     } catch (error) {
-      console.log("Failed to get products");
+      // console.log("Failed to get products");
     }
   };
 
