@@ -19,10 +19,10 @@ const cacheImage = async (uri) => {
     const { exists } = await FileSystem.getInfoAsync(fileUri);
 
     if (!exists) {
-      console.log(`Downloading image to ${fileUri}`);
+      // console.log(`Downloading image to ${fileUri}`);
       await FileSystem.downloadAsync(uri, fileUri);
     } else {
-      console.log(`Image already cached at ${fileUri}`);
+      // console.log(`Image already cached at ${fileUri}`);
     }
     return fileUri;
   } catch (error) {

@@ -10,6 +10,7 @@ import { AuthContext } from "../components/auth/AuthContext";
 import Toast from "react-native-toast-message";
 import Icon from "../constants/icons";
 import * as FileSystem from "expo-file-system";
+import useDelete from "../hook/useDelete2";
 
 // Function to clear cache
 const clearCache = async () => {
@@ -35,6 +36,7 @@ const clearCache = async () => {
 const Profile = () => {
   const navigation = useNavigation();
   const { userData, userLogout, userLogin } = useContext(AuthContext);
+  const { deleteStatus, isDeleting, errorStatus, redelete } = useDelete(`user/`);
 
   const [userId, setUserId] = useState(null);
 
@@ -69,22 +71,29 @@ const Profile = () => {
     );
   };
 
-  const deleteAccount = () => {
+  const handleDeleteAccount = () => {
     Alert.alert(
       "Delete account",
-      "Are you sure to delete your account?",
+      "Are you sure you want to delete your account?",
       [
         {
           text: "Cancel",
-          onPress: () => {
-            console.log("Cancelled delete");
-          },
+          onPress: () => console.log("Cancelled delete"),
           style: "cancel",
         },
         {
           text: "Continue",
-          onPress: () => {
-            console.log("Delete account pressed");
+          onPress: async () => {
+            await redelete(userId, async () => {
+              await clearCache();
+              userLogout();
+              navigation.navigate("Home");
+              Toast.show({
+                type: "success",
+                text1: "Account deleted",
+                text2: "Your account has been successfully deleted.",
+              });
+            });
           },
         },
       ],
@@ -206,7 +215,7 @@ const Profile = () => {
                   <Text style={styles.menuText}>Clear cache</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={deleteAccount}>
+              <TouchableOpacity onPress={handleDeleteAccount}>
                 <View style={styles.menuItem(0.5)}>
                   <Ionicons name="person-remove-outline" size={24} color={COLORS.primary} />
                   <Text style={styles.menuText}>Delete Account</Text>
