@@ -24,12 +24,13 @@ import {
   Help,
   About,
   Faqs,
+  SystemMessages,
 } from "./screens";
 import { AuthProvider } from "./components/auth/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
 import { WishProvider } from "./contexts/WishContext";
 
-import { chatScreenOptions, faqScreenOptions } from "./screens_options/AppHeaderOptions";
+import { chatScreenOptions, faqScreenOptions, systemScreenOptions } from "./screens_options/AppHeaderOptions";
 
 enableScreens();
 // enableLayoutAnimations(true);
@@ -82,6 +83,7 @@ export default function App() {
               <Stack.Screen name="Help" component={Help} options={chatScreenOptions} />
               <Stack.Screen name="About" component={About} options={{ headerShown: true }} />
               <Stack.Screen name="Faqs" component={Faqs} options={{}} />
+              <Stack.Screen name="SystemMessages" component={SystemMessages} options={systemScreenOptions} />
             </Stack.Navigator>
             <Toast />
           </NavigationContainer>

@@ -23,9 +23,19 @@ const faqsScreenOptions = {
   },
   // Additional options...
 };
+const systemScreenOptions = {
+  headerTitle: () => <Text style={{ color: "#fff", fontSize: SIZES.large }}>System Notifications</Text>,
+  headerStyle: {
+    backgroundColor: COLORS.themey,
+  },
+  headerTintColor: "#fff",
+  headerTitleStyle: {
+    fontWeight: "bold",
+  },
+};
 
 const styles = StyleSheet.create({
   topheader: { color: "#fff", fontFamily: "bold", fontSize: SIZES.medium },
 });
 
-export { chatScreenOptions, faqsScreenOptions };
+export { chatScreenOptions, faqsScreenOptions, systemScreenOptions };

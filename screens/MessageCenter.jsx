@@ -14,7 +14,7 @@ const MessageCenter = ({ navigation }) => {
               <Icon size={30} name="backbutton" />
             </TouchableOpacity>
             <Text style={styles.heading}>Message Center</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Product")} style={styles.buttonWrap}>
+            <TouchableOpacity onPress={() => navigation.navigate("Help")} style={styles.buttonWrap}>
               <Icon size={30} name="messagefilled" />
             </TouchableOpacity>
           </View>
@@ -30,7 +30,7 @@ const MessageCenter = ({ navigation }) => {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => navigation.navigate("Cart")}>
+            <TouchableOpacity onPress={() => navigation.navigate("SystemMessages")}>
               <View style={styles.menuItem(0.5)}>
                 <View style={styles.itswrap}>
                   <Icon name="bellfilled" size={24} color={COLORS.primary} />

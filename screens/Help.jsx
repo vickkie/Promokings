@@ -146,7 +146,7 @@ const Help = () => {
   return (
     <View style={styles.container}>
       {console.log(isPreviewVisible)}
-      {isPreviewVisible ? (
+      {isPreviewVisible && (
         <View style={styles.previewBox} key={isPreviewVisible ? "visible" : "hidden"}>
           <Text style={{ paddingStart: 2, fontWeight: "600", marginBottom: -10 }}>Picked image</Text>
           <TouchableOpacity
@@ -160,9 +160,8 @@ const Help = () => {
           </TouchableOpacity>
           <Image source={{ uri: selectedImage }} style={styles.previewImage} />
         </View>
-      ) : (
-        <Text style={{ textAlign: "center", fontWeight: "600", marginBottom: -10 }}>Saving message...</Text>
       )}
+
       {isSending === true && (
         <View style={styles.isSending}>
           <Text style={{ textAlign: "center", fontWeight: "600", marginBottom: -10 }}>Saving message...</Text>

@@ -19,6 +19,7 @@ import MessageCenter from "./MessageCenter";
 import Help from "./Help";
 import About from "./About";
 import Faqs from "./Faqs";
+import SystemMessages from "./SystemMessages";
 
 export {
   Home,
@@ -42,4 +43,5 @@ export {
   Help,
   About,
   Faqs,
+  SystemMessages,
 };

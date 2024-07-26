@@ -7,6 +7,10 @@ const COLORS = {
   secondary: "#e6d270",
   tertiary: "#FF7754",
 
+  warning: "rgba(252, 18, 52, 0.3)",
+  info: "rgba(14, 0, 255, 0.3)",
+  success: "rgba(42, 77, 80, 0.6)",
+
   gray: "#83829A",
   gray2: "#C1C0C8",
 
