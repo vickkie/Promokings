@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, StyleSheet, ActivityIndicator, ImageBackground, Text } from "react-native";
+import { View, StyleSheet, ActivityIndicator, ImageBackground, Text, Image } from "react-native";
 import { GiftedChat, Bubble } from "react-native-gifted-chat";
 import { COLORS, SIZES } from "../constants";
 import { AuthContext } from "../components/auth/AuthContext";
@@ -101,6 +101,12 @@ const SystemMessages = () => {
     );
   };
 
+  const renderFooter = () => (
+    <View style={styles.footer}>
+      <Text style={styles.footerText}>These are system-generated messages.</Text>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -108,6 +114,13 @@ const SystemMessages = () => {
         source={require("../assets/images/chat-glass.png")}
         style={styles.backgroundImage}
       >
+        {messages && (
+          <Image
+            source={require("../assets/icon-home.png")} // Path to your static avatar image
+            style={styles.avatar}
+          />
+        )}
+
         {isLoadingUser || isLoadingSystem ? (
           <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
             <ActivityIndicator size="large" color={COLORS.primary} />
@@ -122,6 +135,8 @@ const SystemMessages = () => {
             renderInputToolbar={() => null}
             isTyping={true}
             alignTop={true}
+            renderAvatarOnTop={true}
+            renderChatFooter={renderFooter}
           />
         )}
       </ImageBackground>
@@ -137,6 +152,25 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     height: "100%",
+  },
+  avatar: {
+    width: 30,
+    height: 30,
+    borderRadius: 55,
+    alignSelf: "center",
+    marginTop: 10,
+  },
+  footer: {
+    padding: 10,
+    alignItems: "center",
+    position: "absolute",
+    bottom: -40,
+    textAlign: "center",
+    width: SIZES.width,
+  },
+  footerText: {
+    color: COLORS.themey,
+    fontSize: 14,
   },
 });
 

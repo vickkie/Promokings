@@ -34,7 +34,7 @@ const MessageCenter = ({ navigation }) => {
               <View style={styles.menuItem(0.5)}>
                 <View style={styles.itswrap}>
                   <Icon name="bellfilled" size={24} color={COLORS.primary} />
-                  <Text style={styles.menuText}>System messages</Text>
+                  <Text style={styles.menuText}>Notifications</Text>
                 </View>
                 <Icon name="forward" size={24} color={COLORS.primary} />
               </View>
