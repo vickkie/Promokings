@@ -82,7 +82,7 @@ export default function App() {
               <Stack.Screen name="Message" component={MessageCenter} options={{ headerShown: false }} />
               <Stack.Screen name="Help" component={Help} options={chatScreenOptions} />
               <Stack.Screen name="About" component={About} options={{ headerShown: true }} />
-              <Stack.Screen name="Faqs" component={Faqs} options={{}} />
+              <Stack.Screen name="Faqs" component={Faqs} options={{ headerShown: false }} />
               <Stack.Screen name="SystemMessages" component={SystemMessages} options={systemScreenOptions} />
             </Stack.Navigator>
             <Toast />

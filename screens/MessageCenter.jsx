@@ -39,11 +39,20 @@ const MessageCenter = ({ navigation }) => {
                 <Icon name="forward" size={24} color={COLORS.primary} />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("Orders")}>
+            <TouchableOpacity onPress={() => navigation.navigate("Faqs")}>
               <View style={styles.menuItem(0.5)}>
                 <View style={styles.itswrap}>
                   <Icon name="faqs" size={26} color={COLORS.primary} />
                   <Text style={styles.menuText}>Frequently asked Questions</Text>
+                </View>
+                <Icon name="forward" size={24} color={COLORS.primary} />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("Orders")}>
+              <View style={styles.menuItem(0.5)}>
+                <View style={styles.itswrap}>
+                  <Icon name="cartcheck" size={26} color={COLORS.primary} />
+                  <Text style={styles.menuText}>Order Messages & Tracking</Text>
                 </View>
                 <Icon name="forward" size={24} color={COLORS.primary} />
               </View>
@@ -110,7 +119,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingVertical: 15,
     paddingHorizontal: 30,
-    borderColor: COLORS.gray,
+    borderBottomColor: "#ddd",
     justifyContent: "space-between",
   }),
   itswrap: {

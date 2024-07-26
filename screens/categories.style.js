@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
     zIndex: 999,
     height: 120,
   },
+
   backBtn: {
     left: 10,
   },

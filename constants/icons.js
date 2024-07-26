@@ -39,6 +39,7 @@ import Forward from "../assets/svg/forward.svg";
 import CameraFilled from "../assets/svg/camera-filled.svg";
 import SendFilled from "../assets/svg/send-filled.svg";
 import Cancel from "../assets/svg/cancel.svg";
+import Cartcheck from "../assets/svg/cart-check.svg";
 
 const iconMap = {
   home: HomeIcon,
@@ -80,6 +81,7 @@ const iconMap = {
   camerafilled: CameraFilled,
   sendfilled: SendFilled,
   cancel: Cancel,
+  cartcheck: Cartcheck,
 };
 
 const Icon = ({ name, size = 24, ...props }) => {
