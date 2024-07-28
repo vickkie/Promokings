@@ -19,6 +19,7 @@ import Delivery from "../assets/svg/delivery.svg";
 
 import HomeFilledIcon from "../assets/svg/home-filled.svg";
 import UserCircleFilledIcon from "../assets/svg/user-circle-filled.svg";
+import UserCircleFilled from "../assets/svg/user-circle-fill.svg";
 import Menu2filledIcon from "../assets/svg/menu2-filled.svg";
 import SearchCircleFilledIcon from "../assets/svg/search-circle-filled.svg";
 import HeartFilledIcon from "../assets/svg/heart-filled.svg";
@@ -40,6 +41,13 @@ import CameraFilled from "../assets/svg/camera-filled.svg";
 import SendFilled from "../assets/svg/send-filled.svg";
 import Cancel from "../assets/svg/cancel.svg";
 import Cartcheck from "../assets/svg/cart-check.svg";
+import Basket from "../assets/svg/basket.svg";
+import Bolt from "../assets/svg/bolt.svg";
+import Dialog from "../assets/svg/dialog.svg";
+import Settingsx from "../assets/svg/settings-x.svg";
+import Logout2 from "../assets/svg/logout-2.svg";
+import Login2 from "../assets/svg/login-2.svg";
+import Favouritebag from "../assets/svg/bag-heart.svg";
 
 const iconMap = {
   home: HomeIcon,
@@ -82,6 +90,14 @@ const iconMap = {
   sendfilled: SendFilled,
   cancel: Cancel,
   cartcheck: Cartcheck,
+  basket: Basket,
+  bolt: Bolt,
+  dialog: Dialog,
+  settings: Settingsx,
+  userfilled: UserCircleFilled,
+  logout2: Logout2,
+  login2: Login2,
+  favouritebag: Favouritebag,
 };
 
 const Icon = ({ name, size = 24, ...props }) => {
