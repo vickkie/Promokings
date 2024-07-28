@@ -122,6 +122,18 @@ const styles = StyleSheet.create({
     width: 52,
     borderRadius: 100,
   },
+  closeButton: {
+    position: "absolute",
+    top: 40,
+    right: 20,
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 20,
+  },
+  closeButtonText: {
+    fontSize: 16,
+    color: "black",
+  },
 });
 
 export default styles;

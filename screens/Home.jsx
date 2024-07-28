@@ -1,20 +1,22 @@
-import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar } from "react-native";
-import React, { useContext, useEffect, useState, useCallback } from "react";
+// Home.js
+
+import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
+import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import styles from "./home.style";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Welcome } from "../components/home";
 import Carousel from "../components/home/Carousel";
 import Headings from "../components/home/Headings";
 import ProductsRow from "../components/products/ProductsRow";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { BACKEND_PORT } from "@env";
+import LatestProducts from "../components/products/LatestProducts";
 
+import styles from "./home.style";
 import Icon from "../constants/icons";
 import { AuthContext } from "../components/auth/AuthContext";
 import useFetch from "../hook/useFetch";
 import { useCart } from "../contexts/CartContext";
 import { COLORS } from "../constants";
-import LatestProducts from "../components/products/LatestProducts";
+import HomeMenu from "../components/bottomsheets/HomeMenu";
 
 const Home = () => {
   const { userData, userLogin, productCount } = useContext(AuthContext);
@@ -57,20 +59,35 @@ const Home = () => {
       return <Icon name="user" size={24} color="#000" />;
     }
     if (userData && userData.profilePicture) {
-      // console.log(userData.profilePicture);
       return <Image source={{ uri: `${userData.profilePicture}` }} style={styles.profilePicture} />;
     }
 
     return <Image source={require("../assets/images/userDefault.webp")} style={styles.profilePicture} />;
   };
 
+  const BottomSheetRef = useRef(null);
+
+  const openMenu = () => {
+    if (BottomSheetRef.current) {
+      BottomSheetRef.current.present();
+    }
+  };
+
   return (
     <SafeAreaView style={styles.topSafeview}>
+      <HomeMenu ref={BottomSheetRef} />
+
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.themey} />
+
       <View style={styles.topWelcomeWrapper}>
         <View style={styles.appBarWrapper}>
           <View style={styles.appBar}>
-            <TouchableOpacity style={styles.buttonWrap}>
+            <TouchableOpacity
+              style={styles.buttonWrap}
+              onPress={() => {
+                openMenu();
+              }}
+            >
               <Icon name="menu" size={24} />
             </TouchableOpacity>
 
