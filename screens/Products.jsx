@@ -1,11 +1,11 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import styles from "./products.style";
 import ProductList from "../components/products/ProductList";
 import Icon from "../constants/icons";
 import { useCart } from "../contexts/CartContext";
 import { useWish } from "../contexts/WishContext";
+import { SIZES, COLORS } from "../constants";
 
 const Products = ({ navigation }) => {
   const { itemCount } = useCart();
@@ -50,3 +50,74 @@ const Products = ({ navigation }) => {
 };
 
 export default Products;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.lightWhite,
+  },
+
+  wrapper: {
+    flex: 1,
+    backgroundColor: COLORS.themew,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  upperRow: {
+    width: SIZES.width - 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    position: "absolute",
+    backgroundColor: COLORS.themeg,
+    borderRadius: SIZES.large,
+    top: SIZES.small,
+    minHeight: 100,
+    zIndex: 999,
+  },
+
+  heading: {
+    color: COLORS.themeb,
+    marginLeft: 5,
+    fontFamily: "semibold",
+    fontSize: SIZES.large,
+  },
+  buttonWrap: {
+    backgroundColor: COLORS.white,
+    padding: 15,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    marginEnd: 10,
+    marginStart: 10,
+  },
+  lovebuy: {
+    flexDirection: "row",
+  },
+  buttonWrap1: {
+    backgroundColor: COLORS.white,
+    padding: 15,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 4,
+  },
+  spaceRight: {},
+  numbers: {
+    padding: 3,
+    width: 20,
+    height: 20,
+    backgroundColor: COLORS.themey,
+    color: COLORS.themew,
+    borderRadius: 100,
+    position: "absolute",
+    top: "-10%",
+    left: "-10%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  number: {
+    color: COLORS.white,
+  },
+});

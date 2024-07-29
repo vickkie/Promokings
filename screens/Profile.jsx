@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { ScrollView, View, Text, Image, TouchableOpacity, Alert } from "react-native";
+import { ScrollView, View, Text, Image, TouchableOpacity, Alert, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import styles from "./profile.style";
 import { COLORS, SIZES } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
@@ -238,3 +237,93 @@ const Profile = () => {
 };
 
 export default Profile;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.lightWhite,
+    paddingBottom: 60,
+  },
+
+  cover: {
+    height: 250,
+    width: "100%",
+    resizeMode: "cover",
+  },
+  profileContainer: {
+    flex: 1,
+    alignItems: "center",
+    minHeight: SIZES.height / 1.5 + 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor: COLORS.lightWhite,
+    marginTop: -20,
+  },
+  profile: {
+    height: 155,
+    width: 155,
+    borderRadius: 1000,
+    borderWidth: 2,
+    borderColor: COLORS.primary,
+    resizeMode: "cover",
+    marginTop: -90,
+    // marginBottom: 50,
+  },
+  name: {
+    fontFamily: "bold",
+    color: COLORS.primary,
+    marginVertical: 3,
+  },
+  loginhere: {
+    paddingTop: SIZES.medium,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: SIZES.xLarge,
+    flexDirection: "column",
+  },
+  regText: {
+    color: "#000",
+    fontSize: SIZES.medium,
+    textDecorationStyle: "solid",
+    textDecorationLine: "underline",
+    fontFamily: "medium",
+  },
+  loginBtn: {
+    backgroundColor: COLORS.secondary,
+    padding: 2,
+    borderWidth: 0.4,
+    borderColor: COLORS.primary,
+    borderRadius: SIZES.xxLarge,
+    width: SIZES.width / 4,
+  },
+
+  nameBtn: {
+    backgroundColor: COLORS.secondary,
+    padding: 2,
+    borderWidth: 0.4,
+    borderColor: COLORS.primary,
+    borderRadius: SIZES.xxLarge,
+  },
+  menuText: {
+    fontFamily: "regular",
+    color: COLORS.gray,
+    marginLeft: 20,
+    marginRight: 20,
+    fontWeight: "600",
+    fontSize: 14,
+    lineHeight: 26,
+  },
+  menuWrapper: {
+    marginTop: SIZES.xLarge,
+    width: SIZES.width - SIZES.large,
+    backgroundColor: COLORS.lightWhite,
+    borderRadius: 12,
+  },
+  menuItem: (borderBottomWidth) => ({
+    borderBottomWidth: borderBottomWidth,
+    flexDirection: "row",
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderColor: COLORS.gray,
+  }),
+});

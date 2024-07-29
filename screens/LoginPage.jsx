@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -8,8 +8,7 @@ import axios from "axios";
 import { AuthContext } from "../components/auth/AuthContext";
 import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
-import styles from "./loginpage.style";
-import { COLORS } from "../constants";
+import { COLORS, SIZES } from "../constants";
 import { BACKEND_PORT } from "@env";
 
 const validationSchema = Yup.object().shape({
@@ -170,3 +169,61 @@ const LoginPage = ({ navigation }) => {
 };
 
 export default LoginPage;
+
+const styles = StyleSheet.create({
+  cover: {
+    height: SIZES.height / 3.8,
+    width: SIZES.width - 60,
+    resizeMode: "contain",
+    marginBottom: SIZES.medium,
+  },
+
+  title: {
+    fontFamily: "bold",
+    fontSize: SIZES.xLarge,
+    color: COLORS.primary,
+    alignItems: "center",
+    textAlign: "center",
+    marginBottom: SIZES.xLarge,
+  },
+
+  wrapper: {
+    marginBottom: 10,
+  },
+
+  label: {
+    fontFamily: "regular",
+    fontSize: SIZES.xSmall,
+    marginBottom: 5,
+    textAlign: "right",
+  },
+
+  inputWrapper: (borderColor) => ({
+    borderColor: borderColor,
+    backgroundColor: COLORS.lightWhite,
+    borderWidth: 1,
+    height: 55,
+    borderRadius: 12,
+    flexDirection: "row",
+    paddingHorizontal: 15,
+    alignItems: "center",
+  }),
+
+  iconStyle: {
+    marginRight: 10,
+  },
+
+  errorMessage: {
+    color: COLORS.red,
+    fontFamily: "regular",
+    fontSize: SIZES.xSmall,
+    marginLeft: 5,
+    marginTop: 5,
+  },
+
+  registration: {
+    marginTop: 2,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+});

@@ -1,9 +1,8 @@
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackBtn from "../components/BackBtn";
 import { Image } from "react-native";
-import styles from "./loginpage.style";
 import Button from "../components/Button";
 import { Formik, validateYupSchema } from "formik";
 import * as Yup from "yup";
@@ -226,3 +225,61 @@ const Register = ({ navigation }) => {
 };
 
 export default Register;
+
+const styles = StyleSheet.create({
+  cover: {
+    height: SIZES.height / 3.8,
+    width: SIZES.width - 60,
+    resizeMode: "contain",
+    marginBottom: SIZES.medium,
+  },
+
+  title: {
+    fontFamily: "bold",
+    fontSize: SIZES.xLarge,
+    color: COLORS.primary,
+    alignItems: "center",
+    textAlign: "center",
+    marginBottom: SIZES.xLarge,
+  },
+
+  wrapper: {
+    marginBottom: 10,
+  },
+
+  label: {
+    fontFamily: "regular",
+    fontSize: SIZES.xSmall,
+    marginBottom: 5,
+    textAlign: "right",
+  },
+
+  inputWrapper: (borderColor) => ({
+    borderColor: borderColor,
+    backgroundColor: COLORS.lightWhite,
+    borderWidth: 1,
+    height: 55,
+    borderRadius: 12,
+    flexDirection: "row",
+    paddingHorizontal: 15,
+    alignItems: "center",
+  }),
+
+  iconStyle: {
+    marginRight: 10,
+  },
+
+  errorMessage: {
+    color: COLORS.red,
+    fontFamily: "regular",
+    fontSize: SIZES.xSmall,
+    marginLeft: 5,
+    marginTop: 5,
+  },
+
+  registration: {
+    marginTop: 2,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+});

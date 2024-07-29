@@ -117,7 +117,12 @@ const CartList = ({ onItemCountChange }) => {
         style={styles.checkoutBtnWrapper}
         onPress={() => {
           if (estimatedAmount > 0) {
-            navigation.navigate("Checkout", { estimatedAmount });
+            navigation.navigate("Checkout", {
+              estimatedAmount,
+              products,
+              totals,
+              additionalFees,
+            });
           }
         }}
       >

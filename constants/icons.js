@@ -9,6 +9,7 @@ import MenuIcon from "../assets/svg/menu.svg";
 import Menu2Icon from "../assets/svg/menu2.svg";
 import CartIcon from "../assets/svg/cart.svg";
 import TrolleyIcon from "../assets/svg/cart-trolley.svg";
+import Checkout from "../assets/svg/cart-give.svg";
 import TuningIcon from "../assets/svg/tuning-2.svg";
 import CarouselIcon from "../assets/svg/carousel.svg";
 import HeartIcon from "../assets/svg/heart.svg";
@@ -98,6 +99,7 @@ const iconMap = {
   logout2: Logout2,
   login2: Login2,
   favouritebag: Favouritebag,
+  checkout: Checkout,
 };
 
 const Icon = ({ name, size = 24, ...props }) => {

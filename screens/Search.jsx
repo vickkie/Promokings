@@ -1,9 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
-import { View, FlatList, Text, TouchableOpacity, TextInput, Image, ScrollView } from "react-native";
+import { View, FlatList, Text, TouchableOpacity, TextInput, Image, StyleSheet } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import styles from "./search.style";
 import { COLORS, SIZES } from "../constants";
 
 import axios from "axios";
@@ -100,3 +99,69 @@ const Search = () => {
 };
 
 export default Search;
+
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+  },
+  searchContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: COLORS.themeg,
+    borderRadius: SIZES.medium,
+    marginVertical: SIZES.medium,
+    marginHorizontal: SIZES.medium,
+    height: 50,
+  },
+  searchIcon: {
+    marginHorizontal: 10,
+    color: COLORS.gray,
+  },
+  searchWrapper: {
+    flex: 1,
+    backgroundColor: COLORS.themeg,
+    marginRight: 10,
+    borderRadius: SIZES.medium,
+  },
+  searchInput: {
+    fontFamily: "regular",
+    width: "100%",
+  },
+  searchBtn: {
+    width: 50,
+    height: "100%",
+    borderRadius: SIZES.medium,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: COLORS.themey,
+  },
+
+  searchNone: {
+    // flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    height: SIZES.height - 100,
+  },
+  noFoundImage: {
+    // flex: 1,
+    width: 300,
+    height: 300,
+    aspectRatio: 1,
+    margin: "auto",
+    alignSelf: "center",
+  },
+  flatlist: {
+    marginHorizontal: 3,
+    marginBottom: 79,
+  },
+  searchRoot: { flex: 1, backgroundColor: "white" },
+  noresult: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  nodataText: {
+    fontFamily: "semibold",
+    fontSize: SIZES.medium,
+  },
+});
