@@ -20,10 +20,12 @@ import Help from "./Help";
 import About from "./About";
 import Faqs from "./Faqs";
 import SystemMessages from "./SystemMessages";
+import OrderSuccess from "./OrderSuccess";
 
 export {
   Home,
   Search,
+  OrderSuccess,
   Profile,
   Cart,
   ProductDetails,

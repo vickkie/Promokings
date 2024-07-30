@@ -49,8 +49,10 @@ import Settingsx from "../assets/svg/settings-x.svg";
 import Logout2 from "../assets/svg/logout-2.svg";
 import Login2 from "../assets/svg/login-2.svg";
 import Favouritebag from "../assets/svg/bag-heart.svg";
+import ShoppingCart from "../assets/svg/shopping-cart.svg";
 
 const iconMap = {
+  shoppingcart: ShoppingCart,
   home: HomeIcon,
   search: SearchIcon,
   user: UserIcon,

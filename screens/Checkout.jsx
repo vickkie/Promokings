@@ -7,12 +7,18 @@ import { useCart } from "../contexts/CartContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../components/auth/AuthContext";
 import * as Yup from "yup";
+import usePost from "../hook/usePost";
+import useDelete from "../hook/useDelete";
+
+import CheckoutStep3 from "./Payments";
 
 const Checkout = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { estimatedAmount, products, totals, additionalFees } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
+  const { updateStatus, isLoading, error, errorMessage, postData } = usePost("orders");
+  const { deleteStatus, errorStatus, redelete } = useDelete(`carts/user`);
 
   useEffect(() => {
     if (!userLogin) {
@@ -29,7 +35,7 @@ const Checkout = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [city, setCity] = useState(userData ? userData.location : "");
   const [email, setEmail] = useState(userData ? userData.email : "");
-  const { handleItemCountChange } = useCart();
+
   const [userId, setUserId] = useState(null);
   const [phoneError, setPhoneError] = useState("");
 
@@ -49,9 +55,15 @@ const Checkout = () => {
   }, [phoneNumber]);
 
   const handleNext = () => {
-    if (step === 2 && phoneError) {
+    if (step == 2 && phoneError) {
       setStep(step);
-    } else {
+    } else if (step == 2 && phoneNumber === "") {
+      setPhoneError("Please fill this field");
+      setStep(step);
+    } else if (step == 2 && address === "") {
+      setPhoneError("Please fill shipping address field");
+      setStep(step);
+    } else if (products && products.length > 0) {
       setStep(step + 1);
     }
   };
@@ -59,11 +71,30 @@ const Checkout = () => {
   const handlePrevious = () => {
     if (step > 1) {
       setStep(step - 1);
+    } else if (step > 3) {
+      setStep(step);
     }
   };
 
-  const handlePayment = () => {
-    console.log("Payment processed");
+  const handleSubmitOrder = (paymentInfo) => {
+    const orderData = {
+      userId: userId,
+      products: products,
+      shippingInfo: { address, city, phoneNumber },
+      paymentInfo,
+      totalAmount: estimatedAmount,
+      additionalFees: 0,
+      subtotal: estimatedAmount + additionalFees,
+    };
+
+    // Submiting orderData to  backend or API here
+
+    postData(orderData);
+
+    //delete cart items as they are now orders
+    redelete(userId);
+
+    navigation.navigate("OrderSuccess");
   };
 
   const navigateWhere = (locate) => {
@@ -99,7 +130,7 @@ const Checkout = () => {
             <ScrollView>
               {step === 1 && (
                 <View style={styles.stepContainer}>
-                  <View style={{ justifyContent: "center", alignItems: "center", padding: 20 }}>
+                  <View style={styles.stepContainerInner}>
                     <Icon name="checkout" size={26} />
                   </View>
 
@@ -164,12 +195,7 @@ const Checkout = () => {
                       onChangeText={setCity}
                     />
                     <Text style={styles.label}>Shipping Address</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter address"
-                      value={address}
-                      onChangeText={setAddress}
-                    />
+                    <TextInput style={styles.input} value={address} onChangeText={setAddress} />
                     <Text style={styles.label}>Shipping email</Text>
                     <TextInput
                       style={styles.input}
@@ -182,8 +208,7 @@ const Checkout = () => {
 
                     <Text style={styles.label}>Phone Number</Text>
                     <TextInput
-                      style={styles.input}
-                      placeholder="Enter phone number"
+                      style={[styles.input, phoneError ? styles.errorb : styles.successb]}
                       value={phoneNumber}
                       onChangeText={(text) => setPhoneNumber(text)}
                     />
@@ -203,12 +228,17 @@ const Checkout = () => {
               )}
 
               {step === 3 && (
-                <View style={styles.stepContainer}>
-                  <Text>Payment Information</Text>
-                  {/* Display payment options */}
-                  <Button title="Previous" onPress={handlePrevious} />
-                  <Button title="Pay" onPress={handlePayment} />
-                </View>
+                <>
+                  <View style={styles.stepContainer}>
+                    <CheckoutStep3
+                      onPrevious={handlePrevious}
+                      onNext={handleNext}
+                      phoneNumber={phoneNumber}
+                      totalAmount={estimatedAmount}
+                      handleSubmitOrder={handleSubmitOrder}
+                    />
+                  </View>
+                </>
               )}
             </ScrollView>
           </View>
@@ -291,6 +321,7 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 20,
   },
+  stepContainerInner: { justifyContent: "center", alignItems: "center", padding: 20 },
   input: {
     height: 40,
     borderColor: "gray",
@@ -435,5 +466,13 @@ const styles = StyleSheet.create({
     fontFamily: "semibold",
     fontSize: SIZES.medium,
   },
-  error: { color: "red", marginBottom: 10, marginStart: 10 },
+  error: { color: "red", marginBottom: 10, marginStart: 10, marginTop: 20 },
+  errorb: {
+    borderWidth: 0.54,
+    borderColor: COLORS.red,
+  },
+  successb: {
+    borderWidth: 0.54,
+    borderColor: COLORS.green,
+  },
 });

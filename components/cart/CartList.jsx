@@ -31,6 +31,7 @@ const CartList = ({ onItemCountChange }) => {
       const products = data[0]?.products || [];
 
       setItemCount(products.length);
+      console.log("products length", products.length);
 
       const initialTotals = products.reduce((acc, item) => {
         if (item.cartItem && item.cartItem.price) {
@@ -116,7 +117,7 @@ const CartList = ({ onItemCountChange }) => {
       <TouchableOpacity
         style={styles.checkoutBtnWrapper}
         onPress={() => {
-          if (estimatedAmount > 0) {
+          if (estimatedAmount > 0 && products.length > 0) {
             navigation.navigate("Checkout", {
               estimatedAmount,
               products,

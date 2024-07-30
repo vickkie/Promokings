@@ -19,6 +19,7 @@ import {
   Cart,
   ProductDetails,
   Products,
+  OrderSuccess,
   LoginPage,
   Favourites,
   Orders,
@@ -88,6 +89,7 @@ export default function App() {
                   <Stack.Screen name="About" component={About} options={{ headerShown: true }} />
                   <Stack.Screen name="Faqs" component={Faqs} options={{ headerShown: false }} />
                   <Stack.Screen name="SystemMessages" component={SystemMessages} options={systemScreenOptions} />
+                  <Stack.Screen name="OrderSuccess" component={OrderSuccess} options={{ headerShown: false }} />
                 </Stack.Navigator>
                 <Toast />
               </NavigationContainer>

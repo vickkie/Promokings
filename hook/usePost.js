@@ -39,8 +39,13 @@ const usePost = (endpoint) => {
     setData(data);
     updateData();
   };
+  const postData = (data) => {
+    setData(data);
 
-  return { updateStatus, isLoading, error, errorMessage, addCart };
+    updateData();
+  };
+
+  return { updateStatus, isLoading, error, errorMessage, addCart, postData };
 };
 
 export default usePost;
