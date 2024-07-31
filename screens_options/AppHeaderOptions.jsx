@@ -23,6 +23,17 @@ const faqsScreenOptions = {
   },
   // Additional options...
 };
+const successScreenOptions = {
+  headerTitle: () => <Text style={{ color: "#fff" }}>Order status</Text>,
+  headerStyle: {
+    backgroundColor: "#f4511e",
+  },
+  headerTintColor: "#fff",
+  headerTitleStyle: {
+    fontWeight: "bold",
+  },
+  // Additional options...
+};
 const systemScreenOptions = {
   headerTitle: () => <Text style={{ color: "#fff", fontSize: SIZES.large }}>System Notifications</Text>,
   headerStyle: {
@@ -38,4 +49,4 @@ const styles = StyleSheet.create({
   topheader: { color: "#fff", fontFamily: "bold", fontSize: SIZES.medium },
 });
 
-export { chatScreenOptions, faqsScreenOptions, systemScreenOptions };
+export { chatScreenOptions, faqsScreenOptions, systemScreenOptions, successScreenOptions };

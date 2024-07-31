@@ -14,7 +14,7 @@ import BottomTabNavigation from "./navigation/BottomTabNavigation";
 import { AuthProvider } from "./components/auth/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
 import { WishProvider } from "./contexts/WishContext";
-import { chatScreenOptions, systemScreenOptions } from "./screens_options/AppHeaderOptions";
+import { chatScreenOptions, systemScreenOptions, successScreenOptions } from "./screens_options/AppHeaderOptions";
 import {
   Cart,
   ProductDetails,

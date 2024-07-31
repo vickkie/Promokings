@@ -45,7 +45,8 @@
     "react-native-uuid": "^2.0.2",
     "react-native-webview": "13.2.2",
     "uuid": "^10.0.0",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "expo-blur": "~12.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
