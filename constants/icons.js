@@ -50,8 +50,10 @@ import Logout2 from "../assets/svg/logout-2.svg";
 import Login2 from "../assets/svg/login-2.svg";
 import Favouritebag from "../assets/svg/bag-heart.svg";
 import ShoppingCart from "../assets/svg/shopping-cart.svg";
+import CopyWhite from "../assets/svg/copy.svg";
 
 const iconMap = {
+  copywhite: CopyWhite,
   shoppingcart: ShoppingCart,
   home: HomeIcon,
   search: SearchIcon,

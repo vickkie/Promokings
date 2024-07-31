@@ -19,6 +19,7 @@ const usePost = (endpoint) => {
       const response = await axios.post(`${BACKEND_PORT}/api/${endpoint}`, data);
 
       // console.log(response.status);
+      // console.log(response);
       setUpdateStatus(response.status);
     } catch (error) {
       setError(true);

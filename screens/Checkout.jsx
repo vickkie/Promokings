@@ -7,18 +7,25 @@ import { useCart } from "../contexts/CartContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../components/auth/AuthContext";
 import * as Yup from "yup";
-import usePost from "../hook/usePost";
 import useDelete from "../hook/useDelete";
 
 import CheckoutStep3 from "./Payments";
+import LottieView from "lottie-react-native";
+import { BACKEND_PORT } from "@env";
+import axios from "axios";
 
 const Checkout = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { estimatedAmount, products, totals, additionalFees } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
-  const { updateStatus, isLoading, error, errorMessage, postData } = usePost("orders");
   const { deleteStatus, errorStatus, redelete } = useDelete(`carts/user`);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorState, setErrorState] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const [orderId, setOrderId] = useState(null);
 
   useEffect(() => {
     if (!userLogin) {
@@ -55,16 +62,27 @@ const Checkout = () => {
   }, [phoneNumber]);
 
   const handleNext = () => {
-    if (step == 2 && phoneError) {
-      setStep(step);
-    } else if (step == 2 && phoneNumber === "") {
-      setPhoneError("Please fill this field");
-      setStep(step);
-    } else if (step == 2 && address === "") {
-      setPhoneError("Please fill shipping address field");
-      setStep(step);
-    } else if (products && products.length > 0) {
-      setStep(step + 1);
+    switch (step) {
+      case 2:
+        if (phoneError) {
+          // Do nothing or handle error
+        } else if (phoneNumber === "") {
+          setPhoneError("Please fill this field");
+        } else if (address === "") {
+          setPhoneError("Please fill shipping address field");
+        } else {
+          setStep(step + 1);
+        }
+        break;
+      case 4:
+        setStep(step);
+        break;
+      default:
+        if (products && products.length > 0) {
+          setStep(step + 1);
+        } else {
+          setStep(step + 1);
+        }
     }
   };
 
@@ -76,7 +94,7 @@ const Checkout = () => {
     }
   };
 
-  const handleSubmitOrder = (paymentInfo) => {
+  const handleSubmitOrder = async (paymentInfo) => {
     const orderData = {
       userId: userId,
       products: products,
@@ -87,14 +105,32 @@ const Checkout = () => {
       subtotal: estimatedAmount + additionalFees,
     };
 
-    // Submiting orderData to  backend or API here
+    handleNext(); // This moves to the next step in the UI
 
-    postData(orderData);
+    try {
+      setIsLoading(true);
+      setErrorState(false);
 
-    //delete cart items as they are now orders
-    redelete(userId);
+      const response = await axios.post(`${BACKEND_PORT}/api/orders`, orderData);
+      setOrderId(response.data.order.orderId);
+      setSuccess(true);
 
-    navigation.navigate("OrderSuccess");
+      // Only proceed with next steps if the order creation was successful
+      if (response.data.success) {
+        console.log("Order created successfully:", response.data.order.orderId);
+        redelete(userId); // Delete cart items as they are now orders
+        navigation.navigate("OrderSuccess", { orderId: response.data.order.orderId });
+      } else {
+        setErrorMessage(response.data.message || "Unknown error occurred");
+        setErrorState(true);
+      }
+    } catch (error) {
+      setErrorMessage(error.message || "An error occurred");
+      setErrorState(true);
+      console.error("Error submitting order:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const navigateWhere = (locate) => {
@@ -104,6 +140,23 @@ const Checkout = () => {
       navigation.goBack();
     }
   };
+
+  function calculateQuantity(priceString, totals) {
+    //regex pattern to match numbers including decimal points and optional thousands separators
+    const regex = /\d{1,3}(,\d{3})*(\.\d+)?/g;
+
+    // Extract numeric part, considering potential thousands separators
+    const numericValueMatch = priceString.match(regex)?.[0];
+    if (!numericValueMatch) return "N/A";
+
+    // Remove thousands separators if present
+    const numericValue = numericValueMatch.replace(/,/g, "");
+
+    // Convert to float and perform calculation, ensuring totals is a number
+    const quantity = isNaN(parseFloat(numericValue)) || isNaN(totals) ? "N/A" : totals / parseFloat(numericValue);
+
+    return quantity;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -158,7 +211,11 @@ const Checkout = () => {
                           </View>
                           <View style={styles.rowitem}>
                             <View>
-                              <Text style={styles.semititle}>Quantity : {item.quantity}</Text>
+                              <Text style={styles.semititle}>
+                                <Text style={styles.semititle}>
+                                  Quantity : {calculateQuantity(item.cartItem.price, totals[item._id])}
+                                </Text>
+                              </Text>
                             </View>
 
                             <View style={styles.priceadd}>
@@ -236,9 +293,40 @@ const Checkout = () => {
                       phoneNumber={phoneNumber}
                       totalAmount={estimatedAmount}
                       handleSubmitOrder={handleSubmitOrder}
+                      email={email}
                     />
                   </View>
                 </>
+              )}
+
+              {step === 4 && isLoading && (
+                <View style={styles.containLottie}>
+                  <View style={styles.animationWrapper}>
+                    <LottieView
+                      source={require("../assets/data/loading.json")}
+                      autoPlay
+                      loop
+                      style={styles.animation}
+                    />
+                  </View>
+                </View>
+              )}
+
+              {step === 4 && errorState && (
+                <View style={styles.containLottie}>
+                  <View style={styles.animationWrapper}>
+                    <LottieView
+                      source={require("../assets/data/failed.json")}
+                      autoPlay
+                      loop={false}
+                      style={styles.animation}
+                    />
+                    <Text style={styles.errorMessage}>{"Sorry request failed \n Please try again later"}</Text>
+                  </View>
+                  <TouchableOpacity style={styles.buttonHome} onPress={() => navigation.navigate("Home")}>
+                    <Text style={styles.buttonText}>Back to home</Text>
+                  </TouchableOpacity>
+                </View>
               )}
             </ScrollView>
           </View>
@@ -394,7 +482,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-
+  containLottie: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: SIZES.width - 20,
+    minHeight: SIZES.height - 150,
+  },
+  errorMessage: {
+    fontFamily: "semibold",
+    fontSize: SIZES.large,
+    marginBottom: 30,
+  },
   dot: (backgroundColor) => ({
     width: 50,
     height: 7,
@@ -474,5 +572,27 @@ const styles = StyleSheet.create({
   successb: {
     borderWidth: 0.54,
     borderColor: COLORS.green,
+  },
+  animationWrapper: {
+    width: 200,
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  animation: {
+    width: "100%",
+    height: "100%",
+  },
+  buttonHome: {
+    position: "absolute",
+    bottom: 20,
+    left: 10,
+    right: 10,
+    backgroundColor: COLORS.themey,
+    height: SIZES.xxLarge + 20,
+    borderRadius: SIZES.medium,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

@@ -12,7 +12,7 @@ const useDelete = (baseEndpoint) => {
     setErrorStatus(null); // Reset error state before updating data
 
     try {
-      console.log(`${baseEndpoint}${id}`);
+      // console.log(`${baseEndpoint}${id}`);
       const response = await axios.delete(`${BACKEND_PORT}/api/${baseEndpoint}${id}`); // Use the environment variable
 
       setDeleteStatus(response.status);

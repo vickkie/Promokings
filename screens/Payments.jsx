@@ -12,12 +12,13 @@ const paymentMethods = {
   PayPal: { label: "PayPal", imagePath: require("../assets/images/logos/paypal.png") },
 };
 
-const CheckoutStep3 = ({ onPrevious, onNext, phoneNumber, totalAmount, handleSubmitOrder }) => {
+const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("MasterCard");
 
   const formik = useFormik({
     initialValues: {
-      email: "",
+      phoneNumber: phoneNumber,
+      email: email,
       nameOnCard: convertToLowerCase(selectedPaymentMethod),
       cardNumber: "",
       expiryDate: "",
@@ -31,8 +32,8 @@ const CheckoutStep3 = ({ onPrevious, onNext, phoneNumber, totalAmount, handleSub
       ),
       cardNumber: Yup.string().when("selectedPaymentMethod", (selectedPaymentMethod, schema) =>
         ["Visa", "MasterCard"].includes(selectedPaymentMethod)
-          ? schema.matches(/^\d{16}$/, "Card number must be 16 digits").required("Required")
-          : schema.required()
+          ? schema.matches(/^\d{10,16}$/, "Card number must be 16 digits").required("Required")
+          : schema.notRequired()
       ),
       expiryDate: Yup.string().when("selectedPaymentMethod", (selectedPaymentMethod, schema) =>
         ["Visa", "MasterCard"].includes(selectedPaymentMethod)
@@ -45,9 +46,9 @@ const CheckoutStep3 = ({ onPrevious, onNext, phoneNumber, totalAmount, handleSub
           : schema.notRequired()
       ),
     }),
+
     onSubmit: (values) => {
       handleSubmitOrder(values);
-      onNext();
     },
   });
 
@@ -166,7 +167,23 @@ const CheckoutStep3 = ({ onPrevious, onNext, phoneNumber, totalAmount, handleSub
       ) : (
         <>
           <Text style={styles.label}>Phone number</Text>
-          <TextInput style={styles.input} placeholder="Phone number" value={phoneNumber} editable={false} />
+          <TextInput
+            style={styles.input}
+            placeholder="phone number"
+            keyboardType="numeric"
+            value={formik.values.phoneNumber}
+            onChangeText={(text) => formik.setFieldValue("phoneNumber", text)}
+            onBlur={formik.handleBlur("phoneNumber")}
+          />
+
+          {formik.touched.email && formik.errors.email ? <Text style={styles.error}>{formik.errors.email}</Text> : null}
+          <TextInput
+            style={styles.input}
+            placeholder="Email Address"
+            value={formik.values.email}
+            onChangeText={formik.handleChange("email")}
+            onBlur={formik.handleBlur("email")}
+          />
         </>
       )}
 

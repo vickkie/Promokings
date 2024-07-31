@@ -1,66 +1,131 @@
-import React from "react";
-import { StyleSheet, View, Text, TouchableOpacity, ImageBackground } from "react-native";
+import React, { useEffect } from "react";
+import { StyleSheet, View, Text, TouchableOpacity, Image, StatusBar, BackHandler } from "react-native";
 import LottieView from "lottie-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Icon from "../constants/icons"; // Ensure Icon is correctly imported and used
-import { COLORS, SIZES } from "../constants"; // Define your colors and sizes in constants
+import { BlurView } from "expo-blur";
+import { COLORS, SIZES } from "../constants";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import Icon from "../constants/icons";
+import * as Clipboard from "expo-clipboard";
 
 const OrderSuccess = () => {
-  const currentDate = new Date().toLocaleString(); // Current date and time
+  const currentDate = new Date().toLocaleString();
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { orderId } = route.params;
+
+  useEffect(() => {
+    const handleBackPress = () => {
+      navigation.navigate("Home");
+      // Return true to prevent default back navigation
+      return true;
+    };
+
+    BackHandler.addEventListener("hardwareBackPress", handleBackPress);
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
+    };
+  }, []);
+
+  const handleCopy = async () => {
+    await Clipboard.setStringAsync(orderId);
+    alert("Order ID copied to clipboard!");
+  };
 
   return (
-    <ImageBackground
-      source={require("../assets/images/mz.jpg")} // Your background image path
-      style={styles.background}
-    >
-      <View style={styles.overlay} />
-      <SafeAreaView style={styles.container}>
-        <View style={styles.headerWrapper}>
-          <Text style={styles.header}>Order Status</Text>
-        </View>
-        <View style={styles.animationWrapper}>
-          <LottieView
-            source={require("../assets/data/success2.json")}
-            autoPlay
-            loop={false} // Play once
-            style={styles.animation}
-          />
-        </View>
-        <View style={styles.detailsWrapper}>
-          <Text style={styles.successText}>Order Successful</Text>
-          <View style={styles.orderDetails}>
-            <Text style={styles.orderDetail}>Order No: 14225226</Text>
-            <Text style={styles.orderDetail}>Date: {currentDate}</Text>
+    <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.gray2} />
+      <View style={styles.imageContainer}>
+        <Image source={require("../assets/images/mz1.jpg")} style={styles.image} />
+        <BlurView intensity={50} style={styles.blurView} />
+      </View>
+
+      <View style={styles.content}>
+        <SafeAreaView style={styles.contentContainer}>
+          <View style={styles.headerWrapper}>
+            <Text style={styles.header}>Order Status</Text>
           </View>
-          <View style={styles.actionsWrapper}>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Track Order</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Back to Home</Text>
-            </TouchableOpacity>
+
+          <View style={styles.animationWrapper}>
+            <LottieView
+              source={require("../assets/data/success2.json")}
+              autoPlay
+              loop={true}
+              style={styles.animation}
+            />
           </View>
-        </View>
-      </SafeAreaView>
-    </ImageBackground>
+
+          <View style={styles.detailsWrapper}>
+            <Text style={styles.successText}>Order Successful</Text>
+            <View style={styles.orderDetails}>
+              <Text style={styles.orderDetail}>Order No:</Text>
+              <View style={styles.copyContainer}>
+                <TouchableOpacity style={styles.orderNumber}>
+                  <Text style={{ fontFamily: "light" }}>{orderId}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleCopy}>
+                  <Icon name="copywhite" size={21} />
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.orderDetail}>Date: {currentDate}</Text>
+            </View>
+            <View style={styles.actionsWrapper}>
+              <TouchableOpacity style={styles.button}>
+                <Text
+                  style={styles.buttonText}
+                  onPress={() => {
+                    navigation.navigate("Orders");
+                  }}
+                >
+                  Track Order
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => {
+                  navigation.navigate("Home");
+                }}
+              >
+                <Text style={styles.buttonText}>Back to Home</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </SafeAreaView>
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  background: {
+  container: {
     flex: 1,
+  },
+  imageContainer: {
+    flex: 1,
+    position: "relative",
+  },
+  image: {
+    ...StyleSheet.absoluteFillObject,
     width: "100%",
     height: "100%",
   },
-  overlay: {
+  blurView: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.9)", // Dark overlay
   },
-  container: {
-    flex: 1,
+  content: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 0,
+  },
+  contentContainer: {
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 16,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    borderRadius: SIZES.medium,
+    padding: 20,
+    width: "90%",
   },
   headerWrapper: {
     alignItems: "center",
@@ -69,7 +134,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: SIZES.xLarge,
     fontWeight: "bold",
-    color: COLORS.textPrimary,
+    color: COLORS.white,
   },
   animationWrapper: {
     width: 200,
@@ -84,16 +149,11 @@ const styles = StyleSheet.create({
   },
   detailsWrapper: {
     alignItems: "center",
-    backgroundColor: COLORS.themew,
-    padding: 20,
-    borderRadius: SIZES.medium,
-    width: "100%",
-    opacity: 0.9, // Slight transparency for the details container
   },
   successText: {
     fontSize: SIZES.large,
     fontWeight: "600",
-    color: COLORS.textPrimary,
+    color: COLORS.white,
     marginBottom: 10,
   },
   orderDetails: {
@@ -102,7 +162,7 @@ const styles = StyleSheet.create({
   },
   orderDetail: {
     fontSize: SIZES.medium,
-    color: COLORS.textSecondary,
+    color: COLORS.white,
     marginBottom: 5,
   },
   actionsWrapper: {
@@ -111,7 +171,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   button: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.themey,
     padding: 12,
     borderRadius: SIZES.small,
     alignItems: "center",
@@ -122,6 +182,17 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: SIZES.medium,
     fontWeight: "bold",
+  },
+  copyContainer: { flexDirection: "row", gap: 10, justifyContent: "center", alignItems: "center" },
+  orderNumber: {
+    backgroundColor: COLORS.gray2,
+    paddingVertical: 5,
+    paddingHorizontal: 5,
+    height: SIZES.xLarge + 4,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 24,
+    marginVertical: 10,
   },
 });
 
