@@ -15,7 +15,7 @@ import useFetch from "../hook/useFetch";
 import { useCart } from "../contexts/CartContext";
 import HomeMenu from "../components/bottomsheets/HomeMenu";
 
-import { COLORS, SIZES } from "../constants";
+import { COLORS, SIZES, SHADOWS } from "../constants";
 
 const Home = () => {
   const { userData, userLogin, productCount } = useContext(AuthContext);
@@ -147,6 +147,12 @@ const Home = () => {
 export default Home;
 
 const styles = StyleSheet.create({
+  carouselContainer: {
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: COLORS.themey,
+    height: 100,
+  },
   textStyles: {
     fontFamily: "bold",
     fontSize: 19,
@@ -214,6 +220,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themew,
     marginHorizontal: 4,
     borderRadius: SIZES.medium,
+    // ...SHADOWS.small,
+    // marginBottom: 2,
+    // shadowColor: COLORS.lightWhite,
   },
   greeting: {
     flex: 1,
