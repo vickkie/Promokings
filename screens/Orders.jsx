@@ -27,6 +27,9 @@ const Orders = () => {
   const { data, isLoading, error, refetch } = useFetch(`orders/user/${userId}`);
 
   const [ordersData, setOrdersData] = useState([]);
+  const [products, setProducts] = useState("");
+  const [orderItems, setOrderItems] = useState("");
+
   const [sortedOrdersData, setSortedOrdersData] = useState([]);
   const [last3orders, setlast3orders] = useState([]);
 
@@ -46,17 +49,6 @@ const Orders = () => {
       }));
 
       setlast3orders(latestThreeOrders);
-
-      console.log("|||||||||||||DATA||||||||||||||||||");
-
-      console.log(data);
-
-      console.log("|||||||||||| sorted oRDERS|||||||||||||||||||");
-
-      console.log(sortedOrdersData);
-      console.log("||||||||||||lAST THREE|||||||||||||||||||");
-
-      console.log(last3orders);
     }
   }, [data, isLoading, error]);
 
@@ -89,7 +81,6 @@ const Orders = () => {
 
       stylez: '{"height": 220, "width": 220, "position": "absolute", "right": -40, "top": -10, "opacity": 0.6}',
     },
-    // Add more data as needed
   ];
 
   const searchData = [
@@ -113,6 +104,34 @@ const Orders = () => {
     },
     // Add more search data as needed
   ];
+
+  useEffect(() => {
+    if (sortedOrdersData.length > 0) {
+      function extractProductDetails(orders) {
+        orders.forEach((order) => {
+          console.log("orderid", order._id);
+
+          setOrderItems();
+
+          order.products.forEach((product) => {
+            // console.log(product);
+            const items = product.cartItem._id;
+
+            const { _id, title, price, imageUrl, description } = product.cartItem._id || {};
+
+            setProducts();
+
+            // console.log(items);
+
+            // console.log(
+            //   `ID: ${_id}, Title: ${title}, Price: ${price}, Image URL: ${imageUrl}, Description: ${description}`
+            // );
+          });
+        });
+      }
+      extractProductDetails(data.orders);
+    }
+  }, [sortedOrdersData]);
 
   const filterOrdersByStatus = () => {
     return searchData.filter((order) => selectedStatus === "All" || order.status === selectedStatus);
@@ -154,7 +173,18 @@ const Orders = () => {
     );
   };
 
-  const SearchResultCard = ({ title, details, status }) => {
+  const SearchResultCard = ({ orderId, item, products, status }) => {
+    const titles = products
+      .map((product) => {
+        const { title } = product.cartItem._id || {};
+        return title;
+      })
+      .filter(Boolean); // This filters out undefined titles, in case some products don't have titles
+
+    const titlesString = titles.join(", ");
+
+    console.log("titles", titlesString);
+
     return (
       <View
         style={[
@@ -162,7 +192,6 @@ const Orders = () => {
           {
             flexDirection: "row",
             alignItems: "center",
-            // justifyContent: "space-evenly",
             gap: 6,
             paddingVertical: 10,
             backgroundColor: COLORS.lightWhite,
@@ -185,8 +214,8 @@ const Orders = () => {
           <Icon name="home" size={16} />
         </TouchableOpacity>
         <View>
-          <Text style={styles.searchResultTitle}>Apple mackbook, Laptop , GIthub ....</Text>
-          <Text style={styles.searchResultdetail}>ID: PRK-ababbabcac</Text>
+          <Text style={styles.searchResultTitle}>{titlesString}</Text>
+          <Text style={styles.searchResultdetail}>Order id : {orderId}</Text>
         </View>
         <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.flexEnd, styles.buttonView]}>
           <Icon name="backbutton" size={26} />
@@ -266,9 +295,12 @@ const Orders = () => {
 
       <View style={styles.detailsWrapper}>
         <FlatList
-          data={filteredOrders}
-          renderItem={({ item }) => <SearchResultCard title={item.title} details={item.details} status={item.status} />}
-          keyExtractor={(item) => item.id}
+          {...console.log(sortedOrdersData)}
+          data={sortedOrdersData}
+          renderItem={({ item }) => (
+            <SearchResultCard item={item} orderId={item.orderId} products={item.products} status={item.status} />
+          )}
+          keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
         />
       </View>
@@ -285,6 +317,7 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flexDirection: "column",
+    // flex: 1,
   },
   backBtn: {
     left: 10,
