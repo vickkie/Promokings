@@ -49,6 +49,7 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) =
 
     onSubmit: (values) => {
       handleSubmitOrder(values);
+      // console.log(values);
     },
   });
 

@@ -59,11 +59,16 @@ import check from "../assets/svg/check-circle.svg";
 import tracker from "../assets/svg/tracker.svg";
 import email from "../assets/svg/email.svg";
 import call from "../assets/svg/call.svg";
-import mpesa from "../assets/images/logos/Mpesa.png";
+import mpesa from "../assets/images/logos/mpesa.svg";
+
 import mastercard from "../assets/images/logos/mastercard.svg";
+import visa from "../assets/images/logos/visa.svg";
+import paypal from "../assets/images/logos/paypal.svg";
 
 const iconMap = {
   mastercard: mastercard,
+  paypal: paypal,
+  visa: visa,
   mpesa: mpesa,
   email: email,
   call: call,

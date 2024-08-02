@@ -17,6 +17,7 @@ import { AuthContext } from "../components/auth/AuthContext";
 import LottieView from "lottie-react-native";
 import useFetch from "../hook/useFetch";
 import { BACKEND_PORT } from "@env";
+import { StatusBar } from "expo-status-bar";
 
 const Orders = () => {
   const [userId, setUserId] = useState(null);
@@ -211,7 +212,7 @@ const Orders = () => {
             </View>
           </View>
           <View>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonView]}>
+            <TouchableOpacity onPress={() => {}} style={[styles.backBtn, styles.buttonView]}>
               <Icon name="backbutton" size={26} />
             </TouchableOpacity>
           </View>
@@ -221,7 +222,6 @@ const Orders = () => {
   };
 
   const SearchResultCard = ({ orderId, item, products, status, icon, color, totals }) => {
-    // console.log("products", products);
     const titles = products
       .map((product, index) => {
         const { title } = product.cartItem._id || {};
@@ -298,8 +298,9 @@ const Orders = () => {
   );
 
   return (
-    <SafeAreaView>
-      <View style={{ marginTop: 25 }}>
+    <SafeAreaView style={styles.containerx}>
+      <StatusBar backgroundColor={COLORS.themey} />
+      <View style={{ marginTop: 0 }}>
         <View style={styles.wrapper}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
             <Icon name="backbutton" size={26} />
@@ -316,90 +317,101 @@ const Orders = () => {
             </View>
           </View>
         </View>
-        {/* <ScrollView contentContainerStyle={{ flexGrow: 1 }}> */}
-        <View style={{ paddingTop: 20, width: SIZES.width - 20, paddingHorizontal: 22 }}>
-          <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>Latest orders</Text>
-        </View>
 
-        <View style={styles.carouselContainer}>
-          <FlatList
-            data={primaryData}
-            renderItem={renderCards}
-            keyExtractor={(item) => item.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.list}
-          />
-        </View>
-
-        <View style={styles.searchBarContainer}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search orders"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-          <TouchableOpacity style={styles.searchButton}>
-            <Icon name="search" size={26} />
-          </TouchableOpacity>
-        </View>
-
-        <FlatList
-          horizontal
-          data={["All", "pending", "delivery", "delivered"]}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={[styles.filterButton, selectedStatus === item && styles.selectedFilter]}
-              onPress={() => setSelectedStatus(item)}
-            >
-              <Text>{item}</Text>
-            </TouchableOpacity>
-          )}
-          keyExtractor={(item) => item}
-          contentContainerStyle={styles.filterContainer}
-        />
-
-        <View style={styles.detailsWrapper}>
-          {sortedOrdersData.length > 0 && (
-            <FlatList
-              // {...console.log(sortedOrdersData)}
-              data={filteredOrders}
-              // data={sortedOrdersData}
-              renderItem={({ item, index }) => {
-                const icons = ["isometric", "isometric2", "isometric3"];
-                const colors = ["#FFD2D5", "#D7F6D4", "#C3ECFE"];
-
-                const iconIndex = index % icons.length;
-                const colorIndex = index % colors.length;
-                return (
-                  <SearchResultCard
-                    item={item}
-                    orderId={item.orderId}
-                    products={item.products}
-                    totals={item.totalAmount}
-                    status={item.status}
-                    icon={icons[iconIndex]}
-                    color={colors[colorIndex]}
-                  />
-                );
-              }}
-              keyExtractor={(item) => item._id}
-              contentContainerStyle={styles.list}
-            />
-          )}
-
-          {!isLoading && sortedOrdersData.length == 0 && (
-            <View style={styles.containLottie}>
-              <View style={styles.animationWrapper}>
-                <LottieView source={require("../assets/data/emptybox.json")} autoPlay loop style={styles.animation} />
-              </View>
-              <View style={{ marginTop: 0 }}>
-                <Text style={{ fontFamily: "semibold", fontSize: SIZES.medium }}>You dont have any orders</Text>
-              </View>
+        <ScrollView>
+          <View style={{ marginTop: 130 }}>
+            <View style={{ paddingTop: 20, width: SIZES.width - 20, paddingHorizontal: 22 }}>
+              <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>
+                Latest orders
+              </Text>
             </View>
-          )}
-        </View>
-        {/* </ScrollView> */}
+
+            <View style={styles.carouselContainer}>
+              <FlatList
+                data={primaryData}
+                renderItem={renderCards}
+                keyExtractor={(item) => item.id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.list}
+              />
+            </View>
+
+            <View style={styles.searchBarContainer}>
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search orders"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+              <TouchableOpacity style={styles.searchButton}>
+                <Icon name="search" size={26} />
+              </TouchableOpacity>
+            </View>
+
+            <FlatList
+              horizontal
+              data={["All", "pending", "delivery", "delivered"]}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={[styles.filterButton, selectedStatus === item && styles.selectedFilter]}
+                  onPress={() => setSelectedStatus(item)}
+                >
+                  <Text>{item}</Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item) => item}
+              contentContainerStyle={styles.filterContainer}
+            />
+
+            <View style={styles.detailsWrapper}>
+              {sortedOrdersData.length > 0 && (
+                <FlatList
+                  // {...console.log(sortedOrdersData)}
+                  data={filteredOrders}
+                  // data={sortedOrdersData}
+                  renderItem={({ item, index }) => {
+                    const icons = ["isometric", "isometric2", "isometric3"];
+                    const colors = ["#FFD2D5", "#D7F6D4", "#C3ECFE"];
+
+                    const iconIndex = index % icons.length;
+                    const colorIndex = index % colors.length;
+                    return (
+                      <SearchResultCard
+                        item={item}
+                        orderId={item.orderId}
+                        products={item.products}
+                        totals={item.totalAmount}
+                        status={item.status}
+                        icon={icons[iconIndex]}
+                        color={colors[colorIndex]}
+                      />
+                    );
+                  }}
+                  keyExtractor={(item) => item._id}
+                  contentContainerStyle={styles.list}
+                  scrollEnabled={false}
+                />
+              )}
+
+              {!isLoading && filteredOrders.length == 0 && (
+                <View style={styles.containLottie}>
+                  <View style={styles.animationWrapper}>
+                    <LottieView
+                      source={require("../assets/data/emptybox.json")}
+                      autoPlay
+                      loop
+                      style={styles.animation}
+                    />
+                  </View>
+                  <View style={{ marginTop: -20, paddingBottom: 10 }}>
+                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}> Nothing to see here</Text>
+                  </View>
+                </View>
+              )}
+            </View>
+          </View>
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
@@ -414,7 +426,8 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flexDirection: "column",
-    // flex: 1,
+    position: "absolute",
+    top: 2,
   },
   backBtn: {
     left: 10,
@@ -566,7 +579,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: COLORS.themew,
     borderRadius: 16,
-    height: 30,
+    height: 33,
   },
   selectedFilter: {
     backgroundColor: COLORS.themey,
@@ -615,5 +628,9 @@ const styles = StyleSheet.create({
   animation: {
     width: "100%",
     height: "100%",
+  },
+  containerx: {
+    flex: 1,
+    paddingTop: 26,
   },
 });

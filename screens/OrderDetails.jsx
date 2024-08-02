@@ -61,7 +61,7 @@ const OrderDetails = () => {
   }
 
   useEffect(() => {
-    console.log(item.status);
+    // console.log(item.status);
   });
 
   const handleEmailPress = () => {
@@ -71,6 +71,64 @@ const OrderDetails = () => {
   const handleCallPress = () => {
     const phoneNumber = "1234567890";
     Linking.openURL(`tel:${phoneNumber}`);
+  };
+
+  const PaymentMethodComponent = ({ item }) => {
+    const selectedPaymentMethod = item.paymentInfo.selectedPaymentMethod;
+
+    // Define the icon name based on the selected payment method
+    let iconName = "credit-card";
+    let value = "";
+    switch (selectedPaymentMethod) {
+      case "MasterCard":
+        iconName = "mastercard";
+        value = "**** **** **** " + item.paymentInfo.cardNumber.slice(-4);
+        break;
+      case "Visa":
+        iconName = "visa";
+        value = "**** **** **** " + item.paymentInfo.cardNumber.slice(-4);
+        break;
+      case "Paypal":
+        iconName = "paypal";
+        value = item.paymentInfo.email;
+        break;
+      case "Mpesa":
+        iconName = "mpesa";
+        value = item.paymentInfo.phoneNumber;
+        break;
+      default:
+        iconName = "question-circle"; // Fallback icon
+        value = "Enter details";
+    }
+
+    return (
+      <View>
+        <View style={styles.selectedPayment}>
+          <Text style={styles.selectedText}>Method selected : {`[ ${selectedPaymentMethod} ]`}</Text>
+        </View>
+        <View style={styles.inputWrapper}>
+          <Icon
+            name={iconName} // Dynamically set the icon name
+            size={36}
+            style={styles.iconStyle}
+            color={COLORS.gray}
+          />
+          <TextInput
+            style={{ flex: 1 }}
+            value={value} // Use value to set the text
+            editable={false} // Set the input field to non-editable
+          />
+        </View>
+        <View style={styles.inputWrapper}>
+          <Icon name="email" size={29} style={styles.iconStyle} color={COLORS.gray} />
+          <TextInput placeholder="email" style={{ flex: 1 }} value={item.paymentInfo.email} editable={false} />
+        </View>
+        <View style={styles.inputWrapper}>
+          <Icon name="location" size={29} style={styles.iconStyle} color={COLORS.gray} />
+          <TextInput placeholder="email" style={{ flex: 1 }} value={item.shippingInfo.city} editable={false} />
+        </View>
+      </View>
+    );
   };
 
   return (
@@ -155,7 +213,7 @@ const OrderDetails = () => {
                             navigation.navigate("ProductDetails", { item: product.cartItem._id, itemid: product._id })
                           }
                         >
-                          {console.log("products", item)}
+                          {/* {console.log("products", item)} */}
                           <Image source={{ uri: product.cartItem._id.imageUrl }} style={styles.image} />
                         </TouchableOpacity>
                         <View style={{ gap: 12 }}>
@@ -217,27 +275,12 @@ const OrderDetails = () => {
                 </View>
               </View>
             </View>
-            <View style={styles.relatedRow}>
+            <View style={[styles.relatedRow, { marginBottom: 10 }]}>
               <View>
                 <Text style={styles.relatedHeader}>Payment Information</Text>
               </View>
 
-              <View>
-                <View style={styles.selectedPayment}>
-                  <Text style={styles.selectedText}>
-                    Method selected : {`[ ${item.paymentInfo.selectedPaymentMethod} ]`}
-                  </Text>
-                </View>
-                <View style={styles.inputWrapper}>
-                  <Icon name="mastercard" size={29} style={styles.iconStyle} color={COLORS.gray} />
-                  <TextInput
-                    placeholder="Enter email"
-                    style={{ flex: 1 }}
-                    value={item.paymentInfo.email}
-                    editable={false}
-                  />
-                </View>
-              </View>
+              <PaymentMethodComponent item={item} />
             </View>
           </ScrollView>
         </View>
@@ -462,6 +505,7 @@ const styles = StyleSheet.create({
     borderColor: "#CCC",
     width: SIZES.width - 50,
     alignSelf: "center",
+    marginVertical: 10,
   },
   iconStyle: {
     marginRight: 10,
