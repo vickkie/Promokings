@@ -55,8 +55,10 @@ import CopyWhite from "../assets/svg/copy.svg";
 import Isometric1 from "../assets/svg/box-2.svg";
 import Isometric2 from "../assets/svg/box-3.svg";
 import Isometric3 from "../assets/svg/box-4.svg";
+import check from "../assets/svg/check-circle.svg";
 
 const iconMap = {
+  check: check,
   isometric: Isometric1,
   isometric2: Isometric2,
   isometric3: Isometric3,

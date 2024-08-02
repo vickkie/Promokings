@@ -1,18 +1,27 @@
-import React, { useContext, useState, useEffect } from "react";
-import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Image, SafeAreaView } from "react-native";
+import React, { useContext, useState, useEffect, useCallback, useMemo } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  SafeAreaView,
+  ScrollView,
+} from "react-native";
 import { COLORS, SIZES } from "../constants";
 import Icon from "../constants/icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
+import LottieView from "lottie-react-native";
 import useFetch from "../hook/useFetch";
+import { BACKEND_PORT } from "@env";
 
 const Orders = () => {
   const [userId, setUserId] = useState(null);
   const { userData, userLogin } = useContext(AuthContext);
   const navigation = useNavigation();
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("All");
 
   useEffect(() => {
     if (!userLogin) {
@@ -24,14 +33,63 @@ const Orders = () => {
     }
   }, [userLogin, userData]);
 
-  const { data, isLoading, error, refetch } = useFetch(`orders/user/${userId}`);
+  // const { data, isLoading, error, refetch } = useFetch(`orders/user/${userId}`);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("All");
   const [ordersData, setOrdersData] = useState([]);
   const [products, setProducts] = useState("");
   const [orderItems, setOrderItems] = useState("");
 
   const [sortedOrdersData, setSortedOrdersData] = useState([]);
   const [last3orders, setlast3orders] = useState([]);
+
+  // State for orders, loading, and error
+  const [data, setOrders] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!userLogin) {
+      setUserId(1); // Consider handling this differently, maybe redirecting to login immediately
+      navigation.navigate("Login");
+      return;
+    } else if (userData && userData._id) {
+      setUserId(userData._id);
+    }
+  }, [userLogin, userData]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(`${BACKEND_PORT}/api/orders/user/${userId}`);
+        const data = await response.json();
+
+        // console.log(data);
+        setOrders(data || []);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (userId) {
+      fetchData();
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    console.log(data);
+  }, [data, ordersData]);
+
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     refetch();
+  //   }, [])
+  // );
 
   useEffect(() => {
     if (!isLoading && !error && data.orders && data.orders.length !== 0) {
@@ -83,28 +141,6 @@ const Orders = () => {
     },
   ];
 
-  const searchData = [
-    {
-      id: "101",
-      title: "Order #101",
-      status: "Pending",
-      details: "Order details for #101",
-    },
-    {
-      id: "102",
-      title: "Order #102",
-      status: "On Delivery",
-      details: "Order details for #102",
-    },
-    {
-      id: "103",
-      title: "Order #103",
-      status: "Delivered",
-      details: "Order details for #103",
-    },
-    // Add more search data as needed
-  ];
-
   useEffect(() => {
     if (sortedOrdersData.length > 0) {
       function extractProductDetails(orders) {
@@ -131,17 +167,33 @@ const Orders = () => {
       }
       extractProductDetails(data.orders);
     }
-  }, [sortedOrdersData]);
+  }, [sortedOrdersData, data]);
 
-  const filterOrdersByStatus = () => {
-    return searchData.filter((order) => selectedStatus === "All" || order.status === selectedStatus);
-  };
+  // const filterOrdersByStatus = () => {
+  //   return searchData.filter((order) => selectedStatus === "All" || order.status === selectedStatus);
+  // };
 
-  const filterOrdersBySearchQuery = (orders) => {
-    return orders.filter((order) => order.title.toLowerCase().includes(searchQuery.toLowerCase()));
-  };
+  // const filterOrdersBySearchQuery = (orders) => {
+  //   return orders.filter((order) => order.title.toLowerCase().includes(searchQuery.toLowerCase()));
+  // };
 
-  const filteredOrders = filterOrdersBySearchQuery(filterOrdersByStatus());
+  const filterOrdersByStatus = useCallback(() => {
+    return sortedOrdersData.filter((order) => selectedStatus === "All" || order.status === selectedStatus);
+  }, [selectedStatus]);
+
+  const filterOrdersBySearchQuery = useCallback(
+    (orders) => {
+      return orders.filter((order) => order.orderId.includes(searchQuery));
+    },
+    [searchQuery]
+  );
+
+  const filteredOrders = useMemo(() => {
+    const statusFiltered = filterOrdersByStatus();
+    return filterOrdersBySearchQuery(statusFiltered);
+  }, [filterOrdersByStatus, filterOrdersBySearchQuery]);
+
+  // const filteredOrders = filterOrdersBySearchQuery(filterOrdersByStatus());
 
   const Card = ({ title, image, shippingId, color, stylez }) => {
     const parsedStyle = stylez ? JSON.parse(stylez) : {};
@@ -214,6 +266,9 @@ const Orders = () => {
             alignItems: "center",
           }}
         >
+          <TouchableOpacity style={styles.checkmark}>
+            <Icon name="check" size={11} />
+          </TouchableOpacity>
           <Icon name={icon} size={21} />
         </TouchableOpacity>
 
@@ -221,106 +276,128 @@ const Orders = () => {
           <Text style={styles.searchResultTitle}>{titlesString}</Text>
           <Text style={styles.searchResultdetail}>Order id : {orderId}</Text>
         </View>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.flexEnd, styles.buttonView]}>
+        <TouchableOpacity onPress={() => {}} style={[styles.flexEnd, styles.buttonView]}>
           <Icon name="backbutton" size={26} />
         </TouchableOpacity>
       </View>
     );
   };
 
+  const renderCards = useCallback(
+    ({ item }) => (
+      <Card
+        title={item.title}
+        image={item.image}
+        color={item.color}
+        stylez={item.stylez}
+        shippingId={item.shippingId}
+      />
+    ),
+    [data]
+  );
+
   return (
-    <SafeAreaView style={styles.containerx}>
-      <View style={styles.wrapper}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
-          <Icon name="backbutton" size={26} />
-        </TouchableOpacity>
-        <View style={styles.upperRow}>
-          <View style={styles.upperButtons}>
-            <Text style={styles.heading}>My orders</Text>
-          </View>
-          <TouchableOpacity onPress={() => {}} style={styles.outWrap}>
-            <Icon name="bellfilled" size={26} />
+    <SafeAreaView>
+      <View style={{ marginTop: 25 }}>
+        <View style={styles.wrapper}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
+            <Icon name="backbutton" size={26} />
           </TouchableOpacity>
-          <View style={styles.lowerheader}>
-            <Text style={styles.statement}>You can track your orders from here</Text>
+          <View style={styles.upperRow}>
+            <View style={styles.upperButtons}>
+              <Text style={styles.heading}>My orders</Text>
+            </View>
+            <TouchableOpacity onPress={() => {}} style={styles.outWrap}>
+              <Icon name="bellfilled" size={26} />
+            </TouchableOpacity>
+            <View style={styles.lowerheader}>
+              <Text style={styles.statement}>You can track your orders from here</Text>
+            </View>
           </View>
         </View>
-      </View>
+        {/* <ScrollView contentContainerStyle={{ flexGrow: 1 }}> */}
+        <View style={{ paddingTop: 20, width: SIZES.width - 20, paddingHorizontal: 22 }}>
+          <Text style={{ fontFamily: "semibold", fontSize: SIZES.medium + 4, letterSpacing: 0 }}>Latest orders</Text>
+        </View>
 
-      <View style={{ paddingTop: 20, width: SIZES.width - 20, paddingHorizontal: 22 }}>
-        <Text style={{ fontFamily: "semibold", fontSize: SIZES.medium + 4, letterSpacing: 0 }}>Latest orders</Text>
-      </View>
+        <View style={styles.carouselContainer}>
+          <FlatList
+            data={primaryData}
+            renderItem={renderCards}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.list}
+          />
+        </View>
 
-      <View style={styles.carouselContainer}>
+        <View style={styles.searchBarContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search orders"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+          <TouchableOpacity style={styles.searchButton}>
+            <Icon name="search" size={26} />
+          </TouchableOpacity>
+        </View>
+
         <FlatList
-          data={primaryData}
+          horizontal
+          data={["All", "pending", "delivery", "delivered"]}
           renderItem={({ item }) => (
-            <Card
-              title={item.title}
-              image={item.image}
-              color={item.color}
-              stylez={item.stylez}
-              shippingId={item.shippingId}
+            <TouchableOpacity
+              style={[styles.filterButton, selectedStatus === item && styles.selectedFilter]}
+              onPress={() => setSelectedStatus(item)}
+            >
+              <Text>{item}</Text>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item}
+          contentContainerStyle={styles.filterContainer}
+        />
+
+        <View style={styles.detailsWrapper}>
+          {sortedOrdersData.length > 0 && (
+            <FlatList
+              // {...console.log(sortedOrdersData)}
+              data={filteredOrders}
+              // data={sortedOrdersData}
+              renderItem={({ item, index }) => {
+                const icons = ["isometric", "isometric2", "isometric3"];
+                const colors = ["#FFD2D5", "#D7F6D4", "#C3ECFE"];
+
+                const iconIndex = index % icons.length;
+                const colorIndex = index % colors.length;
+                return (
+                  <SearchResultCard
+                    item={item}
+                    orderId={item.orderId}
+                    products={item.products}
+                    status={item.status}
+                    icon={icons[iconIndex]}
+                    color={colors[colorIndex]}
+                  />
+                );
+              }}
+              keyExtractor={(item) => item._id}
+              contentContainerStyle={styles.list}
             />
           )}
-          keyExtractor={(item) => item.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.list}
-        />
-      </View>
 
-      <View style={styles.searchBarContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search orders"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-        <TouchableOpacity style={styles.searchButton}>
-          <Icon name="search" size={26} />
-        </TouchableOpacity>
-      </View>
-
-      <FlatList
-        horizontal
-        data={["All", "Pending", "On Delivery", "Delivered"]}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[styles.filterButton, selectedStatus === item && styles.selectedFilter]}
-            onPress={() => setSelectedStatus(item)}
-          >
-            <Text>{item}</Text>
-          </TouchableOpacity>
-        )}
-        keyExtractor={(item) => item}
-        contentContainerStyle={styles.filterContainer}
-      />
-
-      <View style={styles.detailsWrapper}>
-        <FlatList
-          // {...console.log(sortedOrdersData)}
-          data={sortedOrdersData}
-          renderItem={({ item, index }) => {
-            const icons = ["isometric", "isometric2", "isometric3"];
-            const colors = ["#FFD2D5", "#D7F6D4", "#C3ECFE"];
-
-            const iconIndex = index % icons.length;
-            const colorIndex = index % colors.length;
-            return (
-              <SearchResultCard
-                item={item}
-                orderId={item.orderId}
-                products={item.products}
-                status={item.status}
-                icon={icons[iconIndex]}
-                color={colors[colorIndex]}
-              />
-            );
-          }}
-          keyExtractor={(item) => item._id}
-          contentContainerStyle={styles.list}
-        />
+          {!isLoading && sortedOrdersData.length == 0 && (
+            <View style={styles.containLottie}>
+              <View style={styles.animationWrapper}>
+                <LottieView source={require("../assets/data/emptybox.json")} autoPlay loop style={styles.animation} />
+              </View>
+              <View style={{ marginTop: 0 }}>
+                <Text style={{ fontFamily: "semibold", fontSize: SIZES.medium }}>You dont have any orders</Text>
+              </View>
+            </View>
+          )}
+        </View>
+        {/* </ScrollView> */}
       </View>
     </SafeAreaView>
   );
@@ -453,6 +530,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themew,
     borderRadius: SIZES.medium,
     minHeight: SIZES.height / 3,
+    // alignItems: "center",
+    // justifyContent: "center",
     // backgroundColor: "green",
   },
   searchBarContainer: {
@@ -516,5 +595,23 @@ const styles = StyleSheet.create({
   flexEnd: {
     position: "absolute",
     right: 10,
+  },
+  checkmark: { position: "absolute", top: 17, left: 18, height: 20, zIndex: 111 },
+  containLottie: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: SIZES.width - 20,
+    flex: 1,
+  },
+  animationWrapper: {
+    width: 200,
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  animation: {
+    width: "100%",
+    height: "100%",
   },
 });
