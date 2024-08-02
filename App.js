@@ -17,6 +17,7 @@ import { WishProvider } from "./contexts/WishContext";
 import { chatScreenOptions, systemScreenOptions, successScreenOptions } from "./screens_options/AppHeaderOptions";
 import {
   Cart,
+  OrderDetails,
   ProductDetails,
   Products,
   OrderSuccess,
@@ -90,6 +91,7 @@ export default function App() {
                   <Stack.Screen name="Faqs" component={Faqs} options={{ headerShown: false }} />
                   <Stack.Screen name="SystemMessages" component={SystemMessages} options={systemScreenOptions} />
                   <Stack.Screen name="OrderSuccess" component={OrderSuccess} options={{ headerShown: false }} />
+                  <Stack.Screen name="OrderDetails" component={OrderDetails} options={{ headerShown: false }} />
                 </Stack.Navigator>
                 <Toast />
               </NavigationContainer>

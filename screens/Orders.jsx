@@ -82,7 +82,7 @@ const Orders = () => {
   }, [userId]);
 
   useEffect(() => {
-    console.log(data);
+    // console.log(data);
   }, [data, ordersData]);
 
   // useFocusEffect(
@@ -169,17 +169,12 @@ const Orders = () => {
     }
   }, [sortedOrdersData, data]);
 
-  // const filterOrdersByStatus = () => {
-  //   return searchData.filter((order) => selectedStatus === "All" || order.status === selectedStatus);
-  // };
-
-  // const filterOrdersBySearchQuery = (orders) => {
-  //   return orders.filter((order) => order.title.toLowerCase().includes(searchQuery.toLowerCase()));
-  // };
-
   const filterOrdersByStatus = useCallback(() => {
-    return sortedOrdersData.filter((order) => selectedStatus === "All" || order.status === selectedStatus);
-  }, [selectedStatus]);
+    if (selectedStatus === "All") {
+      return sortedOrdersData;
+    }
+    return sortedOrdersData.filter((order) => order.status === selectedStatus);
+  }, [selectedStatus, sortedOrdersData]);
 
   const filterOrdersBySearchQuery = useCallback(
     (orders) => {
@@ -225,7 +220,8 @@ const Orders = () => {
     );
   };
 
-  const SearchResultCard = ({ orderId, item, products, status, icon, color }) => {
+  const SearchResultCard = ({ orderId, item, products, status, icon, color, totals }) => {
+    // console.log("products", products);
     const titles = products
       .map((product, index) => {
         const { title } = product.cartItem._id || {};
@@ -276,7 +272,12 @@ const Orders = () => {
           <Text style={styles.searchResultTitle}>{titlesString}</Text>
           <Text style={styles.searchResultdetail}>Order id : {orderId}</Text>
         </View>
-        <TouchableOpacity onPress={() => {}} style={[styles.flexEnd, styles.buttonView]}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("OrderDetails", { orderId, item, products, totals });
+          }}
+          style={[styles.flexEnd, styles.buttonView]}
+        >
           <Icon name="backbutton" size={26} />
         </TouchableOpacity>
       </View>
@@ -311,7 +312,7 @@ const Orders = () => {
               <Icon name="bellfilled" size={26} />
             </TouchableOpacity>
             <View style={styles.lowerheader}>
-              <Text style={styles.statement}>You can track your orders from here</Text>
+              <Text style={styles.statement}>Thankyou for shopping with us</Text>
             </View>
           </View>
         </View>
@@ -375,6 +376,7 @@ const Orders = () => {
                     item={item}
                     orderId={item.orderId}
                     products={item.products}
+                    totals={item.totalAmount}
                     status={item.status}
                     icon={icons[iconIndex]}
                     color={colors[colorIndex]}

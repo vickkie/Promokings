@@ -21,9 +21,11 @@ import About from "./About";
 import Faqs from "./Faqs";
 import SystemMessages from "./SystemMessages";
 import OrderSuccess from "./OrderSuccess";
+import OrderDetails from "./OrderDetails";
 
 export {
   Home,
+  OrderDetails,
   Search,
   OrderSuccess,
   Profile,
