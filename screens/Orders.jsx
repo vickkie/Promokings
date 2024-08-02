@@ -318,7 +318,7 @@ const Orders = () => {
         </View>
         {/* <ScrollView contentContainerStyle={{ flexGrow: 1 }}> */}
         <View style={{ paddingTop: 20, width: SIZES.width - 20, paddingHorizontal: 22 }}>
-          <Text style={{ fontFamily: "semibold", fontSize: SIZES.medium + 4, letterSpacing: 0 }}>Latest orders</Text>
+          <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>Latest orders</Text>
         </View>
 
         <View style={styles.carouselContainer}>
@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    top: 10,
+    top: 5,
     right: 10,
   },
   lowerheader: {

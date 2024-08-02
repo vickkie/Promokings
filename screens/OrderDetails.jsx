@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image } from "react-native";
+import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../constants/icons";
 import { SIZES, COLORS } from "../constants";
@@ -9,6 +9,8 @@ import { AuthContext } from "../components/auth/AuthContext";
 import useDelete from "../hook/useDelete";
 import { BACKEND_PORT } from "@env";
 import axios from "axios";
+
+import Clipboard from "expo-clipboard";
 
 const OrderDetails = () => {
   const route = useRoute();
@@ -58,6 +60,19 @@ const OrderDetails = () => {
     return quantity;
   }
 
+  useEffect(() => {
+    console.log(item.status);
+  });
+
+  const handleEmailPress = () => {
+    Linking.openURL("mailto:support@promokings.co.ke");
+  };
+
+  const handleCallPress = () => {
+    const phoneNumber = "1234567890";
+    Linking.openURL(`tel:${phoneNumber}`);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
@@ -73,65 +88,158 @@ const OrderDetails = () => {
                 <Icon name="backbutton" size={26} />
               </TouchableOpacity>
               <Text style={styles.topheading}>Order details</Text>
+
+              <TouchableOpacity onPress={() => {}} style={styles.outWrap}>
+                <Icon name="tracker" size={28} />
+              </TouchableOpacity>
             </View>
+
+            <Text style={{ fontFamily: "GtAlpine", color: COLORS.themeb, fontSize: SIZES.medium, marginVertical: 15 }}>
+              Order id : {orderId}
+            </Text>
+
+            <TouchableOpacity
+              style={{
+                backgroundColor:
+                  item.status === "pending"
+                    ? "#ffedd2"
+                    : item.status === "delivered"
+                    ? "#CBFCCD"
+                    : item.status === "delivery"
+                    ? "#C0DAFF"
+                    : item.status === "cancelled"
+                    ? "#F3D0CE"
+                    : COLORS.themey, // Default color
+                paddingVertical: 4,
+                paddingHorizontal: 8,
+                borderRadius: SIZES.medium,
+              }}
+            >
+              <Text
+                style={{
+                  color:
+                    item.status === "pending"
+                      ? "#D4641B"
+                      : item.status === "delivered"
+                      ? "#26A532"
+                      : item.status === "delivery"
+                      ? "#337DE7"
+                      : item.status === "cancelled"
+                      ? "#B65454"
+                      : COLORS.primary,
+                }}
+              >
+                {item.status}
+              </Text>
+            </TouchableOpacity>
+
             <View style={styles.stepsheader}>
               <Text style={styles.stepstext}>You can track your order from here</Text>
             </View>
           </View>
 
-          <View style={styles.lowerRow}>
-            <ScrollView>
-              <View style={styles.stepContainer}>
-                <View style={styles.stepContainerInner}>
-                  <Icon name="checkout" size={26} />
-                </View>
+          <ScrollView>
+            <View style={styles.lowerRow}>
+              <ScrollView>
+                <View style={styles.stepContainer}>
+                  <View style={{ justifyContent: "center", marginVertical: 20 }}>
+                    <Text style={styles.relatedHeader}>Ordered items</Text>
+                  </View>
 
-                <View style={{ width: SIZES.width - 27 }}>
-                  {products.map((product) => (
-                    <View style={styles.containerx} key={product._id}>
-                      <TouchableOpacity
-                        style={styles.imageContainer}
-                        onPress={() =>
-                          navigation.navigate("ProductDetails", { item: product.cartItem._id, itemid: product._id })
-                        }
-                      >
-                        {console.log("products", product)}
-                        <Image source={{ uri: product.cartItem._id.imageUrl }} style={styles.image} />
-                      </TouchableOpacity>
-                      <View style={{ gap: 12 }}>
-                        <View style={styles.details}>
-                          <Text style={styles.title} numberOfLines={1}>
-                            {product.cartItem._id.title}
-                          </Text>
-                        </View>
-                        <View style={styles.rowitem}>
-                          <View style={styles.xp}>
-                            <Text style={styles.semititle} numberOfLines={1}>
-                              SIZE-{product.size}
+                  <View style={{ width: SIZES.width - 27 }}>
+                    {products.map((product) => (
+                      <View style={styles.containerx} key={product._id}>
+                        <TouchableOpacity
+                          style={styles.imageContainer}
+                          onPress={() =>
+                            navigation.navigate("ProductDetails", { item: product.cartItem._id, itemid: product._id })
+                          }
+                        >
+                          {console.log("products", item)}
+                          <Image source={{ uri: product.cartItem._id.imageUrl }} style={styles.image} />
+                        </TouchableOpacity>
+                        <View style={{ gap: 12 }}>
+                          <View style={styles.details}>
+                            <Text style={styles.title} numberOfLines={1}>
+                              {product.cartItem._id.title}
                             </Text>
                           </View>
-                        </View>
-                        <View style={styles.rowitem}>
-                          <View>
-                            <Text style={styles.semititle}>Quantity: {product.quantity}</Text>
+                          <View style={styles.rowitem}>
+                            <View style={styles.xp}>
+                              <Text style={styles.semititle} numberOfLines={1}>
+                                SIZE-{product.size}
+                              </Text>
+                            </View>
                           </View>
-                          <View style={styles.priceadd}></View>
+                          <View style={styles.rowitem}>
+                            <View>
+                              <Text style={styles.semititle}>Quantity: {product.quantity}</Text>
+                            </View>
+                            <View style={styles.priceadd}></View>
+                          </View>
                         </View>
                       </View>
-                    </View>
-                  ))}
-                </View>
+                    ))}
+                  </View>
 
-                <View>
-                  {/* Uncomment if you need to include the amount and button */}
-                  {/* <Text style={styles.amount}>Estimated Amount: {item.totalAmount}</Text>
+                  <View>
+                    {/* Uncomment if you need to include the amount and button */}
+                    {/* <Text style={styles.amount}>Estimated Amount: {item.totalAmount}</Text>
                   <TouchableOpacity style={styles.button1} onPress={handleNext}>
                     <Text style={styles.nextText}>Next</Text>
                   </TouchableOpacity> */}
+                  </View>
+                </View>
+              </ScrollView>
+            </View>
+            <View style={[styles.relatedRow, { justifyContent: "center" }]}>
+              <Text style={styles.relatedHeader}>Related information</Text>
+              <View style={styles.wrapperRelated}>
+                <View style={styles.leftRelated}>
+                  <TouchableOpacity style={styles.supplierImage}>
+                    <Image
+                      source={require("../assets/images/promoking-logo.png")}
+                      style={{ width: 40, height: 40, borderRadius: 1999 }}
+                    />
+                  </TouchableOpacity>
+                  <View style={{ gap: 5, alignItems: "flex-start", paddingTop: 3, marginStart: 6 }}>
+                    <Text style={styles.supplierHead}>Promokings limited</Text>
+                    <Text style={styles.supplierwho}>Supplier</Text>
+                  </View>
+                </View>
+                <View style={styles.reachIcons}>
+                  <TouchableOpacity style={styles.reachWrapper} onPress={handleEmailPress}>
+                    <Icon name="email" size={20} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.reachWrapper} onPress={handleCallPress}>
+                    <Icon name="call" size={20} />
+                  </TouchableOpacity>
                 </View>
               </View>
-            </ScrollView>
-          </View>
+            </View>
+            <View style={styles.relatedRow}>
+              <View>
+                <Text style={styles.relatedHeader}>Payment Information</Text>
+              </View>
+
+              <View>
+                <View style={styles.selectedPayment}>
+                  <Text style={styles.selectedText}>
+                    Method selected : {`[ ${item.paymentInfo.selectedPaymentMethod} ]`}
+                  </Text>
+                </View>
+                <View style={styles.inputWrapper}>
+                  <Icon name="mastercard" size={29} style={styles.iconStyle} color={COLORS.gray} />
+                  <TextInput
+                    placeholder="Enter email"
+                    style={{ flex: 1 }}
+                    value={item.paymentInfo.email}
+                    editable={false}
+                  />
+                </View>
+              </View>
+            </View>
+          </ScrollView>
         </View>
       </View>
     </SafeAreaView>
@@ -160,19 +268,28 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.large,
     top: SIZES.xxSmall,
     zIndex: 999,
-    minHeight: 120,
+    minHeight: 110,
   },
   topheading: {
     fontFamily: "bold",
     fontSize: SIZES.large,
   },
   lowerRow: {
-    marginTop: 140,
+    marginTop: 180,
     backgroundColor: COLORS.themew,
     width: SIZES.width - 20,
     marginStart: 10,
     borderRadius: SIZES.medium,
     paddingHorizontal: 3,
+  },
+  relatedRow: {
+    backgroundColor: COLORS.themew,
+    width: SIZES.width - 20,
+    marginStart: 10,
+    borderRadius: SIZES.medium,
+    paddingHorizontal: 3,
+    minHeight: SIZES.height / 5,
+    marginTop: 10,
   },
   upperButtons: {
     width: SIZES.width - 20,
@@ -274,5 +391,88 @@ const styles = StyleSheet.create({
   stepstext: {
     fontFamily: "regular",
     color: COLORS.gray2,
+  },
+  outWrap: {
+    backgroundColor: COLORS.themeg,
+    padding: 12,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: 5,
+    right: 10,
+  },
+  relatedHeader: {
+    fontFamily: "bold",
+    fontSize: SIZES.medium + 4,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    color: COLORS.gray,
+  },
+  supplierImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 199,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff2c2",
+  },
+  reachIcons: {
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 15,
+  },
+
+  wrapperRelated: {
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+  },
+  leftRelated: {
+    flexDirection: "row",
+    gap: 5,
+  },
+  supplierHead: {
+    fontFamily: "semibold",
+    fontSize: SIZES.medium,
+  },
+  supplierwho: {
+    fontFamily: "regular",
+    fontSize: SIZES.medium - 2,
+    color: COLORS.gray2,
+  },
+  reachWrapper: {
+    backgroundColor: COLORS.themeg,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 36,
+    width: 36,
+  },
+  inputWrapper: {
+    backgroundColor: COLORS.lightWhite,
+    borderWidth: 1,
+    height: 55,
+    borderRadius: 12,
+    flexDirection: "row",
+    paddingHorizontal: 15,
+    alignItems: "center",
+    borderColor: "#CCC",
+    width: SIZES.width - 50,
+    alignSelf: "center",
+  },
+  iconStyle: {
+    marginRight: 10,
+  },
+
+  selectedPayment: {
+    marginHorizontal: 15,
+    paddingVertical: 6,
+  },
+  selectedText: {
+    fontFamily: "GtAlpine",
+    fontSize: SIZES.medium,
   },
 });

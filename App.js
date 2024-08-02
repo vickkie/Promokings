@@ -47,6 +47,7 @@ export default function App() {
     semibold: require("./assets/fonts/Outfit/Outfit-SemiBold.ttf"),
     regular: require("./assets/fonts/Outfit/Outfit-Regular.ttf"),
     thin: require("./assets/fonts/Outfit/Outfit-Thin.ttf"),
+    GtAlpine: require("./assets/fonts/GT-Alpina-Light-Italic.ttf"),
   });
 
   useEffect(() => {

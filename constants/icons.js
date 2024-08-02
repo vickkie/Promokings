@@ -56,8 +56,18 @@ import Isometric1 from "../assets/svg/box-2.svg";
 import Isometric2 from "../assets/svg/box-3.svg";
 import Isometric3 from "../assets/svg/box-4.svg";
 import check from "../assets/svg/check-circle.svg";
+import tracker from "../assets/svg/tracker.svg";
+import email from "../assets/svg/email.svg";
+import call from "../assets/svg/call.svg";
+import mpesa from "../assets/images/logos/Mpesa.png";
+import mastercard from "../assets/images/logos/mastercard.svg";
 
 const iconMap = {
+  mastercard: mastercard,
+  mpesa: mpesa,
+  email: email,
+  call: call,
+  tracker: tracker,
   check: check,
   isometric: Isometric1,
   isometric2: Isometric2,
