@@ -56,7 +56,7 @@ const Orders = () => {
     {
       id: "1",
       title: "Premium Box Packing",
-      image: require("../assets/images/isometric.png"),
+      image: require("../assets/images/isometric.webp"),
       // shippingId: "V789456AR123",
       shippingId: last3orders[0] ? last3orders[0].id : "Order now",
 
@@ -74,12 +74,12 @@ const Orders = () => {
     },
     {
       id: "3",
-      title: "Envelope Packing",
-      image: require("../assets/images/isometric.png"),
+      title: "Gift Packing",
+      image: require("../assets/images/gift.webp"),
       color: "#e6bfdf",
       shippingId: last3orders[2] ? last3orders[2].id : "Order now",
 
-      stylez: '{"height": 220, "width": 220, "position": "absolute", "right": -40, "top": -10, "opacity": 0.6}',
+      stylez: '{"height": 220, "width": 220, "position": "absolute", "right": -70, "top": 10, "opacity": 0.6}',
     },
   ];
 
@@ -109,7 +109,7 @@ const Orders = () => {
     if (sortedOrdersData.length > 0) {
       function extractProductDetails(orders) {
         orders.forEach((order) => {
-          console.log("orderid", order._id);
+          // console.log("orderid", order._id);
 
           setOrderItems();
 
@@ -173,17 +173,19 @@ const Orders = () => {
     );
   };
 
-  const SearchResultCard = ({ orderId, item, products, status }) => {
+  const SearchResultCard = ({ orderId, item, products, status, icon, color }) => {
     const titles = products
-      .map((product) => {
+      .map((product, index) => {
         const { title } = product.cartItem._id || {};
-        return title;
+        return {
+          title,
+        };
       })
-      .filter(Boolean); // This filters out undefined titles, in case some products don't have titles
+      .filter(({ title }) => Boolean(title)); // Filter out undefined titles, in case some products don't have titles
 
-    const titlesString = titles.join(", ");
+    const titlesString = titles.map(({ title }) => title).join(", ");
 
-    console.log("titles", titlesString);
+    // console.log("titles", titlesString);
 
     return (
       <View
@@ -201,18 +203,20 @@ const Orders = () => {
         ]}
       >
         <TouchableOpacity
+          // key={index}
           style={{
             borderRadius: 100,
-            padding: 10,
-            backgroundColor: COLORS.themeg,
-            width: 30,
-            height: 30,
+            padding: 17,
+            backgroundColor: color,
+            width: 36,
+            height: 36,
             justifyContent: "center",
             alignItems: "center",
           }}
         >
-          <Icon name="home" size={16} />
+          <Icon name={icon} size={21} />
         </TouchableOpacity>
+
         <View>
           <Text style={styles.searchResultTitle}>{titlesString}</Text>
           <Text style={styles.searchResultdetail}>Order id : {orderId}</Text>
@@ -225,7 +229,7 @@ const Orders = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.containerx}>
       <View style={styles.wrapper}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
           <Icon name="backbutton" size={26} />
@@ -295,11 +299,25 @@ const Orders = () => {
 
       <View style={styles.detailsWrapper}>
         <FlatList
-          {...console.log(sortedOrdersData)}
+          // {...console.log(sortedOrdersData)}
           data={sortedOrdersData}
-          renderItem={({ item }) => (
-            <SearchResultCard item={item} orderId={item.orderId} products={item.products} status={item.status} />
-          )}
+          renderItem={({ item, index }) => {
+            const icons = ["isometric", "isometric2", "isometric3"];
+            const colors = ["#FFD2D5", "#D7F6D4", "#C3ECFE"];
+
+            const iconIndex = index % icons.length;
+            const colorIndex = index % colors.length;
+            return (
+              <SearchResultCard
+                item={item}
+                orderId={item.orderId}
+                products={item.products}
+                status={item.status}
+                icon={icons[iconIndex]}
+                color={colors[colorIndex]}
+              />
+            );
+          }}
           keyExtractor={(item) => item._id}
           contentContainerStyle={styles.list}
         />
@@ -435,6 +453,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themew,
     borderRadius: SIZES.medium,
     minHeight: SIZES.height / 3,
+    // backgroundColor: "green",
   },
   searchBarContainer: {
     flexDirection: "row",
@@ -456,13 +475,15 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     paddingVertical: 8,
-    paddingHorizontal: 22,
+    paddingHorizontal: 15,
+    // backgroundColor: "red",
+    height: 50,
   },
   filterButton: {
     marginHorizontal: 8,
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: COLORS.themew,
     borderRadius: 16,
     height: 30,
   },

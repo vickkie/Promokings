@@ -51,8 +51,15 @@ import Login2 from "../assets/svg/login-2.svg";
 import Favouritebag from "../assets/svg/bag-heart.svg";
 import ShoppingCart from "../assets/svg/shopping-cart.svg";
 import CopyWhite from "../assets/svg/copy.svg";
+// import Isometric from "../assets/svg/svg-path.svg";
+import Isometric1 from "../assets/svg/box-2.svg";
+import Isometric2 from "../assets/svg/box-3.svg";
+import Isometric3 from "../assets/svg/box-4.svg";
 
 const iconMap = {
+  isometric: Isometric1,
+  isometric2: Isometric2,
+  isometric3: Isometric3,
   copywhite: CopyWhite,
   shoppingcart: ShoppingCart,
   home: HomeIcon,
