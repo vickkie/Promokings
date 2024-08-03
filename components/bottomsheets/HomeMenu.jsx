@@ -109,7 +109,12 @@ const HomeMenu = forwardRef((props, ref) => {
             </TouchableOpacity>
           </View>
           <View style={styles.listContainer}>
-            <TouchableOpacity onPress={() => handleNavigation("Message")}>
+            <TouchableOpacity
+              onPress={() => {
+                userLogin ? handleNavigation("Message") : handleNavigation("Login");
+                // handleNavigation("Message");
+              }}
+            >
               <View style={styles.menuCombinelist}>
                 <Icon name="dialog" size={26} />
                 <Text style={styles.menuText}>Message Center</Text>
