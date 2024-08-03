@@ -7,6 +7,7 @@ import useUpdate from "../../hook/useUpdate";
 import { AuthContext } from "../auth/AuthContext";
 import useDelete from "../../hook/useDelete";
 import usePost from "../../hook/usePost";
+import Toast from "react-native-toast-message";
 
 const CartCardView = memo(({ item, handleRefetch, onUpdateTotal }) => {
   const navigation = useNavigation();
@@ -44,6 +45,15 @@ const CartCardView = memo(({ item, handleRefetch, onUpdateTotal }) => {
     }
   }, [deleteStatus, errorStatus]);
 
+  const showToast = (type, text1, text2) => {
+    Toast.show({
+      type: type,
+      text1: text1,
+      text2: text2 ? text2 : "",
+      visibilityTime: 3000,
+    });
+  };
+
   const increment = () => {
     const newCount = count + 1;
     setCount(newCount);
@@ -77,10 +87,10 @@ const CartCardView = memo(({ item, handleRefetch, onUpdateTotal }) => {
       try {
         addCart(cartData);
         if (updateStatus == 200) {
-          console.log("item with id ", id, "added");
+          showToast("success", "Added to Wishlist", "Item added to your favourites");
         }
       } catch (error) {
-        console.log(error);
+        showToast("error", "Item was not added to Wishlist", "Try again later");
       }
     }
   };

@@ -73,10 +73,9 @@ const ProductsCardView = ({ item }) => {
         favouriteItem: item._id,
       };
       try {
-        await addFavourite(cartData);
-        if (updateStatus === 200) {
-          showToast("success", "Success", "Added to your wishlist");
-        }
+        addFavourite(cartData);
+
+        showToast("success", "Added to your wishlist", "Item was successfully added");
       } catch (error) {
         // console.log(error);
         showToast("error", "Ooops, Failed to add to Wishlist", "Try again later");

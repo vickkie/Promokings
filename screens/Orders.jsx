@@ -15,9 +15,10 @@ import Icon from "../constants/icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
 import LottieView from "lottie-react-native";
-import useFetch from "../hook/useFetch";
 import { BACKEND_PORT } from "@env";
 import { StatusBar } from "expo-status-bar";
+import * as Clipboard from "expo-clipboard";
+import Toast from "react-native-toast-message";
 
 const Orders = () => {
   const [userId, setUserId] = useState(null);
@@ -114,7 +115,7 @@ const Orders = () => {
   const primaryData = [
     {
       id: "1",
-      title: "Premium Box Packing",
+      title: "Order tracker",
       image: require("../assets/images/isometric.webp"),
       // shippingId: "V789456AR123",
       shippingId: last3orders[0] ? last3orders[0].id : "Order now",
@@ -124,7 +125,8 @@ const Orders = () => {
     },
     {
       id: "2",
-      title: "Small Box Packing",
+      // title: "Small Box Packing",
+      title: "Shipment Tracker",
       image: require("../assets/images/isometric2.png"),
       shippingId: last3orders[1] ? last3orders[1].id : "Order now",
       color: "#a3eed8",
@@ -133,7 +135,8 @@ const Orders = () => {
     },
     {
       id: "3",
-      title: "Gift Packing",
+      title: "Order tracker",
+      // title: "Gift Packing",
       image: require("../assets/images/gift.webp"),
       color: "#e6bfdf",
       shippingId: last3orders[2] ? last3orders[2].id : "Order now",
@@ -189,7 +192,19 @@ const Orders = () => {
     return filterOrdersBySearchQuery(statusFiltered);
   }, [filterOrdersByStatus, filterOrdersBySearchQuery]);
 
-  // const filteredOrders = filterOrdersBySearchQuery(filterOrdersByStatus());
+  const showToast = (type, text1, text2) => {
+    Toast.show({
+      type: type,
+      text1: text1,
+      text2: text2 ? text2 : "",
+      visibilityTime: 3000,
+    });
+  };
+
+  const handleCopy = async (shippingId) => {
+    await Clipboard.setStringAsync(shippingId);
+    showToast("success", "Copied to clipboard", "Your order tracking number has been copied to clipboard");
+  };
 
   const Card = ({ title, image, shippingId, color, stylez }) => {
     const parsedStyle = stylez ? JSON.parse(stylez) : {};
@@ -208,7 +223,13 @@ const Orders = () => {
           <View style={{ gap: 10, flexDirection: "column" }}>
             <Text style={styles.title}>{title}</Text>
             <View style={{ alignSelf: "flex-start" }}>
-              <Text style={styles.shippingId}>{`ID: ${shippingId}`}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  handleCopy(shippingId);
+                }}
+              >
+                <Text style={styles.shippingId}>{`ID: ${shippingId}`}</Text>
+              </TouchableOpacity>
             </View>
           </View>
           <View>

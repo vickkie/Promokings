@@ -10,6 +10,7 @@ import Toast from "react-native-toast-message";
 import Icon from "../constants/icons";
 import * as FileSystem from "expo-file-system";
 import useDelete from "../hook/useDelete2";
+import { VERSION_LONG, VERSION_SHORT } from "@env";
 
 // Function to clear cache
 const clearCache = async () => {
@@ -157,6 +158,9 @@ const Profile = () => {
           <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap2}>
             {renderProfilePicture()}
           </TouchableOpacity>
+          <View style={styles.versionWrapper}>
+            <Text style={styles.versionText}> {VERSION_SHORT}</Text>
+          </View>
           <Text style={styles.name}>{userData ? userData.name : "Please login to account"}</Text>
 
           {userData ? (
@@ -188,7 +192,7 @@ const Profile = () => {
               <TouchableOpacity onPress={() => navigation.navigate("Favourites")}>
                 <View style={styles.menuItem(0.5)}>
                   <MaterialCommunityIcons name="heart-outline" size={24} color={COLORS.primary} />
-                  <Text style={styles.menuText}>Favourites</Text>
+                  <Text style={styles.menuText}>Wishlist</Text>
                 </View>
               </TouchableOpacity>
 
@@ -228,6 +232,9 @@ const Profile = () => {
                   <Text style={styles.menuText}>Logout</Text>
                 </View>
               </TouchableOpacity>
+              <View style={styles.versionWrapper}>
+                <Text style={styles.versionText}>{VERSION_LONG}</Text>
+              </View>
             </View>
           )}
         </View>
@@ -326,4 +333,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     borderColor: COLORS.gray,
   }),
+  versionWrapper: {
+    paddingTop: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  versionText: {
+    fontFamily: "GtAlpine",
+    color: COLORS.gray,
+  },
 });

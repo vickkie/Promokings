@@ -13,6 +13,11 @@ const Cart = () => {
   const { userLogin, userData } = React.useContext(AuthContext);
   const { itemCount, handleItemCountChange } = useCart();
 
+  const capitalizeFirstLetter = (string) => {
+    if (!string) return "";
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.wrapper}>
@@ -45,7 +50,11 @@ const Cart = () => {
             <View style={styles.location}>
               <TouchableOpacity style={styles.locationName}>
                 <Icon name="location" size={24} />
-                {userLogin ? <Text>{userData.location}</Text> : <Text> Nairobi</Text>}
+                {userLogin ? (
+                  <Text style={{ marginLeft: 6 }}>{capitalizeFirstLetter(userData.location)}</Text>
+                ) : (
+                  <Text> Nairobi</Text>
+                )}
               </TouchableOpacity>
               <TouchableOpacity style={styles.rightLocation} onPress={() => navigation.navigate("UserDetails")}>
                 <Text>change</Text>
@@ -83,7 +92,7 @@ const styles = StyleSheet.create({
     fontSize: SIZES.medium,
     textAlign: "center",
     color: COLORS.themeb,
-    fontFamily: "semibold",
+    fontFamily: "GtAlpine",
   },
   container: {
     flex: 1,

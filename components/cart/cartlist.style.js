@@ -10,6 +10,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     borderRadius: SIZES.medium,
   },
+
   none: {
     display: "none",
   },
@@ -103,6 +104,31 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontFamily: "semibold",
     fontSize: SIZES.large,
+  },
+  containLottie: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: SIZES.width - 20,
+    flex: 1,
+  },
+  animationWrapper: {
+    width: 200,
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  animation: {
+    width: "100%",
+    height: "100%",
+  },
+  containerx: {
+    minHeight: SIZES.height - 300,
+    backgroundColor: COLORS.themeg,
+    marginTop: 260,
+    width: SIZES.width - 20,
+    marginHorizontal: 10,
+    borderRadius: SIZES.medium,
   },
 });
 

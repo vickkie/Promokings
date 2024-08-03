@@ -72,7 +72,7 @@ const HomeMenu = forwardRef((props, ref) => {
       ref={bottomSheetRef}
       index={1}
       snapPoints={snapPoints}
-      onChange={(index) => console.log("Changed", index)}
+      onChange={(index) => {}}
       enablePanDownToClose={true}
       backgroundStyle={{ backgroundColor: COLORS.themeg, borderRadius: SIZES.medium }}
       backdropComponent={renderBackdrop}

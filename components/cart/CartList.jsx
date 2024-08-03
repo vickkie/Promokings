@@ -6,6 +6,7 @@ import CartCardVIew from "./CartCardVIew";
 import useFetch from "../../hook/useFetch";
 import { AuthContext } from "../auth/AuthContext";
 import { useNavigation } from "@react-navigation/native";
+import LottieView from "lottie-react-native";
 
 const CartList = ({ onItemCountChange }) => {
   const { userData, userLogin } = useContext(AuthContext);
@@ -16,6 +17,7 @@ const CartList = ({ onItemCountChange }) => {
   const [additionalFees, setAdditionalFees] = useState(0);
   const [itemCount, setItemCount] = useState(0);
 
+  // Set userId based on login status
   useEffect(() => {
     if (!userLogin) {
       setUserId(1);
@@ -24,8 +26,10 @@ const CartList = ({ onItemCountChange }) => {
     }
   }, [userLogin, userData]);
 
+  // Fetch cart data
   const { data, isLoading, error, refetch } = useFetch(`carts/find/${userId}`);
 
+  // Calculate totals when data is fetched
   useEffect(() => {
     if (!isLoading && data.length !== 0) {
       const products = data[0]?.products || [];
@@ -49,6 +53,7 @@ const CartList = ({ onItemCountChange }) => {
 
   const estimatedAmount = (totals.subtotal || 0) + (additionalFees || 0);
 
+  // Notify parent component about item count change
   useEffect(() => {
     onItemCountChange(itemCount);
   }, [itemCount, onItemCountChange]);
@@ -64,14 +69,20 @@ const CartList = ({ onItemCountChange }) => {
     }));
   };
 
+  // Loading state
   if (isLoading) {
     return (
-      <View style={styles.errorcontainer}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
+      <View style={styles.containerx}>
+        <View style={styles.containLottie}>
+          <View style={styles.animationWrapper}>
+            <LottieView source={require("../../assets/data/loading.json")} autoPlay loop style={styles.animation} />
+          </View>
+        </View>
       </View>
     );
   }
 
+  // Error state
   if (error) {
     return (
       <View style={styles.errorcontainer}>
@@ -85,6 +96,30 @@ const CartList = ({ onItemCountChange }) => {
 
   const products = data[0]?.products || [];
 
+  // Empty cart state
+  if (products.length === 0) {
+    return (
+      <View style={styles.containerx}>
+        <View style={styles.containLottie}>
+          <View style={styles.animationWrapper}>
+            <LottieView
+              source={require("../../assets/data/cartempty.json")}
+              autoPlay
+              loop={false}
+              style={styles.animation}
+            />
+          </View>
+          <View style={{ marginTop: 0, paddingBottom: 10 }}>
+            <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>
+              "Oops, your cart is empty. Let's fix that!
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  // Cart items list
   return (
     <View>
       <View style={styles.container}>
@@ -100,6 +135,8 @@ const CartList = ({ onItemCountChange }) => {
           )}
         />
       </View>
+
+      {/* Subtotal and Checkout */}
       <View style={styles.subtotalWrapper}>
         <View style={styles.topSubtotal}>
           <Text style={styles.additionalHeader}>Subtotal amount</Text>

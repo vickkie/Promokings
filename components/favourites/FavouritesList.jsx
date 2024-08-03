@@ -8,6 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 import useFetch from "../../hook/useFetch";
 import { useCart } from "../../contexts/CartContext";
 import { useWish } from "../../contexts/WishContext";
+import LottieView from "lottie-react-native";
 
 const FavouritesList = ({ onWishCountChange, onItemCountChange }) => {
   const { userData, userLogin } = useContext(AuthContext);
@@ -70,15 +71,33 @@ const FavouritesList = ({ onWishCountChange, onItemCountChange }) => {
     handleWishCountChange(favouriteCount);
   }, [favouriteCount, onWishCountChange]);
 
+  const products = (data && data.products) || [];
   if (isLoading) {
     return (
-      <View style={styles.errorcontainer}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
+      <View style={styles.containerx}>
+        <View style={styles.containLottie}>
+          <View style={styles.animationWrapper}>
+            <LottieView source={require("../../assets/data/loading.json")} autoPlay loop style={styles.animation} />
+          </View>
+        </View>
       </View>
     );
   }
 
-  const products = (data && data.products) || [];
+  if (products.length === 0) {
+    return (
+      <View style={styles.containerx}>
+        <View style={styles.containLottie}>
+          <View style={styles.animationWrapper}>
+            <LottieView source={require("../../assets/data/nodata.json")} autoPlay loop style={styles.animation} />
+          </View>
+          <View style={{ marginTop: 0, paddingBottom: 10 }}>
+            <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>Empty, Find and save items you like!</Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View>
