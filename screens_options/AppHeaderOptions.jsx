@@ -44,9 +44,23 @@ const systemScreenOptions = {
     fontWeight: "bold",
   },
 };
+const AboutScreenOptions = {
+  headerTitle: () => <Text style={{ color: COLORS.themeb, fontSize: SIZES.large }}>About</Text>,
+  headerStyle: {
+    backgroundColor: COLORS.themew,
+    elevation: 0,
+    shadowOpacity: 0,
+    shadowOffset: { height: 0, width: 0 },
+    shadowRadius: 0,
+  },
+  headerTintColor: COLORS.themeb,
+  headerTitleStyle: {
+    fontWeight: "bold",
+  },
+};
 
 const styles = StyleSheet.create({
   topheader: { color: "#fff", fontFamily: "bold", fontSize: SIZES.medium },
 });
 
-export { chatScreenOptions, faqsScreenOptions, systemScreenOptions, successScreenOptions };
+export { chatScreenOptions, faqsScreenOptions, systemScreenOptions, AboutScreenOptions, successScreenOptions };

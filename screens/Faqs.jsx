@@ -5,6 +5,7 @@ import Icon from "../constants/icons";
 import { SIZES, COLORS } from "../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import useFetch from "../hook/useFetch";
+import LottieView from "lottie-react-native";
 
 const Faqs = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -22,13 +23,15 @@ const Faqs = ({ navigation }) => {
     }
   }, [data]);
 
-  if (isLoading) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <ActivityIndicator size="large" color={COLORS.themeg} />
-      </SafeAreaView>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <View style={styles.containLottie}>
+  //       <View style={styles.animationWrapper}>
+  //         <LottieView source={require("../assets/data/loading.json")} autoPlay loop style={styles.animation} />
+  //       </View>
+  //     </View>
+  //   );
+  // }
 
   if (error) {
     return (
@@ -56,20 +59,28 @@ const Faqs = ({ navigation }) => {
       </View>
 
       <View style={styles.lowerRow}>
-        <ScrollView>
-          {faqData.map((faq, index) => (
-            <View key={index}>
-              <TouchableOpacity style={styles.header} onPress={() => toggleExpand(index)}>
-                <Text style={styles.question}>{faq.question}</Text>
-              </TouchableOpacity>
-              <Collapsible collapsed={expandedIndex !== index}>
-                <View style={styles.body}>
-                  <Text>{faq.answer}</Text>
-                </View>
-              </Collapsible>
+        {isLoading ? (
+          <View style={styles.containLottie}>
+            <View style={styles.animationWrapper}>
+              <LottieView source={require("../assets/data/loading.json")} autoPlay loop style={styles.animation} />
             </View>
-          ))}
-        </ScrollView>
+          </View>
+        ) : (
+          <ScrollView>
+            {faqData.map((faq, index) => (
+              <View key={index}>
+                <TouchableOpacity style={styles.header} onPress={() => toggleExpand(index)}>
+                  <Text style={styles.question}>{faq.question}</Text>
+                </TouchableOpacity>
+                <Collapsible collapsed={expandedIndex !== index}>
+                  <View style={styles.body}>
+                    <Text>{faq.answer}</Text>
+                  </View>
+                </Collapsible>
+              </View>
+            ))}
+          </ScrollView>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -132,6 +143,23 @@ const styles = StyleSheet.create({
     color: "red",
     textAlign: "center",
     marginTop: 20,
+  },
+  containLottie: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: SIZES.width - 20,
+    flex: 1,
+  },
+  animationWrapper: {
+    width: 200,
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  animation: {
+    width: "100%",
+    height: "100%",
   },
 });
 

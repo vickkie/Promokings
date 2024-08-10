@@ -64,8 +64,22 @@ import mpesa from "../assets/images/logos/mpesa.svg";
 import mastercard from "../assets/images/logos/mastercard.svg";
 import visa from "../assets/images/logos/visa.svg";
 import paypal from "../assets/images/logos/paypal.svg";
+import about from "../assets/svg/about.svg";
+import instagram from "../assets/svg/instagram.svg";
+import web from "../assets/svg/web.svg";
+import version from "../assets/svg/version.svg";
+import versionhistory from "../assets/svg/version-history.svg";
+import twitter from "../assets/svg/x.svg";
+import question from "../assets/svg/question.svg";
 
 const iconMap = {
+  web: web,
+  twitter: twitter,
+  version: version,
+  question: question,
+  versionhistory: versionhistory,
+  instagram: instagram,
+  about: about,
   mastercard: mastercard,
   paypal: paypal,
   visa: visa,

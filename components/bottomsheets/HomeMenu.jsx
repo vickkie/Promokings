@@ -9,7 +9,7 @@ import { AuthContext } from "../auth/AuthContext";
 import Toast from "react-native-toast-message";
 
 const HomeMenu = forwardRef((props, ref) => {
-  const snapPoints = useMemo(() => [385, 389], []);
+  const snapPoints = useMemo(() => [370, 425], []);
   const navigation = useNavigation();
   const { userData, userLogout, userLogin } = useContext(AuthContext);
 
@@ -118,6 +118,17 @@ const HomeMenu = forwardRef((props, ref) => {
               <View style={styles.menuCombinelist}>
                 <Icon name="dialog" size={26} />
                 <Text style={styles.menuText}>Message Center</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                handleNavigation("About");
+              }}
+              style={{ marginTop: 15 }}
+            >
+              <View style={styles.menuCombinelist}>
+                <Icon name="about" size={26} />
+                <Text style={styles.menuText}>About</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleNavigation("UserDetails")}>

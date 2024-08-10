@@ -214,6 +214,12 @@ const Profile = () => {
                   <Text style={styles.menuText}>Message Center</Text>
                 </View>
               </TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate("About")}>
+                <View style={styles.menuItem(0.5)}>
+                  <Icon name="about" size={24} color={COLORS.primary} />
+                  <Text style={styles.menuText}>About</Text>
+                </View>
+              </TouchableOpacity>
               <TouchableOpacity onPress={handleClearCache}>
                 <View style={styles.menuItem(0.5)}>
                   <MaterialCommunityIcons name="reload" size={24} color={COLORS.primary} />

@@ -14,7 +14,12 @@ import BottomTabNavigation from "./navigation/BottomTabNavigation";
 import { AuthProvider } from "./components/auth/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
 import { WishProvider } from "./contexts/WishContext";
-import { chatScreenOptions, systemScreenOptions, successScreenOptions } from "./screens_options/AppHeaderOptions";
+import {
+  chatScreenOptions,
+  systemScreenOptions,
+  successScreenOptions,
+  AboutScreenOptions,
+} from "./screens_options/AppHeaderOptions";
 import {
   Cart,
   OrderDetails,
@@ -88,7 +93,7 @@ export default function App() {
                   <Stack.Screen name="UserDetails" component={UserDetails} options={{ headerShown: false }} />
                   <Stack.Screen name="Message" component={MessageCenter} options={{ headerShown: false }} />
                   <Stack.Screen name="Help" component={Help} options={chatScreenOptions} />
-                  <Stack.Screen name="About" component={About} options={{ headerShown: true }} />
+                  <Stack.Screen name="About" component={About} options={{ headerShown: false }} />
                   <Stack.Screen name="Faqs" component={Faqs} options={{ headerShown: false }} />
                   <Stack.Screen name="SystemMessages" component={SystemMessages} options={systemScreenOptions} />
                   <Stack.Screen name="OrderSuccess" component={OrderSuccess} options={{ headerShown: false }} />

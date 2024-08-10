@@ -1,0 +1,53 @@
+{
+  "changelog": [
+    {
+      "releaseDate": "2024-08-03",
+      "version": "1.2.2",
+      "whatsNew": [],
+      "fixed": ["App crash on navigation bug"]
+    },
+    {
+      "releaseDate": "2024-08-02",
+      "version": "1.2.0",
+      "whatsNew": ["Search available for products","Improved navigation across","Better UI across application"],
+      "fixed": []
+    },
+    {
+      "releaseDate": "2024-07-30",
+      "version": "1.1.0",
+      "whatsNew": ["Orders tracking available", "Upload images during customer support available"],
+      "fixed": []
+    },
+    {
+      "releaseDate": "2024-07-25",
+      "version": "1.0.0",
+      "whatsNew": ["The first full release ", "Products ordering", "Orders payments available","Customer support available","Products inquiry available", "Account management /Deletion","Orders tracking available","Notifications available ","Frequently asked questions"],
+      "fixed": ["Profile picture updating issue bug", "Cart products addition issue bug"]
+    },
+    {
+      "releaseDate": "2024-07-11",
+      "version": "0.4.0",
+      "whatsNew": ["User profile update available","Products Detailed view", 
+      "Improved security enhancement ","General UI improvements"],
+      "fixed": ["Security patches on registration"]
+    },
+    {
+      "releaseDate": "2024-06-25",
+      "version": "0.3.0",
+      "whatsNew": ["Account Registration", "Account Login and viewing"],
+      "fixed": ["User registration issues"]
+    },
+    {
+      "releaseDate": "2024-06-15",
+      "version": "0.2.1",
+      "whatsNew": ["Products adding to cart", "Products adding to favourites", "Products tracking availability"],
+      "fixed": ["Categories listing issues on android 8"]
+    },
+    {
+      "releaseDate": "2024-06-10",
+      "version": "0.2.0",
+      "whatsNew": ["Products viewing", "Categories listing", "General UI improvements"],
+      "fixed": []
+    }
+  ]
+}

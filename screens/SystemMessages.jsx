@@ -4,7 +4,7 @@ import { GiftedChat, Bubble } from "react-native-gifted-chat";
 import { COLORS, SIZES } from "../constants";
 import { AuthContext } from "../components/auth/AuthContext";
 import useFetch from "../hook/useFetch";
-import { useFocusEffect } from "@react-navigation/native";
+import LottieView from "lottie-react-native";
 
 const SystemMessages = () => {
   const [messages, setMessages] = useState([]);
@@ -122,8 +122,13 @@ const SystemMessages = () => {
         )}
 
         {isLoadingUser || isLoadingSystem ? (
-          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <ActivityIndicator size="large" color={COLORS.primary} />
+          <View style={styles.containLottie}>
+            <View style={styles.animationWrapper}>
+              <LottieView source={require("../assets/data/loading.json")} autoPlay loop style={styles.animation} />
+            </View>
+            <View style={{ marginTop: -20, paddingBottom: 10 }}>
+              <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}> Nothing to see here</Text>
+            </View>
           </View>
         ) : (
           <GiftedChat
@@ -171,6 +176,23 @@ const styles = StyleSheet.create({
   footerText: {
     color: COLORS.themey,
     fontSize: 14,
+  },
+  containLottie: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: SIZES.width - 20,
+    flex: 1,
+  },
+  animationWrapper: {
+    width: 200,
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  animation: {
+    width: "100%",
+    height: "100%",
   },
 });
 
