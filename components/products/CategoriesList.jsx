@@ -5,6 +5,7 @@ import useFetch from "../../hook/useFetch";
 import styles from "./categorieslist.style";
 import CategoryCardView from "./CategoryCardView";
 import { Ionicons } from "@expo/vector-icons";
+import LottieView from "lottie-react-native";
 
 const CategoriesList = () => {
   const { data, isLoading, error, refetch } = useFetch("category");
@@ -23,10 +24,17 @@ const CategoriesList = () => {
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
+      <View style={styles.containerx}>
+        <View style={styles.containLottie}>
+          <View style={styles.animationWrapper}>
+            <LottieView source={require("../../assets/data/loading.json")} autoPlay loop style={styles.animation} />
+          </View>
+        </View>
       </View>
     );
+  }
+  if (data) {
+    console.log(data);
   }
 
   if (data.length === 0) {

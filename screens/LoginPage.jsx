@@ -10,15 +10,22 @@ import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
 import { COLORS, SIZES } from "../constants";
 import { BACKEND_PORT } from "@env";
+import Icon from "../constants/icons";
 
 const validationSchema = Yup.object().shape({
-  password: Yup.string().min(8, "Password must be at least 8 character").required("Required"),
+  password: Yup.string().min(8, "Password must be at least 8 characters").required("Required"),
   email: Yup.string().email("Provide a valid email address").required("Required"),
+  staffId: Yup.string().when("userType", {
+    is: "staff",
+    then: (schema) => schema.required("Staff ID is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
 });
 
 const LoginPage = ({ navigation }) => {
   const { login } = useContext(AuthContext);
   const [loader, setLoader] = useState(false);
+  const [userType, setUserType] = useState("customer");
   const [obsecureText, setObsecureText] = useState(false);
 
   const inValidForm = () => {
@@ -39,9 +46,9 @@ const LoginPage = ({ navigation }) => {
     setLoader(true);
     try {
       const endpoint = `${BACKEND_PORT}/api/login`;
-      const data = values;
+      const data = { ...values, userType };
 
-      // console.log(endpoint, data);
+      console.log(data);
 
       const response = await axios.post(endpoint, data);
 
@@ -64,7 +71,7 @@ const LoginPage = ({ navigation }) => {
       }
     } catch (error) {
       console.log(error);
-      Alert.alert("Error ", "Oops! Error logging in. Please try again.", [
+      Alert.alert("Error", "Oops! Error logging in. Please try again.", [
         {
           text: "Cancel",
           onPress: () => {},
@@ -88,8 +95,23 @@ const LoginPage = ({ navigation }) => {
           <Image source={require("../assets/images/promoshop1.webp")} style={styles.cover} />
           <Text style={styles.title}>Promokings Login</Text>
 
+          <View style={styles.chooseWrapper}>
+            <TouchableOpacity style={[styles.chooseUser, styles.chooseBox]} onPress={() => setUserType("customer")}>
+              <View>
+                <Text style={styles.choiceText}>Customer</Text>
+              </View>
+              <Icon name={userType === "customer" ? "check" : "checkempty"} size={18} />
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.chooseStaff, styles.chooseBox]} onPress={() => setUserType("staff")}>
+              <View>
+                <Text style={styles.choiceText}>Staff</Text>
+              </View>
+              <Icon name={userType === "staff" ? "check" : "checkempty"} size={18} />
+            </TouchableOpacity>
+          </View>
+
           <Formik
-            initialValues={{ email: "", password: "" }}
+            initialValues={{ email: "", password: "", staffId: "" }}
             validationSchema={validationSchema}
             onSubmit={handleLogin}
           >
@@ -117,6 +139,31 @@ const LoginPage = ({ navigation }) => {
                   </View>
                   {touched.email && errors.email && <Text style={styles.errorMessage}>{errors.email}</Text>}
                 </View>
+
+                {userType === "staff" && (
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Staff ID</Text>
+                    <View style={styles.inputWrapper(touched.staffId ? COLORS.secondary : COLORS.offwhite)}>
+                      <MaterialCommunityIcons
+                        name="identifier"
+                        size={20}
+                        style={styles.iconStyle}
+                        color={COLORS.gray}
+                      />
+                      <TextInput
+                        placeholder="Enter Staff ID"
+                        onFocus={() => setFieldTouched("staffId")}
+                        onBlur={() => setFieldTouched("staffId", "")}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        style={{ flex: 1 }}
+                        value={values.staffId}
+                        onChangeText={handleChange("staffId")}
+                      />
+                    </View>
+                    {touched.staffId && errors.staffId && <Text style={styles.errorMessage}>{errors.staffId}</Text>}
+                  </View>
+                )}
 
                 <View style={styles.wrapper}>
                   <Text style={styles.label}>Password</Text>
@@ -176,6 +223,7 @@ const styles = StyleSheet.create({
     width: SIZES.width - 60,
     resizeMode: "contain",
     marginBottom: SIZES.medium,
+    marginTop: -35,
   },
 
   title: {
@@ -185,6 +233,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     textAlign: "center",
     marginBottom: SIZES.xLarge,
+    marginTop: -13,
   },
 
   wrapper: {
@@ -225,5 +274,30 @@ const styles = StyleSheet.create({
     marginTop: 2,
     textAlign: "center",
     marginBottom: 20,
+  },
+  chooseWrapper: {
+    flexDirection: "row",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 10,
+    gap: SIZES.xLarge,
+  },
+  chooseBox: {
+    borderBlockColor: COLORS.black,
+    borderWidth: 0.2,
+    backgroundColor: COLORS.lightWhite,
+    width: SIZES.width / 2 - 40,
+    borderRadius: SIZES.medium,
+    alignItems: "center",
+    justifyContent: "space-between",
+    height: SIZES.xxLarge - 5,
+    flexDirection: "row",
+    paddingHorizontal: SIZES.small,
+    marginTop: -10,
+  },
+  choiceText: {
+    color: COLORS.black,
+    fontFamily: "bold",
   },
 });

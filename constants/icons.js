@@ -56,6 +56,7 @@ import Isometric1 from "../assets/svg/box-2.svg";
 import Isometric2 from "../assets/svg/box-3.svg";
 import Isometric3 from "../assets/svg/box-4.svg";
 import check from "../assets/svg/check-circle.svg";
+import checkempty from "../assets/svg/checkbox-blank.svg";
 import tracker from "../assets/svg/tracker.svg";
 import email from "../assets/svg/email.svg";
 import call from "../assets/svg/call.svg";
@@ -73,6 +74,7 @@ import twitter from "../assets/svg/x.svg";
 import question from "../assets/svg/question.svg";
 
 const iconMap = {
+  checkempty: checkempty,
   web: web,
   twitter: twitter,
   version: version,
