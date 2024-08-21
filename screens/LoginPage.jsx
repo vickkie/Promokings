@@ -1,4 +1,12 @@
 import React, { useState, useContext } from "react";
+import { jwtDecode } from "jwt-decode";
+
+import atob from "core-js-pure/stable/atob";
+import btoa from "core-js-pure/stable/btoa";
+
+global.atob = atob;
+global.btoa = btoa;
+
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
@@ -8,6 +16,7 @@ import axios from "axios";
 import { AuthContext } from "../components/auth/AuthContext";
 import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
+
 import { COLORS, SIZES } from "../constants";
 import { BACKEND_PORT } from "@env";
 import Icon from "../constants/icons";
@@ -48,40 +57,45 @@ const LoginPage = ({ navigation }) => {
       const endpoint = `${BACKEND_PORT}/api/login`;
       const data = { ...values, userType };
 
-      console.log(data);
-
       const response = await axios.post(endpoint, data);
 
-      if (response.data && response.data.hasOwnProperty("_id")) {
-        setLoader(false);
+      console.log(response.data.TOKEN);
+
+      if (response.data && response.data.TOKEN) {
+        // Decode the token to get role information
+
+        const decodedToken = jwtDecode(response.data.TOKEN);
+        const userRole = decodedToken.role || "customer";
+
+        console.log("user role", userRole);
+
+        // Perform login action
         await login(response.data);
-        navigation.replace("Bottom Navigation");
+
+        // Redirect based on user role
+        switch (userRole) {
+          case "admin":
+            navigation.replace("AdminDashboard");
+            break;
+          case "inventory":
+            navigation.replace("InventoryDashboard");
+            break;
+          case "sales":
+            navigation.replace("SalesDashboard");
+            break;
+          case "finance":
+            navigation.replace("FinanceDashboard");
+            break;
+          default:
+            navigation.replace("Bottom Navigation");
+            break;
+        }
       } else {
-        Alert.alert("Error Logging", "Unexpected response. Please try again.", [
-          {
-            text: "Cancel",
-            onPress: () => {},
-          },
-          {
-            text: "Continue",
-            onPress: () => {},
-          },
-          { defaultIndex: 1 },
-        ]);
+        Alert.alert("Error Logging", "Unexpected response. Please try again.");
       }
     } catch (error) {
       console.log(error);
-      Alert.alert("Error", "Oops! Error logging in. Please try again.", [
-        {
-          text: "Cancel",
-          onPress: () => {},
-        },
-        {
-          text: "Retry",
-          onPress: () => {},
-        },
-        { defaultIndex: 1 },
-      ]);
+      Alert.alert("Error", "Oops! Error logging in. Please try again.");
     } finally {
       setLoader(false);
     }

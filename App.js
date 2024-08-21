@@ -38,6 +38,7 @@ import {
   About,
   Faqs,
   SystemMessages,
+  InventoryDashboard,
 } from "./screens";
 
 enableScreens();
@@ -98,6 +99,12 @@ export default function App() {
                   <Stack.Screen name="SystemMessages" component={SystemMessages} options={systemScreenOptions} />
                   <Stack.Screen name="OrderSuccess" component={OrderSuccess} options={{ headerShown: false }} />
                   <Stack.Screen name="OrderDetails" component={OrderDetails} options={{ headerShown: false }} />
+
+                  <Stack.Screen
+                    name="InventoryDashboard"
+                    component={InventoryDashboard}
+                    options={{ headerShown: false }}
+                  />
                 </Stack.Navigator>
                 <Toast />
               </NavigationContainer>

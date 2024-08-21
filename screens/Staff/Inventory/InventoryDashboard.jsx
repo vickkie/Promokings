@@ -4,25 +4,18 @@ import React, { useState, useContext, useEffect, useCallback, useRef } from "rea
 import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { Welcome } from "../components/home";
-import Carousel from "../components/home/Carousel";
-import Headings from "../components/home/Headings";
-import ProductsRow from "../components/products/ProductsRow";
-import LatestProducts from "../components/products/LatestProducts";
-import Icon from "../constants/icons";
-import { AuthContext } from "../components/auth/AuthContext";
-import useFetch from "../hook/useFetch";
-import { useCart } from "../contexts/CartContext";
-import HomeMenu from "../components/bottomsheets/HomeMenu";
+import { Welcome } from "../../../components/home";
+import Carousel from "../../../components/home/Carousel";
+import Icon from "../../../constants/icons";
+import { AuthContext } from "../../../components/auth/AuthContext";
+import useFetch from "../../../hook/useFetch";
+import HomeMenu from "../../../components/bottomsheets/HomeMenu";
 
-import { COLORS, SIZES, SHADOWS } from "../constants";
+import { COLORS, SIZES, SHADOWS } from "../../../constants";
 
-const Home = () => {
-  const { userData, userLogin, productCount } = useContext(AuthContext);
+const InventoryDashboard = () => {
+  const { userData, userLogin } = useContext(AuthContext);
   const navigation = useNavigation();
-  const { itemCount: itemCountG, handleItemCountChange } = useCart();
-
-  const [itemCount, setItemCount] = useState(0);
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
@@ -33,25 +26,6 @@ const Home = () => {
     }
   }, [userLogin, userData]);
 
-  const { data, isLoading, refetch } = useFetch(`carts/find/${userId}`);
-
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [userId])
-  );
-
-  useEffect(() => {
-    if (!isLoading && data.length !== 0) {
-      const products = data[0]?.products || [];
-      setItemCount(products.length);
-    }
-  }, [isLoading, data]);
-
-  useEffect(() => {
-    handleItemCountChange(itemCount);
-  }, [itemCount]);
-
   const renderProfilePicture = () => {
     if (!userLogin) {
       // User not logged in
@@ -61,7 +35,7 @@ const Home = () => {
       return <Image source={{ uri: `${userData.profilePicture}` }} style={styles.profilePicture} />;
     }
 
-    return <Image source={require("../assets/images/userDefault.webp")} style={styles.profilePicture} />;
+    return <Image source={require("../../../assets/images/userDefault.webp")} style={styles.profilePicture} />;
   };
 
   const BottomSheetRef = useRef(null);
@@ -94,21 +68,16 @@ const Home = () => {
               <View style={{ alignItems: "flex-end", marginRight: 5 }}>
                 <View style={styles.cartContainer}>
                   <View style={styles.cartWrapper}>
-                    <Text style={styles.cartNumber}>{itemCount}</Text>
+                    <Text style={styles.cartNumber}></Text>
                   </View>
 
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate("Cart");
-                    }}
-                    style={styles.buttonWrap}
-                  >
+                  <TouchableOpacity onPress={() => {}} style={styles.buttonWrap}>
                     <Icon name="cart" size={24} />
                   </TouchableOpacity>
                 </View>
               </View>
 
-              <TouchableOpacity onPress={() => navigation.navigate("InventoryDashboard")} style={styles.buttonWrap2}>
+              <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap2}>
                 {renderProfilePicture()}
               </TouchableOpacity>
             </View>
@@ -121,7 +90,7 @@ const Home = () => {
           </Text>
         </View>
         <View style={styles.sloganWrapper}>
-          <Text style={styles.slogan}>PromoKings, your one stop shop</Text>
+          <Text style={styles.slogan}>Manage Products </Text>
         </View>
       </View>
 
@@ -132,10 +101,6 @@ const Home = () => {
 
             <View style={styles.lowerWelcome}>
               <Carousel />
-              <Headings heading={"Top products"} />
-              <ProductsRow />
-              <Headings heading={"Latest Products"} />
-              <LatestProducts />
             </View>
           </View>
         </ScrollView>
@@ -144,7 +109,7 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default InventoryDashboard;
 
 const styles = StyleSheet.create({
   carouselContainer: {

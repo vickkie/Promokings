@@ -22,6 +22,7 @@ import Faqs from "./Faqs";
 import SystemMessages from "./SystemMessages";
 import OrderSuccess from "./OrderSuccess";
 import OrderDetails from "./OrderDetails";
+import InventoryDashboard from "./Staff/Inventory/InventoryDashboard";
 
 export {
   Home,
@@ -48,4 +49,5 @@ export {
   About,
   Faqs,
   SystemMessages,
+  InventoryDashboard,
 };
