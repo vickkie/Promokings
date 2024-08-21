@@ -65,18 +65,6 @@ const InventoryDashboard = () => {
             </TouchableOpacity>
 
             <View style={{ flexDirection: "row" }}>
-              <View style={{ alignItems: "flex-end", marginRight: 5 }}>
-                <View style={styles.cartContainer}>
-                  <View style={styles.cartWrapper}>
-                    <Text style={styles.cartNumber}></Text>
-                  </View>
-
-                  <TouchableOpacity onPress={() => {}} style={styles.buttonWrap}>
-                    <Icon name="cart" size={24} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
               <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap2}>
                 {renderProfilePicture()}
               </TouchableOpacity>
@@ -85,8 +73,7 @@ const InventoryDashboard = () => {
         </View>
         <View style={styles.greeting}>
           <Text style={styles.greetingMessage}>
-            <Text style={styles.hello}>Hello! </Text>
-            <Text style={styles.username}>{userData ? userData.username : "There"}</Text>
+            <Text style={styles.username}>Dashboard</Text>
           </Text>
         </View>
         <View style={styles.sloganWrapper}>
@@ -179,9 +166,10 @@ const styles = StyleSheet.create({
     width: 50,
     justifyContent: "center",
     alignItems: "center",
+    marginEnd: 4,
   },
   topWelcomeWrapper: {
-    minHeight: 180,
+    minHeight: 140,
     backgroundColor: COLORS.themew,
     marginHorizontal: 4,
     borderRadius: SIZES.medium,
@@ -197,7 +185,7 @@ const styles = StyleSheet.create({
   },
   greetingMessage: {
     fontFamily: "bold",
-    fontSize: SIZES.xxLarge,
+    fontSize: SIZES.xLarge,
   },
   hello: {
     fontFamily: "regular",
