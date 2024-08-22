@@ -53,7 +53,7 @@ const LatestProducts = ({ navigation, refreshList }) => {
 
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("OrderDetails", { _id: item._id, item });
+            // navigation.navigate("OrderDetails", { _id: item._id, item });
           }}
           style={[styles.flexEnd, styles.buttonView]}
         >

@@ -118,12 +118,16 @@ const ProductListCard = ({ item, isGridView }) => {
           <Text style={isGridView ? styles.gridPrice : styles.price}>Kshs {parseInt(item.price.replace("$", ""))}</Text>
         </View>
 
-        <TouchableOpacity style={isGridView ? styles.addBtn : styles.editPencil} onPress={() => {}}>
-          {isWished ? (
-            <Ionicons name="add-circle-outline" size={32} color={COLORS.primary} />
-          ) : (
-            <Icon name="pencil" size={32} color={COLORS.primary} />
-          )}
+        <TouchableOpacity
+          style={isGridView ? styles.addBtn : styles.editPencil}
+          onPress={() => {
+            navigation.navigate("EditProduct", {
+              item: item,
+              itemid: item._id,
+            });
+          }}
+        >
+          <Icon name="pencil" size={27} color={COLORS.primary} />
         </TouchableOpacity>
       </View>
     </TouchableOpacity>

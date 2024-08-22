@@ -15,7 +15,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ProductListCard from "./ProductListCard";
 import { Ionicons } from "@expo/vector-icons";
 import Icon from "../../../constants/icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+
+import { useFocusEffect } from "@react-navigation/native";
 
 import { Picker } from "@react-native-picker/picker";
 
@@ -32,6 +34,19 @@ const EditProductList = () => {
   const scrollRef = useRef(null);
   const [showScrollTopButton, setShowScrollTopButton] = useState(false);
   const inputRef = useRef(null);
+
+  const route = useRoute();
+  const [refreshList, setRefreshList] = useState(false);
+
+  //refetch on update
+  useFocusEffect(
+    useCallback(() => {
+      if (route.params?.refreshList) {
+        setRefreshList(true);
+        onRefresh();
+      }
+    }, [route.params])
+  );
 
   useEffect(() => {
     if (data.length > 0) {
@@ -213,7 +228,7 @@ const styles = StyleSheet.create({
 
   picker: {
     height: 20,
-    width: 170,
+    width: SIZES.width - 160,
   },
 
   flatlistContainer: {

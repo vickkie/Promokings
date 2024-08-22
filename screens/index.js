@@ -24,6 +24,7 @@ import OrderSuccess from "./OrderSuccess";
 import OrderDetails from "./OrderDetails";
 import InventoryDashboard from "./Staff/Inventory/InventoryDashboard";
 import InventoryTabNavigation from "../navigation/InventoryTabNavigation";
+import EditProduct from "./Staff/Inventory/EditProduct";
 
 import BottomTabNavigation from "../navigation/BottomTabNavigation";
 import AddProduct from "./Staff/Inventory/AddProduct";
@@ -59,4 +60,5 @@ export {
   InventoryTabNavigation,
   AddProduct,
   EditProductList,
+  EditProduct,
 };
