@@ -186,7 +186,12 @@ const EditProduct = () => {
             <Icon name="backbutton" size={26} />
           </TouchableOpacity>
           <Text style={styles.heading}>UPDATE PRODUCT</Text>
-          <TouchableOpacity style={styles.buttonWrap} onPress={handleUpdateProduct}>
+          <TouchableOpacity
+            style={styles.buttonWrap}
+            onPress={() => {
+              navigation.navigate("AddProduct");
+            }}
+          >
             <Icon name="add" size={26} />
           </TouchableOpacity>
         </View>
@@ -308,15 +313,16 @@ const EditProduct = () => {
                 <Switch value={availability} onValueChange={(newValue) => setAvailability(newValue)} />
               </View>
             </View>
+
+            <TouchableOpacity style={styles.submitBtn} onPress={handleUpdateProduct}>
+              {uploading ? (
+                <ActivityIndicator size={30} color={COLORS.themew} />
+              ) : (
+                <Text style={styles.submitText}>Add Product</Text>
+              )}
+            </TouchableOpacity>
           </View>
         </ScrollView>
-
-        {uploading && (
-          <View style={styles.uploadingOverlay}>
-            <ActivityIndicator size="large" color={COLORS.white} />
-            <Text style={styles.uploadingText}>Uploading...</Text>
-          </View>
-        )}
       </View>
     </SafeAreaView>
   );
