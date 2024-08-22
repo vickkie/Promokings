@@ -600,7 +600,7 @@ const styles = StyleSheet.create({
     fontSize: SIZES.medium,
   },
   outWrap: {
-    backgroundColor: COLORS.themeg,
+    backgroundColor: COLORS.secondary,
     padding: 15,
     borderRadius: 100,
     justifyContent: "center",

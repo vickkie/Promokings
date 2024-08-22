@@ -12,6 +12,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import { Picker } from "@react-native-picker/picker";
 import useFetch from "../../../hook/useFetch";
 
+import { BACKEND_PORT } from "@env";
+
 const AddProduct = () => {
   const navigation = useNavigation();
   const [title, setTitle] = useState("");
@@ -24,6 +26,7 @@ const AddProduct = () => {
   const [category, setCategory] = useState("");
   const [supplier, setSupplier] = useState("");
   const [description, setDescription] = useState("");
+  const [productData, setProductdata] = useState("");
 
   const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
 
@@ -42,7 +45,6 @@ const AddProduct = () => {
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Product title is required"),
     price: Yup.number().required("Price is required").positive("Price must be a positive number"),
-    imageUrl: Yup.string().url("Must be a valid URL").required("Image URL is required"),
     category: Yup.string().required("Category is required"),
     supplier: Yup.string().required("Supplier is required"),
     description: Yup.string().required("Description is required"),
@@ -54,69 +56,91 @@ const AddProduct = () => {
       title,
       price,
       availability,
-      imageUrl: image ? image : imageUrl,
+      imageUrl: imageUrl,
       category,
       supplier,
       description,
     };
 
-    // Validate with Yup
-    validationSchema
-      .validate(newProduct)
-      .then(async () => {
-        if (image) {
-          await uploadImageAndSaveProduct(newProduct);
-        } else {
-          console.log("New Product:", newProduct);
-          // Send newProduct to your backend or save it
-        }
-      })
-      .catch((error) => {
-        console.log("Validation Error:", error);
-        showToast("error", "Validation Error", error.message);
-      });
+    //for passing along
+    setProductdata(newProduct);
+
+    try {
+      // Validate with Yup
+      await validationSchema.validate(newProduct);
+
+      if (image) {
+        await handleUpload(); // Ensure image is uploaded before adding the product
+      }
+
+      // Now that the image is uploaded, proceed to add the product
+      console.log("New Product:", newProduct);
+      const response = await axios.post(`${BACKEND_PORT}/api/products`, newProduct);
+
+      if (response.status === 200) {
+        showToast("success", "Product added successfully!");
+
+        // Reset form fields
+        setTitle("");
+        setPrice("");
+        setAvailability(false);
+        setImageUrl("");
+        setProductId(generateProductId());
+        setImage(null);
+        setCategory("");
+        setSupplier("");
+        setDescription("");
+
+        // Navigate to dashboard
+        navigation.navigate("InventoryDashboard");
+      }
+    } catch (error) {
+      showToast("error", "Product doesn't meet the required standard", error.message);
+    }
   };
 
-  const uploadImageAndSaveProduct = async (product) => {
+  const handleUpload = async () => {
+    const uploadedImageUrl = await uploadImage(image);
+    setImageUrl(uploadedImageUrl);
+    // console.log(uploadedImageUrl);
+  };
+
+  const uploadImage = async (image) => {
     setLoader(true);
     try {
       const formData = new FormData();
-      const fileType = image.split(".").pop();
+      const fileType = image.split(".").pop(); // Extract the file extension
 
-      formData.append("image", {
+      // Adjust the field name to 'profilePicture' to match the server's expectation
+      formData.append("profilePicture", {
         uri: image,
-        name: `productImage.${fileType}`,
+        name: `productImage.${fileType}`, // Use the extracted file extension
         type: `image/${fileType}`,
       });
 
-      const response = await axios.post(`${BACKEND_PORT}/api/upload`, formData, {
+      // Assuming BACKEND_PORT is correctly defined to point to your server's address
+      const response = await axios.post(`${BACKEND_PORT}/upload`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
+      console.log(response);
+
       if (response.status === 200) {
-        product.imageUrl = response.data.imageUrl; // Update the imageUrl with the URL from the response
-        console.log("Product with Uploaded Image:", product);
-        // Send product to your backend or save it
-
-        const endpoint = `${BACKEND_PORT}/api/user/products`;
-
-        const response = await axios.put(endpoint, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
-        if (response.status === 200) {
-          showToast("success", "Product added successfully!");
-        }
+        // Update to extract 'fileUrl' from the response data
+        return response.data.fileUrl; // Return the uploaded image URL from the response
+      } else {
+        setAvailability(false);
+        throw new Error("Image upload failed");
       }
     } catch (err) {
-      console.log(err);
+      console.log("outer layer", err);
       showToast("error", "Image upload failed", "Please try again.");
+      throw err;
+    } finally {
+      setLoader(false);
     }
-    setLoader(false);
   };
 
   const pickImage = async () => {
@@ -129,13 +153,14 @@ const AddProduct = () => {
     let pickerResult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1, 1],
       quality: 1,
     });
 
     if (!pickerResult.canceled && pickerResult.assets && pickerResult.assets.length > 0) {
       const pickedUri = pickerResult.assets[0].uri;
       setImage(pickedUri);
+      console.log("picked uri", pickedUri);
     }
   };
 
@@ -191,23 +216,60 @@ const AddProduct = () => {
                 onChangeText={(text) => setPrice(text)}
                 keyboardType="numeric"
               />
-              <View style={styles.availabilityRow}>
-                <Text>Available:</Text>
-                <Switch value={availability} onValueChange={(value) => setAvailability(value)} />
+
+              <TextInput
+                style={styles.descriptionInput}
+                placeholder="Product Description"
+                value={description}
+                onChangeText={(text) => setDescription(text)}
+                multiline
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  gap: 10,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <TextInput
+                  style={[styles.input, styles.imageurl]}
+                  placeholder="Image URL"
+                  value={imageUrl}
+                  onChangeText={(text) => setImageUrl(text)}
+                />
+
+                <TouchableOpacity
+                  style={{
+                    height: 40,
+                    width: 40,
+                    backgroundColor: COLORS.gray2,
+                    borderRadius: 100,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginBottom: 10,
+                  }}
+                >
+                  <Icon name="pencil" size={27} />
+                </TouchableOpacity>
               </View>
 
               <View style={styles.pickerWrapper}>
                 <Text style={styles.pickerLabel}>Category</Text>
                 <Picker
                   selectedValue={category}
-                  onValueChange={(itemValue) => setCategory(itemValue)}
+                  onValueChange={(itemValue, itemIndex) => {
+                    setCategory(itemValue);
+                    console.log(itemValue, itemIndex);
+                  }}
                   style={styles.picker}
                 >
-                  <Picker.Item label="Select a category" value="" />
+                  <Picker.Item label="Select a category" value={""} />
                   {categories &&
                     categories.map((cat) => {
-                      console.log(cat.title);
-                      return <Picker.Item key={cat._id} label={cat.title} value={cat._id} />;
+                      //
+                      return <Picker.Item key={cat._id} label={cat.title} value={cat.title} />;
                     })}
                 </Picker>
               </View>
@@ -220,24 +282,25 @@ const AddProduct = () => {
                   style={styles.picker}
                 >
                   <Picker.Item label="Select a supplier" value="" />
-                  {suppliers && suppliers.map((sup) => <Picker.Item key={sup.id} label={sup.name} value={sup.id} />)}
+                  {suppliers &&
+                    suppliers.map((sup) => (
+                      <Picker.Item
+                        key={sup.id}
+                        label={sup.name}
+                        value={sup.name}
+                        color="black"
+                        fontFamily="medium"
+                        enabled={true}
+                      />
+                    ))}
                 </Picker>
               </View>
 
-              <TextInput
-                style={styles.descriptionInput}
-                placeholder="Product Description"
-                value={description}
-                onChangeText={(text) => setDescription(text)}
-                multiline
-              />
+              <View style={styles.availabilityRow}>
+                <Text>Available:</Text>
+                <Switch value={availability} onValueChange={(value) => setAvailability(value)} />
+              </View>
 
-              <TextInput
-                style={styles.input}
-                placeholder="Image URL"
-                value={imageUrl}
-                onChangeText={(text) => setImageUrl(text)}
-              />
               <TouchableOpacity style={styles.submitBtn} onPress={handleAddProduct}>
                 <Text style={styles.submitText}>Add Product</Text>
               </TouchableOpacity>
@@ -299,21 +362,26 @@ const styles = StyleSheet.create({
     color: "gray",
   },
   input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.themeg,
+    padding: 10,
+    borderRadius: SIZES.medium,
     marginBottom: 10,
+    width: SIZES.width - 30,
+    marginStart: 10,
   },
   descriptionInput: {
-    height: 100,
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.themeg,
+    padding: 10,
+    borderRadius: SIZES.medium,
     marginBottom: 10,
-    textAlignVertical: "top", // Ensures text starts at the top of the box
+    width: SIZES.width - 30,
+    marginStart: 10,
+    textAlignVertical: "top",
+    height: 100,
   },
   nonEditable: {
     backgroundColor: "lightgray",
@@ -322,30 +390,35 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
+    paddingLeft: 10,
   },
   submitBtn: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: COLORS.primary,
     padding: 15,
-    borderRadius: 8,
+    borderRadius: SIZES.medium,
     alignItems: "center",
   },
   submitText: {
-    color: "white",
+    color: COLORS.white,
     fontWeight: "bold",
   },
   pickerWrapper: {
     marginBottom: 10,
+    marginstart: 10,
+    paddingLeft: 10,
   },
   pickerLabel: {
     marginBottom: 5,
     fontWeight: "bold",
+    color: COLORS.themeb,
   },
   picker: {
     height: 40,
     borderColor: "gray",
     borderWidth: 1,
-    borderRadius: 8,
-    color: COLORS.textColor, // Set text color
+    color: COLORS.black,
+    backgroundColor: COLORS.themeg,
+    borderRadius: SIZES.medium,
   },
   heading: {
     fontFamily: "bold",
@@ -358,6 +431,9 @@ const styles = StyleSheet.create({
     marginTop: 130,
     padding: 10,
     marginBottom: 60,
+  },
+  imageurl: {
+    width: SIZES.width - 70,
   },
 });
 
