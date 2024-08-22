@@ -27,6 +27,7 @@ import InventoryTabNavigation from "../navigation/InventoryTabNavigation";
 
 import BottomTabNavigation from "../navigation/BottomTabNavigation";
 import AddProduct from "./Staff/Inventory/AddProduct";
+import EditProductList from "./Staff/Inventory/ProductList";
 
 export {
   Home,
@@ -57,4 +58,5 @@ export {
   BottomTabNavigation,
   InventoryTabNavigation,
   AddProduct,
+  EditProductList,
 };

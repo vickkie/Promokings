@@ -1,5 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Image, Switch, Alert } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Switch,
+  Alert,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
@@ -19,28 +30,50 @@ const AddProduct = () => {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [availability, setAvailability] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl, setImageUrl] = useState("https://i.postimg.cc/j56q20rB/images.jpg");
   const [productId, setProductId] = useState(generateProductId());
   const [image, setImage] = useState(null);
   const [loader, setLoader] = useState(false);
   const [category, setCategory] = useState("");
   const [supplier, setSupplier] = useState("");
   const [description, setDescription] = useState("");
-  const [productData, setProductdata] = useState("");
-
+  const [isEditable, setIsEditable] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
 
   // Adjusted suppliers array to match expected object structure
   const suppliers = [{ id: "KINGS_COLLECTION", name: "Kings Collection" }];
 
-  useEffect(() => {
-    // console.log(categories);
-  }, [categories]);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    try {
+      // Reset form fields
+      setTitle("");
+      setPrice("");
+      setAvailability(false);
+      setImageUrl("https://i.postimg.cc/j56q20rB/images.jpg");
+      setProductId(generateProductId());
+      setImage(null);
+      setCategory("");
+      setSupplier("");
+      setDescription("");
+    } catch (error) {
+      console.log("refresh failed");
+    } finally {
+      setTimeout(() => {
+        setRefreshing(false);
+      }, 2000);
+    }
+  }, []);
 
   function generateProductId() {
     const randomId = Math.random().toString(36).substr(2, 7).toUpperCase();
     return `PRK-P${randomId}`;
   }
+  const toggleEditable = () => {
+    setIsEditable(!isEditable);
+  };
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Product title is required"),
@@ -62,29 +95,26 @@ const AddProduct = () => {
       description,
     };
 
-    //for passing along
-    setProductdata(newProduct);
-
     try {
-      // Validate with Yup
-      await validationSchema.validate(newProduct);
-
       if (image) {
-        await handleUpload(); // Ensure image is uploaded before adding the product
+        const uploadedImageUrl = await uploadImage(image);
+        setImageUrl(uploadedImageUrl);
+        newProduct.imageUrl = uploadedImageUrl;
       }
 
+      // Validate with Yup
+      await validationSchema.validate(newProduct);
       // Now that the image is uploaded, proceed to add the product
-      console.log("New Product:", newProduct);
+      //   console.log("New Product:", newProduct);
       const response = await axios.post(`${BACKEND_PORT}/api/products`, newProduct);
 
       if (response.status === 200) {
         showToast("success", "Product added successfully!");
-
         // Reset form fields
         setTitle("");
         setPrice("");
         setAvailability(false);
-        setImageUrl("");
+        setImageUrl("https://i.postimg.cc/j56q20rB/images.jpg");
         setProductId(generateProductId());
         setImage(null);
         setCategory("");
@@ -92,21 +122,16 @@ const AddProduct = () => {
         setDescription("");
 
         // Navigate to dashboard
-        navigation.navigate("InventoryDashboard");
+        navigation.navigate("InventoryDashboard", { refreshList: true });
       }
     } catch (error) {
       showToast("error", "Product doesn't meet the required standard", error.message);
     }
   };
 
-  const handleUpload = async () => {
-    const uploadedImageUrl = await uploadImage(image);
-    setImageUrl(uploadedImageUrl);
-    // console.log(uploadedImageUrl);
-  };
-
   const uploadImage = async (image) => {
     setLoader(true);
+    setUploading(true);
     try {
       const formData = new FormData();
       const fileType = image.split(".").pop(); // Extract the file extension
@@ -129,6 +154,8 @@ const AddProduct = () => {
 
       if (response.status === 200) {
         // Update to extract 'fileUrl' from the response data
+
+        setUploading(false);
         return response.data.fileUrl; // Return the uploaded image URL from the response
       } else {
         setAvailability(false);
@@ -186,14 +213,14 @@ const AddProduct = () => {
           </TouchableOpacity>
         </View>
 
-        <ScrollView>
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.lowerRow}>
             <View style={styles.form}>
               <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
                 {image ? (
                   <Image source={{ uri: image }} style={styles.imagePreview} />
                 ) : (
-                  <Text style={styles.imagePlaceholder}>Pick an image</Text>
+                  <Image source={require("../../../assets/images/empty-product.png")} style={styles.imagePreview} />
                 )}
               </TouchableOpacity>
 
@@ -234,10 +261,11 @@ const AddProduct = () => {
                 }}
               >
                 <TextInput
-                  style={[styles.input, styles.imageurl]}
+                  style={[styles.input, styles.imageurl, !isEditable ? styles.nonEditable : ""]}
                   placeholder="Image URL"
                   value={imageUrl}
                   onChangeText={(text) => setImageUrl(text)}
+                  editable={isEditable}
                 />
 
                 <TouchableOpacity
@@ -250,6 +278,7 @@ const AddProduct = () => {
                     alignItems: "center",
                     marginBottom: 10,
                   }}
+                  onPress={toggleEditable}
                 >
                   <Icon name="pencil" size={27} />
                 </TouchableOpacity>
@@ -302,11 +331,21 @@ const AddProduct = () => {
               </View>
 
               <TouchableOpacity style={styles.submitBtn} onPress={handleAddProduct}>
-                <Text style={styles.submitText}>Add Product</Text>
+                {uploading ? (
+                  <ActivityIndicator size={30} color={COLORS.themew} />
+                ) : (
+                  <Text style={styles.submitText}>Add Product</Text>
+                )}
               </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
+
+        {refreshing && (
+          <View style={styles.overlay}>
+            <ActivityIndicator size={30} color={COLORS.themey} />
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -347,16 +386,20 @@ const styles = StyleSheet.create({
   },
   imagePicker: {
     height: 200,
+    width: 200,
+    borderRadius: 300,
+    alignSelf: "center",
     backgroundColor: "#f0f0f0",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 20,
-    borderRadius: 8,
+    borderBlockColor: COLORS.gray,
+    borderWidth: 1,
   },
   imagePreview: {
     width: "100%",
     height: "100%",
-    borderRadius: 8,
+    borderRadius: 300,
   },
   imagePlaceholder: {
     color: "gray",
@@ -434,6 +477,17 @@ const styles = StyleSheet.create({
   },
   imageurl: {
     width: SIZES.width - 70,
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.5)", // Semi-transparent background
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 4,
   },
 });
 

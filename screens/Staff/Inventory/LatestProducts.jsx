@@ -1,10 +1,10 @@
 import { FlatList, StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, Image } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
 import { Ionicons } from "@expo/vector-icons";
 
-const LatestProducts = ({ navigation }) => {
+const LatestProducts = ({ navigation, refreshList }) => {
   const { data, isLoading, error, refetch } = useFetch("products?limit=6&offset=0");
 
   // Ensure data is treated as an array to avoid accessing .length of undefined
@@ -16,6 +16,14 @@ const LatestProducts = ({ navigation }) => {
   const handleRefetch = () => {
     refetch();
   };
+
+  //refresh this list if new product or some happens
+  useEffect(() => {
+    // console.log("Refresh List changed to: ", refreshList);
+    if (refreshList === true) {
+      refetch();
+    }
+  }, [refreshList]);
 
   // Corrected the arrow function syntax and parameter reference
   const parsedPrice = (item) => (item.price ? parseFloat(item.price.replace(/[^0-9.-]+/g, "")) : 0);

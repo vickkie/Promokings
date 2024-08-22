@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { InventoryDashboard, Search, Profile, Categories, AddProduct } from "../screens";
+import { InventoryDashboard, EditProductList, Profile, Categories, AddProduct } from "../screens";
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -93,8 +93,8 @@ const InventoryTabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="Search"
-        component={Search}
+        name="Products"
+        component={EditProductList}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon

@@ -3,7 +3,7 @@
 import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
 import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
@@ -24,6 +24,9 @@ const InventoryDashboard = () => {
   const navigation = useNavigation();
   const [userId, setUserId] = useState(null);
 
+  const route = useRoute();
+  const [refreshList, setRefreshList] = useState(false);
+
   useEffect(() => {
     if (!userLogin) {
       navigation.replace("Login");
@@ -43,6 +46,16 @@ const InventoryDashboard = () => {
       }
     }
   }, [userLogin, userData]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (route.params?.refreshList) {
+        setRefreshList(true);
+
+        console.log("add refresh ", route.params.refreshList);
+      }
+    }, [route.params])
+  );
 
   const renderProfilePicture = () => {
     if (!userLogin) {
@@ -141,7 +154,7 @@ const InventoryDashboard = () => {
           </View>
 
           <View style={styles.latestProducts}>
-            <LatestProducts />
+            <LatestProducts refreshList={refreshList} />
           </View>
         </View>
       </ScrollView>

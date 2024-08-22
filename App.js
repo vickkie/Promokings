@@ -41,6 +41,7 @@ import {
   BottomTabNavigation,
   InventoryTabNavigation,
   AddProduct,
+  EditProductList,
 } from "./screens";
 
 enableScreens();
@@ -89,6 +90,7 @@ export default function App() {
                     component={InventoryTabNavigation}
                     options={{ headerShown: false }}
                   />
+                  <Stack.Screen name="EditProductsList" component={EditProductList} options={{ headerShown: false }} />
                   <Stack.Screen name="Add Product" component={AddProduct} options={{ headerShown: false }} />
                   <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }} />
                   <Stack.Screen name="ProductDetails" component={ProductDetails} options={{ headerShown: false }} />
