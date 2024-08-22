@@ -59,17 +59,12 @@ const LoginPage = ({ navigation }) => {
 
       const response = await axios.post(endpoint, data);
 
-      console.log(response.data.TOKEN);
-
       if (response.data && response.data.TOKEN) {
         // Decode the token to get role information
 
         const decodedToken = jwtDecode(response.data.TOKEN);
         const userRole = decodedToken.role || "customer";
 
-        console.log("user role", userRole);
-
-        // Perform login action
         await login(response.data);
 
         // Redirect based on user role
@@ -78,7 +73,7 @@ const LoginPage = ({ navigation }) => {
             navigation.replace("AdminDashboard");
             break;
           case "inventory":
-            navigation.replace("InventoryDashboard");
+            navigation.replace("Inventory Navigation");
             break;
           case "sales":
             navigation.replace("SalesDashboard");

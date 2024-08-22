@@ -4,14 +4,20 @@ import React, { useState, useContext, useEffect, useCallback, useRef } from "rea
 import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { Welcome } from "../../../components/home";
-import Carousel from "../../../components/home/Carousel";
 import Icon from "../../../constants/icons";
 import { AuthContext } from "../../../components/auth/AuthContext";
-import useFetch from "../../../hook/useFetch";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
 
 import { COLORS, SIZES, SHADOWS } from "../../../constants";
+import LatestProducts from "./LatestProducts";
+
+import { jwtDecode } from "jwt-decode";
+
+import atob from "core-js-pure/stable/atob";
+import btoa from "core-js-pure/stable/btoa";
+
+global.atob = atob;
+global.btoa = btoa;
 
 const InventoryDashboard = () => {
   const { userData, userLogin } = useContext(AuthContext);
@@ -20,9 +26,21 @@ const InventoryDashboard = () => {
 
   useEffect(() => {
     if (!userLogin) {
-      setUserId(1);
-    } else if (userData && userData._id) {
-      setUserId(userData._id);
+      navigation.replace("Login");
+    } else if (userData && userData.TOKEN) {
+      // Decode the token to get role information
+
+      const decodedToken = jwtDecode(userData.TOKEN);
+      const userRole = decodedToken.role;
+      // Redirect based on user role
+      switch (userRole) {
+        case "inventory":
+          setUserId(userData._id);
+          break;
+        default:
+          navigation.replace("Login");
+          break;
+      }
     }
   }, [userLogin, userData]);
 
@@ -77,21 +95,56 @@ const InventoryDashboard = () => {
           </Text>
         </View>
         <View style={styles.sloganWrapper}>
-          <Text style={styles.slogan}>Manage Products </Text>
+          <Text style={styles.slogan}>Inventory management </Text>
         </View>
       </View>
-
-      <View style={{ flex: 1, borderRadius: 45 }}>
-        <ScrollView>
+      <ScrollView>
+        <View style={{ flex: 1, borderRadius: 45, marginTop: 6 }}>
           <View style={styles.lowerWelcomeWrapper}>
-            <Welcome />
-
             <View style={styles.lowerWelcome}>
-              <Carousel />
+              <View style={styles.dashbboxWrapperp}>
+                <View style={styles.dashbboxWrapper}>
+                  <TouchableOpacity onPress={() => {}}>
+                    <View style={[styles.dashBox, styles.box1]}>
+                      <Text style={styles.boxNUmber}>100</Text>
+                      <Text style={styles.boxText}>Total products</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => {}}>
+                    <View style={[styles.dashBox, styles.box2]}>
+                      <Text style={styles.boxNUmber}>35</Text>
+                      <Text style={styles.boxText}>Out of stock</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.dashbboxWrapper}>
+                  <TouchableOpacity onPress={() => {}}>
+                    <View style={[styles.dashBox, styles.box3]}>
+                      <Text style={styles.boxNUmber}>70</Text>
+                      <Text style={styles.boxText}>Available stock</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => {}}>
+                    <View style={[styles.dashBox, styles.box4]}>
+                      <Text style={styles.boxNUmber}>100</Text>
+                      <Text style={styles.boxText}>Total products</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
           </View>
-        </ScrollView>
-      </View>
+          <View style={{ paddingTop: 10, width: SIZES.width - 20, paddingHorizontal: 22 }}>
+            <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>
+              Latest Products
+            </Text>
+          </View>
+
+          <View style={styles.latestProducts}>
+            <LatestProducts />
+          </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -110,8 +163,6 @@ const styles = StyleSheet.create({
     fontSize: 19,
   },
   appBarWrapper: {
-    // marginHorizontal: 4,
-    // marginTop: SIZES.small - 2,
     backgroundColor: COLORS.white,
     borderRadius: SIZES.medium,
     marginTop: 10,
@@ -240,5 +291,60 @@ const styles = StyleSheet.create({
   closeButtonText: {
     fontSize: 16,
     color: "black",
+  },
+  dashbboxWrapper: {
+    width: SIZES.width - 20,
+    display: "flex",
+    flexDirection: "row",
+    gap: 10,
+    marginBottom: 10,
+  },
+  dashBox: {
+    justifyContent: "center",
+    width: SIZES.width / 2 - 14,
+    backgroundColor: COLORS.primary,
+    borderRadius: SIZES.medium,
+    height: SIZES.width / 2 - 50,
+    paddingStart: 40,
+  },
+  dashbboxWrapperp: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 7,
+  },
+  box1: {
+    backgroundColor: "#e3bdf4",
+  },
+  box2: {
+    backgroundColor: "#aed7f5",
+  },
+  box3: {
+    backgroundColor: COLORS.themey,
+  },
+  box4: {
+    backgroundColor: "#04c28f",
+    // #04c28f
+  },
+  boxNUmber: {
+    fontFamily: "bold",
+    fontSize: SIZES.xxLarge - 8,
+    color: COLORS.white,
+  },
+  boxText: {
+    fontFamily: "bold",
+    fontSize: SIZES.medium,
+    marginLeft: -14,
+    color: COLORS.themeb,
+  },
+  latestProducts: {
+    backgroundColor: COLORS.white,
+    marginTop: 10,
+    borderRadius: SIZES.medium,
+    width: SIZES.width - 10,
+    alignSelf: "center",
+    paddingVertical: SIZES.medium,
+    paddingHorizontal: 3,
+    minHeight: SIZES.height / 2.5,
+    marginBottom: 20,
   },
 });

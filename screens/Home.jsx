@@ -108,7 +108,7 @@ const Home = () => {
                 </View>
               </View>
 
-              <TouchableOpacity onPress={() => navigation.navigate("InventoryDashboard")} style={styles.buttonWrap2}>
+              <TouchableOpacity onPress={() => navigation.navigate("Inventory Navigation")} style={styles.buttonWrap2}>
                 {renderProfilePicture()}
               </TouchableOpacity>
             </View>

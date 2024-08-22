@@ -23,6 +23,10 @@ import SystemMessages from "./SystemMessages";
 import OrderSuccess from "./OrderSuccess";
 import OrderDetails from "./OrderDetails";
 import InventoryDashboard from "./Staff/Inventory/InventoryDashboard";
+import InventoryTabNavigation from "../navigation/InventoryTabNavigation";
+
+import BottomTabNavigation from "../navigation/BottomTabNavigation";
+import AddProduct from "./Staff/Inventory/AddProduct";
 
 export {
   Home,
@@ -50,4 +54,7 @@ export {
   Faqs,
   SystemMessages,
   InventoryDashboard,
+  BottomTabNavigation,
+  InventoryTabNavigation,
+  AddProduct,
 };

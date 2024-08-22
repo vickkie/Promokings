@@ -72,8 +72,10 @@ import version from "../assets/svg/version.svg";
 import versionhistory from "../assets/svg/version-history.svg";
 import twitter from "../assets/svg/x.svg";
 import question from "../assets/svg/question.svg";
+import productapproved from "../assets/svg/product-good.svg";
 
 const iconMap = {
+  productapproved: productapproved,
   checkempty: checkempty,
   web: web,
   twitter: twitter,

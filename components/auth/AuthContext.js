@@ -32,6 +32,8 @@ const AuthProvider = ({ children }) => {
 
   const login = async (data) => {
     setUserData(data);
+
+    console.log(data);
     setUserLogin(true);
     await AsyncStorage.setItem("id", JSON.stringify(data._id));
     await AsyncStorage.setItem(`user${data._id}`, JSON.stringify(data));

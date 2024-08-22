@@ -10,7 +10,6 @@ import Toast from "react-native-toast-message";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
-import BottomTabNavigation from "./navigation/BottomTabNavigation";
 import { AuthProvider } from "./components/auth/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
 import { WishProvider } from "./contexts/WishContext";
@@ -39,6 +38,9 @@ import {
   Faqs,
   SystemMessages,
   InventoryDashboard,
+  BottomTabNavigation,
+  InventoryTabNavigation,
+  AddProduct,
 } from "./screens";
 
 enableScreens();
@@ -82,6 +84,12 @@ export default function App() {
                     component={BottomTabNavigation}
                     options={{ headerShown: false }}
                   />
+                  <Stack.Screen
+                    name="Inventory Navigation"
+                    component={InventoryTabNavigation}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen name="Add Product" component={AddProduct} options={{ headerShown: false }} />
                   <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }} />
                   <Stack.Screen name="ProductDetails" component={ProductDetails} options={{ headerShown: false }} />
                   <Stack.Screen name="ProductList" component={Products} options={{ headerShown: false }} />
