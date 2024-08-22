@@ -52,7 +52,7 @@ const InventoryDashboard = () => {
       if (route.params?.refreshList) {
         setRefreshList(true);
 
-        console.log("add refresh ", route.params.refreshList);
+        // console.log("add refresh ", route.params.refreshList);
       }
     }, [route.params])
   );

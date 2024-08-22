@@ -150,7 +150,7 @@ const AddProduct = () => {
         },
       });
 
-      console.log(response);
+      //   console.log(response);
 
       if (response.status === 200) {
         // Update to extract 'fileUrl' from the response data
@@ -162,7 +162,7 @@ const AddProduct = () => {
         throw new Error("Image upload failed");
       }
     } catch (err) {
-      console.log("outer layer", err);
+      //   console.log("outer layer", err);
       showToast("error", "Image upload failed", "Please try again.");
       throw err;
     } finally {
@@ -187,7 +187,7 @@ const AddProduct = () => {
     if (!pickerResult.canceled && pickerResult.assets && pickerResult.assets.length > 0) {
       const pickedUri = pickerResult.assets[0].uri;
       setImage(pickedUri);
-      console.log("picked uri", pickedUri);
+      //   console.log("picked uri", pickedUri);
     }
   };
 
@@ -290,7 +290,6 @@ const AddProduct = () => {
                   selectedValue={category}
                   onValueChange={(itemValue, itemIndex) => {
                     setCategory(itemValue);
-                    console.log(itemValue, itemIndex);
                   }}
                   style={styles.picker}
                 >
@@ -484,7 +483,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.5)", // Semi-transparent background
+    backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "center",
     alignItems: "center",
     zIndex: 4,
