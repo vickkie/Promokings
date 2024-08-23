@@ -13,11 +13,11 @@ const CategoriesListBox = () => {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     try {
-      refetch(); // Call refetch, assuming it's synchronous
+      refetch();
     } catch (error) {
       // console.error("Failed to refresh data", error);
     } finally {
-      setRefreshing(false); // Ensure refreshing state is reset
+      setRefreshing(false);
     }
   }, [refetch]);
 

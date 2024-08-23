@@ -121,6 +121,12 @@ const styles = StyleSheet.create({
   addBtn: {
     position: "absolute",
     bottom: SIZES.small,
-    right: SIZES.small,
+    right: 0,
+    height: 70,
+    width: 70,
+    borderRadius: 100,
+    backgroundColor: COLORS.themeg,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

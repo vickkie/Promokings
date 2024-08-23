@@ -1,18 +1,14 @@
-// Home.js
-
 import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
-import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet } from "react-native";
+import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
-
-import { COLORS, SIZES, SHADOWS } from "../../../constants";
+import { COLORS, SIZES } from "../../../constants";
 import LatestProducts from "./LatestProducts";
 
 import { jwtDecode } from "jwt-decode";
-
 import atob from "core-js-pure/stable/atob";
 import btoa from "core-js-pure/stable/btoa";
 
@@ -22,40 +18,47 @@ global.btoa = btoa;
 const InventoryDashboard = () => {
   const { userData, userLogin } = useContext(AuthContext);
   const navigation = useNavigation();
-  const [userId, setUserId] = useState(null);
-
   const route = useRoute();
+
+  const [userId, setUserId] = useState(null);
   const [refreshList, setRefreshList] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     if (!userLogin) {
       navigation.replace("Login");
     } else if (userData && userData.TOKEN) {
       // Decode the token to get role information
-
       const decodedToken = jwtDecode(userData.TOKEN);
       const userRole = decodedToken.role;
+
       // Redirect based on user role
-      switch (userRole) {
-        case "inventory":
-          setUserId(userData._id);
-          break;
-        default:
-          navigation.replace("Login");
-          break;
+      if (userRole === "inventory") {
+        setUserId(userData._id);
+      } else {
+        navigation.replace("Login");
       }
     }
-  }, [userLogin, userData]);
+  }, [userLogin, userData, navigation]);
 
   useFocusEffect(
     useCallback(() => {
       if (route.params?.refreshList) {
         setRefreshList(true);
-
-        // console.log("add refresh ", route.params.refreshList);
       }
     }, [route.params])
   );
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setRefreshList(true); // This will trigger the refresh in LatestProducts
+
+    // Optionally reset the refreshing state after some delay
+    setTimeout(() => {
+      setRefreshing(false);
+      setRefreshList(false); // Reset refreshList after refreshing
+    }, 2000);
+  }, []);
 
   const renderProfilePicture = () => {
     if (!userLogin) {
@@ -80,21 +83,13 @@ const InventoryDashboard = () => {
   return (
     <SafeAreaView style={styles.topSafeview}>
       <HomeMenu ref={BottomSheetRef} />
-
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.themey} />
-
       <View style={styles.topWelcomeWrapper}>
         <View style={styles.appBarWrapper}>
           <View style={styles.appBar}>
-            <TouchableOpacity
-              style={styles.buttonWrap}
-              onPress={() => {
-                openMenu();
-              }}
-            >
+            <TouchableOpacity style={styles.buttonWrap} onPress={openMenu}>
               <Icon name="menu" size={24} />
             </TouchableOpacity>
-
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap2}>
                 {renderProfilePicture()}
@@ -111,7 +106,7 @@ const InventoryDashboard = () => {
           <Text style={styles.slogan}>Inventory management </Text>
         </View>
       </View>
-      <ScrollView>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={{ flex: 1, borderRadius: 45, marginTop: 6 }}>
           <View style={styles.lowerWelcomeWrapper}>
             <View style={styles.lowerWelcome}>
@@ -152,9 +147,8 @@ const InventoryDashboard = () => {
               Latest Products
             </Text>
           </View>
-
           <View style={styles.latestProducts}>
-            <LatestProducts refreshList={refreshList} />
+            <LatestProducts refreshList={refreshList} setRefreshing={setRefreshing} />
           </View>
         </View>
       </ScrollView>

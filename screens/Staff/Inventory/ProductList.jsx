@@ -185,11 +185,13 @@ const EditProductList = () => {
           )}
         </View>
 
-        {isLoading ? (
+        {isLoading && (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color={COLORS.primary} />
           </View>
-        ) : (
+        )}
+
+        {!isLoading && filteredData.length > 0 && (
           <FlatList
             ref={scrollRef}
             onScroll={handleScroll}

@@ -104,6 +104,7 @@ const EditProduct = () => {
 
       if (response.status === 200 || response.status === 204) {
         showToast("success", "Product deleted successfully!");
+        navigation.navigate("Inventory Navigation");
         navigation.navigate("EditProductsList", { refreshList: true });
       }
     } catch (error) {

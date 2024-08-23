@@ -1,31 +1,51 @@
-import { FlatList, StyleSheet, Text, View, ActivityIndicator, TouchableOpacity, Image } from "react-native";
-import React, { useEffect, useCallback } from "react";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+  TouchableOpacity,
+  Image,
+  RefreshControl,
+} from "react-native";
+import React, { useEffect, useState } from "react";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
 import { Ionicons } from "@expo/vector-icons";
 
-const LatestProducts = ({ navigation, refreshList }) => {
+import { useNavigation } from "@react-navigation/native";
+
+const LatestProducts = ({ refreshList, setRefreshing }) => {
+  const navigation = useNavigation();
   const { data, isLoading, error, refetch } = useFetch("products?limit=6&offset=0");
 
-  // Ensure data is treated as an array to avoid accessing .length of undefined
+  // Ensuring data is treated as an array to avoid accessing .length of undefined
   const dataArray = Array.isArray(data) ? data : [];
 
-  // Sort the dataArray by 'createdAt' in descending order
+  // Sorted the dataArray by 'createdAt' in descending order
   const sortedData = dataArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const handleRefetch = () => {
     refetch();
   };
 
-  //refresh this list if new product or some happens
+  //handle refresh of the list
+
   useEffect(() => {
-    // console.log("Refresh List changed to: ", refreshList);
-    if (refreshList === true) {
-      refetch();
+    if (refreshList) {
+      // Handle the refreshing logic based on whether `refetch` returns a Promise
+      const refetchResult = refetch();
+      if (refetchResult && typeof refetchResult.finally === "function") {
+        refetchResult.finally(() => {
+          setRefreshing(false);
+        });
+      } else {
+        setRefreshing(false);
+      }
     }
   }, [refreshList]);
 
-  // Corrected the arrow function syntax and parameter reference
+  //Parse the price to currency
   const parsedPrice = (item) => (item.price ? parseFloat(item.price.replace(/[^0-9.-]+/g, "")) : 0);
 
   const keyExtractor = (item) => item._id;
@@ -42,6 +62,12 @@ const LatestProducts = ({ navigation, refreshList }) => {
             justifyContent: "center",
             alignItems: "center",
           }}
+          onPress={() => {
+            navigation.navigate("PreviewProduct", {
+              item: item,
+              itemid: item._id,
+            });
+          }}
         >
           <Image source={{ uri: item.imageUrl }} style={styles.productImage} />
         </TouchableOpacity>
@@ -53,7 +79,10 @@ const LatestProducts = ({ navigation, refreshList }) => {
 
         <TouchableOpacity
           onPress={() => {
-            // navigation.navigate("OrderDetails", { _id: item._id, item });
+            navigation.navigate("PreviewProduct", {
+              item: item,
+              itemid: item._id,
+            });
           }}
           style={[styles.flexEnd, styles.buttonView]}
         >
@@ -96,6 +125,7 @@ const LatestProducts = ({ navigation, refreshList }) => {
           renderItem={renderItem}
           contentContainerStyle={{ columnGap: 2 }}
           scrollEnabled={false}
+          refreshControl={<RefreshControl refreshing={false} onRefresh={handleRefetch} />}
         />
       )}
     </View>
@@ -112,8 +142,8 @@ const styles = StyleSheet.create({
     width: 35,
     height: 35,
     borderRadius: 100,
-    borderBlockColor: "black",
     borderWidth: 2,
+    alignSelf: "center",
   },
   productTitle: {
     fontSize: SIZES.medium,

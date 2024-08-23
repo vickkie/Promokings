@@ -98,7 +98,7 @@ const ProductListCard = ({ item, isGridView }) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate("ProductDetails", {
+        navigation.navigate("PreviewProduct", {
           item: item,
           itemid: item._id,
         });

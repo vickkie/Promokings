@@ -92,7 +92,7 @@ const EditCategory = () => {
 
       if (response.status === 200 || response.status === 204) {
         showToast("success", "Category deleted successfully!");
-        navigation.navigate("EditProductsList", { refreshList: true });
+        navigation.navigate("Inventory Navigation");
       }
     } catch (error) {
       showToast("error", "Category deletion failed!", `${error}`);

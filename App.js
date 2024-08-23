@@ -47,6 +47,7 @@ import {
   EditCategoriesList,
   AddCategory,
   EditCategory,
+  PreviewProduct,
 } from "./screens";
 
 enableScreens();
@@ -104,6 +105,7 @@ export default function App() {
                   <Stack.Screen name="AddCategory" component={AddCategory} options={{ headerShown: false }} />
                   <Stack.Screen name="StaffSettings" component={StaffSettings} options={{ headerShown: false }} />
                   <Stack.Screen name="EditProductsList" component={EditProductList} options={{ headerShown: false }} />
+                  <Stack.Screen name="PreviewProduct" component={PreviewProduct} options={{ headerShown: false }} />
                   <Stack.Screen name="EditProduct" component={EditProduct} options={{ headerShown: false }} />
                   <Stack.Screen name="Add Product" component={AddProduct} options={{ headerShown: false }} />
 

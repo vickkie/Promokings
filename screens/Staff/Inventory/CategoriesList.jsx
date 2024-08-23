@@ -5,13 +5,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
-import { useCart } from "../../../contexts/CartContext";
+
 import CategoriesListBox from "./CategoriesListBox";
 
 const EditCategoriesList = () => {
   const navigation = useNavigation();
-
-  const { itemCount, handleItemCountChange } = useCart();
 
   return (
     <SafeAreaView style={styles.container}>

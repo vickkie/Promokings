@@ -17,6 +17,14 @@ import HomeMenu from "../components/bottomsheets/HomeMenu";
 
 import { COLORS, SIZES, SHADOWS } from "../constants";
 
+import { jwtDecode } from "jwt-decode";
+
+import atob from "core-js-pure/stable/atob";
+import btoa from "core-js-pure/stable/btoa";
+
+global.atob = atob;
+global.btoa = btoa;
+
 const Home = () => {
   const { userData, userLogin, productCount } = useContext(AuthContext);
   const navigation = useNavigation();
@@ -30,6 +38,29 @@ const Home = () => {
       setUserId(1);
     } else if (userData && userData._id) {
       setUserId(userData._id);
+    }
+  }, [userLogin, userData]);
+
+  useEffect(() => {
+    if (!userLogin) {
+      setUserId(1);
+    } else if (userData && userData.TOKEN) {
+      console.log(userData);
+      setUserId(userData._id);
+      // Decode the token to get role information
+      const decodedToken = jwtDecode(userData.TOKEN);
+      const userRole = decodedToken.role;
+
+      console.log(userRole);
+      // Redirect based on user role
+      switch (userRole) {
+        case "inventory":
+          setUserId(userData._id);
+          navigation.replace("Inventory Navigation");
+          break;
+        default:
+          break;
+      }
     }
   }, [userLogin, userData]);
 
@@ -108,7 +139,7 @@ const Home = () => {
                 </View>
               </View>
 
-              <TouchableOpacity onPress={() => navigation.navigate("Inventory Navigation")} style={styles.buttonWrap2}>
+              <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap2}>
                 {renderProfilePicture()}
               </TouchableOpacity>
             </View>
