@@ -38,14 +38,33 @@ const EditProductList = () => {
   const route = useRoute();
   const [refreshList, setRefreshList] = useState(false);
 
+  const categoryTitle = route.params?.categoryTitle || "";
+
   //refetch on update
   useFocusEffect(
     useCallback(() => {
-      if (route.params?.refreshList) {
+      if (route.params?.refreshList && !refreshList) {
         setRefreshList(true);
         onRefresh();
       }
-    }, [route.params])
+      setRefreshing(false);
+
+      return () => {
+        //  cleanup logic i will add
+      };
+    }, [route.params, refreshList])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (route.params?.categoryTitle && categoryTitle !== "") {
+        setSelectedCategory(categoryTitle);
+      }
+
+      return () => {
+        //  cleanup logic i will add if i need
+      };
+    }, [route.params, categoryTitle])
   );
 
   useEffect(() => {
@@ -89,7 +108,7 @@ const EditProductList = () => {
     inputRef.current?.blur(); // Dismiss keyboard on search
   };
 
-  // Filter products based on selected category and search text
+  // Filter products based on selected category, selected and search text
   const filteredData = data
     .filter((item) => (selectedCategory ? item.category === selectedCategory : true))
     .filter((item) => item.title.toLowerCase().includes(searchText.toLowerCase()));

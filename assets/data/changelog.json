@@ -48,6 +48,12 @@
       "version": "0.2.0",
       "whatsNew": ["Products viewing", "Categories listing", "General UI improvements"],
       "fixed": []
+    },
+    {
+      "releaseDate": "2024-08-22",
+      "version": "1.3.0",
+      "whatsNew": ["Product Management", "Staff Integration", "General UI improvements"],
+      "fixed": ["login bug for stuff","Improved security mechanism"]
     }
   ]
 }

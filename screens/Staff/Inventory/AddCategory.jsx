@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import {
   StyleSheet,
   View,
@@ -6,57 +6,38 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  Switch,
-  Alert,
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import Icon from "../../../constants/icons";
 import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { COLORS, SIZES } from "../../../constants";
 import { ScrollView } from "react-native-gesture-handler";
-import { Picker } from "@react-native-picker/picker";
 import useFetch from "../../../hook/useFetch";
-
 import { BACKEND_PORT } from "@env";
+import Icon from "../../../constants/icons";
 
-const AddProduct = () => {
+const AddCategory = () => {
   const navigation = useNavigation();
   const [title, setTitle] = useState("");
-  const [price, setPrice] = useState("");
-  const [availability, setAvailability] = useState(false);
   const [imageUrl, setImageUrl] = useState("https://i.postimg.cc/j56q20rB/images.jpg");
-  const [productId, setProductId] = useState(generateProductId());
   const [image, setImage] = useState(null);
-  const [loader, setLoader] = useState(false);
-  const [category, setCategory] = useState("");
-  const [supplier, setSupplier] = useState("");
   const [description, setDescription] = useState("");
-  const [isEditable, setIsEditable] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [isEditable, setIsEditable] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
-
-  // Adjusted suppliers array to match expected object structure
-  const suppliers = [{ id: "KINGS_COLLECTION", name: "Kings Collection" }];
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     try {
-      // Reset form fields
       setTitle("");
-      setPrice("");
-      setAvailability(false);
       setImageUrl("https://i.postimg.cc/j56q20rB/images.jpg");
-      setProductId(generateProductId());
       setImage(null);
-      setCategory("");
-      setSupplier("");
       setDescription("");
     } catch (error) {
       console.log("refresh failed");
@@ -67,31 +48,15 @@ const AddProduct = () => {
     }
   }, []);
 
-  function generateProductId() {
-    const randomId = Math.random().toString(36).substr(2, 7).toUpperCase();
-    return `PRK-P${randomId}`;
-  }
-  const toggleEditable = () => {
-    setIsEditable(!isEditable);
-  };
-
   const validationSchema = Yup.object().shape({
-    title: Yup.string().required("Product title is required"),
-    price: Yup.number().required("Price is required").positive("Price must be a positive number"),
-    category: Yup.string().required("Category is required"),
-    supplier: Yup.string().required("Supplier is required"),
+    title: Yup.string().required("Category title is required"),
     description: Yup.string().required("Description is required"),
   });
 
-  const handleAddProduct = async () => {
-    const newProduct = {
-      productId,
+  const handleAddCategory = async () => {
+    const newCategory = {
       title,
-      price,
-      availability,
-      imageUrl: imageUrl,
-      category,
-      supplier,
+      imageUrl,
       description,
     };
 
@@ -99,74 +64,51 @@ const AddProduct = () => {
       if (image) {
         const uploadedImageUrl = await uploadImage(image);
         setImageUrl(uploadedImageUrl);
-        newProduct.imageUrl = uploadedImageUrl;
+        newCategory.imageUrl = uploadedImageUrl;
       }
+      await validationSchema.validate(newCategory);
+      const response = await axios.post(`${BACKEND_PORT}/api/category`, newCategory);
 
-      // Validate with Yup
-      await validationSchema.validate(newProduct);
-      // Now that the image is uploaded, proceed to add the product
-      //   console.log("New Product:", newProduct);
-      const response = await axios.post(`${BACKEND_PORT}/api/products`, newProduct);
-
-      if (response.status === 200 || response.status === 201) {
-        showToast("success", "Product added successfully!");
-        // Reset form fields
+      if (response.status === 201) {
+        showToast("success", "Category added successfully!");
         setTitle("");
-        setPrice("");
-        setAvailability(false);
         setImageUrl("https://i.postimg.cc/j56q20rB/images.jpg");
-        setProductId(generateProductId());
-        setImage(null);
-        setCategory("");
-        setSupplier("");
         setDescription("");
-
-        // Navigate to dashboard
-        navigation.navigate("InventoryDashboard", { refreshList: true });
+        navigation.navigate("EditCategoriesList", { refreshList: true });
       }
     } catch (error) {
-      showToast("error", "Product doesn't meet the required standard", error.message);
+      showToast("error", "Category doesn't meet the required standard", error.message);
     }
   };
 
   const uploadImage = async (image) => {
-    setLoader(true);
     setUploading(true);
     try {
       const formData = new FormData();
-      const fileType = image.split(".").pop(); // Extract the file extension
-
-      // Adjust the field name to 'profilePicture' to match the server's expectation
+      const fileType = image.split(".").pop();
       formData.append("profilePicture", {
         uri: image,
-        name: `productImage.${fileType}`, // Use the extracted file extension
+        name: `categoryImage.${fileType}`,
         type: `image/${fileType}`,
       });
 
-      // Assuming BACKEND_PORT is correctly defined to point to your server's address
       const response = await axios.post(`${BACKEND_PORT}/upload`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      //   console.log(response);
-
       if (response.status === 200) {
-        // Update to extract 'fileUrl' from the response data
-
         setUploading(false);
-        return response.data.fileUrl; // Return the uploaded image URL from the response
+        return response.data.fileUrl;
       } else {
-        setAvailability(false);
         throw new Error("Image upload failed");
       }
     } catch (err) {
-      //   console.log("outer layer", err);
       showToast("error", "Image upload failed", "Please try again.");
       throw err;
     } finally {
-      setLoader(false);
+      setUploading(false);
     }
   };
 
@@ -180,14 +122,13 @@ const AddProduct = () => {
     let pickerResult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1],
+      aspect: [4, 2.5],
       quality: 1,
     });
 
     if (!pickerResult.canceled && pickerResult.assets && pickerResult.assets.length > 0) {
       const pickedUri = pickerResult.assets[0].uri;
       setImage(pickedUri);
-      //   console.log("picked uri", pickedUri);
     }
   };
 
@@ -207,8 +148,8 @@ const AddProduct = () => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
             <Icon name="backbutton" size={26} />
           </TouchableOpacity>
-          <Text style={styles.heading}>ADD PRODUCT</Text>
-          <TouchableOpacity style={styles.buttonWrap} onPress={handleAddProduct}>
+          <Text style={styles.heading}>ADD CATEGORY</Text>
+          <TouchableOpacity style={styles.buttonWrap} onPress={handleAddCategory}>
             <Icon name="add" size={26} />
           </TouchableOpacity>
         </View>
@@ -225,96 +166,38 @@ const AddProduct = () => {
               </TouchableOpacity>
 
               <TextInput
-                style={[styles.input, styles.nonEditable]}
-                placeholder="Product ID"
-                value={productId}
-                editable={false}
-              />
-              <TextInput
                 style={styles.input}
-                placeholder="Product Title"
+                placeholder="Category Title"
                 value={title}
                 onChangeText={(text) => setTitle(text)}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Price"
-                value={price}
-                onChangeText={(text) => setPrice(text)}
-                keyboardType="numeric"
               />
 
               <TextInput
                 style={styles.descriptionInput}
-                placeholder="Product Description"
+                placeholder="Category Description"
                 value={description}
                 onChangeText={(text) => setDescription(text)}
                 multiline
               />
-              <View style={styles.imageurlContainer}>
+
+              <View style={styles.imageUrlContainer}>
                 <TextInput
-                  style={[styles.input, styles.imageurl, !isEditable ? styles.nonEditable : ""]}
+                  style={[styles.input, styles.imageurl, !isEditable && styles.nonEditable]}
                   placeholder="Image URL"
                   value={imageUrl}
                   onChangeText={(text) => setImageUrl(text)}
                   editable={isEditable}
                 />
-
-                <TouchableOpacity style={styles.editButton} onPress={toggleEditable}>
+                <TouchableOpacity style={styles.editButton} onPress={() => setIsEditable(!isEditable)}>
                   <Icon name="pencil" size={27} />
                 </TouchableOpacity>
               </View>
 
-              <View style={styles.pickerWrapper}>
-                <Text style={styles.pickerLabel}>Category</Text>
-                <Picker
-                  selectedValue={category}
-                  onValueChange={(itemValue, itemIndex) => {
-                    setCategory(itemValue);
-                  }}
-                  style={styles.picker}
-                >
-                  <Picker.Item label="Select a category" value={""} />
-                  {categories &&
-                    categories.map((cat) => {
-                      //
-                      return <Picker.Item key={cat._id} label={cat.title} value={cat.title} />;
-                    })}
-                </Picker>
-              </View>
-
-              <View style={styles.pickerWrapper}>
-                <Text style={styles.pickerLabel}>Supplier</Text>
-                <Picker
-                  selectedValue={supplier}
-                  onValueChange={(itemValue) => setSupplier(itemValue)}
-                  style={styles.picker}
-                >
-                  <Picker.Item label="Select a supplier" value="" />
-                  {suppliers &&
-                    suppliers.map((sup) => (
-                      <Picker.Item
-                        key={sup.id}
-                        label={sup.name}
-                        value={sup.name}
-                        color="black"
-                        fontFamily="medium"
-                        enabled={true}
-                      />
-                    ))}
-                </Picker>
-              </View>
-
-              <View style={styles.availabilityRow}>
-                <Text>Available:</Text>
-                <Switch value={availability} onValueChange={(value) => setAvailability(value)} />
-              </View>
-
-              <TouchableOpacity style={styles.submitBtn} onPress={handleAddProduct}>
+              <TouchableOpacity style={styles.submitBtn} onPress={handleAddCategory}>
                 {uploading ? (
                   <ActivityIndicator size={30} color={COLORS.themew} />
                 ) : (
-                  <Text style={styles.submitText}>Add Product</Text>
+                  <Text style={styles.submitText}>Add Category</Text>
                 )}
               </TouchableOpacity>
             </View>
@@ -469,13 +352,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 4,
   },
-  imageurlContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   editButton: {
     height: 40,
     width: 40,
@@ -485,6 +361,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
+  imageUrlContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
 
-export default AddProduct;
+export default AddCategory;

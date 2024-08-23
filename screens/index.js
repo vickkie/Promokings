@@ -29,7 +29,9 @@ import EditProduct from "./Staff/Inventory/EditProduct";
 import BottomTabNavigation from "../navigation/BottomTabNavigation";
 import AddProduct from "./Staff/Inventory/AddProduct";
 import EditProductList from "./Staff/Inventory/ProductList";
-
+import StaffSettings from "./Staff/Inventory/Settings";
+import EditCategoriesList from "./Staff/Inventory/CategoriesList";
+import AddCategory from "./Staff/Inventory/AddCategory";
 export {
   Home,
   OrderDetails,
@@ -61,4 +63,7 @@ export {
   AddProduct,
   EditProductList,
   EditProduct,
+  StaffSettings,
+  EditCategoriesList,
+  AddCategory,
 };

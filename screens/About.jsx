@@ -79,7 +79,7 @@ const About = () => {
                 <Icon name="instagram" size={27} />
                 <View>
                   <Text style={styles.socialheader}>Instagram</Text>
-                  <Text>Follow us on Instagram to stay up to date</Text>
+                  <Text>See our latest snaps</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
@@ -89,7 +89,7 @@ const About = () => {
                 <Icon name="twitter" size={23} />
                 <View>
                   <Text style={styles.socialheader}>Twitter</Text>
-                  <Text>Share your thoughts using our app</Text>
+                  <Text>Share your thoughts using on our app</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -102,7 +102,7 @@ const About = () => {
                 <Icon name="versionhistory" size={23} />
                 <View style={styles.anyTextWrapper}>
                   <Text style={styles.socialheader}>Changelog</Text>
-                  <Text>Keep informed on version changes made.</Text>
+                  <Text>Version changes progress.</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity style={styles.socialBox}>

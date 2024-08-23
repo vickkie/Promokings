@@ -1,6 +1,14 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { InventoryDashboard, EditProductList, Profile, Categories, AddProduct } from "../screens";
+import {
+  InventoryDashboard,
+  EditProductList,
+  Profile,
+  Categories,
+  AddProduct,
+  StaffSettings,
+  EditCategoriesList,
+} from "../screens";
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -60,7 +68,7 @@ const InventoryTabNavigation = () => {
       />
       <Tab.Screen
         name="Categories"
-        component={Categories}
+        component={EditCategoriesList}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon name={focused ? "menu2filled" : "menu2"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
@@ -108,7 +116,7 @@ const InventoryTabNavigation = () => {
       />
       <Tab.Screen
         name="Profile"
-        component={Profile}
+        component={StaffSettings}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon name={focused ? "settings" : "settings"} size={26} color={focused ? COLORS.primary : COLORS.gray2} />

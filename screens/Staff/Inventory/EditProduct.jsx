@@ -318,7 +318,7 @@ const EditProduct = () => {
               {uploading ? (
                 <ActivityIndicator size={30} color={COLORS.themew} />
               ) : (
-                <Text style={styles.submitText}>Add Product</Text>
+                <Text style={styles.submitText}>Update Product</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -419,6 +419,9 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: SIZES.medium,
     alignItems: "center",
+    height: 70,
+    marginBottom: -60,
+    justifyContent: "center",
   },
   submitText: {
     color: COLORS.white,
