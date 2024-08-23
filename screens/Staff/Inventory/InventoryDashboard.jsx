@@ -8,15 +8,8 @@ import HomeMenu from "../../../components/bottomsheets/HomeMenu";
 import { COLORS, SIZES } from "../../../constants";
 import LatestProducts from "./LatestProducts";
 
-import { jwtDecode } from "jwt-decode";
-import atob from "core-js-pure/stable/atob";
-import btoa from "core-js-pure/stable/btoa";
-
-global.atob = atob;
-global.btoa = btoa;
-
 const InventoryDashboard = () => {
-  const { userData, userLogin } = useContext(AuthContext);
+  const { userLogin, hasRole, userData } = useContext(AuthContext);
   const navigation = useNavigation();
   const route = useRoute();
 
@@ -27,19 +20,12 @@ const InventoryDashboard = () => {
   useEffect(() => {
     if (!userLogin) {
       navigation.replace("Login");
-    } else if (userData && userData.TOKEN) {
-      // Decode the token to get role information
-      const decodedToken = jwtDecode(userData.TOKEN);
-      const userRole = decodedToken.role;
-
-      // Redirect based on user role
-      if (userRole === "inventory") {
-        setUserId(userData._id);
-      } else {
-        navigation.replace("Login");
-      }
+    } else if (hasRole("inventory")) {
+      setUserId(userData._id);
+    } else {
+      navigation.replace("Login");
     }
-  }, [userLogin, userData, navigation]);
+  }, [userLogin, navigation, hasRole]);
 
   useFocusEffect(
     useCallback(() => {
@@ -62,7 +48,6 @@ const InventoryDashboard = () => {
 
   const renderProfilePicture = () => {
     if (!userLogin) {
-      // User not logged in
       return <Icon name="user" size={24} color="#000" />;
     }
     if (userData && userData.profilePicture) {
@@ -75,9 +60,9 @@ const InventoryDashboard = () => {
   const BottomSheetRef = useRef(null);
 
   const openMenu = () => {
-    if (BottomSheetRef.current) {
-      BottomSheetRef.current.present();
-    }
+    // if (BottomSheetRef.current) {
+    //   BottomSheetRef.current.present();
+    // }
   };
 
   return (

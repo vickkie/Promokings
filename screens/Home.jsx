@@ -1,5 +1,3 @@
-// Home.js
-
 import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
 import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,18 +13,10 @@ import useFetch from "../hook/useFetch";
 import { useCart } from "../contexts/CartContext";
 import HomeMenu from "../components/bottomsheets/HomeMenu";
 
-import { COLORS, SIZES, SHADOWS } from "../constants";
-
-import { jwtDecode } from "jwt-decode";
-
-import atob from "core-js-pure/stable/atob";
-import btoa from "core-js-pure/stable/btoa";
-
-global.atob = atob;
-global.btoa = btoa;
+import { COLORS, SIZES } from "../constants";
 
 const Home = () => {
-  const { userData, userLogin, productCount } = useContext(AuthContext);
+  const { userData, userLogin, hasRole } = useContext(AuthContext);
   const navigation = useNavigation();
   const { itemCount: itemCountG, handleItemCountChange } = useCart();
 
@@ -44,25 +34,11 @@ const Home = () => {
   useEffect(() => {
     if (!userLogin) {
       setUserId(1);
-    } else if (userData && userData.TOKEN) {
-      console.log(userData);
+    } else if (hasRole("inventory")) {
       setUserId(userData._id);
-      // Decode the token to get role information
-      const decodedToken = jwtDecode(userData.TOKEN);
-      const userRole = decodedToken.role;
-
-      console.log(userRole);
-      // Redirect based on user role
-      switch (userRole) {
-        case "inventory":
-          setUserId(userData._id);
-          navigation.replace("Inventory Navigation");
-          break;
-        default:
-          break;
-      }
+      navigation.replace("Inventory Navigation");
     }
-  }, [userLogin, userData]);
+  }, [userLogin, userData, hasRole, navigation]);
 
   const { data, isLoading, refetch } = useFetch(`carts/find/${userId}`);
 

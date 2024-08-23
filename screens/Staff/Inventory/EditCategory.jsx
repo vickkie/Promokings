@@ -125,6 +125,7 @@ const EditCategory = () => {
       if (response.status === 200) {
         showToast("success", "Product updated successfully!");
         navigation.navigate("EditProductsList", { refreshList: true });
+        navigation.navigate("Inventory Navigation");
       }
     } catch (error) {
       showToast("error", "Product update failed", error.message);
@@ -273,7 +274,12 @@ const EditCategory = () => {
               </View>
             </View>
 
-            <TouchableOpacity style={styles.submitBtn} onPress={handleUpdateProduct}>
+            <TouchableOpacity
+              style={styles.submitBtn}
+              onPress={() => {
+                handleUpdateProduct;
+              }}
+            >
               {uploading ? (
                 <ActivityIndicator size={30} color={COLORS.themew} />
               ) : (

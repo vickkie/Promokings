@@ -32,8 +32,6 @@ const AuthProvider = ({ children }) => {
 
   const login = async (data) => {
     setUserData(data);
-
-    console.log(data);
     setUserLogin(true);
     await AsyncStorage.setItem("id", JSON.stringify(data._id));
     await AsyncStorage.setItem(`user${data._id}`, JSON.stringify(data));
@@ -54,6 +52,11 @@ const AuthProvider = ({ children }) => {
     await AsyncStorage.setItem(`user${updatedData._id}`, JSON.stringify(updatedData));
   };
 
+  // Utility function to check user's role
+  const hasRole = (requiredRole) => {
+    return userData?.role === requiredRole;
+  };
+
   const authContextValue = {
     userData,
     userLogin,
@@ -61,6 +64,7 @@ const AuthProvider = ({ children }) => {
     login,
     logout,
     updateUserData,
+    hasRole,
   };
 
   return <AuthContext.Provider value={authContextValue}>{children}</AuthContext.Provider>;

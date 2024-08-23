@@ -63,27 +63,34 @@ const LoginPage = ({ navigation }) => {
         // Decode the token to get role information
 
         const decodedToken = jwtDecode(response.data.TOKEN);
+
+        console.log("decodeed token", decodedToken);
+        console.log("token gotten", response.data.TOKEN);
+
         const userRole = decodedToken.role || "customer";
 
         await login(response.data);
 
-        // Redirect based on user role
-        switch (userRole) {
-          case "admin":
-            navigation.replace("AdminDashboard");
-            break;
-          case "inventory":
-            navigation.replace("Inventory Navigation");
-            break;
-          case "sales":
-            navigation.replace("SalesDashboard");
-            break;
-          case "finance":
-            navigation.replace("FinanceDashboard");
-            break;
-          default:
-            navigation.replace("Bottom Navigation");
-            break;
+        if (response.data.staffId) {
+          // Redirect based on user role
+          switch (userRole) {
+            case "admin":
+              navigation.replace("AdminDashboard");
+              break;
+            case "inventory":
+              navigation.replace("Inventory Navigation");
+              break;
+            case "sales":
+              navigation.replace("SalesDashboard");
+              break;
+            case "finance":
+              navigation.replace("FinanceDashboard");
+              break;
+            default:
+              break;
+          }
+        } else {
+          navigation.replace("Bottom Navigation");
         }
       } else {
         Alert.alert("Error Logging", "Unexpected response. Please try again.");
