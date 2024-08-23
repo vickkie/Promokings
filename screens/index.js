@@ -32,6 +32,8 @@ import EditProductList from "./Staff/Inventory/ProductList";
 import StaffSettings from "./Staff/Inventory/Settings";
 import EditCategoriesList from "./Staff/Inventory/CategoriesList";
 import AddCategory from "./Staff/Inventory/AddCategory";
+import EditCategory from "./Staff/Inventory/EditCategory";
+
 export {
   Home,
   OrderDetails,
@@ -66,4 +68,5 @@ export {
   StaffSettings,
   EditCategoriesList,
   AddCategory,
+  EditCategory,
 };

@@ -20,12 +20,10 @@ import axios from "axios";
 import Toast from "react-native-toast-message";
 import { COLORS, SIZES } from "../../../constants";
 import { ScrollView } from "react-native-gesture-handler";
-import { Picker } from "@react-native-picker/picker";
-import useFetch from "../../../hook/useFetch";
 
 import { BACKEND_PORT } from "@env";
 
-const EditProduct = () => {
+const EditCategory = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { item } = route.params; // Passed from the previous screen
@@ -33,34 +31,24 @@ const EditProduct = () => {
   const product = item;
 
   const [title, setTitle] = useState(product?.title || "");
-  const [price, setPrice] = useState(product?.price || "");
   const [availability, setAvailability] = useState(product?.availability || false);
   const [imageUrl, setImageUrl] = useState(product?.imageUrl || "https://i.postimg.cc/j56q20rB/images.jpg");
-  const [productId, setProductId] = useState(product?.productId || "");
   const [image, setImage] = useState(null);
   const [loader, setLoader] = useState(false);
-  const [category, setCategory] = useState(product?.category || "");
-  const [supplier, setSupplier] = useState(product?.supplier || "");
+
   const [description, setDescription] = useState(product?.description || "");
   const [isEditable, setIsEditable] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
-
-  const suppliers = [{ id: "KINGS_COLLECTION", name: "Kings Collection" }];
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     try {
       // Reset form fields to original product data
       setTitle(product?.title || "");
-      setPrice(product?.price || "");
-      setAvailability(product?.availability || false);
       setImageUrl(product?.imageUrl || "https://i.postimg.cc/j56q20rB/images.jpg");
-      setProductId(product?.productId || "");
+
       setImage(null);
-      setCategory(product?.category || "");
-      setSupplier(product?.supplier || "");
       setDescription(product?.description || "");
     } catch (error) {
       console.log("refresh failed");
@@ -77,8 +65,8 @@ const EditProduct = () => {
 
   const checkDelete = () => {
     Alert.alert(
-      "Delete Product",
-      "Are you sure you want to delete Product?",
+      "Delete Category",
+      "Are you sure you want to delete category?",
       [
         {
           text: "Cancel",
@@ -100,34 +88,26 @@ const EditProduct = () => {
 
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`${BACKEND_PORT}/api/products/${product._id}`);
+      const response = await axios.delete(`${BACKEND_PORT}/api/category/${product._id}`);
 
       if (response.status === 200 || response.status === 204) {
-        showToast("success", "Product deleted successfully!");
+        showToast("success", "Category deleted successfully!");
         navigation.navigate("EditProductsList", { refreshList: true });
       }
     } catch (error) {
-      showToast("error", "Product deletion failed!", `${error}`);
+      showToast("error", "Category deletion failed!", `${error}`);
     }
   };
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Product title is required"),
-    price: Yup.number().required("Price is required").positive("Price must be a positive number"),
-    category: Yup.string().required("Category is required"),
-    supplier: Yup.string().required("Supplier is required"),
     description: Yup.string().required("Description is required"),
   });
 
   const handleUpdateProduct = async () => {
     const updatedProduct = {
-      productId,
       title,
-      price,
-      availability,
       imageUrl: imageUrl,
-      category,
-      supplier,
       description,
     };
 
@@ -221,7 +201,7 @@ const EditProduct = () => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
             <Icon name="backbutton" size={26} />
           </TouchableOpacity>
-          <Text style={styles.heading}>UPDATE PRODUCT</Text>
+          <Text style={styles.heading}>UPDATE CATEGORY</Text>
           <TouchableOpacity
             style={styles.buttonWrap}
             onPress={() => {
@@ -242,27 +222,13 @@ const EditProduct = () => {
                   <Image source={{ uri: imageUrl }} style={styles.imagePreview} />
                 )}
               </TouchableOpacity>
-              <Text style={styles.label}>Product ID</Text>
-              <TextInput
-                style={[styles.input, styles.nonEditable]}
-                placeholder="Product ID"
-                value={productId}
-                editable={false}
-              />
+
               <Text style={styles.label}>Title</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Product Title"
                 value={title}
                 onChangeText={(text) => setTitle(text)}
-              />
-              <Text style={styles.label}>Price</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Price"
-                value={price}
-                onChangeText={(text) => setPrice(text)}
-                keyboardType="numeric"
               />
               <Text style={styles.label}>Description</Text>
               <TextInput
@@ -305,49 +271,6 @@ const EditProduct = () => {
                   <Icon name="pencil" size={27} />
                 </TouchableOpacity>
               </View>
-
-              <View style={styles.pickerWrapper}>
-                <Text style={styles.pickerLabel}>Category</Text>
-                <View style={styles.pickerBox}>
-                  <Picker
-                    selectedValue={category}
-                    onValueChange={(itemValue, itemIndex) => {
-                      setCategory(itemValue);
-                    }}
-                    style={styles.picker}
-                  >
-                    <Picker.Item label="Select a category" value={""} />
-                    {categories &&
-                      categories.map((cat) => {
-                        return <Picker.Item key={cat._id} label={cat.title} value={cat.title} />;
-                      })}
-                  </Picker>
-                </View>
-              </View>
-
-              <View style={styles.pickerWrapper}>
-                <Text style={styles.pickerLabel}>Supplier</Text>
-                <View style={styles.pickerBox}>
-                  <Picker
-                    selectedValue={supplier}
-                    onValueChange={(itemValue, itemIndex) => {
-                      setSupplier(itemValue);
-                    }}
-                    style={styles.picker}
-                  >
-                    <Picker.Item label="Select a supplier" value={""} style={styles.pickerBox} />
-                    {suppliers &&
-                      suppliers.map((sup) => {
-                        return <Picker.Item key={sup.id} label={sup.name} value={sup.name} />;
-                      })}
-                  </Picker>
-                </View>
-              </View>
-
-              <View style={styles.switchContainer}>
-                <Text style={styles.label}>Availability</Text>
-                <Switch value={availability} onValueChange={(newValue) => setAvailability(newValue)} />
-              </View>
             </View>
 
             <TouchableOpacity style={styles.submitBtn} onPress={handleUpdateProduct}>
@@ -364,7 +287,7 @@ const EditProduct = () => {
   );
 };
 
-export default EditProduct;
+export default EditCategory;
 
 const styles = StyleSheet.create({
   container: {

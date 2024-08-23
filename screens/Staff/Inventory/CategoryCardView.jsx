@@ -65,7 +65,15 @@ const CategoryCardView = ({ item }) => {
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.addBtn} onPress={() => {}}>
+        <TouchableOpacity
+          style={styles.addBtn}
+          onPress={() => {
+            navigation.navigate("EditCategory", {
+              item: item,
+              itemid: item._id,
+            });
+          }}
+        >
           <Icon name="pencil" size={24} />
         </TouchableOpacity>
       </View>
