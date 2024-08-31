@@ -53,15 +53,15 @@ const About = () => {
             <Text style={styles.devHeader}>About</Text>
 
             <View style={styles.profileContainer}>
-              <TouchableOpacity style={styles.buttonWrap2} onPress={() => handlePress("https://github.com/vickkie")}>
-                <Image source={require("../assets/images/userDefault.webp")} style={styles.profile} />
+              <TouchableOpacity style={styles.buttonWrap2} onPress={() => handlePress("https://promokings.co.ke")}>
+                <Image source={require("../assets/promoking-logo.png")} style={styles.profile} />
               </TouchableOpacity>
 
               <View>
                 <Text style={{ fontFamily: "regular", fontSize: SIZES.medium + 2, textAlign: "center", marginTop: 4 }}>
-                  Uzitrake
+                  Promokings
                 </Text>
-                <Text>Designer & developer</Text>
+                <Text>Company</Text>
               </View>
             </View>
           </View>

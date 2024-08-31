@@ -140,15 +140,17 @@ const CartList = ({ onItemCountChange }) => {
       <View style={styles.subtotalWrapper}>
         <View style={styles.topSubtotal}>
           <Text style={styles.additionalHeader}>Subtotal amount</Text>
-          <Text style={styles.amounts}>KES {totals.subtotal.toFixed(2)}</Text>
+          <Text style={styles.amounts}>Ksh {Number(totals.subtotal.toFixed(2)).toLocaleString()}</Text>
         </View>
         <View style={styles.centerSubtotal}>
           <Text style={styles.additionalHeader}>Additional fees</Text>
-          <Text style={styles.amounts}>KES {additionalFees.toFixed(2)}</Text>
+          <Text style={styles.amounts}>Ksh {additionalFees.toFixed(2)}</Text>
         </View>
         <View style={styles.centerSubtotal}>
           <Text style={styles.subtotalHeader}>Estimated Amount</Text>
-          <Text style={[styles.amounts, styles.totalAmount]}>KES {estimatedAmount.toFixed(2)}</Text>
+          <Text style={[styles.amounts, styles.totalAmount]}>
+            Ksh {Number(estimatedAmount.toFixed(2)).toLocaleString()}
+          </Text>
         </View>
       </View>
       <TouchableOpacity

@@ -115,14 +115,14 @@ const ProductsCardView = ({ item }) => {
           <Text style={styles.supplier} numberOfLines={1}>
             {item.supplier}
           </Text>
-          <Text style={styles.price}>Kshs {parseInt(item.price.replace("$", ""))}</Text>
+          <Text style={styles.price}>Ksh {parseInt(item.price.replace("$", "")).toLocaleString()}</Text>
         </View>
 
         <TouchableOpacity style={styles.addBtn} onPress={addWishlist}>
           {isWished ? (
-            <Ionicons name="heart" size={32} color={COLORS.primary} />
+            <Ionicons name="heart" size={26} color={COLORS.primary} />
           ) : (
-            <Ionicons name="heart-outline" size={32} color={COLORS.primary} />
+            <Ionicons name="heart-outline" size={26} color={COLORS.primary} />
           )}
         </TouchableOpacity>
       </View>

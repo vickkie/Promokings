@@ -174,7 +174,7 @@ const CartCardView = memo(({ item, handleRefetch, onUpdateTotal }) => {
           </View>
 
           <Text style={styles.price}>
-            {`KES ${new Intl.NumberFormat("en-US", { style: "currency", currency: "KES" })
+            {`Ksh ${new Intl.NumberFormat("en-US", { style: "currency", currency: "KES" })
               .format(totalPrice)
               .replace("KES", "")
               .trim()}`}

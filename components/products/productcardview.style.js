@@ -33,9 +33,10 @@ const styles = StyleSheet.create({
   },
   price: {
     fontFamily: "bold",
+    paddingTop: 6,
   },
   supplier: {
-    fontSize: SIZES.medium,
+    fontSize: SIZES.medium - 3,
     paddingVertical: SIZES.small - 7,
   },
   addBtn: {

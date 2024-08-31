@@ -142,18 +142,19 @@ const Checkout = () => {
   };
 
   function calculateQuantity(priceString, totals) {
-    //regex pattern to match numbers including decimal points and optional thousands separators
-    const regex = /\d{1,3}(,\d{3})*(\.\d+)?/g;
+    // Regex to match numbers with optional thousands separators and decimal points
+    const regex = /(\d+)(,\d{3})*(\.\d+)?/g;
 
-    // Extract numeric part, considering potential thousands separators
+    // Extract the numeric part from the price string
     const numericValueMatch = priceString.match(regex)?.[0];
     if (!numericValueMatch) return "N/A";
 
-    // Remove thousands separators if present
+    // Remove commas to convert the string to a pure number format
     const numericValue = numericValueMatch.replace(/,/g, "");
 
-    // Convert to float and perform calculation, ensuring totals is a number
-    const quantity = isNaN(parseFloat(numericValue)) || isNaN(totals) ? "N/A" : totals / parseFloat(numericValue);
+    // Convert the numeric value to a float and check if totals is a valid number
+    const parsedNumericValue = parseFloat(numericValue);
+    const quantity = isNaN(parsedNumericValue) || isNaN(totals) ? "N/A" : totals / parsedNumericValue;
 
     return quantity;
   }
@@ -234,7 +235,7 @@ const Checkout = () => {
                   </View>
 
                   <View>
-                    <Text style={styles.amount}>Estimated Amount: {estimatedAmount}</Text>
+                    <Text style={styles.amount}>Checkout Amount: Ksh {Number(estimatedAmount).toLocaleString()}</Text>
                     <TouchableOpacity style={styles.button1} onPress={handleNext}>
                       <Text style={styles.nextText}>Next</Text>
                     </TouchableOpacity>
@@ -268,6 +269,7 @@ const Checkout = () => {
                       style={[styles.input, phoneError ? styles.errorb : styles.successb]}
                       value={phoneNumber}
                       onChangeText={(text) => setPhoneNumber(text)}
+                      keyboardType="phone-pad"
                     />
 
                     <View style={styles.next2wrapper}>
@@ -424,7 +426,7 @@ const styles = StyleSheet.create({
     fontSize: SIZES.medium,
   },
   button1: {
-    height: 40,
+    height: 50,
     borderRadius: SIZES.medium,
     backgroundColor: COLORS.themey,
     justifyContent: "center",

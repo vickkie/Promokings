@@ -192,7 +192,7 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) =
         <View style={styles.totalsRow}>
           <Text style={styles.totalhead}>Total Price </Text>
           <Text style={styles.totalAmount}>
-            {`KES ${new Intl.NumberFormat("en-US", { style: "currency", currency: "KES" })
+            {`Ksh ${new Intl.NumberFormat("en-US", { style: "currency", currency: "KES" })
               .format(totalAmount)
               .replace("KES", "")
               .trim()}`}

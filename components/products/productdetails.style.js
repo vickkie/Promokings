@@ -47,8 +47,9 @@ const styles = StyleSheet.create({
     top: 20,
   },
   title: {
-    fontFamily: "bold",
-    fontSize: SIZES.xLarge,
+    fontFamily: "normal",
+    fontSize: SIZES.large,
+    paddingLeft: 7,
   },
   priceWrapper: {
     // backgroundColor: COLORS.primary,
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontFamily: "regular",
-    fontSize: SIZES.large - 2,
+    fontSize: SIZES.large - 4,
   },
   descText: {
     fontFamily: "regular",
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
     marginBottom: SIZES.xLarge,
   },
   sizeHeader: {
-    fontFamily: "semibold",
+    fontFamily: "regular",
     fontSize: SIZES.medium,
   },
   sizeButtons: {

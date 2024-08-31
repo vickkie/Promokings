@@ -160,7 +160,7 @@ const ProductDetails = ({ navigation }) => {
             <View style={styles.ratingRow}>
               <View style={styles.priceWrapper}>
                 <Text style={styles.price}>
-                  {`KES ${new Intl.NumberFormat("en-US", { style: "currency", currency: "KES" })
+                  {`Ksh ${new Intl.NumberFormat("en-US", { style: "currency", currency: "KES" })
                     .format(parsedPrice)
                     .replace("KES", "")
                     .trim()}`}
