@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     top: SIZES.xxLarge,
     width: SIZES.width - 44,
     zIndex: 999,
-    height: 400,
+    // height: 400,
   },
   image: {
     aspectRatio: 1,
@@ -211,6 +211,44 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 5,
     padding: SIZES.small,
+  },
+  buttonWrap1: {
+    backgroundColor: COLORS.white,
+    padding: 8,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10,
+  },
+  buttonWrap2: {
+    backgroundColor: COLORS.white,
+    padding: 8,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  numbers: {
+    width: 20,
+    height: 20,
+    backgroundColor: COLORS.themey,
+    color: COLORS.themew,
+    borderRadius: 100,
+    position: "absolute",
+    top: "-10%",
+    left: "-10%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  number: {
+    color: COLORS.white,
+    // top: -3,
+    alignSelf: "center",
+  },
+  cartView: {
+    position: "absolute",
+    right: 10,
+    top: 100,
+    zIndex: 10,
   },
 });
 

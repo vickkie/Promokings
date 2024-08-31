@@ -11,14 +11,18 @@ import { AuthContext } from "../auth/AuthContext";
 import useFetch from "../../hook/useFetch";
 import Toast from "react-native-toast-message";
 
+import { useCart } from "../../contexts/CartContext";
 const ProductDetails = ({ navigation }) => {
+  const { itemCount, handleItemCountChange } = useCart();
+
   const route = useRoute();
   const { item } = route.params;
   const [isWished, setIsWished] = useState(false);
   const [count, setCount] = useState(1);
   const [selectedSize, setSelectedSize] = useState("M");
   const [isExpanded, setIsExpanded] = useState(false);
-  const [feedback, setFeedback] = useState(null); // Added for feedback handling
+  const [feedback, setFeedback] = useState(null);
+  const [isAdded, setisAdded] = useState(false);
 
   const sizes = ["XS", "S", "M", "L", "XL"];
   const parsedPrice = item.price ? parseFloat(item.price.replace(/[^0-9.-]+/g, "")) : 0;
@@ -74,6 +78,12 @@ const ProductDetails = ({ navigation }) => {
     }
   };
 
+  const addNow = () => {
+    useEffect(() => {
+      setisAdded(true);
+    }, []);
+  };
+
   const addWishlist = async () => {
     setIsWished(!isWished);
 
@@ -106,6 +116,11 @@ const ProductDetails = ({ navigation }) => {
         addCart(cartData);
         if (cartError !== true) {
           setFeedback({ status: "success", message: "Added to cart" });
+          setisAdded(true);
+
+          if (isAdded === false) {
+            handleItemCountChange(itemCount + count);
+          }
         } else {
           setFeedback({ status: "error", message: "Failed to add to cart" });
         }
@@ -141,14 +156,24 @@ const ProductDetails = ({ navigation }) => {
             onPress={() => {
               addWishlist();
             }}
+            style={styles.buttonWrap2}
           >
             {isWished ? (
-              <Ionicons name="heart" size={32} color={COLORS.primary} />
+              <Ionicons name="heart" size={26} color={COLORS.primary} />
             ) : (
-              <Ionicons name="heart-outline" size={32} color={COLORS.primary} />
+              <Ionicons name="heart-outline" size={26} color={COLORS.primary} />
             )}
           </TouchableOpacity>
         </View>
+        <View style={styles.cartView}>
+          <TouchableOpacity onPress={() => navigation.navigate("Cart")} style={styles.buttonWrap1}>
+            <Icon size={26} name="cart" />
+            <View style={styles.numbers}>
+              {itemCount !== 0 ? <Text style={styles.number}>{itemCount}</Text> : <Text style={styles.number}>0</Text>}
+            </View>
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.imageWrapper}>
           <Image source={{ uri: item.imageUrl }} sharedTransitionTag={transitionTag} style={styles.image} />
         </View>

@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 4,
+    // maxHeight: 40,
   },
   spaceRight: {},
   numbers: {

@@ -19,9 +19,9 @@ const Orders = () => {
   const [userId, setUserId] = useState(null);
   const { userData, userLogin } = useContext(AuthContext);
   const navigation = useNavigation();
-  
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('All');
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("All");
 
   useEffect(() => {
     if (!userLogin) {
@@ -38,9 +38,10 @@ const Orders = () => {
   ];
 
   const filterOrders = () => {
-    return data.filter(order =>
-      (selectedStatus === 'All' || order.status === selectedStatus) &&
-      order.title.toLowerCase().includes(searchQuery.toLowerCase())
+    return data.filter(
+      (order) =>
+        (selectedStatus === "All" || order.status === selectedStatus) &&
+        order.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
   };
 
@@ -73,10 +74,4 @@ const Orders = () => {
       </View>
     );
   };
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.wrapper}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
-          <
-
+};

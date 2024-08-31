@@ -101,7 +101,7 @@ const UserDetails = () => {
         setLocalProfilePicture(null); // Clear the local URI
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     }
     setLoader(false);
   };

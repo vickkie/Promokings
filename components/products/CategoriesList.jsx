@@ -34,7 +34,7 @@ const CategoriesList = () => {
     );
   }
   if (data) {
-    console.log(data);
+    // console.log(data);
   }
 
   if (data.length === 0) {

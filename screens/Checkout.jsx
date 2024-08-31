@@ -117,7 +117,7 @@ const Checkout = () => {
 
       // Only proceed with next steps if the order creation was successful
       if (response.data.success) {
-        console.log("Order created successfully:", response.data.order.orderId);
+        // console.log("Order created successfully:", response.data.order.orderId);
         redelete(userId); // Delete cart items as they are now orders
         navigation.navigate("OrderSuccess", { orderId: response.data.order.orderId });
       } else {

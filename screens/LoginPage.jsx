@@ -64,8 +64,8 @@ const LoginPage = ({ navigation }) => {
 
         const decodedToken = jwtDecode(response.data.TOKEN);
 
-        console.log("decodeed token", decodedToken);
-        console.log("token gotten", response.data.TOKEN);
+        // console.log("decodeed token", decodedToken);
+        // console.log("token gotten", response.data.TOKEN);
 
         const userRole = decodedToken.role || "customer";
 
