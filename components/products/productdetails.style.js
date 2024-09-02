@@ -6,6 +6,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.white,
   },
+  imageWrapper: {
+    height: 300,
+  },
 
   upperRow: {
     marginHorizontal: 20,
@@ -26,6 +29,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themew,
     paddingTop: 10,
     paddingBottom: 10,
+    minHeight: SIZES.height - 300,
   },
 
   details: {

@@ -53,7 +53,9 @@ const Cart = () => {
                 {userLogin ? (
                   <Text style={{ marginLeft: 6 }}>{capitalizeFirstLetter(userData.location)}</Text>
                 ) : (
-                  <Text> Nairobi</Text>
+                  <TouchableOpacity onPress={() => navigation.navigate("UserDetails")}>
+                    <Text> Configure</Text>
+                  </TouchableOpacity>
                 )}
               </TouchableOpacity>
               <TouchableOpacity style={styles.rightLocation} onPress={() => navigation.navigate("UserDetails")}>
@@ -184,7 +186,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   numbers: {
-    padding: 3,
+    // padding: 3,
     width: 20,
     height: 20,
     backgroundColor: COLORS.themey,

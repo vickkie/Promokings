@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
   spaceRight: {},
   numbers: {
-    padding: 3,
+    // padding: 3,
     width: 20,
     height: 20,
     backgroundColor: COLORS.themey,

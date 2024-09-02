@@ -133,8 +133,9 @@ const CartCardView = memo(({ item, handleRefetch, onUpdateTotal }) => {
       <View style={{ gap: 12 }}>
         <View style={styles.details}>
           <Text style={styles.title} numberOfLines={1}>
-            {title}
+            {title.length > 20 ? `${title.substring(0, 20)}...` : title}
           </Text>
+
           <View style={styles.lovehate}>
             <TouchableOpacity
               style={styles.lovebuttons}

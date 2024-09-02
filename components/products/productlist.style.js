@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     paddingTop: SIZES.xxLarge,
     paddingLeft: SIZES.small / 2,
     width: SIZES.width - SIZES.small,
-    // flex: 1,
+    flex: 1,
   },
   loadingContainer: {
     flex: 1,

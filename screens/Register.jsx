@@ -12,18 +12,17 @@ import axios from "axios";
 import { BACKEND_PORT } from "@env";
 
 const validationSchema = Yup.object().shape({
-  password: Yup.string().min(8, "Password must be at least 8 character").required("Required"),
-
+  password: Yup.string().min(8, "Password must be at least 8 characters").required("Required"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .required("Required"),
   email: Yup.string().email("Provide a valid email address").required("Required"),
-
-  location: Yup.string().min(3, "Provide your location").required("Required"),
-
   username: Yup.string().min(3, "Provide a valid username").required("Required"),
 });
 
 const Register = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
-  const [obsecureText, setObsecureText] = useState(false);
+  const [obsecureText, setObsecureText] = useState(true);
 
   const inValidForm = () => {
     Alert.alert("Invalid Form", "Please provide required fields", [
@@ -85,7 +84,7 @@ const Register = ({ navigation }) => {
             initialValues={{
               email: "",
               password: "",
-              location: "",
+              confirmPassword: "",
               username: "",
             }}
             validationSchema={validationSchema}
@@ -106,7 +105,7 @@ const Register = ({ navigation }) => {
                 <View style={styles.wrapper}>
                   <Text style={styles.label}>UserName</Text>
 
-                  <View style={styles.inputWrapper(touched.email ? COLORS.secondary : COLORS.offwhite)}>
+                  <View style={styles.inputWrapper(touched.username ? COLORS.secondary : COLORS.offwhite)}>
                     <MaterialCommunityIcons
                       name="face-man-profile"
                       size={20}
@@ -154,26 +153,6 @@ const Register = ({ navigation }) => {
                 </View>
 
                 <View style={styles.wrapper}>
-                  <Text style={styles.label}>Location</Text>
-
-                  <View style={styles.inputWrapper(touched.location ? COLORS.secondary : COLORS.offwhite)}>
-                    <Ionicons name="location-outline" size={20} style={styles.iconStyle} color={COLORS.gray} />
-                    <TextInput
-                      placeholder="Enter location"
-                      onFocus={() => setFieldTouched("location")}
-                      onBlur={() => setFieldTouched("location", "")}
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      style={{ flex: 1 }}
-                      value={values.location}
-                      onChangeText={handleChange("location")}
-                    />
-                  </View>
-
-                  {touched.email && errors.email && <Text style={styles.errorMessage}>{errors.email}</Text>}
-                </View>
-
-                <View style={styles.wrapper}>
                   <Text style={styles.label}>Password</Text>
 
                   <View style={styles.inputWrapper(touched.password ? COLORS.secondary : COLORS.offwhite)}>
@@ -207,14 +186,48 @@ const Register = ({ navigation }) => {
                   {touched.password && errors.password && <Text style={styles.errorMessage}>{errors.password}</Text>}
                 </View>
 
+                <View style={styles.wrapper}>
+                  <Text style={styles.label}>Confirm Password</Text>
+
+                  <View style={styles.inputWrapper(touched.confirmPassword ? COLORS.secondary : COLORS.offwhite)}>
+                    <MaterialCommunityIcons
+                      name="lock-outline"
+                      size={20}
+                      style={styles.iconStyle}
+                      color={COLORS.gray}
+                    />
+                    <TextInput
+                      secureTextEntry={obsecureText}
+                      placeholder="Confirm Password"
+                      onFocus={() => setFieldTouched("confirmPassword")}
+                      onBlur={() => setFieldTouched("confirmPassword", "")}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      style={{ flex: 1 }}
+                      value={values.confirmPassword}
+                      onChangeText={handleChange("confirmPassword")}
+                    />
+
+                    <TouchableOpacity
+                      onPress={() => {
+                        setObsecureText(!obsecureText);
+                      }}
+                    >
+                      <MaterialCommunityIcons size={18} name={obsecureText ? "eye-outline" : "eye-off-outline"} />
+                    </TouchableOpacity>
+                  </View>
+
+                  {touched.confirmPassword && errors.confirmPassword && (
+                    <Text style={styles.errorMessage}>{errors.confirmPassword}</Text>
+                  )}
+                </View>
+
                 <Button
                   title={"S I G N U P"}
                   onPress={isValid ? handleSubmit : inValidForm}
                   isValid={isValid}
                   loader={loader}
                 />
-
-                {/* <Text style={styles.registration} onPress={() => {}}>Create an Account</Text> */}
               </View>
             )}
           </Formik>
