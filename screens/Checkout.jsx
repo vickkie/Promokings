@@ -1,5 +1,16 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Modal,
+  FlatList,
+} from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../constants/icons";
 import { SIZES, COLORS } from "../constants";
@@ -7,6 +18,8 @@ import { useCart } from "../contexts/CartContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../components/auth/AuthContext";
 import * as Yup from "yup";
+import IntlPhoneInput from "react-native-intl-phone-input";
+
 import useDelete from "../hook/useDelete";
 
 import CheckoutStep3 from "./Payments";
@@ -40,8 +53,11 @@ const Checkout = () => {
   const [step, setStep] = useState(1);
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [finalPhoneNumber, setfinalPhoneNumber] = useState("");
   const [city, setCity] = useState(userData ? userData.location : "");
   const [email, setEmail] = useState(userData ? userData.email : "");
+  const [allcountries, setallCountries] = useState([]);
+  const [filteredCountries, setFilteredCountries] = useState(allcountries);
 
   const [userId, setUserId] = useState(null);
   const [phoneError, setPhoneError] = useState("");
@@ -98,7 +114,7 @@ const Checkout = () => {
     const orderData = {
       userId: userId,
       products: products,
-      shippingInfo: { address, city, phoneNumber },
+      shippingInfo: { address, city, phoneNumber: finalPhoneNumber },
       paymentInfo,
       totalAmount: estimatedAmount,
       additionalFees: 0,
@@ -122,6 +138,8 @@ const Checkout = () => {
         navigation.navigate("OrderSuccess", { orderId: response.data.order.orderId });
       } else {
         setErrorMessage(response.data.message || "Unknown error occurred");
+
+        console.log(response);
         setErrorState(true);
       }
     } catch (error) {
@@ -158,6 +176,60 @@ const Checkout = () => {
 
     return quantity;
   }
+
+  const handleSearch = (query) => {
+    const filtered = allcountries.filter((country) => country.name.toLowerCase().includes(query.toLowerCase()));
+    setFilteredCountries(filtered);
+  };
+
+  const onChangeText = ({ dialCode, unmaskedPhoneNumber, phoneNumber, isVerified }) => {
+    setPhoneNumber(unmaskedPhoneNumber);
+    console.log(dialCode, unmaskedPhoneNumber, phoneNumber, isVerified);
+    if (unmaskedPhoneNumber.length < 6) {
+      setPhoneError(true);
+    } else {
+      setPhoneError(false);
+      setfinalPhoneNumber(`${dialCode}${unmaskedPhoneNumber}`);
+    }
+  };
+
+  const renderCustomModal = (modalVisible, countries, onCountryChange) => (
+    <Modal visible={modalVisible} animationType="slide" transparent={true}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+        <View style={styles.modalContainer}>
+          <View style={styles.searchContainer}>
+            <TextInput style={styles.searchInput} placeholder="Search Country" onChangeText={handleSearch} />
+            <Text style={styles.searchIcon}>🔍</Text>
+          </View>
+
+          {/* Country List */}
+          <FlatList
+            data={countries}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => {
+                  onCountryChange(item.code);
+                  console.log(item.code);
+                }}
+              >
+                <View style={styles.countryItem}>
+                  <Text style={styles.flag}>{item.flag}</Text>
+                  <Text style={styles.countryName}>{item.en}</Text>
+                  <Text style={styles.countryCode}>{item.dialCode}</Text>
+                </View>
+              </TouchableOpacity>
+            )}
+          />
+
+          {/* Close Button */}
+          <TouchableOpacity style={styles.closeButton} onPress={() => this.phoneInput.hideModal()}>
+            <Text style={styles.closeButtonText}>CLOSE</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </Modal>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -262,15 +334,19 @@ const Checkout = () => {
                       onChangeText={setEmail}
                     />
 
-                    {phoneError ? <Text style={styles.error}>{phoneError}</Text> : null}
-
                     <Text style={styles.label}>Phone Number</Text>
-                    <TextInput
-                      style={[styles.input, phoneError ? styles.errorb : styles.successb]}
-                      value={phoneNumber}
-                      onChangeText={(text) => setPhoneNumber(text)}
-                      keyboardType="phone-pad"
-                    />
+
+                    <View style={[styles.input2, phoneError ? styles.errorb : styles.successb]}>
+                      <IntlPhoneInput
+                        ref={(ref) => (phoneInput = ref)}
+                        customModal={renderCustomModal}
+                        defaultCountry="KE"
+                        lang="EN"
+                        onChangeText={onChangeText}
+                        flagStyle={styles.flagWidth}
+                        containerStyle={styles.input22}
+                      />
+                    </View>
 
                     <View style={styles.next2wrapper}>
                       <TouchableOpacity onPress={handlePrevious} style={styles.previous}>
@@ -292,7 +368,7 @@ const Checkout = () => {
                     <CheckoutStep3
                       onPrevious={handlePrevious}
                       onNext={handleNext}
-                      phoneNumber={phoneNumber}
+                      phoneNumber={finalPhoneNumber}
                       totalAmount={estimatedAmount}
                       handleSubmitOrder={handleSubmitOrder}
                       email={email}
@@ -551,6 +627,18 @@ const styles = StyleSheet.create({
     width: SIZES.width - 40,
     marginStart: 5,
   },
+  input2: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.themeg,
+    borderRadius: SIZES.medium,
+    width: SIZES.width - 40,
+    marginStart: 5,
+  },
+  input22: {
+    backgroundColor: COLORS.themeg,
+    borderRadius: SIZES.medium,
+  },
   label: {
     fontSize: SIZES.small,
     marginBottom: SIZES.xSmall,
@@ -596,5 +684,64 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.medium,
     justifyContent: "center",
     alignItems: "center",
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "white",
+    margin: 20,
+    borderRadius: 10,
+    padding: 20,
+  },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    height: 40,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+  },
+  searchIcon: {
+    fontSize: 20,
+    marginLeft: 10,
+  },
+  countryItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f0f0f0",
+  },
+  flag: {
+    fontSize: 24,
+    marginRight: 10,
+  },
+  flagWidth: {},
+  countryName: {
+    flex: 1,
+    fontSize: 16,
+    color: "#333",
+  },
+  countryCode: {
+    fontSize: 16,
+    color: "#888",
+  },
+
+  closeButton: {
+    marginTop: 20,
+    backgroundColor: "#007BFF",
+    paddingVertical: 10,
+    alignItems: "center",
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });

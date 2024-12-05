@@ -10,13 +10,16 @@
       "image": "./assets/splash-main.png",
       "backgroundColor": "#fff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
         "UIStatusBarHidden": false,
         "UIStatusBarStyle": "UIStatusBarStyleDefault"
-      }
+      },
+      "bundleIdentifier": "com.uzitrake.promokings"
     },
     "android": {
       "adaptiveIcon": {
