@@ -139,13 +139,13 @@ const Checkout = () => {
       } else {
         setErrorMessage(response.data.message || "Unknown error occurred");
 
-        console.log(response);
+        // console.log(response);
         setErrorState(true);
       }
     } catch (error) {
       setErrorMessage(error.message || "An error occurred");
       setErrorState(true);
-      console.error("Error submitting order:", error);
+      // console.error("Error submitting order:", error);
     } finally {
       setIsLoading(false);
     }
@@ -178,13 +178,25 @@ const Checkout = () => {
   }
 
   const handleSearch = (query) => {
-    const filtered = allcountries.filter((country) => country.name.toLowerCase().includes(query.toLowerCase()));
+    // console.log(query);
+    // console.log(allcountries);
+    // countries.forEach((countr) => {
+    //   console.log(countr.code);
+    // });
+    const filtered = allcountries.filter((country) => {
+      // console.log(country?.en);
+      // console.log(country?.en?.toLowerCase());
+      // console.log(query?.toLowerCase());
+      // Check if the 'en' property contains the query (case-insensitive)
+      return country?.en?.toLowerCase().includes(query?.toLowerCase());
+    });
     setFilteredCountries(filtered);
+    // console.log(filtered);
   };
 
   const onChangeText = ({ dialCode, unmaskedPhoneNumber, phoneNumber, isVerified }) => {
     setPhoneNumber(unmaskedPhoneNumber);
-    console.log(dialCode, unmaskedPhoneNumber, phoneNumber, isVerified);
+    // console.log(dialCode, unmaskedPhoneNumber, phoneNumber, isVerified);
     if (unmaskedPhoneNumber.length < 6) {
       setPhoneError(true);
     } else {
@@ -193,43 +205,56 @@ const Checkout = () => {
     }
   };
 
-  const renderCustomModal = (modalVisible, countries, onCountryChange) => (
-    <Modal visible={modalVisible} animationType="slide" transparent={true}>
-      <SafeAreaView style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
-        <View style={styles.modalContainer}>
-          <View style={styles.searchContainer}>
-            <TextInput style={styles.searchInput} placeholder="Search Country" onChangeText={handleSearch} />
-            <Text style={styles.searchIcon}>🔍</Text>
+  const renderCustomModal = (modalVisible, countries, onCountryChange) => {
+    // console.log(modalVisible);
+    setallCountries(countries);
+    countries.forEach((countr) => {
+      // console.log(countr.code);
+    });
+    return (
+      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+          <View style={styles.modalContainer}>
+            <View style={styles.searchContainer}>
+              <TextInput style={styles.searchInput} placeholder="Search Country" onChangeText={handleSearch} />
+              <Text style={styles.searchIcon}>🔍</Text>
+            </View>
+
+            {/* Country List */}
+            <FlatList
+              data={filteredCountries}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    onCountryChange(item.code);
+                    // console.log(item.code);
+                  }}
+                >
+                  <View style={styles.countryItem}>
+                    <Text style={styles.flag}>{item.flag}</Text>
+                    <Text style={styles.countryName}>{item.en}</Text>
+                    <Text style={styles.countryCode}>{item.dialCode}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+
+            {/* Close Button */}
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => {
+                this.phoneInput.hideModal();
+                setFilteredCountries(countries);
+              }}
+            >
+              <Text style={styles.closeButtonText}>CLOSE</Text>
+            </TouchableOpacity>
           </View>
-
-          {/* Country List */}
-          <FlatList
-            data={countries}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => {
-                  onCountryChange(item.code);
-                  console.log(item.code);
-                }}
-              >
-                <View style={styles.countryItem}>
-                  <Text style={styles.flag}>{item.flag}</Text>
-                  <Text style={styles.countryName}>{item.en}</Text>
-                  <Text style={styles.countryCode}>{item.dialCode}</Text>
-                </View>
-              </TouchableOpacity>
-            )}
-          />
-
-          {/* Close Button */}
-          <TouchableOpacity style={styles.closeButton} onPress={() => this.phoneInput.hideModal()}>
-            <Text style={styles.closeButtonText}>CLOSE</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </Modal>
-  );
+        </SafeAreaView>
+      </Modal>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
