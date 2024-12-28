@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ProductList from "../components/products/ProductList";
 import Icon from "../constants/icons";
@@ -11,17 +11,24 @@ const Products = ({ navigation }) => {
   const { itemCount } = useCart();
   const { wishCount } = useWish();
 
+  const [childData, setChildData] = useState("");
+
+  // Function to handle data from the child
+  const handleDataFromChild = (data) => {
+    setChildData(data);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.wrapper}>
         <View style={styles.upperRow}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.buttonWrap}>
-            <Icon size={30} name="backbutton" />
+            <Icon size={26} name="backbutton" />
           </TouchableOpacity>
-          <Text style={styles.heading}>Products</Text>
+          <Text style={styles.heading}>{childData}</Text>
           <View style={styles.lovebuy}>
             <TouchableOpacity onPress={() => navigation.navigate("Favourites")} style={styles.buttonWrap1}>
-              <Icon size={30} name="heart" />
+              <Icon size={26} name="heart" />
               <View style={styles.numbers}>
                 {wishCount !== 0 ? (
                   <Text style={styles.number}>{wishCount}</Text>
@@ -32,7 +39,7 @@ const Products = ({ navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => navigation.navigate("Cart")} style={styles.buttonWrap1}>
-              <Icon size={30} name="cart" />
+              <Icon size={26} name="cart" />
               <View style={styles.numbers}>
                 {itemCount !== 0 ? (
                   <Text style={styles.number}>{itemCount}</Text>
@@ -43,7 +50,7 @@ const Products = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-        <ProductList />
+        <ProductList sendDataToParent={handleDataFromChild} />
       </View>
     </SafeAreaView>
   );
@@ -80,7 +87,7 @@ const styles = StyleSheet.create({
   heading: {
     color: COLORS.themeb,
     marginLeft: 5,
-    fontFamily: "semibold",
+    fontFamily: "GtAlpine",
     fontSize: SIZES.large,
   },
   buttonWrap: {

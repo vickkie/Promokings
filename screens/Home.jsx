@@ -21,15 +21,7 @@ const Home = () => {
   const { itemCount: itemCountG, handleItemCountChange } = useCart();
 
   const [itemCount, setItemCount] = useState(0);
-  const [userId, setUserId] = useState(null);
-
-  useEffect(() => {
-    if (!userLogin) {
-      setUserId(1);
-    } else if (userData && userData._id) {
-      setUserId(userData._id);
-    }
-  }, [userLogin, userData]);
+  const [userId, setUserId] = useState(userData?._id ? userData._id : 1);
 
   useEffect(() => {
     if (!userLogin) {

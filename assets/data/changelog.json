@@ -66,6 +66,18 @@
       "version": "1.3.2",
       "whatsNew": ["Location not required in signup", "General UI improvements"],
       "fixed": ["product view width"]
+    },
+    {
+      "releaseDate": "2024-12-02",
+      "version": "1.3.3",
+      "whatsNew": ["Easier selection of country", "General UI improvements"],
+      "fixed": ["Account Logout screen bug"]
+    },
+    {
+      "releaseDate": "2024-16-02",
+      "version": "1.3.4",
+      "whatsNew": ["Cart improvements","Faster load time", "General UI improvements"],
+      "fixed": ["Fixed crash bug on v1.3.3"]
     }
   ]
 }

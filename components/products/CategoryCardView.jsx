@@ -43,12 +43,14 @@ const CategoryCardView = ({ item }) => {
     loadImage();
   }, [item.imageUrl]);
 
-  const routeParam = `products/category/${item.title}`;
+  const routeParam = `products/category/${item?.title}`;
+
+  const category = item?.title;
 
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate("ProductList", { routeParam });
+        navigation.navigate("ProductList", { routeParam, category });
       }}
     >
       <View style={styles.container}>

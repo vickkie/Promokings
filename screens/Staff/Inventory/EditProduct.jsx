@@ -493,7 +493,7 @@ const styles = StyleSheet.create({
   pickerBox: {
     borderRadius: 20,
     overflow: "hidden",
-    backgroundColor: "red",
+    // backgroundColor: "red",
     height: 50,
   },
   heading: {

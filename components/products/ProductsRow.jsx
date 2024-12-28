@@ -1,13 +1,25 @@
-import { FlatList, Text, View, SafeAreaView, ActivityIndicator, TouchableOpacity } from "react-native";
-import React, { useEffect } from "react";
+import { FlatList, Text, View, SafeAreaView, ActivityIndicator, RefreshControl, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
 import { COLORS, SIZES } from "../../constants";
 import styles from "./productsRow.style";
 import ProductsCardView from "./ProductsCardView";
 import useFetch from "../../hook/useFetch";
 import { Ionicons } from "@expo/vector-icons";
+import { useCallback } from "react";
 
 const ProductsRow = () => {
   const { data, isLoading, error, refetch } = useFetch("products?limit=10&offset=0");
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    try {
+      refetch();
+    } catch (error) {
+    } finally {
+      setRefreshing(false); // Ensure refreshing state is reset
+    }
+  }, [refetch]);
 
   // Ensure data is treated as an array to avoid accessing .length of undefined
   const dataArray = Array.isArray(data) ? data : [];
@@ -45,6 +57,7 @@ const ProductsRow = () => {
           renderItem={({ item }) => <ProductsCardView item={item} />}
           horizontal
           contentContainerStyle={{ columnGap: 2 }}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         />
       )}
     </View>

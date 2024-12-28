@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     width: SIZES.width - 10,
     borderRadius: SIZES.medium,
     borderTopRightRadius: SIZES.medium,
+    minHeight: "100%",
   },
   titleRow: {
     marginHorizontal: 10,

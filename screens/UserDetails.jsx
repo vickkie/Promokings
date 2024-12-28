@@ -154,7 +154,6 @@ const UserDetails = () => {
       visibilityTime: 3000,
     });
   };
-
   const logout = () => {
     Alert.alert(
       "Logout",
@@ -170,7 +169,12 @@ const UserDetails = () => {
           onPress: () => {
             userLogout();
             showToast("success", "You have been logged out", "Thank you for being with us");
-            navigation.navigate("Home");
+
+            // Reset the navigation stack
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "Bottom Navigation" }],
+            });
           },
         },
       ],
@@ -193,9 +197,20 @@ const UserDetails = () => {
           <View style={styles.upperButtons}>
             <Text style={styles.topprofileheading}>Profile settings</Text>
           </View>
-          <TouchableOpacity onPress={logout} style={styles.outWrap}>
-            <Icon name="logout" size={26} />
-          </TouchableOpacity>
+          {userLogin ? (
+            <TouchableOpacity onPress={logout} style={styles.outWrap}>
+              <Icon name="logout" size={26} />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Login");
+              }}
+              style={[styles.outWrap, styles.rotateMe]}
+            >
+              <Icon name="logout" size={26} />
+            </TouchableOpacity>
+          )}
           <View style={styles.lowerheader}>
             <Text style={styles.heading}>Edit your profile</Text>
             <Text style={styles.statement}>You can edit your profile from here</Text>
@@ -493,6 +508,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  rotateMe: {
+    transform: [{ rotate: "180deg" }],
+  },
+
   numbers: {
     padding: 3,
     width: 20,

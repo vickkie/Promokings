@@ -8,26 +8,19 @@ import { AuthContext } from "../auth/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import LottieView from "lottie-react-native";
 
-const CartList = ({ onItemCountChange }) => {
+const CartList = ({ onItemCountChange, cartData }) => {
   const { userData, userLogin } = useContext(AuthContext);
   const navigation = useNavigation();
 
-  const [userId, setUserId] = useState(null);
   const [totals, setTotals] = useState({ subtotal: 0 });
   const [additionalFees, setAdditionalFees] = useState(0);
   const [itemCount, setItemCount] = useState(0);
 
-  // Set userId based on login status
-  useEffect(() => {
-    if (!userLogin) {
-      setUserId(1);
-    } else if (userData && userData._id) {
-      setUserId(userData._id);
-    }
-  }, [userLogin, userData]);
-
   // Fetch cart data
-  const { data, isLoading, error, refetch } = useFetch(`carts/find/${userId}`);
+  // const { data, isLoading, error, refetch } = useFetch(`carts/find/${userId}`);
+  const { data, isLoading, error, refetch } = cartData;
+
+  console.log(isLoading);
 
   // Calculate totals when data is fetched
   useEffect(() => {
@@ -97,7 +90,7 @@ const CartList = ({ onItemCountChange }) => {
   const products = data[0]?.products || [];
 
   // Empty cart state
-  if (products.length === 0) {
+  if (!isLoading && products.length === 0) {
     return (
       <View style={styles.containerx}>
         <View style={styles.containLottie}>

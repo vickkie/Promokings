@@ -89,7 +89,11 @@ const Profile = () => {
             await redelete(userId, async () => {
               await clearCache();
               userLogout();
-              navigation.navigate("Home");
+              // Reset the navigation stack
+              navigation.reset({
+                index: 0,
+                routes: [{ name: "Bottom Navigation" }],
+              });
               Toast.show({
                 type: "success",
                 text1: "Account deleted",
@@ -123,6 +127,9 @@ const Profile = () => {
       ],
       { cancelable: true }
     );
+  };
+  const login = () => {
+    navigation.navigate("Login");
   };
 
   const showToast = (type, text1, text2) => {
@@ -232,12 +239,21 @@ const Profile = () => {
                   <Text style={styles.menuText}>Delete Account</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={logout}>
-                <View style={styles.menuItem(0.5)}>
-                  <MaterialCommunityIcons name="logout" size={24} color={COLORS.primary} />
-                  <Text style={styles.menuText}>Logout</Text>
-                </View>
-              </TouchableOpacity>
+              {userLogin ? (
+                <TouchableOpacity onPress={logout}>
+                  <View style={styles.menuItem(0.5)}>
+                    <MaterialCommunityIcons name="logout" size={24} color={COLORS.primary} />
+                    <Text style={styles.menuText}>Logout</Text>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={login}>
+                  <View style={styles.menuItem(0.5)}>
+                    <MaterialCommunityIcons name="login" size={24} color={COLORS.primary} />
+                    <Text style={styles.menuText}>Login</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
               <View style={styles.versionWrapper}>
                 <Text style={styles.versionText}>{VERSION_LONG}</Text>
               </View>

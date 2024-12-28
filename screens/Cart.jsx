@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import CartList from "../components/cart/CartList";
@@ -7,11 +7,17 @@ import { COLORS, SIZES } from "../constants";
 import Icon from "../constants/icons";
 import { AuthContext } from "../components/auth/AuthContext";
 import { useCart } from "../contexts/CartContext";
+import useFetch from "../hook/useFetch";
 
 const Cart = () => {
   const navigation = useNavigation();
   const { userLogin, userData } = React.useContext(AuthContext);
   const { itemCount, handleItemCountChange } = useCart();
+  const [userId] = useState(userData?._id ? userData._id : 1);
+
+  const { data, isLoading, error, refetch } = useFetch(`carts/find/${userId}`);
+
+  const cartData = { data, isLoading, error, refetch };
 
   const capitalizeFirstLetter = (string) => {
     if (!string) return "";
@@ -68,7 +74,7 @@ const Cart = () => {
           </View>
         </View>
         <ScrollView>
-          <CartList onItemCountChange={handleItemCountChange} />
+          <CartList onItemCountChange={handleItemCountChange} cartData={cartData} />
         </ScrollView>
       </View>
     </SafeAreaView>

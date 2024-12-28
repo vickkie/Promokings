@@ -8,9 +8,12 @@ import ProductsCardView from "./ProductsCardView";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
 
-const ProductList = () => {
+const ProductList = ({ sendDataToParent }) => {
   const route = useRoute();
-  const { routeParam } = route.params; // Accessing routeParam from route.params
+  const { routeParam, category } = route.params;
+
+  sendDataToParent(category);
+
   const { data, isLoading, error, refetch } = useFetch(routeParam);
   const [refreshing, setRefreshing] = useState(false);
 

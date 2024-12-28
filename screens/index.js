@@ -62,7 +62,7 @@ export {
   Faqs,
   SystemMessages,
   InventoryDashboard,
-  BottomTabNavigation,
+  // BottomTabNavigation,
   InventoryTabNavigation,
   AddProduct,
   EditProductList,
