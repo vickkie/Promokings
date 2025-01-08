@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackBtn from "../components/BackBtn";
 import { Image } from "react-native";
@@ -10,6 +10,8 @@ import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../constants";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
+import Toast from "react-native-toast-message";
+import usePost2 from "../hook/usePost2";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string().min(8, "Password must be at least 8 characters").required("Required"),
@@ -23,6 +25,8 @@ const validationSchema = Yup.object().shape({
 const Register = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
   const [obsecureText, setObsecureText] = useState(true);
+  const { responseData, setUpdateStatus, updateStatus, isLoading, error, errorMessage, postData } =
+    usePost2("auth/register");
 
   const inValidForm = () => {
     Alert.alert("Invalid Form", "Please provide required fields", [
@@ -58,18 +62,55 @@ const Register = ({ navigation }) => {
     setLoader(true);
 
     try {
-      const endpoint = `${BACKEND_PORT}/api/register`;
-      const data = value;
-      const response = await axios.post(endpoint, data);
+      const { email, password, username } = value;
+      const newdata = { email, password, username };
 
-      if (response.status === 201) {
-        successRegister();
-        navigation.replace("Login");
-      }
+      await postData(newdata);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
+      Alert.alert(
+        "Sorry. An error occured",
+        "Try again later",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              // console.log("OK Pressed")
+              setUpdateStatus(null);
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+      setLoader(false);
     }
   };
+
+  useEffect(() => {
+    if (updateStatus === 201) {
+      successRegister();
+      navigation.replace("Login");
+    } else {
+      if (errorMessage !== null) {
+        Alert.alert(
+          "Sorry. An error occured",
+          errorMessage,
+          [
+            {
+              text: "I understand",
+              onPress: () => {
+                // console.log("OK Pressed")
+                setUpdateStatus(null);
+              },
+            },
+          ],
+          { cancelable: false }
+        );
+      }
+
+      setLoader(false);
+    }
+  }, [updateStatus, responseData, errorMessage]);
 
   return (
     <ScrollView>

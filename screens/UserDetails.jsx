@@ -167,7 +167,6 @@ const UserDetails = () => {
         {
           text: "Continue",
           onPress: () => {
-            userLogout();
             showToast("success", "You have been logged out", "Thank you for being with us");
 
             // Reset the navigation stack
@@ -175,6 +174,7 @@ const UserDetails = () => {
               index: 0,
               routes: [{ name: "Bottom Navigation" }],
             });
+            userLogout();
           },
         },
       ],

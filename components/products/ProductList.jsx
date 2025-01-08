@@ -75,6 +75,8 @@ const ProductList = ({ sendDataToParent }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {console.log(data)}
+
       <FlatList
         ref={scrollRef}
         onScroll={handleScroll}
@@ -84,9 +86,10 @@ const ProductList = ({ sendDataToParent }) => {
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         numColumns={2}
         data={data}
-        renderItem={({ item }) => <ProductsCardView item={item} />}
+        renderItem={({ item }) => <ProductsCardView item={item} refetch={refetch} />}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
+
       {showScrollTopButton && (
         <View style={styles.toTopButton}>
           <TouchableOpacity onPress={scrollTop}>

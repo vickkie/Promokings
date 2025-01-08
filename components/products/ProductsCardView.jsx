@@ -29,7 +29,7 @@ const cacheImage = async (uri) => {
   }
 };
 
-const ProductsCardView = ({ item }) => {
+const ProductsCardView = ({ item, refetch }) => {
   const navigation = useNavigation();
   const [isWished, setIsWished] = useState(false);
   const [feedback, setFeedback] = useState(null);
@@ -95,39 +95,55 @@ const ProductsCardView = ({ item }) => {
 
   const transitionTag = item._id ? `${item._id}` : null;
 
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate("ProductDetails", {
-          item: item,
-          itemid: item._id,
-        });
-      }}
-    >
-      <View style={styles.container}>
-        <View style={styles.imageContainer}>
-          <Image source={{ uri: imageUri || item.imageUrl }} style={styles.image} sharedTransitionTag={transitionTag} />
-        </View>
-        <View style={styles.details}>
-          <Text style={styles.title} numberOfLines={1}>
-            {item.title}
-          </Text>
-          <Text style={styles.supplier} numberOfLines={1}>
-            {item.supplier}
-          </Text>
-          <Text style={styles.price}>Ksh {parseInt(item.price.replace("$", "")).toLocaleString()}</Text>
-        </View>
+  if (item > 0) {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("ProductDetails", {
+            item: item,
+            itemid: item._id,
+          });
+        }}
+      >
+        <View style={styles.container}>
+          <View style={styles.imageContainer}>
+            <Image
+              source={{ uri: imageUri || item.imageUrl }}
+              style={styles.image}
+              sharedTransitionTag={transitionTag}
+            />
+          </View>
+          <View style={styles.details}>
+            <Text style={styles.title} numberOfLines={1}>
+              {item.title}
+            </Text>
+            <Text style={styles.supplier} numberOfLines={1}>
+              {item.supplier}
+            </Text>
+            <Text style={styles.price}>Ksh {parseInt(item.price.replace("$", "")).toLocaleString()}</Text>
+          </View>
 
-        <TouchableOpacity style={styles.addBtn} onPress={addWishlist}>
-          {isWished ? (
-            <Ionicons name="heart" size={26} color={COLORS.primary} />
-          ) : (
-            <Ionicons name="heart-outline" size={26} color={COLORS.primary} />
-          )}
+          <TouchableOpacity style={styles.addBtn} onPress={addWishlist}>
+            {isWished ? (
+              <Ionicons name="heart" size={26} color={COLORS.primary} />
+            ) : (
+              <Ionicons name="heart-outline" size={26} color={COLORS.primary} />
+            )}
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    );
+  } else {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorMessage}>Sorry, no products available</Text>
+        <TouchableOpacity onPress={refetch} style={styles.retryButton}>
+          <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
+          <Text style={styles.retryButtonText}>Retry Again</Text>
         </TouchableOpacity>
       </View>
-    </TouchableOpacity>
-  );
+    );
+  }
 };
 
 export default ProductsCardView;

@@ -9,7 +9,7 @@ global.btoa = btoa;
 
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Formik } from "formik";
+import { Formik, useFormik } from "formik";
 import * as Yup from "yup";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import axios from "axios";
@@ -54,10 +54,13 @@ const LoginPage = ({ navigation }) => {
   const handleLogin = async (values) => {
     setLoader(true);
     try {
-      const endpoint = `${BACKEND_PORT}/api/login`;
+      const endpoint = `${BACKEND_PORT}/api/auth/login`;
+      console.log(endpoint);
       const data = { ...values, userType };
+      console.log(data);
 
       const response = await axios.post(endpoint, data);
+      console.log(response);
 
       if (response.data && response.data.TOKEN) {
         // Decode the token to get role information
@@ -111,28 +114,49 @@ const LoginPage = ({ navigation }) => {
           <Image source={require("../assets/images/promoshop1.webp")} style={styles.cover} />
           <Text style={styles.title}>Promokings Login</Text>
 
-          <View style={styles.chooseWrapper}>
-            <TouchableOpacity style={[styles.chooseUser, styles.chooseBox]} onPress={() => setUserType("customer")}>
-              <View>
-                <Text style={styles.choiceText}>Customer</Text>
-              </View>
-              <Icon name={userType === "customer" ? "check" : "checkempty"} size={18} />
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.chooseStaff, styles.chooseBox]} onPress={() => setUserType("staff")}>
-              <View>
-                <Text style={styles.choiceText}>Staff</Text>
-              </View>
-              <Icon name={userType === "staff" ? "check" : "checkempty"} size={18} />
-            </TouchableOpacity>
-          </View>
-
           <Formik
             initialValues={{ email: "", password: "", staffId: "" }}
             validationSchema={validationSchema}
             onSubmit={handleLogin}
           >
-            {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldTouched, touched }) => (
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              handleReset,
+              values,
+              errors,
+              isValid,
+              setFieldTouched,
+              touched,
+            }) => (
               <View>
+                <View style={styles.chooseWrapper}>
+                  <TouchableOpacity
+                    style={[styles.chooseUser, styles.chooseBox]}
+                    onPress={() => {
+                      setUserType("customer");
+                      handleReset();
+                    }}
+                  >
+                    <View>
+                      <Text style={styles.choiceText}>Customer</Text>
+                    </View>
+                    <Icon name={userType === "customer" ? "check" : "checkempty"} size={18} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.chooseStaff, styles.chooseBox]}
+                    onPress={() => {
+                      setUserType("staff");
+                      handleReset();
+                    }}
+                  >
+                    <View>
+                      <Text style={styles.choiceText}>Staff</Text>
+                    </View>
+                    <Icon name={userType === "staff" ? "check" : "checkempty"} size={18} />
+                  </TouchableOpacity>
+                </View>
                 <View style={styles.wrapper}>
                   <Text style={styles.label}>Email</Text>
                   <View style={styles.inputWrapper(touched.email ? COLORS.secondary : COLORS.offwhite)}>

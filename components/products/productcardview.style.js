@@ -44,6 +44,33 @@ const styles = StyleSheet.create({
     bottom: SIZES.small,
     right: SIZES.small,
   },
+  errorContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    alignContent: "center",
+    height: 100,
+    width: SIZES.width - 30,
+    // backgroundColor: "red",
+  },
+  errorMessage: {
+    fontFamily: "bold",
+  },
+
+  retryButton: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 14,
+    marginTop: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  retryButtonText: {
+    color: "#fff",
+    fontSize: SIZES.medium,
+    textAlign: "center",
+  },
 });
 
 export default styles;

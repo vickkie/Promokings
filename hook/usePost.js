@@ -17,11 +17,10 @@ const usePost = (endpoint) => {
 
     try {
       const response = await axios.post(`${BACKEND_PORT}/api/${endpoint}`, data);
-
-      // console.log(response.status);
-      // console.log(response);
+      console.log(response);
       setUpdateStatus(response.status);
     } catch (error) {
+      console.log(error);
       setError(true);
       setError(errorMessage.message);
       setUpdateStatus(null); // Reset updateStatus in case of error
@@ -42,7 +41,6 @@ const usePost = (endpoint) => {
   };
   const postData = (data) => {
     setData(data);
-
     updateData();
   };
 
