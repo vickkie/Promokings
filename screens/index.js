@@ -23,10 +23,10 @@ import SystemMessages from "./SystemMessages";
 import OrderSuccess from "./OrderSuccess";
 import OrderDetails from "./OrderDetails";
 import InventoryDashboard from "./Staff/Inventory/InventoryDashboard";
-import InventoryTabNavigation from "../navigation/InventoryTabNavigation";
+// import InventoryTabNavigation from "../navigation/InventoryTabNavigation";
 import EditProduct from "./Staff/Inventory/EditProduct";
 
-import BottomTabNavigation from "../navigation/BottomTabNavigation";
+// import BottomTabNavigation from "../navigation/BottomTabNavigation";
 import AddProduct from "./Staff/Inventory/AddProduct";
 import EditProductList from "./Staff/Inventory/ProductList";
 import StaffSettings from "./Staff/Inventory/Settings";
@@ -63,7 +63,7 @@ export {
   SystemMessages,
   InventoryDashboard,
   // BottomTabNavigation,
-  InventoryTabNavigation,
+  // InventoryTabNavigation,
   AddProduct,
   EditProductList,
   EditProduct,

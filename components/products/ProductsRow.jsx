@@ -28,6 +28,8 @@ const ProductsRow = () => {
     refetch();
   };
 
+  // console.log("refetching", item);
+
   const keyExtractor = (item) => item._id;
 
   return (

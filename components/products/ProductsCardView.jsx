@@ -12,9 +12,12 @@ import * as FileSystem from "expo-file-system";
 // Function to cache image
 const cacheImage = async (uri) => {
   try {
-    // Create a safe filename
-    const fileName = encodeURIComponent(uri.replace(/[^a-zA-Z0-9]/g, "_"));
+    // Extract file extension if present
+    const extension = uri.split(".").pop().split(/\#|\?/)[0]; // Handles query params/fragments
+    const safeName = uri.replace(/[^a-zA-Z0-9]/g, "_"); // Replace unsafe chars with _
+    const fileName = `${safeName}.${extension}`; // Append extension properly
     const fileUri = FileSystem.documentDirectory + fileName;
+
     const { exists } = await FileSystem.getInfoAsync(fileUri);
     if (!exists) {
       // console.log(`Downloading image to ${fileUri}`);
@@ -24,8 +27,7 @@ const cacheImage = async (uri) => {
     }
     return fileUri;
   } catch (error) {
-    // console.error(`Failed to cache image from ${uri}`, error);
-    return uri; // Fallback to the original URL if caching fails
+    return uri; // Fallback if caching fails
   }
 };
 
@@ -95,7 +97,7 @@ const ProductsCardView = ({ item, refetch }) => {
 
   const transitionTag = item._id ? `${item._id}` : null;
 
-  if (item > 0) {
+  if (item) {
     return (
       <TouchableOpacity
         onPress={() => {
@@ -132,16 +134,6 @@ const ProductsCardView = ({ item, refetch }) => {
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
-    );
-  } else {
-    return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorMessage}>Sorry, no products available</Text>
-        <TouchableOpacity onPress={refetch} style={styles.retryButton}>
-          <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
-          <Text style={styles.retryButtonText}>Retry Again</Text>
-        </TouchableOpacity>
-      </View>
     );
   }
 };

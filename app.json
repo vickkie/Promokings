@@ -36,6 +36,17 @@
         "projectId": "ad23615f-cdde-436a-abe8-7754069538dc"
       }
     },
-    "owner": "uzitrake"
+    "owner": "uzitrake",
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
+    ]
   }
 }
+

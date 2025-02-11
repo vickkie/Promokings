@@ -2,6 +2,7 @@ import "react-native-gesture-handler";
 import { enableScreens } from "react-native-screens";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
@@ -51,6 +52,10 @@ import {
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
 import InventoryTabNavigation from "./navigation/InventoryTabNavigation";
+
+// const InventoryTabNavigation = React.lazy(() => import("./navigation/InventoryTabNavigation"));
+// const BottomTabNavigation = React.lazy(() => import("./navigation/BottomTabNavigation"));
+
 import BrokenComponent from "./screens_options/BrokenComponent";
 
 enableScreens();

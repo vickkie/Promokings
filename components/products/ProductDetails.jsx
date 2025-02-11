@@ -135,13 +135,30 @@ const ProductDetails = ({ navigation }) => {
     }
   };
 
-  const showToast = (type, text1, text2) => {
-    Toast.show({
-      type: type,
-      text1: text1,
-      text2: text2,
-    });
-  };
+  // const { addToCart } = useCart();
+
+  // const handleAddToCart = () => {
+  //   const cartItem = {
+  //     id: item._id,
+  //     title: item.title,
+  //     imageUrl: item.imageUrl,
+  //     price: parsedPrice,
+  //     quantity: count,
+  //     size: selectedSize,
+  //   };
+
+  //   addToCart(cartItem);
+  //   setisAdded(true);
+  //   showToast("success", "Added to Cart", `${item.title} added to cart 🛒`);
+  // };
+
+  // const showToast = (type, text1, text2) => {
+  //   Toast.show({
+  //     type: type,
+  //     text1: text1,
+  //     text2: text2,
+  //   });
+  // };
 
   const transitionTag = item._id ? `${item._id}` : null;
 
@@ -170,6 +187,11 @@ const ProductDetails = ({ navigation }) => {
             <Icon size={26} name="cart" />
             <View style={styles.numbers}>
               {itemCount !== 0 ? <Text style={styles.number}>{itemCount}</Text> : <Text style={styles.number}>0</Text>}
+              {/* {cart.length > 0 ? (
+                <Text style={styles.number}>{cart.length}</Text>
+              ) : (
+                <Text style={styles.number}>0</Text>
+              )} */}
             </View>
           </TouchableOpacity>
         </View>
