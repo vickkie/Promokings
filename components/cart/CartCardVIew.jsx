@@ -9,11 +9,12 @@ import { useWish } from "../../contexts/WishContext";
 import { Ionicons, Fontisto } from "@expo/vector-icons";
 import { COLORS } from "../../constants";
 
-const CartCardView = memo(({ item }) => {
+const CartCardView = ({ item }) => {
+  // console.log(item);
   const navigation = useNavigation();
   const { cart, addToCart, removeFromCart } = useCart();
   const { wishlist, wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
-  const [count, setCount] = useState(1);
+  const [count, setCount] = useState(item.quantity);
   const [selectedSize, setSelectedSize] = useState("M");
 
   const { id, title, price, imageUrl, quantity, size } = item || {};
@@ -63,7 +64,7 @@ const CartCardView = memo(({ item }) => {
       "Are you sure you want to remove this item from the cart?",
       [
         { text: "Cancel", style: "cancel" },
-        { text: "Remove", onPress: () => removeFromCart(_id, size) },
+        { text: "Remove", onPress: () => removeFromCart(id, size) },
       ],
       { cancelable: true }
     );
@@ -129,6 +130,6 @@ const CartCardView = memo(({ item }) => {
       </View>
     </View>
   );
-});
+};
 
 export default CartCardView;

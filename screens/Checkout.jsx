@@ -266,7 +266,7 @@ const Checkout = () => {
 
                   <View style={{ width: SIZES.width - 27 }}>
                     {products.map((item) => (
-                      <View style={styles.containerx} key={item._id}>
+                      <View style={styles.containerx} key={item.id}>
                         <TouchableOpacity
                           style={styles.imageContainer}
                           onPress={() => navigation.navigate("ProductDetails", { item, itemid: item.id })}

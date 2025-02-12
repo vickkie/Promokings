@@ -53,6 +53,7 @@ const FavouritesCardView = memo(({ item, handleRefetch }) => {
   const handleAddToCart = async (item) => {
     try {
       addToCart(item);
+      showToast("success", "Added to Cart", `${item.title} added to cart ❤️`);
     } catch (error) {
       setFeedback({ status: "error", message: "Failed to add to cart" });
       showToast("error", "Error occurred", "Failed to add to cart");
@@ -86,7 +87,7 @@ const FavouritesCardView = memo(({ item, handleRefetch }) => {
       <View style={{ gap: 12 }}>
         <View style={styles.details}>
           <Text style={styles.title} numberOfLines={1}>
-            {title}
+            {title.length > 20 ? `${title.substring(0, 20)}...` : title}
           </Text>
           <View style={styles.lovehate}>
             <TouchableOpacity
