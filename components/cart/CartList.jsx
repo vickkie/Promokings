@@ -1,139 +1,67 @@
-import { FlatList, Text, View, ActivityIndicator, TouchableOpacity } from "react-native";
-import React, { useContext, useState, useEffect } from "react";
+import { FlatList, Text, View, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { COLORS, SIZES } from "../../constants";
 import styles from "./cartlist.style";
 import CartCardVIew from "./CartCardVIew";
-import useFetch from "../../hook/useFetch";
-import { AuthContext } from "../auth/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import LottieView from "lottie-react-native";
 
-const CartList = ({ onItemCountChange, cartData }) => {
-  const { userData, userLogin } = useContext(AuthContext);
+const CartList = ({ cart }) => {
   const navigation = useNavigation();
-
   const [totals, setTotals] = useState({ subtotal: 0 });
   const [additionalFees, setAdditionalFees] = useState(0);
-  const [itemCount, setItemCount] = useState(0);
+  const estimatedAmount = totals.subtotal + additionalFees;
 
-  // Fetch cart data
-  // const { data, isLoading, error, refetch } = useFetch(`carts/find/${userId}`);
-  const { data, isLoading, error, refetch } = cartData;
-
-  console.log(isLoading);
-
-  // Calculate totals when data is fetched
   useEffect(() => {
-    if (!isLoading && data.length !== 0) {
-      const products = data[0]?.products || [];
+    calculateTotals(cart);
+  }, [cart]);
 
-      setItemCount(products.length);
-      console.log("products length", products.length);
+  const calculateTotals = (cartItems) => {
+    const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    setTotals({ subtotal });
+  };
 
-      const initialTotals = products.reduce((acc, item) => {
-        if (item.cartItem && item.cartItem.price) {
-          const parsedPrice = parseFloat(item.cartItem.price.replace(/[^0-9.-]+/g, ""));
-          const totalPrice = parsedPrice * item.quantity;
-          return { ...acc, [item._id]: totalPrice };
-        }
-        return acc;
-      }, {});
-
-      const initialSubtotal = Object.values(initialTotals).reduce((acc, price) => acc + price, 0);
-      setTotals((prevTotals) => ({ ...prevTotals, ...initialTotals, subtotal: initialSubtotal }));
+  const handleRefetch = async () => {
+    try {
+      const storedCart = await AsyncStorage.getItem("cart");
+      const parsedCart = storedCart ? JSON.parse(storedCart) : [];
+      calculateTotals(parsedCart);
+    } catch (error) {
+      console.error("Error refreshing cart:", error);
     }
-  }, [isLoading, data]);
-
-  const estimatedAmount = (totals.subtotal || 0) + (additionalFees || 0);
-
-  // Notify parent component about item count change
-  useEffect(() => {
-    onItemCountChange(itemCount);
-  }, [itemCount, onItemCountChange]);
-
-  const handleRefetch = () => {
-    refetch();
   };
 
-  const updateTotalAmount = (adjustment) => {
-    setTotals((prevTotals) => ({
-      ...prevTotals,
-      subtotal: prevTotals.subtotal + adjustment,
-    }));
-  };
-
-  // Loading state
-  if (isLoading) {
+  if (!cart || cart.length === 0) {
     return (
       <View style={styles.containerx}>
-        <View style={styles.containLottie}>
-          <View style={styles.animationWrapper}>
-            <LottieView source={require("../../assets/data/loading.json")} autoPlay loop style={styles.animation} />
-          </View>
-        </View>
+        <LottieView
+          source={require("../../assets/data/cartempty.json")}
+          autoPlay
+          loop={false}
+          style={styles.animation}
+        />
+        <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>
+          Oops, your cart is empty. Let's fix that!
+        </Text>
       </View>
     );
   }
 
-  // Error state
-  if (error) {
-    return (
-      <View style={styles.errorcontainer}>
-        <Text style={styles.errorMessage}>Error loading cart</Text>
-        <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
-          <Text style={styles.retryButtonText}>Retry Fetch</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  const products = data[0]?.products || [];
-
-  // Empty cart state
-  if (!isLoading && products.length === 0) {
-    return (
-      <View style={styles.containerx}>
-        <View style={styles.containLottie}>
-          <View style={styles.animationWrapper}>
-            <LottieView
-              source={require("../../assets/data/cartempty.json")}
-              autoPlay
-              loop={false}
-              style={styles.animation}
-            />
-          </View>
-          <View style={{ marginTop: 0, paddingBottom: 10 }}>
-            <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>
-              "Oops, your cart is empty. Let's fix that!
-            </Text>
-          </View>
-        </View>
-      </View>
-    );
-  }
-
-  // Cart items list
   return (
     <View>
       <View style={styles.container}>
         <FlatList
-          keyExtractor={(item) => item._id.toString()}
-          contentContainerStyle={[{ columnGap: SIZES.medium }, products.length > 0 ? styles.wrapper : styles.none]}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
-          numColumns={1}
-          scrollEnabled={false}
-          data={products}
-          renderItem={({ item }) => (
-            <CartCardVIew item={item} handleRefetch={handleRefetch} onUpdateTotal={updateTotalAmount} />
-          )}
+          keyExtractor={(item) => item.id}
+          data={cart}
+          renderItem={({ item }) => <CartCardVIew item={item} handleRefetch={handleRefetch} />}
         />
       </View>
 
-      {/* Subtotal and Checkout */}
       <View style={styles.subtotalWrapper}>
         <View style={styles.topSubtotal}>
           <Text style={styles.additionalHeader}>Subtotal amount</Text>
-          <Text style={styles.amounts}>Ksh {Number(totals.subtotal.toFixed(2)).toLocaleString()}</Text>
+          <Text style={styles.amounts}>Ksh {totals.subtotal.toLocaleString()}</Text>
         </View>
         <View style={styles.centerSubtotal}>
           <Text style={styles.additionalHeader}>Additional fees</Text>
@@ -141,21 +69,15 @@ const CartList = ({ onItemCountChange, cartData }) => {
         </View>
         <View style={styles.centerSubtotal}>
           <Text style={styles.subtotalHeader}>Estimated Amount</Text>
-          <Text style={[styles.amounts, styles.totalAmount]}>
-            Ksh {Number(estimatedAmount.toFixed(2)).toLocaleString()}
-          </Text>
+          <Text style={[styles.amounts, styles.totalAmount]}>Ksh {estimatedAmount.toLocaleString()}</Text>
         </View>
       </View>
+
       <TouchableOpacity
         style={styles.checkoutBtnWrapper}
         onPress={() => {
-          if (estimatedAmount > 0 && products.length > 0) {
-            navigation.navigate("Checkout", {
-              estimatedAmount,
-              products,
-              totals,
-              additionalFees,
-            });
+          if (estimatedAmount > 0 && cart.length > 0) {
+            navigation.navigate("Checkout", { estimatedAmount, cart, totals, additionalFees });
           }
         }}
       >

@@ -13,7 +13,7 @@ import Toast from "react-native-toast-message";
 
 import { useCart } from "../../contexts/CartContext";
 const ProductDetails = ({ navigation }) => {
-  const { itemCount, handleItemCountChange } = useCart();
+  const { addToCart, cart } = useCart();
 
   const route = useRoute();
   const { item } = route.params;
@@ -104,61 +104,31 @@ const ProductDetails = ({ navigation }) => {
     }
   };
 
-  const addToCart = async () => {
-    if (userId && userLogin && item._id) {
-      const cartData = {
-        userId: userId,
-        cartItem: item._id,
-        quantity: count,
-        size: selectedSize,
-      };
-      try {
-        addCart(cartData);
-        if (cartError !== true) {
-          setFeedback({ status: "success", message: "Added to cart" });
-          setisAdded(true);
+  const handleAddToCart = () => {
+    console.log("cartitem clicked");
+    const cartItem = {
+      id: item._id,
+      title: item.title,
+      imageUrl: item.imageUrl,
+      price: parsedPrice,
+      quantity: count > 0 ? count : 1,
+      size: selectedSize,
+    };
 
-          if (isAdded === false) {
-            handleItemCountChange(itemCount + count);
-          }
-        } else {
-          setFeedback({ status: "error", message: "Failed to add to cart" });
-        }
-      } catch (error) {
-        setFeedback({ status: "error", message: "Failed to add to cart" });
-      } finally {
-        setTimeout(() => setFeedback(null), 5000); // Revert after 5 seconds
-      }
-    } else {
-      setFeedback({ status: "error", message: "Failed to add to cart" });
-      setTimeout(() => setFeedback(null), 5000); // Revert after 5 seconds
-    }
+    console.log("cartitem", cartItem);
+
+    addToCart(cartItem);
+    setisAdded(true);
+    showToast("success", "Added to Cart", `${item.title} added to cart 🛒`);
   };
 
-  // const { addToCart } = useCart();
-
-  // const handleAddToCart = () => {
-  //   const cartItem = {
-  //     id: item._id,
-  //     title: item.title,
-  //     imageUrl: item.imageUrl,
-  //     price: parsedPrice,
-  //     quantity: count,
-  //     size: selectedSize,
-  //   };
-
-  //   addToCart(cartItem);
-  //   setisAdded(true);
-  //   showToast("success", "Added to Cart", `${item.title} added to cart 🛒`);
-  // };
-
-  // const showToast = (type, text1, text2) => {
-  //   Toast.show({
-  //     type: type,
-  //     text1: text1,
-  //     text2: text2,
-  //   });
-  // };
+  const showToast = (type, text1, text2) => {
+    Toast.show({
+      type: type,
+      text1: text1,
+      text2: text2,
+    });
+  };
 
   const transitionTag = item._id ? `${item._id}` : null;
 
@@ -186,12 +156,11 @@ const ProductDetails = ({ navigation }) => {
           <TouchableOpacity onPress={() => navigation.navigate("Cart")} style={styles.buttonWrap1}>
             <Icon size={26} name="cart" />
             <View style={styles.numbers}>
-              {itemCount !== 0 ? <Text style={styles.number}>{itemCount}</Text> : <Text style={styles.number}>0</Text>}
-              {/* {cart.length > 0 ? (
+              {cart.length > 0 ? (
                 <Text style={styles.number}>{cart.length}</Text>
               ) : (
                 <Text style={styles.number}>0</Text>
-              )} */}
+              )}
             </View>
           </TouchableOpacity>
         </View>
@@ -266,7 +235,7 @@ const ProductDetails = ({ navigation }) => {
               </View>
             )}
             <View style={styles.cartRow}>
-              <TouchableOpacity onPress={addToCart} style={styles.cartBtn}>
+              <TouchableOpacity onPress={handleAddToCart} style={styles.cartBtn}>
                 {isLoadingCart ? (
                   <ActivityIndicator size="small" color={COLORS.white} />
                 ) : feedback ? (
@@ -278,7 +247,7 @@ const ProductDetails = ({ navigation }) => {
                 )}
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={addToCart} style={styles.addBtn}>
+              <TouchableOpacity onPress={handleAddToCart} style={styles.addBtn}>
                 {isLoadingCart ? (
                   <ActivityIndicator size="small" color={COLORS.lightWhite} />
                 ) : feedback ? (

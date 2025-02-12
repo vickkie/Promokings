@@ -7,17 +7,12 @@ import { COLORS, SIZES } from "../constants";
 import Icon from "../constants/icons";
 import { AuthContext } from "../components/auth/AuthContext";
 import { useCart } from "../contexts/CartContext";
-import useFetch from "../hook/useFetch";
 
 const Cart = () => {
   const navigation = useNavigation();
   const { userLogin, userData } = React.useContext(AuthContext);
-  const { itemCount, handleItemCountChange } = useCart();
-  const [userId] = useState(userData?._id ? userData._id : 1);
-
-  const { data, isLoading, error, refetch } = useFetch(`carts/find/${userId}`);
-
-  const cartData = { data, isLoading, error, refetch };
+  const { cart, cartCount, clearCart } = useCart(); // ✅ Use cartCount from context
+  const userId = userData?._id || null; // ✅ Avoid setting userId to 1 by default
 
   const capitalizeFirstLetter = (string) => {
     if (!string) return "";
@@ -36,34 +31,22 @@ const Cart = () => {
             <TouchableOpacity style={styles.buttonWrap}>
               <Icon name="cart" size={26} />
               <View style={styles.numbers}>
-                {itemCount !== 0 ? (
-                  <Text style={styles.number}>{itemCount}</Text>
-                ) : (
-                  <Text style={styles.number}>0</Text>
-                )}
+                <Text style={styles.number}>{cartCount}</Text>
               </View>
             </TouchableOpacity>
           </View>
 
           <View style={styles.lowerheader}>
             <Text style={styles.heading}>My cart</Text>
-
-            {itemCount !== 0 ? (
-              <Text style={styles.statement}> {itemCount} items in my cart</Text>
-            ) : (
-              <Text style={styles.statement}>0 items in my cart</Text>
-            )}
+            <Text style={styles.statement}>{cartCount} items in my cart</Text>
             <View style={styles.location}>
-              <TouchableOpacity style={styles.locationName}>
+              <TouchableOpacity style={styles.locationName} onPress={clearCart}>
                 <Icon name="location" size={24} />
-                {userLogin ? (
-                  <Text style={{ marginLeft: 6 }}>{capitalizeFirstLetter(userData.location)}</Text>
-                ) : (
-                  <TouchableOpacity onPress={() => navigation.navigate("UserDetails")}>
-                    <Text> Configure</Text>
-                  </TouchableOpacity>
-                )}
+                <Text style={{ marginLeft: 6 }}>
+                  {userLogin ? capitalizeFirstLetter(userData?.location || "Not set") : "Configure"}
+                </Text>
               </TouchableOpacity>
+
               <TouchableOpacity style={styles.rightLocation} onPress={() => navigation.navigate("UserDetails")}>
                 <Text>change</Text>
                 <View style={styles.toggleLocation}>
@@ -73,8 +56,9 @@ const Cart = () => {
             </View>
           </View>
         </View>
+
         <ScrollView>
-          <CartList onItemCountChange={handleItemCountChange} cartData={cartData} />
+          <CartList cart={cart} />
         </ScrollView>
       </View>
     </SafeAreaView>

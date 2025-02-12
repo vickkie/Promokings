@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
 import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { Welcome } from "../components/home";
 import Carousel from "../components/home/Carousel";
 import Headings from "../components/home/Headings";
@@ -9,7 +9,6 @@ import ProductsRow from "../components/products/ProductsRow";
 import LatestProducts from "../components/products/LatestProducts";
 import Icon from "../constants/icons";
 import { AuthContext } from "../components/auth/AuthContext";
-import useFetch from "../hook/useFetch";
 import { useCart } from "../contexts/CartContext";
 import HomeMenu from "../components/bottomsheets/HomeMenu";
 
@@ -18,49 +17,23 @@ import { COLORS, SIZES } from "../constants";
 const Home = () => {
   const { userData, userLogin, hasRole } = useContext(AuthContext);
   const navigation = useNavigation();
-  const { itemCount: itemCountG, handleItemCountChange } = useCart();
-
-  const [itemCount, setItemCount] = useState(0);
-  const [userId, setUserId] = useState(userData?._id ? userData._id : 1);
+  const { cart } = useCart(); // ✅ Use cartCount from CartContext
 
   useEffect(() => {
-    if (!userLogin) {
-      setUserId(1);
-    } else if (hasRole("inventory")) {
-      setUserId(userData._id);
+    if (userLogin && hasRole("inventory")) {
       navigation.replace("Inventory Navigation");
     }
   }, [userLogin, userData, hasRole, navigation]);
 
-  const { data, isLoading, refetch } = useFetch(`carts/find/${userId}`);
-
-  useFocusEffect(
-    useCallback(() => {
-      refetch();
-    }, [userId])
-  );
-
-  useEffect(() => {
-    if (!isLoading && data.length !== 0) {
-      const products = data[0]?.products || [];
-      setItemCount(products.length);
-    }
-  }, [isLoading, data]);
-
-  useEffect(() => {
-    handleItemCountChange(itemCount);
-  }, [itemCount]);
-
   const renderProfilePicture = () => {
     if (!userLogin) {
-      // User not logged in
       return <Icon name="user" size={24} color="#000" />;
     }
-    if (userData && userData.profilePicture) {
-      return <Image source={{ uri: `${userData.profilePicture}` }} style={styles.profilePicture} />;
-    }
-
-    return <Image source={require("../assets/images/userDefault.webp")} style={styles.profilePicture} />;
+    return userData?.profilePicture ? (
+      <Image source={{ uri: userData.profilePicture }} style={styles.profilePicture} />
+    ) : (
+      <Image source={require("../assets/images/userDefault.webp")} style={styles.profilePicture} />
+    );
   };
 
   const BottomSheetRef = useRef(null);
@@ -80,12 +53,7 @@ const Home = () => {
       <View style={styles.topWelcomeWrapper}>
         <View style={styles.appBarWrapper}>
           <View style={styles.appBar}>
-            <TouchableOpacity
-              style={styles.buttonWrap}
-              onPress={() => {
-                openMenu();
-              }}
-            >
+            <TouchableOpacity style={styles.buttonWrap} onPress={openMenu}>
               <Icon name="menu" size={24} />
             </TouchableOpacity>
 
@@ -93,15 +61,16 @@ const Home = () => {
               <View style={{ alignItems: "flex-end", marginRight: 5 }}>
                 <View style={styles.cartContainer}>
                   <View style={styles.cartWrapper}>
-                    <Text style={styles.cartNumber}>{itemCount}</Text>
+                    <Text style={styles.cartNumber}>
+                      {cart.length > 0 ? (
+                        <Text style={styles.number}>{cart.length}</Text>
+                      ) : (
+                        <Text style={styles.number}>0</Text>
+                      )}
+                    </Text>
                   </View>
 
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate("Cart");
-                    }}
-                    style={styles.buttonWrap}
-                  >
+                  <TouchableOpacity onPress={() => navigation.navigate("Cart")} style={styles.buttonWrap}>
                     <Icon name="cart" size={24} />
                   </TouchableOpacity>
                 </View>
@@ -113,6 +82,7 @@ const Home = () => {
             </View>
           </View>
         </View>
+
         <View style={styles.greeting}>
           <Text style={styles.greetingMessage}>
             <Text style={styles.hello}>Hello! </Text>
@@ -120,7 +90,7 @@ const Home = () => {
           </Text>
         </View>
         <View style={styles.sloganWrapper}>
-          <Text style={styles.slogan}>PromoKings, your one stop shop</Text>
+          <Text style={styles.slogan}>PromoKings, your one-stop shop</Text>
         </View>
       </View>
 
@@ -128,7 +98,6 @@ const Home = () => {
         <ScrollView>
           <View style={styles.lowerWelcomeWrapper}>
             <Welcome />
-
             <View style={styles.lowerWelcome}>
               <Carousel />
               <Headings heading={"Top products"} />
