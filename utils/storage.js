@@ -1,16 +1,27 @@
-import { MMKV } from "react-native-mmkv";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const storage = new MMKV();
-
-export const setItem = (key, value) => {
-  storage.set(key, JSON.stringify(value));
+export const setItem = async (key, value) => {
+  try {
+    await AsyncStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.error("Error saving data:", error);
+  }
 };
 
-export const getItem = (key) => {
-  const value = storage.getString(key);
-  return value ? JSON.parse(value) : null;
+export const getItem = async (key) => {
+  try {
+    const value = await AsyncStorage.getItem(key);
+    return value ? JSON.parse(value) : null;
+  } catch (error) {
+    console.error("Error loading data:", error);
+    return null;
+  }
 };
 
-export const removeItem = (key) => {
-  storage.delete(key);
+export const removeItem = async (key) => {
+  try {
+    await AsyncStorage.removeItem(key);
+  } catch (error) {
+    console.error("Error removing data:", error);
+  }
 };
