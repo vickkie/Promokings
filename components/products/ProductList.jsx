@@ -75,7 +75,7 @@ const ProductList = ({ sendDataToParent }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {console.log(data)}
+      {/* {console.log(data)} */}
 
       <FlatList
         ref={scrollRef}

@@ -55,7 +55,7 @@ const ProductsCardView = ({ item, refetch }) => {
 
   const { _id: id, title, price, imageUrl } = item || {};
 
-  console.log(item);
+  // console.log(item);
 
   if (!item._id) return null;
   // return null;
@@ -70,7 +70,7 @@ const ProductsCardView = ({ item, refetch }) => {
 
   const toggleWishlist = () => {
     const product = { id: id, title: item.title, imageUrl: item.imageUrl, size: selectedSize, price: item.price };
-    console.log(product, "wtf");
+    // console.log(product, "wtf");
 
     if (isWished) {
       removeFromWishlist(item._id, selectedSize);

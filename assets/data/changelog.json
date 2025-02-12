@@ -80,9 +80,9 @@
       "fixed": ["Fixed crash bug on v1.3.3"]
     },
     {
-      "releaseDate": "2025-02-11",
+      "releaseDate": "2025-03-11",
       "version": "1.3.5",
-      "whatsNew": ["Cart optimization", "General UI improvements"],
+      "whatsNew": ["LOcal Favourite management", "Local cart management","General UI improvements","Speed optimization"],
       "fixed": ["Fixed crash bug on v1.3.4"]
     }
   ]

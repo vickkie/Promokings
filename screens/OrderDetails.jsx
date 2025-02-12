@@ -207,7 +207,6 @@ const OrderDetails = () => {
                   <View style={{ width: SIZES.width - 27 }}>
                     {products.map((product) => (
                       <View style={styles.containerx} key={product._id._id}>
-                        {console.log(product._id)}
                         <TouchableOpacity
                           style={styles.imageContainer}
                           onPress={() =>

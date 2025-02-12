@@ -73,7 +73,7 @@ const ProductDetails = ({ navigation }) => {
   }, [itemDescription]);
 
   const handleAddToCart = () => {
-    console.log("cartitem clicked");
+    // console.log("cartitem clicked");
     const cartItem = {
       id: item._id,
       title: item.title,
@@ -83,7 +83,7 @@ const ProductDetails = ({ navigation }) => {
       size: selectedSize,
     };
 
-    console.log("cartitem", cartItem);
+    // console.log("cartitem", cartItem);
 
     addToCart(cartItem);
     setisAdded(true);

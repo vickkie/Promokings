@@ -53,8 +53,9 @@ const CartList = ({ cart }) => {
       <View style={styles.container}>
         <FlatList
           keyExtractor={(item, index) => {
-            `${item.id}-${item.size ?? index}`, console.log(`${item.id}-${item.size ?? index}`);
+            `${item.id}-${item.size ?? index}`;
           }}
+          nestedScrollEnabled={true}
           data={cart}
           renderItem={({ item }) => <CartCardVIew item={item} handleRefetch={handleRefetch} />}
         />

@@ -125,7 +125,7 @@ const Checkout = () => {
       subtotal: estimatedAmount + additionalFees,
     };
 
-    console.log(orderData);
+    // console.log(orderData);
 
     handleNext(); // This moves to the next step in the UI
 

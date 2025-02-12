@@ -54,13 +54,13 @@ const LoginPage = ({ navigation }) => {
   const handleLogin = async (values) => {
     setLoader(true);
     try {
-      const endpoint = `${BACKEND_PORT}/api/auth/login`;
-      console.log(endpoint);
+      const endpoint = `${BACKEND_PORT}/api/login`;
+      // console.log(endpoint);
       const data = { ...values, userType };
-      console.log(data);
+      // console.log(data);
 
       const response = await axios.post(endpoint, data);
-      console.log(response);
+      // console.log(response);
 
       if (response.data && response.data.TOKEN) {
         // Decode the token to get role information

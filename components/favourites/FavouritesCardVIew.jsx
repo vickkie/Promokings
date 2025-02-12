@@ -17,7 +17,7 @@ const FavouritesCardView = memo(({ item, handleRefetch }) => {
   const userId = userData ? userData._id : null;
 
   const { quantity, size, id, title, price, imageUrl } = item || {};
-  console.log(item);
+  // console.log(item);
 
   if (!id) return null; // Return null if favouriteItem is null or undefined
 
@@ -41,7 +41,7 @@ const FavouritesCardView = memo(({ item, handleRefetch }) => {
           onPress: () => {
             removeFromWishlist(id, size);
             handleRefetch();
-            console.log("Deleted successfully");
+
             showToast("success", "Item was successfully removed from wishlist", "Continue shopping with us");
           },
         },

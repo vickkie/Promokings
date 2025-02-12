@@ -17,7 +17,7 @@ import { COLORS, SIZES } from "../constants";
 const Home = () => {
   const { userData, userLogin, hasRole } = useContext(AuthContext);
   const navigation = useNavigation();
-  const { cart } = useCart(); // ✅ Use cartCount from CartContext
+  const { cart } = useCart();
 
   useEffect(() => {
     if (userLogin && hasRole("inventory")) {

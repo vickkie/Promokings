@@ -1,6 +1,6 @@
 import { TouchableOpacity, Text, View, Image, Alert } from "react-native";
-import React, { useState, useEffect, useContext, memo } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect, useContext, useCallback, memo } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import styles from "./cartcardview.style";
 import Icon from "../../constants/icons";
 import Toast from "react-native-toast-message";
@@ -14,10 +14,26 @@ const CartCardView = ({ item }) => {
   const navigation = useNavigation();
   const { cart, addToCart, removeFromCart } = useCart();
   const { wishlist, wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
-  const [count, setCount] = useState(item.quantity);
-  const [selectedSize, setSelectedSize] = useState("M");
 
   const { id, title, price, imageUrl, quantity, size } = item || {};
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!cart || !Array.isArray(cart)) {
+        console.warn("Cart is undefined or not an array.");
+        return;
+      }
+
+      const foundItem = cart.find((item) => item.id === id);
+
+      if (foundItem) {
+        setCount(foundItem.quantity);
+        // console.log(foundItem.quantity);
+      } else {
+        console.warn("Item not found in cart:", id);
+      }
+    }, [cart, id])
+  );
 
   if (!item.id) return null;
   // return null;
@@ -25,6 +41,8 @@ const CartCardView = ({ item }) => {
   const parsedPrice =
     typeof price === "number" ? price : price != null ? parseFloat(String(price).replace(/[^0-9.-]+/g, "")) : 0;
 
+  const [count, setCount] = useState(item.quantity);
+  const [selectedSize, setSelectedSize] = useState("M");
   const [totalPrice, setTotalPrice] = useState(parsedPrice * quantity);
   const [isWished, setIsWished] = useState(false);
 
@@ -72,7 +90,7 @@ const CartCardView = ({ item }) => {
 
   const toggleWishlist = () => {
     const product = { id: id, title: item.title, imageUrl: item.imageUrl, size: selectedSize, price: item.price };
-    console.log(product, "wtf");
+    // console.log(product, "wtf");
 
     if (isWished) {
       removeFromWishlist(item.id, selectedSize);
@@ -89,7 +107,7 @@ const CartCardView = ({ item }) => {
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.imageContainer}
-        onPress={() => navigation.navigate("ProductDetails", { item: item, itemid: id })}
+        onPress={() => navigation.navigate("ProductDetails", { item: { ...item, _id: id }, itemid: id })}
       >
         <Image source={{ uri: imageUrl }} style={styles.image} />
       </TouchableOpacity>
