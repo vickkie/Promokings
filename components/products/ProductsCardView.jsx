@@ -8,6 +8,7 @@ import usePost from "../../hook/usePost";
 import { AuthContext } from "../auth/AuthContext";
 import Toast from "react-native-toast-message";
 import * as FileSystem from "expo-file-system";
+import { useWish } from "../../contexts/WishContext";
 
 // Function to cache image
 const cacheImage = async (uri) => {
@@ -36,25 +37,11 @@ const ProductsCardView = ({ item, refetch }) => {
   const [isWished, setIsWished] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [imageUri, setImageUri] = useState(null);
-
-  const {
-    updateStatus,
-    isLoading: isLoadingFavourites,
-    error: favouritesError,
-    errorMessage,
-    addCart: addFavourite,
-  } = usePost("favourites");
-
+  const { wishlist, wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
   const { userData, userLogin } = useContext(AuthContext);
+  const [count, setCount] = useState(1);
+  const [selectedSize, setSelectedSize] = useState("M");
   const [userId, setUserId] = useState(null);
-
-  useEffect(() => {
-    if (!userLogin) {
-      setUserId(1); // Default user ID for demonstration purposes && test
-    } else if (userData && userData._id) {
-      setUserId(userData._id);
-    }
-  }, [userLogin, userData]);
 
   useEffect(() => {
     const loadImage = async () => {
@@ -66,25 +53,34 @@ const ProductsCardView = ({ item, refetch }) => {
     loadImage();
   }, [item.imageUrl]);
 
-  const addWishlist = async () => {
-    setIsWished(!isWished);
+  const { _id: id, title, price, imageUrl } = item || {};
 
-    if (userLogin && item._id) {
-      const cartData = {
-        userId: userId,
-        favouriteItem: item._id,
-      };
-      try {
-        addFavourite(cartData);
+  console.log(item);
 
-        showToast("success", "Added to your wishlist", "Item was successfully added");
-      } catch (error) {
-        // console.log(error);
-        showToast("error", "Ooops, Failed to add to Wishlist", "Try again later");
-      } finally {
-        setTimeout(() => setFeedback(null), 5000);
-      }
+  if (!item._id) return null;
+  // return null;
+
+  useEffect(() => {
+    const found = wishlist.some((wishItem) => wishItem.id === item._id && wishItem.size === selectedSize);
+    setIsWished(found);
+  }, [wishlist, item]);
+
+  const parsedPrice =
+    typeof price === "number" ? price : price != null ? parseFloat(String(price).replace(/[^0-9.-]+/g, "")) : 0;
+
+  const toggleWishlist = () => {
+    const product = { id: id, title: item.title, imageUrl: item.imageUrl, size: selectedSize, price: item.price };
+    console.log(product, "wtf");
+
+    if (isWished) {
+      removeFromWishlist(item._id, selectedSize);
+      showToast("info", "Removed", `${item.title} removed from wishlist`);
+    } else {
+      addToWishlist(product);
+      showToast("success", "Added to Wishlist", `${item.title} added to wishlist ❤️`);
     }
+
+    setIsWished(!isWished);
   };
 
   const showToast = (type, text1, text2) => {
@@ -125,7 +121,7 @@ const ProductsCardView = ({ item, refetch }) => {
             <Text style={styles.price}>Ksh {parseInt(item.price.replace("$", "")).toLocaleString()}</Text>
           </View>
 
-          <TouchableOpacity style={styles.addBtn} onPress={addWishlist}>
+          <TouchableOpacity style={styles.addBtn} onPress={toggleWishlist}>
             {isWished ? (
               <Ionicons name="heart" size={26} color={COLORS.primary} />
             ) : (
