@@ -11,8 +11,8 @@ import { useCart } from "../contexts/CartContext";
 const Cart = () => {
   const navigation = useNavigation();
   const { userLogin, userData } = React.useContext(AuthContext);
-  const { cart, cartCount, clearCart } = useCart(); // ✅ Use cartCount from context
-  const userId = userData?._id || null; // ✅ Avoid setting userId to 1 by default
+  const { cart, cartCount, clearCart } = useCart();
+  const userId = userData?._id || null;
 
   const capitalizeFirstLetter = (string) => {
     if (!string) return "";

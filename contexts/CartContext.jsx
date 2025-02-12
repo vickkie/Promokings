@@ -9,20 +9,27 @@ export const CartProvider = ({ children }) => {
   // Load cart from AsyncStorage when the app starts
   useEffect(() => {
     const loadCart = async () => {
-      const savedCart = await getItem("cart");
-      if (savedCart) setCart(savedCart);
+      try {
+        const savedCart = await getItem("cart");
+        setCart(savedCart ? JSON.parse(savedCart) : []); // 🛠️ Fix: Parse stored string
+      } catch (error) {
+        console.error("Failed to load cart:", error);
+      }
     };
     loadCart();
   }, []);
 
-  // Save cart to storage whenever it changes
+  // Save cart to AsyncStorage when it changes (debounced)
   useEffect(() => {
-    setItem("cart", cart);
+    const saveCart = setTimeout(() => {
+      setItem("cart", JSON.stringify(cart));
+    }, 200); // Debounce save to avoid frequent writes
+
+    return () => clearTimeout(saveCart);
   }, [cart]);
 
   // ✅ Prevents duplicate items and updates quantity instead
   const addToCart = (product) => {
-    console.log(product);
     if (!product || typeof product !== "object" || !product.id) {
       console.error("Invalid product added to cart:", product);
       return;
@@ -51,9 +58,7 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = () => setCart([]);
 
-  // ✅ Helper to get the total number of items in cart
   const cartCount = cart.length;
-  // const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <CartContext.Provider value={{ cart, cartCount, addToCart, removeFromCart, clearCart }}>

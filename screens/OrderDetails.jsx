@@ -206,20 +206,21 @@ const OrderDetails = () => {
 
                   <View style={{ width: SIZES.width - 27 }}>
                     {products.map((product) => (
-                      <View style={styles.containerx} key={product._id}>
+                      <View style={styles.containerx} key={product._id._id}>
+                        {console.log(product._id)}
                         <TouchableOpacity
                           style={styles.imageContainer}
                           onPress={() =>
-                            navigation.navigate("ProductDetails", { item: product.cartItem._id, itemid: product._id })
+                            navigation.navigate("ProductDetails", { item: product._id, itemid: product._id })
                           }
                         >
                           {/* {console.log("products", item)} */}
-                          <Image source={{ uri: product.cartItem._id.imageUrl }} style={styles.image} />
+                          <Image source={{ uri: product._id.imageUrl }} style={styles.image} />
                         </TouchableOpacity>
                         <View style={{ gap: 12 }}>
                           <View style={styles.details}>
                             <Text style={styles.title} numberOfLines={1}>
-                              {product.cartItem._id.title}
+                              {product._id.title}
                             </Text>
                           </View>
                           <View style={styles.rowitem}>

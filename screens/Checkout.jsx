@@ -26,13 +26,14 @@ import CheckoutStep3 from "./Payments";
 import LottieView from "lottie-react-native";
 import { BACKEND_PORT } from "@env";
 import axios from "axios";
+import Products from "./Products";
 
 const Checkout = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { estimatedAmount, products, totals, additionalFees } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
-  const { deleteStatus, errorStatus, redelete } = useDelete(`carts/user`);
+  const { clearCart } = useCart();
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorState, setErrorState] = useState(false);
@@ -111,15 +112,20 @@ const Checkout = () => {
   };
 
   const handleSubmitOrder = async (paymentInfo) => {
+    // ✅ Replace `id` with `_id` for every item in the array
+    const formattedProducts = products.map(({ id: _id, ...rest }) => ({ _id, ...rest }));
+
     const orderData = {
-      userId: userId,
-      products: products,
+      userId,
+      products: formattedProducts,
       shippingInfo: { address, city, phoneNumber: finalPhoneNumber },
       paymentInfo,
       totalAmount: estimatedAmount,
       additionalFees: 0,
       subtotal: estimatedAmount + additionalFees,
     };
+
+    console.log(orderData);
 
     handleNext(); // This moves to the next step in the UI
 
@@ -133,13 +139,13 @@ const Checkout = () => {
 
       // Only proceed with next steps if the order creation was successful
       if (response.data.success) {
-        // console.log("Order created successfully:", response.data.order.orderId);
-        redelete(userId); // Delete cart items as they are now orders
+        clearCart();
+
         navigation.navigate("OrderSuccess", { orderId: response.data.order.orderId });
       } else {
         setErrorMessage(response.data.message || "Unknown error occurred");
 
-        // console.log(response);
+        console.log(response);
         setErrorState(true);
       }
     } catch (error) {
@@ -159,35 +165,8 @@ const Checkout = () => {
     }
   };
 
-  function calculateQuantity(priceString, totals) {
-    // Regex to match numbers with optional thousands separators and decimal points
-    const regex = /(\d+)(,\d{3})*(\.\d+)?/g;
-
-    // Extract the numeric part from the price string
-    const numericValueMatch = priceString.match(regex)?.[0];
-    if (!numericValueMatch) return "N/A";
-
-    // Remove commas to convert the string to a pure number format
-    const numericValue = numericValueMatch.replace(/,/g, "");
-
-    // Convert the numeric value to a float and check if totals is a valid number
-    const parsedNumericValue = parseFloat(numericValue);
-    const quantity = isNaN(parsedNumericValue) || isNaN(totals) ? "N/A" : totals / parsedNumericValue;
-
-    return quantity;
-  }
-
   const handleSearch = (query) => {
-    // console.log(query);
-    // console.log(allcountries);
-    // countries.forEach((countr) => {
-    //   console.log(countr.code);
-    // });
     const filtered = allcountries.filter((country) => {
-      // console.log(country?.en);
-      // console.log(country?.en?.toLowerCase());
-      // console.log(query?.toLowerCase());
-      // Check if the 'en' property contains the query (case-insensitive)
       return country?.en?.toLowerCase().includes(query?.toLowerCase());
     });
     setFilteredCountries(filtered);
@@ -196,7 +175,7 @@ const Checkout = () => {
 
   const onChangeText = ({ dialCode, unmaskedPhoneNumber, phoneNumber, isVerified }) => {
     setPhoneNumber(unmaskedPhoneNumber);
-    // console.log(dialCode, unmaskedPhoneNumber, phoneNumber, isVerified);
+
     if (unmaskedPhoneNumber.length < 6) {
       setPhoneError(true);
     } else {
@@ -290,14 +269,14 @@ const Checkout = () => {
                       <View style={styles.containerx} key={item._id}>
                         <TouchableOpacity
                           style={styles.imageContainer}
-                          onPress={() => navigation.navigate("ProductDetails", { item, itemid: item._id })}
+                          onPress={() => navigation.navigate("ProductDetails", { item, itemid: item.id })}
                         >
-                          <Image source={{ uri: item.cartItem.imageUrl }} style={styles.image} />
+                          <Image source={{ uri: item.imageUrl }} style={styles.image} />
                         </TouchableOpacity>
                         <View style={{ gap: 12 }}>
                           <View style={styles.details}>
                             <Text style={styles.title} numberOfLines={1}>
-                              {item.cartItem.title}
+                              {item.title}
                             </Text>
                           </View>
                           <View style={styles.rowitem}>
@@ -310,19 +289,16 @@ const Checkout = () => {
                           <View style={styles.rowitem}>
                             <View>
                               <Text style={styles.semititle}>
-                                <Text style={styles.semititle}>
-                                  Quantity : {calculateQuantity(item.cartItem.price, totals[item._id])}
-                                </Text>
+                                <Text style={styles.semititle}>Quantity : {item.quantity}</Text>
                               </Text>
                             </View>
 
                             <View style={styles.priceadd}>
                               <Text style={styles.semititle}>
-                                Totals :
-                                {`KES ${new Intl.NumberFormat("en-US", { style: "currency", currency: "KES" })
-                                  .format(totals[item._id])
-                                  .replace("KES", "")
-                                  .trim()}`}
+                                Total:
+                                {new Intl.NumberFormat("en-US", { minimumFractionDigits: 2 }).format(
+                                  item.price * item.quantity || 0
+                                )}
                               </Text>
                             </View>
                           </View>

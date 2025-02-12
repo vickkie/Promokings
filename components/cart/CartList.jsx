@@ -77,7 +77,7 @@ const CartList = ({ cart }) => {
         style={styles.checkoutBtnWrapper}
         onPress={() => {
           if (estimatedAmount > 0 && cart.length > 0) {
-            navigation.navigate("Checkout", { estimatedAmount, cart, totals, additionalFees });
+            navigation.navigate("Checkout", { estimatedAmount, products: cart, totals, additionalFees });
           }
         }}
       >

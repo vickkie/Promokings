@@ -155,9 +155,9 @@ const Orders = () => {
 
           order.products.forEach((product) => {
             // console.log(product);
-            const items = product.cartItem._id;
+            const items = product._id;
 
-            const { _id, title, price, imageUrl, description } = product.cartItem._id || {};
+            const { _id, title, price, imageUrl, description } = product._id || {};
 
             setProducts();
 
@@ -245,7 +245,7 @@ const Orders = () => {
   const SearchResultCard = ({ orderId, item, products, status, icon, color, totals }) => {
     const titles = products
       .map((product, index) => {
-        const { title } = product.cartItem._id || {};
+        const { title } = product._id || {};
         return {
           title,
         };

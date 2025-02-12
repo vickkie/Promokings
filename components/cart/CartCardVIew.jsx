@@ -65,7 +65,7 @@ const CartCardView = memo(({ item }) => {
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.imageContainer}
-        onPress={() => navigation.navigate("ProductDetails", { item: item, itemid: _id })}
+        onPress={() => navigation.navigate("ProductDetails", { item: item, itemid: id })}
       >
         <Image source={{ uri: imageUrl }} style={styles.image} />
       </TouchableOpacity>

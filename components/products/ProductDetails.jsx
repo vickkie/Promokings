@@ -25,7 +25,11 @@ const ProductDetails = ({ navigation }) => {
   const [isAdded, setisAdded] = useState(false);
 
   const sizes = ["XS", "S", "M", "L", "XL"];
-  const parsedPrice = item.price ? parseFloat(item.price.replace(/[^0-9.-]+/g, "")) : 0;
+
+  const { price } = item;
+  const parsedPrice =
+    typeof price === "number" ? price : price != null ? parseFloat(String(price).replace(/[^0-9.-]+/g, "")) : 0;
+
   const [shortDescription, setShortDescription] = useState("");
 
   const { isLoading: isLoadingCart, error: cartError, addCart } = usePost("carts/");
