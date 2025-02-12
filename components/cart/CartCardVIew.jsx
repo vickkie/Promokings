@@ -5,14 +5,18 @@ import styles from "./cartcardview.style";
 import Icon from "../../constants/icons";
 import Toast from "react-native-toast-message";
 import { useCart } from "../../contexts/CartContext";
+import { useWish } from "../../contexts/WishContext";
+import { Ionicons, Fontisto } from "@expo/vector-icons";
+import { COLORS } from "../../constants";
 
 const CartCardView = memo(({ item }) => {
-  // console.log(item, "here2");
   const navigation = useNavigation();
   const { cart, addToCart, removeFromCart } = useCart();
+  const { wishlist, wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
+  const [count, setCount] = useState(1);
+  const [selectedSize, setSelectedSize] = useState("M");
 
   const { id, title, price, imageUrl, quantity, size } = item || {};
-  console.log(price);
 
   if (!item.id) return null;
   // return null;
@@ -20,9 +24,13 @@ const CartCardView = memo(({ item }) => {
   const parsedPrice =
     typeof price === "number" ? price : price != null ? parseFloat(String(price).replace(/[^0-9.-]+/g, "")) : 0;
 
-  const [count, setCount] = useState(quantity);
   const [totalPrice, setTotalPrice] = useState(parsedPrice * quantity);
   const [isWished, setIsWished] = useState(false);
+
+  useEffect(() => {
+    const found = wishlist.some((wishItem) => wishItem.id === item.id && wishItem.size === selectedSize);
+    setIsWished(found);
+  }, [wishlist, item]);
 
   useEffect(() => {
     setTotalPrice(parsedPrice * count);
@@ -61,6 +69,21 @@ const CartCardView = memo(({ item }) => {
     );
   };
 
+  const toggleWishlist = () => {
+    const product = { id: id, title: item.title, imageUrl: item.imageUrl, size: selectedSize, price: item.price };
+    console.log(product, "wtf");
+
+    if (isWished) {
+      removeFromWishlist(item.id, selectedSize);
+      showToast("info", "Removed", `${item.title} removed from wishlist`);
+    } else {
+      addToWishlist(product);
+      showToast("success", "Added to Wishlist", `${item.title} added to wishlist ❤️`);
+    }
+
+    setIsWished(!isWished);
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -76,8 +99,12 @@ const CartCardView = memo(({ item }) => {
             {title.length > 20 ? `${title.substring(0, 20)}...` : title}
           </Text>
           <View style={styles.lovehate}>
-            <TouchableOpacity style={styles.lovebuttons} onPress={() => setIsWished(!isWished)}>
-              <Icon name="heart" size={18} color={isWished ? "red" : "black"} />
+            <TouchableOpacity style={styles.lovebuttons} onPress={toggleWishlist}>
+              {isWished ? (
+                <Ionicons name="heart" size={20} color={COLORS.primary} />
+              ) : (
+                <Ionicons name="heart-outline" size={20} color={COLORS.primary} />
+              )}
             </TouchableOpacity>
             <TouchableOpacity style={styles.lovebuttons} onPress={deleteItem}>
               <Icon name="delete" size={18} />

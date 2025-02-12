@@ -12,8 +12,10 @@ import useFetch from "../../hook/useFetch";
 import Toast from "react-native-toast-message";
 
 import { useCart } from "../../contexts/CartContext";
+import { useWish } from "../../contexts/WishContext";
 const ProductDetails = ({ navigation }) => {
   const { addToCart, cart } = useCart();
+  const { wishlist, wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
 
   const route = useRoute();
   const { item } = route.params;
@@ -23,8 +25,15 @@ const ProductDetails = ({ navigation }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [isAdded, setisAdded] = useState(false);
+  const [isLoadingCart, setisLoadingCart] = useState(false);
 
   const sizes = ["XS", "S", "M", "L", "XL"];
+
+  // ✅ Check if the item is in the wishlist when the component loads
+  useEffect(() => {
+    const found = wishlist.some((wishItem) => wishItem.id === item._id && wishItem.size === selectedSize);
+    setIsWished(found);
+  }, [wishlist, item, selectedSize]);
 
   const { price } = item;
   const parsedPrice =
@@ -32,25 +41,10 @@ const ProductDetails = ({ navigation }) => {
 
   const [shortDescription, setShortDescription] = useState("");
 
-  const { isLoading: isLoadingCart, error: cartError, addCart } = usePost("carts/");
-  const {
-    updateStatus,
-    isLoading: isLoadingFavourites,
-    error: favouritesError,
-    errorMessage,
-    addCart: addFavourite,
-  } = usePost(`favourites`);
-
   const [itemDescription, setItemDescription] = useState(item.description || ".");
   const { userData, userLogin } = useContext(AuthContext);
   const [userId, setUserId] = useState(null);
   const { data, refetch } = useFetch(`products/${item._id}`);
-
-  useEffect(() => {
-    if (data) {
-      setItemDescription(data.description);
-    }
-  }, [data, refetch, itemDescription]);
 
   useEffect(() => {
     if (!userLogin) {
@@ -59,6 +53,12 @@ const ProductDetails = ({ navigation }) => {
       setUserId(userData._id);
     }
   }, [userLogin, userData]);
+
+  useEffect(() => {
+    if (data) {
+      setItemDescription(data.description);
+    }
+  }, [data, refetch, itemDescription]);
 
   const processDescription = () => {
     if (itemDescription) {
@@ -71,42 +71,6 @@ const ProductDetails = ({ navigation }) => {
   useEffect(() => {
     processDescription();
   }, [itemDescription]);
-
-  const increment = () => {
-    setCount(count + 1);
-  };
-
-  const decrement = () => {
-    if (count > 1) {
-      setCount(count - 1);
-    }
-  };
-
-  const addNow = () => {
-    useEffect(() => {
-      setisAdded(true);
-    }, []);
-  };
-
-  const addWishlist = async () => {
-    setIsWished(!isWished);
-
-    if (userLogin && item._id) {
-      const cartData = {
-        userId: userId,
-        favouriteItem: item._id,
-      };
-      try {
-        addFavourite(cartData);
-        if (updateStatus == 200) {
-          showToast("success", "Success", "Added to Wishlist ⭐⭐");
-        }
-      } catch (error) {
-        // console.log(error);
-        showToast("error", "Error occurred", "Failed to add to wishlist");
-      }
-    }
-  };
 
   const handleAddToCart = () => {
     console.log("cartitem clicked");
@@ -126,6 +90,20 @@ const ProductDetails = ({ navigation }) => {
     showToast("success", "Added to Cart", `${item.title} added to cart 🛒`);
   };
 
+  const toggleWishlist = () => {
+    const product = { id: item._id, title: item.title, imageUrl: item.imageUrl, size: selectedSize, price: item };
+
+    if (isWished) {
+      removeFromWishlist(item._id, selectedSize);
+      showToast("info", "Removed", `${item.title} removed from wishlist`);
+    } else {
+      addToWishlist(product);
+      showToast("success", "Added to Wishlist", `${item.title} added to wishlist ❤️`);
+    }
+
+    setIsWished(!isWished);
+  };
+
   const showToast = (type, text1, text2) => {
     Toast.show({
       type: type,
@@ -143,12 +121,7 @@ const ProductDetails = ({ navigation }) => {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons name="chevron-back-circle" size={32} />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              addWishlist();
-            }}
-            style={styles.buttonWrap2}
-          >
+          <TouchableOpacity onPress={toggleWishlist} style={styles.buttonWrap2}>
             {isWished ? (
               <Ionicons name="heart" size={26} color={COLORS.primary} />
             ) : (

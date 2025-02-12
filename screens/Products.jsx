@@ -8,7 +8,7 @@ import { useWish } from "../contexts/WishContext";
 import { SIZES, COLORS } from "../constants";
 
 const Products = ({ navigation }) => {
-  const { itemCount } = useCart();
+  const { cartCount } = useCart();
   const { wishCount } = useWish();
 
   const [childData, setChildData] = useState("");
@@ -41,8 +41,8 @@ const Products = ({ navigation }) => {
             <TouchableOpacity onPress={() => navigation.navigate("Cart")} style={styles.buttonWrap1}>
               <Icon size={26} name="cart" />
               <View style={styles.numbers}>
-                {itemCount !== 0 ? (
-                  <Text style={styles.number}>{itemCount}</Text>
+                {cartCount !== 0 ? (
+                  <Text style={styles.number}>{cartCount}</Text>
                 ) : (
                   <Text style={styles.number}>0</Text>
                 )}

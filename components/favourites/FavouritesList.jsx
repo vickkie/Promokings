@@ -9,17 +9,18 @@ import useFetch from "../../hook/useFetch";
 import { useCart } from "../../contexts/CartContext";
 import { useWish } from "../../contexts/WishContext";
 import LottieView from "lottie-react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const FavouritesList = ({ onWishCountChange, onItemCountChange }) => {
+const FavouritesList = ({ wishlist = [] }) => {
   const { userData, userLogin } = useContext(AuthContext);
   const navigation = useNavigation();
-  const { itemCount, handleItemCountChange } = useCart();
-  const { wishCount, handleWishCountChange } = useWish();
+  const { cart, cartCount, addToCart, removeFromCart, clearCart } = useCart();
+  const { wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
 
   const [userId, setUserId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [totals, setTotals] = useState({ subtotal: 0 });
   const [additionalFees, setAdditionalFees] = useState(0);
-  const [favouriteCount, setWishCount] = useState(0);
 
   useEffect(() => {
     if (!userLogin) {
@@ -29,31 +30,42 @@ const FavouritesList = ({ onWishCountChange, onItemCountChange }) => {
     }
   }, [userLogin, userData]);
 
-  const { data, isLoading, error, refetch } = useFetch(`favourites/${userId}`);
+  const calculateTotals = (wishlist) => {
+    if (!Array.isArray(wishlist)) return;
+
+    const initialTotals = wishlist.reduce((acc, item) => {
+      if (item.price) {
+        const parsedPrice =
+          typeof price === "number"
+            ? item.price
+            : item.price != null
+            ? parseFloat(String(item.price).replace(/[^0-9.-]+/g, ""))
+            : 0;
+
+        const totalPrice = parsedPrice * (item.quantity || 1);
+        acc[item.id] = totalPrice;
+      }
+      return acc;
+    }, {});
+
+    const initialSubtotal = Object.values(initialTotals).reduce((acc, price) => acc + price, 0);
+    setTotals((prevTotals) => ({ ...prevTotals, ...initialTotals, subtotal: initialSubtotal }));
+  };
 
   useEffect(() => {
-    if (!isLoading && data !== undefined && data !== null) {
-      const products = data.products || [];
-      setWishCount(products.length);
-
-      const initialTotals = products.reduce((acc, item) => {
-        if (item.favouriteItem && item.favouriteItem.price) {
-          const parsedPrice = parseFloat(item.favouriteItem.price.replace(/[^0-9.-]+/g, ""));
-          const totalPrice = parsedPrice * item.quantity;
-          return { ...acc, [item._id]: totalPrice };
-        }
-        return acc;
-      }, {});
-
-      const initialSubtotal = Object.values(initialTotals).reduce((acc, price) => acc + price, 0);
-      setTotals((prevTotals) => ({ ...prevTotals, ...initialTotals, subtotal: initialSubtotal }));
-    }
-  }, [isLoading, data]);
+    calculateTotals(wishlist);
+  }, [wishlist]);
 
   const estimatedAmount = (totals.subtotal || 0) + (additionalFees || 0);
 
-  const handleRefetch = () => {
-    refetch();
+  const handleRefetch = async () => {
+    try {
+      const storedWish = await AsyncStorage.getItem("wishlist");
+      const parsedWish = storedWish ? JSON.parse(storedWish) : [];
+      calculateTotals(parsedWish);
+    } catch (error) {
+      console.error("Error refreshing wishlist:", error);
+    }
   };
 
   const updateTotalAmount = (adjustment) => {
@@ -63,15 +75,6 @@ const FavouritesList = ({ onWishCountChange, onItemCountChange }) => {
     }));
   };
 
-  useEffect(() => {
-    handleItemCountChange(itemCount);
-  }, [itemCount, onItemCountChange]);
-
-  useEffect(() => {
-    handleWishCountChange(favouriteCount);
-  }, [favouriteCount, onWishCountChange]);
-
-  const products = (data && data.products) || [];
   if (isLoading) {
     return (
       <View style={styles.containerx}>
@@ -84,7 +87,7 @@ const FavouritesList = ({ onWishCountChange, onItemCountChange }) => {
     );
   }
 
-  if (products.length === 0) {
+  if (wishlist.length === 0) {
     return (
       <View style={styles.containerx}>
         <View style={styles.containLottie}>
@@ -103,12 +106,12 @@ const FavouritesList = ({ onWishCountChange, onItemCountChange }) => {
     <View>
       <View style={styles.container}>
         <FlatList
-          keyExtractor={(item) => item._id.toString()}
-          contentContainerStyle={[{ columnGap: SIZES.medium }, products.length > 0 ? styles.wrapper : styles.none]}
+          keyExtractor={(product) => (product.id ? product.id.toString() : Math.random().toString())}
+          contentContainerStyle={[{ columnGap: SIZES.medium }, wishlist.length > 0 ? styles.wrapper : styles.none]}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           numColumns={1}
           scrollEnabled={false}
-          data={products}
+          data={wishlist}
           renderItem={({ item }) => (
             <FavouritesCardVIew item={item} handleRefetch={handleRefetch} onUpdateTotal={updateTotalAmount} />
           )}

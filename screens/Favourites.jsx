@@ -12,8 +12,8 @@ import { COLORS, SIZES } from "../constants";
 const Favourites = () => {
   const navigation = useNavigation();
   const { userLogin, userData } = useContext(AuthContext);
-  const { itemCount, handleItemCountChange } = useCart();
-  const { wishCount, handleWishCountChange } = useWish();
+  const { cartCount } = useCart();
+  const { wishCount, wishlist } = useWish();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -43,8 +43,8 @@ const Favourites = () => {
               >
                 <Icon name="cart" size={26} />
                 <View style={styles.numbers}>
-                  {itemCount !== 0 ? (
-                    <Text style={styles.number}>{itemCount}</Text>
+                  {cartCount !== 0 ? (
+                    <Text style={styles.number}>{cartCount}</Text>
                   ) : (
                     <Text style={styles.number}>0</Text>
                   )}
@@ -56,7 +56,7 @@ const Favourites = () => {
           <View style={styles.lowerheader}>
             <Text style={styles.heading}>My WishList</Text>
 
-            {itemCount !== 0 ? (
+            {wishCount !== 0 ? (
               <Text style={styles.statement}> Products I like ( {wishCount} )</Text>
             ) : (
               <Text style={styles.statement}>Like more products</Text>
@@ -64,7 +64,7 @@ const Favourites = () => {
           </View>
         </View>
         <ScrollView>
-          <FavouritesList onWishCountChange={handleWishCountChange} onItemCountChange={handleItemCountChange} />
+          <FavouritesList wishlist={wishlist} />
         </ScrollView>
       </View>
     </SafeAreaView>

@@ -3,45 +3,30 @@ import React, { useState, useEffect, useContext, memo } from "react";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./favouritescardview.style";
 import Icon from "../../constants/icons";
-import useDelete from "../../hook/useDelete2";
 import { AuthContext } from "../auth/AuthContext";
-import usePost from "../../hook/usePost";
 import Toast from "react-native-toast-message";
+import { useCart } from "../../contexts/CartContext";
+import { useWish } from "../../contexts/WishContext";
 
 const FavouritesCardView = memo(({ item, handleRefetch }) => {
   const navigation = useNavigation();
   const { userData } = useContext(AuthContext);
+  const { cart, cartCount, addToCart, removeFromCart, clearCart } = useCart();
+  const { wishlist, wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
+
   const userId = userData ? userData._id : null;
 
-  const { favouriteItem, quantity, size } = item || {};
+  const { quantity, size, id, title, price, imageUrl } = item || {};
+  console.log(item);
 
-  if (!favouriteItem) return null; // Return null if favouriteItem is null or undefined
+  if (!id) return null; // Return null if favouriteItem is null or undefined
 
-  const { _id: favouriteItemId, title, price, imageUrl } = favouriteItem;
+  const parsedPrice =
+    typeof price === "number" ? price : price != null ? parseFloat(String(price).replace(/[^0-9.-]+/g, "")) : 0;
 
-  const parsedPrice = parseFloat(price.replace(/[^0-9.-]+/g, ""));
-  const [totalPrice, setTotalPrice] = useState(parsedPrice * quantity);
-  const [isWished, setIsWished] = useState(false);
-  const { deleteStatus, errorStatus, redelete } = useDelete(`favourites/${userId}/item/`);
-  const { isLoading: isLoadingCart, error: cartError, addCart } = usePost("carts/");
   const [feedback, setFeedback] = useState("");
 
-  useEffect(() => {
-    if (deleteStatus === 200) {
-      handleRefetch();
-      console.log("Deleted successfully");
-      showToast("success", "Item was successfully removed from wishlist", "Continue shopping with us");
-    } else if (errorStatus) {
-      console.warn(errorStatus);
-      showToast("error", "Error occurred", errorStatus);
-    }
-  }, [deleteStatus, errorStatus]);
-
-  const addWishlist = () => {
-    setIsWished(!isWished);
-  };
-
-  const deleteItem = () => {
+  const deleteItem = (item) => {
     Alert.alert(
       "Remove item",
       "Are you sure you want to remove item from Wishlist?",
@@ -54,7 +39,10 @@ const FavouritesCardView = memo(({ item, handleRefetch }) => {
         {
           text: "Continue",
           onPress: () => {
-            redelete(item._id);
+            removeFromWishlist(id, size);
+            handleRefetch();
+            console.log("Deleted successfully");
+            showToast("success", "Item was successfully removed from wishlist", "Continue shopping with us");
           },
         },
       ],
@@ -62,32 +50,13 @@ const FavouritesCardView = memo(({ item, handleRefetch }) => {
     );
   };
 
-  const addToCart = async (id) => {
-    if (userId && item._id) {
-      const cartData = {
-        userId: userId,
-        cartItem: id,
-        quantity: 1,
-        size: "M",
-      };
-      try {
-        await addCart(cartData);
-        if (!cartError) {
-          setFeedback({ status: "success", message: "Added to cart" });
-          showToast("success", "Success", "Item has been added to cart 👋");
-        } else {
-          setFeedback({ status: "error", message: "Failed to add to cart" });
-          showToast("error", "Error occurred", "Failed to add to cart");
-        }
-      } catch (error) {
-        setFeedback({ status: "error", message: "Failed to add to cart" });
-        showToast("error", "Error occurred", "Failed to add to cart");
-      } finally {
-        setTimeout(() => setFeedback(null), 5000); // Revert after 5 seconds
-      }
-    } else {
+  const handleAddToCart = async (item) => {
+    try {
+      addToCart(item);
+    } catch (error) {
       setFeedback({ status: "error", message: "Failed to add to cart" });
       showToast("error", "Error occurred", "Failed to add to cart");
+    } finally {
       setTimeout(() => setFeedback(null), 5000); // Revert after 5 seconds
     }
   };
@@ -106,8 +75,8 @@ const FavouritesCardView = memo(({ item, handleRefetch }) => {
         style={styles.imageContainer}
         onPress={() => {
           navigation.navigate("ProductDetails", {
-            item: favouriteItem,
-            itemid: favouriteItem._id,
+            item: { ...item, _id: id },
+            itemid: id,
           });
         }}
       >
@@ -123,8 +92,8 @@ const FavouritesCardView = memo(({ item, handleRefetch }) => {
             <TouchableOpacity
               style={styles.lovebuttons}
               onPress={() => {
-                if (favouriteItem._id && userId) {
-                  addToCart(favouriteItem._id);
+                if (id && size) {
+                  handleAddToCart(item);
                 }
               }}
             >
@@ -144,8 +113,8 @@ const FavouritesCardView = memo(({ item, handleRefetch }) => {
 
         <View style={styles.priceadd}>
           <Text style={styles.price}>
-            {`KES ${new Intl.NumberFormat("en-US", { style: "currency", currency: "KES" })
-              .format(totalPrice)
+            {`Ksh ${new Intl.NumberFormat("en-US", { style: "currency", currency: "KES" })
+              .format(parsedPrice)
               .replace("KES", "")
               .trim()}`}
           </Text>

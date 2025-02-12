@@ -145,7 +145,7 @@ const Checkout = () => {
       } else {
         setErrorMessage(response.data.message || "Unknown error occurred");
 
-        console.log(response);
+        // console.log(response);
         setErrorState(true);
       }
     } catch (error) {
