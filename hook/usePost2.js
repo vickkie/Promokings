@@ -16,6 +16,7 @@ const usePost2 = (endpoint, requiresAuth = false, token = null) => {
     const url = `${backendUrl}/api/${endpoint}`;
     // Create a headers object
     const headers = {};
+    // console.log(url);
 
     // Check if authorization is required and token is provided
     if (requiresAuth && token) {

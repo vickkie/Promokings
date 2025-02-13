@@ -134,6 +134,9 @@ const Checkout = () => {
       setErrorState(false);
 
       const response = await axios.post(`${BACKEND_PORT}/api/orders`, orderData);
+
+      console.log(BACKEND_PORT);
+
       setOrderId(response.data.order.orderId);
       setSuccess(true);
 

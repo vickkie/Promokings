@@ -125,6 +125,7 @@ const AddProduct = () => {
         navigation.navigate("InventoryDashboard", { refreshList: true });
       }
     } catch (error) {
+      console.log(error);
       showToast("error", "Product doesn't meet the required standard", error.message);
     }
   };

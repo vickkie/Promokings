@@ -40,6 +40,7 @@ const ProductDetails = ({ navigation }) => {
     typeof price === "number" ? price : price != null ? parseFloat(String(price).replace(/[^0-9.-]+/g, "")) : 0;
 
   const [shortDescription, setShortDescription] = useState("");
+  const [quantity, setQuantity] = useState(0);
 
   const [itemDescription, setItemDescription] = useState(item.description || ".");
   const { userData, userLogin } = useContext(AuthContext);
@@ -56,7 +57,9 @@ const ProductDetails = ({ navigation }) => {
 
   useEffect(() => {
     if (data) {
+      console.log("here", data);
       setItemDescription(data.description);
+      setQuantity(data.quantity ? data.quantity : 0);
     }
   }, [data, refetch, itemDescription]);
 
@@ -149,6 +152,7 @@ const ProductDetails = ({ navigation }) => {
           <View style={styles.details}>
             <View style={styles.titleRow}>
               <Text style={styles.title}>{item.title}</Text>
+              <Text style={styles.quantity}>{quantity}</Text>
             </View>
             <View style={styles.ratingRow}>
               <View style={styles.priceWrapper}>
@@ -212,7 +216,12 @@ const ProductDetails = ({ navigation }) => {
               </View>
             )}
             <View style={styles.cartRow}>
-              <TouchableOpacity onPress={handleAddToCart} style={styles.cartBtn}>
+              <TouchableOpacity
+                onPress={() => {
+                  quantity > 0 ? handleAddToCart() : "";
+                }}
+                style={quantity > 0 ? styles.cartBtn : styles.cartBtnOut}
+              >
                 {isLoadingCart ? (
                   <ActivityIndicator size="small" color={COLORS.white} />
                 ) : feedback ? (
@@ -220,11 +229,16 @@ const ProductDetails = ({ navigation }) => {
                     {feedback.status === "error" ? "Failed to add" : "Added to cart successfully"}
                   </Text>
                 ) : (
-                  <Text style={styles.cartTitle}>Order now</Text>
+                  <Text style={styles.cartTitle}>{quantity > 0 ? "Order now" : "Out of stock"}</Text>
                 )}
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={handleAddToCart} style={styles.addBtn}>
+              <TouchableOpacity
+                onPress={() => {
+                  quantity > 0 ? handleAddToCart() : "";
+                }}
+                style={quantity > 0 ? styles.addBtn : styles.addBtnOut}
+              >
                 {isLoadingCart ? (
                   <ActivityIndicator size="small" color={COLORS.lightWhite} />
                 ) : feedback ? (
