@@ -69,7 +69,7 @@ const OrderDetails = () => {
   };
 
   const handleCallPress = () => {
-    const phoneNumber = "1234567890";
+    const phoneNumber = "+254706676569";
     Linking.openURL(`tel:${phoneNumber}`);
   };
 
@@ -187,7 +187,7 @@ const OrderDetails = () => {
                       : COLORS.primary,
                 }}
               >
-                {item.status}
+                {item.status === "delivery" ? "in delivery" : item.status}
               </Text>
             </TouchableOpacity>
 
@@ -206,20 +206,22 @@ const OrderDetails = () => {
 
                   <View style={{ width: SIZES.width - 27 }}>
                     {products.map((product) => (
-                      <View style={styles.containerx} key={product._id._id}>
+                      <View style={styles.containerx} key={product._id?._id}>
                         <TouchableOpacity
                           style={styles.imageContainer}
                           onPress={() =>
-                            navigation.navigate("ProductDetails", { item: product._id, itemid: product._id })
+                            product._id
+                              ? navigation.navigate("ProductDetails", { item: product._id, itemid: product._id })
+                              : ""
                           }
                         >
                           {/* {console.log("products", item)} */}
-                          <Image source={{ uri: product._id.imageUrl }} style={styles.image} />
+                          <Image source={{ uri: product._id?.imageUrl }} style={styles.image} />
                         </TouchableOpacity>
                         <View style={{ gap: 12 }}>
                           <View style={styles.details}>
                             <Text style={styles.title} numberOfLines={1}>
-                              {product._id.title}
+                              {product._id?.title}
                             </Text>
                           </View>
                           <View style={styles.rowitem}>
@@ -231,7 +233,7 @@ const OrderDetails = () => {
                           </View>
                           <View style={styles.rowitem}>
                             <View>
-                              <Text style={styles.semititle}>Quantity: {product.quantity}</Text>
+                              <Text style={styles.semititle}>Quantity: {product?.quantity}</Text>
                             </View>
                             <View style={styles.priceadd}></View>
                           </View>

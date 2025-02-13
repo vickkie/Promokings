@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import Toast from "react-native-toast-message";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import ErrorBoundary from "./screens_options/ErrorBoundary";
+import ErrorBoundary2 from "./screens_options/ErrorBoundary";
 
 import { AuthProvider } from "./components/auth/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
@@ -87,7 +87,7 @@ export default function App() {
   }
 
   return (
-    <ErrorBoundary>
+    <ErrorBoundary2>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <BottomSheetModalProvider>
           <AuthProvider>
@@ -154,6 +154,6 @@ export default function App() {
           </AuthProvider>
         </BottomSheetModalProvider>
       </GestureHandlerRootView>
-    </ErrorBoundary>
+    </ErrorBoundary2>
   );
 }

@@ -168,6 +168,9 @@ const Profile = () => {
     return <Image source={require("../assets/images/userDefault.webp")} style={styles.profile} />;
   };
 
+
+  
+
   return (
     <ScrollView>
       <SafeAreaView style={styles.container}>
@@ -183,7 +186,6 @@ const Profile = () => {
             <Text style={styles.versionText}> {VERSION_SHORT}</Text>
           </View>
           <Text style={styles.name}>{userData ? userData.name : "Please login to account"}</Text>
-
           {userData ? (
             <View style={styles.nameBtn}>
               <Text style={styles.menuText}>{userData.email}</Text>
@@ -201,7 +203,6 @@ const Profile = () => {
               </TouchableOpacity>
             </View>
           )}
-
           {userData && (
             <View style={styles.menuWrapper}>
               <TouchableOpacity onPress={() => navigation.navigate("UserDetails")}>
