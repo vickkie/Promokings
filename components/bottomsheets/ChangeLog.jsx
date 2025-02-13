@@ -15,7 +15,7 @@ const ChangeLogMenu = forwardRef((props, ref) => {
   const [changelogData, setChangelogData] = useState([]);
 
   useEffect(() => {
-    const sortedChangelog = changelog.changelog.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
+    const sortedChangelog = [...changelog.changelog].sort((a, b) => b.releaseDate.localeCompare(a.releaseDate));
     setChangelogData(sortedChangelog);
   }, []);
 
