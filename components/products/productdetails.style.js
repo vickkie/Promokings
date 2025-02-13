@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   containerWrapper: {
-    marginTop: -SIZES.large,
+    // marginTop: -SIZES.large,
     backgroundColor: COLORS.themew,
     paddingTop: 10,
     paddingBottom: 10,
@@ -33,13 +33,14 @@ const styles = StyleSheet.create({
   },
 
   details: {
+    // backgroundColor: "red",
     backgroundColor: COLORS.lightWhite,
     marginTop: 5,
     marginLeft: 5,
     marginRight: 5,
     width: SIZES.width - 10,
     borderRadius: SIZES.medium,
-    borderTopRightRadius: SIZES.medium,
+    borderBottomLeftRadius: 34,
     minHeight: "100%",
   },
   titleRow: {
@@ -224,14 +225,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginRight: 10,
+    borderColor: "grey",
+    borderWidth: 2,
   },
   buttonWrap2: {
     backgroundColor: COLORS.white,
     padding: 8,
+    borderColor: "grey",
+    borderWidth: 2,
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
   },
+
   numbers: {
     width: 20,
     height: 20,
