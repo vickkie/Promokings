@@ -11,8 +11,7 @@ import { useCart } from "../contexts/CartContext";
 
 const Categories = () => {
   const navigation = useNavigation();
-
-  const { itemCount, handleItemCountChange } = useCart();
+  const { cartCount } = useCart();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -29,7 +28,7 @@ const Categories = () => {
             }}
           >
             <View style={styles.numbers}>
-              {itemCount !== 0 ? <Text style={styles.number}>{itemCount}</Text> : <Text style={styles.number}>0</Text>}
+              {cartCount !== 0 ? <Text style={styles.number}>{cartCount}</Text> : <Text style={styles.number}>0</Text>}
             </View>
             <Icon name="cart" size={26} />
           </TouchableOpacity>

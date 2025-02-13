@@ -9,34 +9,18 @@ import { AuthContext } from "../components/auth/AuthContext";
 import Toast from "react-native-toast-message";
 import Icon from "../constants/icons";
 import * as FileSystem from "expo-file-system";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import useDelete from "../hook/useDelete2";
 import { VERSION_LONG, VERSION_SHORT } from "@env";
-
-// Function to clear cache
-const clearCache = async () => {
-  try {
-    const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory);
-    await Promise.all(files.map((file) => FileSystem.deleteAsync(FileSystem.documentDirectory + file)));
-    // console.log("Cache cleared");
-    Toast.show({
-      type: "success",
-      text1: "Cache cleared",
-      text2: "All cached data has been removed.",
-    });
-  } catch (error) {
-    // console.error("Failed to clear cache", error);
-    Toast.show({
-      type: "error",
-      text1: "Error clearing cache",
-      text2: "There was an issue clearing the cache. Please try again later.",
-    });
-  }
-};
+import { useCart } from "../contexts/CartContext";
+import { useWish } from "../contexts/WishContext";
 
 const Profile = () => {
   const navigation = useNavigation();
   const { userData, userLogout, userLogin } = useContext(AuthContext);
   const { deleteStatus, isDeleting, errorStatus, redelete } = useDelete(`user/`);
+  const { clearCart } = useCart();
+  const { clearWishlist } = useWish();
 
   const [userId, setUserId] = useState(null);
 
@@ -47,6 +31,36 @@ const Profile = () => {
       setUserId(userData._id);
     }
   }, [userLogin, userData]);
+
+  // Function to clear cache
+  const clearCache = async () => {
+    try {
+      //clear cart and wishCount
+      clearWishlist();
+      clearCart();
+
+      // Clear AsyncStorage
+      await AsyncStorage.clear();
+
+      // Clear FileSystem cache
+      const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory);
+      await Promise.all(files.map((file) => FileSystem.deleteAsync(FileSystem.documentDirectory + file)));
+
+      // Show success message
+      Toast.show({
+        type: "success",
+        text1: "Cache Cleared",
+        text2: "All cached data and local storage have been removed.",
+      });
+    } catch (error) {
+      // Show error message
+      Toast.show({
+        type: "error",
+        text1: "Error Clearing Cache",
+        text2: "There was an issue clearing the cache. Please try again later.",
+      });
+    }
+  };
 
   const handleClearCache = () => {
     Alert.alert(

@@ -35,15 +35,21 @@ const CartList = ({ cart }) => {
   if (!cart || cart.length === 0) {
     return (
       <View style={styles.containerx}>
-        <LottieView
-          source={require("../../assets/data/cartempty.json")}
-          autoPlay
-          loop={false}
-          style={styles.animation}
-        />
-        <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>
-          Oops, your cart is empty. Let's fix that!
-        </Text>
+        <View style={styles.containLottie}>
+          <View style={styles.animationWrapper}>
+            <LottieView
+              source={require("../../assets/data/cartempty.json")}
+              autoPlay
+              loop={false}
+              style={styles.animation}
+            />
+          </View>
+          <View style={{ marginTop: 0, paddingBottom: 10 }}>
+            <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>
+              "Oops, your cart is empty. Let's fix that!
+            </Text>
+          </View>
+        </View>
       </View>
     );
   }

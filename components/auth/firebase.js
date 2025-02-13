@@ -23,8 +23,6 @@ const firebaseConfig = {
   databaseURL: FIREBASE_DATABASE_URL,
 };
 
-console.log("🔥 FIREBASE_DATABASE_URL:", FIREBASE_DATABASE_URL);
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 

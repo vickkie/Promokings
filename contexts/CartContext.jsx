@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { storage, setItem, getItem } from "../utils/storage";
+import { setItem, getItem } from "../utils/storage";
 
 const CartContext = createContext();
 
