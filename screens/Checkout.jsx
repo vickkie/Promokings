@@ -297,9 +297,15 @@ const Checkout = () => {
                         <View style={styles.containerx} key={item.id}>
                           <TouchableOpacity
                             style={styles.imageContainer}
-                            onPress={() => navigation.navigate("ProductDetails", { item, itemid: item.id })}
+                            onPress={() => {
+                              navigation.navigate("ProductDetails", {
+                                item: { ...item, _id: item.id },
+                                itemid: item.id,
+                              });
+                              console.log(item);
+                            }}
                           >
-                            <Image source={{ uri: item.imageUrl }} style={styles.image} />
+                            <Image source={{ uri: item.imageUri || item.imageUrl }} style={styles.image} />
                           </TouchableOpacity>
 
                           <View style={{ gap: 12 }}>

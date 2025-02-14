@@ -15,7 +15,7 @@ const CartCardView = ({ item, handleRefresh }) => {
   const { cart, addToCart, removeFromCart } = useCart();
   const { wishlist, wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
 
-  const { id, title, price, imageUrl, quantity, size } = item || {};
+  const { id, title, price, imageUrl, imageUri, quantity, size } = item || {};
 
   useFocusEffect(
     useCallback(() => {
@@ -132,7 +132,14 @@ const CartCardView = ({ item, handleRefresh }) => {
   };
 
   const toggleWishlist = () => {
-    const product = { id: id, title: item.title, imageUrl: item.imageUrl, size: selectedSize, price: item.price };
+    const product = {
+      id: id,
+      title: item.title,
+      imageUri: item.imageUri,
+      imageUrl: item.imageUrl,
+      size: selectedSize,
+      price: item.price,
+    };
     // console.log(product, "wtf");
 
     if (isWished) {
@@ -152,7 +159,8 @@ const CartCardView = ({ item, handleRefresh }) => {
         style={styles.imageContainer}
         onPress={() => navigation.navigate("ProductDetails", { item: { ...item, _id: id }, itemid: id })}
       >
-        <Image source={{ uri: imageUrl }} style={styles.image} />
+        <Image source={{ uri: imageUri || imageUrl }} style={styles.image} />
+        {/* {console.log("source", imageUri || imageUrl)} */}
       </TouchableOpacity>
 
       <View style={{ gap: 12 }}>

@@ -36,7 +36,7 @@ const ProductsCardView = ({ item, refetch }) => {
   const navigation = useNavigation();
   const [isWished, setIsWished] = useState(false);
   const [feedback, setFeedback] = useState(null);
-  const [imageUri, setImageUri] = useState(null);
+  const [imageUri, setImageUri] = useState(item.imageUri || null);
   const { wishlist, wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
   const { userData, userLogin } = useContext(AuthContext);
   const [count, setCount] = useState(1);
@@ -100,7 +100,7 @@ const ProductsCardView = ({ item, refetch }) => {
           navigation.navigate("ProductDetails", {
             item: item,
             itemid: item._id,
-            itemUri: imageUri,
+            imageUri: imageUri,
           });
         }}
       >

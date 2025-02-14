@@ -18,7 +18,7 @@ const ProductDetails = ({ navigation }) => {
   const { wishlist, wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
 
   const route = useRoute();
-  const { item, itemUri } = route.params;
+  const { item, imageUri } = route.params;
   const [isWished, setIsWished] = useState(false);
   const [count, setCount] = useState(1);
   const [selectedSize, setSelectedSize] = useState("M");
@@ -80,6 +80,7 @@ const ProductDetails = ({ navigation }) => {
       id: item._id,
       title: item.title,
       imageUrl: item.imageUrl,
+      imageUri: imageUri,
       price: parsedPrice,
       quantity: count > 0 ? count : 1,
       size: selectedSize,
@@ -93,7 +94,14 @@ const ProductDetails = ({ navigation }) => {
   };
 
   const toggleWishlist = () => {
-    const product = { id: item._id, title: item.title, imageUrl: item.imageUrl, size: selectedSize, price: item };
+    const product = {
+      id: item._id,
+      title: item.title,
+      imageUrl: item.imageUrl,
+      imageUri: imageUri,
+      size: selectedSize,
+      price: item,
+    };
 
     if (isWished) {
       removeFromWishlist(item._id, selectedSize);
@@ -115,6 +123,8 @@ const ProductDetails = ({ navigation }) => {
   };
 
   const transitionTag = item._id ? `${item._id}` : null;
+
+  console.log(imageUri);
 
   return (
     <ScrollView>
@@ -145,7 +155,7 @@ const ProductDetails = ({ navigation }) => {
         </View>
 
         <View style={styles.imageWrapper}>
-          <Image source={{ uri: itemUri || item.imageUrl }} sharedTransitionTag={transitionTag} style={styles.image} />
+          <Image source={{ uri: imageUri || item.imageUrl }} sharedTransitionTag={transitionTag} style={styles.image} />
         </View>
         <View style={styles.containerWrapper}>
           <View style={styles.details}>
