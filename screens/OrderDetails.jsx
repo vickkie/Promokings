@@ -184,7 +184,7 @@ const OrderDetails = () => {
                       : COLORS.primary,
                 }}
               >
-                {item.status === "delivery" ? "in delivery" : item.status}
+                {item.deliveryStatus === "transit" ? "in delivery" : item.status}
               </Text>
             </TouchableOpacity>
 
@@ -252,6 +252,8 @@ const OrderDetails = () => {
                         ? "#C0DAFF"
                         : item.paymentStatus === "paid"
                         ? "#CBFCCD"
+                        : item.paymentStatus === "partial"
+                        ? "#F3D0CE"
                         : COLORS.themey, // Default color
                     paddingVertical: 4,
                     paddingHorizontal: 8,
@@ -262,15 +264,7 @@ const OrderDetails = () => {
                 </Text>
               </View>
               <View style={styles.payFlex}>
-                <Text style={styles.paymentDetails}>Payment Amount</Text>
-                <Text style={styles.paymentDetails}>
-                  {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
-                    .format(item?.totalAmount)
-                    .replace("Ksh", "")}
-                </Text>
-              </View>
-              <View style={styles.payFlex}>
-                <Text style={styles.paymentDetails}>Delivery Amount</Text>
+                <Text style={styles.paymentDetails}>Delivery Fees</Text>
                 <Text style={styles.paymentDetails}>
                   {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
                     .format(item?.deliveryAmount)
@@ -278,10 +272,18 @@ const OrderDetails = () => {
                 </Text>
               </View>
               <View style={styles.payFlex}>
+                <Text style={styles.paymentDetails}>Additional Fees</Text>
+                <Text style={styles.paymentDetails}>
+                  {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
+                    .format(item?.additionalFees)
+                    .replace("Ksh", "")}
+                </Text>
+              </View>
+              <View style={styles.payFlex}>
                 <Text style={styles.paymentDetails}>Total Amount</Text>
                 <Text style={styles.paymentDetails}>
                   {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
-                    .format(item.totalAmount + item?.deliveryAmount)
+                    .format(item.subtotal)
                     .replace("Ksh", "")}
                 </Text>
               </View>

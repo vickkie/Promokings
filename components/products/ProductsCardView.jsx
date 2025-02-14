@@ -55,7 +55,7 @@ const ProductsCardView = ({ item, refetch }) => {
 
   const { _id: id, title, price, imageUrl } = item || {};
 
-  // console.log(item);
+  console.log(imageUri);
 
   if (!item._id) return null;
   // return null;
@@ -100,6 +100,7 @@ const ProductsCardView = ({ item, refetch }) => {
           navigation.navigate("ProductDetails", {
             item: item,
             itemid: item._id,
+            itemUri: imageUri,
           });
         }}
       >

@@ -18,7 +18,7 @@ const ProductDetails = ({ navigation }) => {
   const { wishlist, wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
 
   const route = useRoute();
-  const { item } = route.params;
+  const { item, itemUri } = route.params;
   const [isWished, setIsWished] = useState(false);
   const [count, setCount] = useState(1);
   const [selectedSize, setSelectedSize] = useState("M");
@@ -145,7 +145,7 @@ const ProductDetails = ({ navigation }) => {
         </View>
 
         <View style={styles.imageWrapper}>
-          <Image source={{ uri: item.imageUrl }} sharedTransitionTag={transitionTag} style={styles.image} />
+          <Image source={{ uri: itemUri || item.imageUrl }} sharedTransitionTag={transitionTag} style={styles.image} />
         </View>
         <View style={styles.containerWrapper}>
           <View style={styles.details}>
