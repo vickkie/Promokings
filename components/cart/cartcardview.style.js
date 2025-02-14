@@ -69,8 +69,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     // alignSelf: "center",
     alignItems: "center",
-    gap: 4,
-    width: 60,
+    gap: 24,
+    width: 80,
   },
   lovebuttons: {
     padding: 5,

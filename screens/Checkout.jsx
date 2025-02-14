@@ -318,7 +318,7 @@ const Checkout = () => {
                             <View style={styles.rowitem}>
                               <Text style={styles.semititle}>
                                 Quantity: {item.quantity}
-                                {item.quantity > availableStock ? (
+                                {item.quantity > availableStock && availableStock !== 0 ? (
                                   <Text style={{ color: "red" }}> (Only {availableStock} left!)</Text>
                                 ) : null}
                               </Text>

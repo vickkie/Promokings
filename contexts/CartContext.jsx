@@ -39,6 +39,7 @@ export const CartProvider = ({ children }) => {
       const existingItemIndex = prevCart.findIndex((item) => item.id === product.id && item.size === product.size);
 
       let updatedCart;
+
       if (existingItemIndex !== -1) {
         updatedCart = [...prevCart];
         updatedCart[existingItemIndex].quantity =

@@ -1,5 +1,5 @@
 import { TouchableOpacity, Text, View, Image, Alert } from "react-native";
-import React, { useState, useEffect, useContext, useCallback, memo } from "react";
+import React, { useState, useEffect, useContext, useCallback, useRef } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import styles from "./cartcardview.style";
 import Icon from "../../constants/icons";
@@ -64,18 +64,61 @@ const CartCardView = ({ item }) => {
     });
   };
 
+  const longPressInterval = useRef(null); // 🔥 Store interval reference
+
   const increment = () => {
-    setCount((prevCount) => prevCount + 1);
-    addToCart({ ...item, quantity: 1 });
+    setCount((prevCount) => {
+      const newCount = prevCount + 1;
+      addToCart({ ...item, quantity: newCount - prevCount });
+      return newCount;
+    });
   };
 
   const decrement = () => {
-    if (count > 1) {
-      setCount((prevCount) => prevCount - 1);
-      addToCart({ ...item, quantity: -1 });
-    }
+    setCount((prevCount) => {
+      if (prevCount > 1) {
+        const newCount = prevCount - 1;
+        addToCart({ ...item, quantity: newCount - prevCount });
+        return newCount;
+      }
+      return prevCount;
+    });
   };
 
+  // ✅ Start Long Press for Increment (Jump by 10)
+  const startLongPressIncrement = () => {
+    if (longPressInterval.current) return; // Prevent multiple intervals
+    longPressInterval.current = setInterval(() => {
+      setCount((prevCount) => {
+        const newCount = prevCount + 10;
+        addToCart({ ...item, quantity: newCount - prevCount });
+        return newCount;
+      });
+    }, 900); // Increase every 300ms
+  };
+
+  // ✅ Start Long Press for Decrement (Jump by 10)
+  const startLongPressDecrement = () => {
+    if (longPressInterval.current) return;
+    longPressInterval.current = setInterval(() => {
+      setCount((prevCount) => {
+        if (prevCount > 10) {
+          const newCount = prevCount - 10;
+          addToCart({ ...item, quantity: newCount - prevCount });
+          return newCount;
+        }
+        return prevCount;
+      });
+    }, 900);
+  };
+
+  // ✅ Stop Long Press
+  const stopLongPress = () => {
+    if (longPressInterval.current) {
+      clearInterval(longPressInterval.current);
+      longPressInterval.current = null;
+    }
+  };
   const deleteItem = () => {
     Alert.alert(
       "Remove item",
@@ -135,11 +178,21 @@ const CartCardView = ({ item }) => {
 
         <View style={styles.priceadd}>
           <View style={styles.addminus}>
-            <TouchableOpacity style={styles.addBtn} onPress={decrement}>
+            <TouchableOpacity
+              style={styles.addBtn}
+              onPress={decrement}
+              onLongPress={startLongPressDecrement}
+              onPressOut={stopLongPress}
+            >
               <Icon name="minus" size={24} />
             </TouchableOpacity>
             <Text style={styles.quantity}>{count}</Text>
-            <TouchableOpacity style={styles.addBtn} onPress={increment}>
+            <TouchableOpacity
+              style={styles.addBtn}
+              onPress={increment}
+              onLongPress={startLongPressIncrement}
+              onPressOut={stopLongPress}
+            >
               <Icon name="add" size={24} />
             </TouchableOpacity>
           </View>
