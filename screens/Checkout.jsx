@@ -87,8 +87,8 @@ const Checkout = () => {
         const response = await axios.post(`${BACKEND_PORT}/api/products/stock`, {
           productIds,
         });
-        console.log(response.data.stock);
-        setStockData(response.data.stock); // Store stock data
+        // console.log(response.data.stock);
+        setStockData(response.data.stock);
       } catch (err) {
         console.error("Error fetching stock:", err);
         setError("Failed to fetch stock data");
@@ -157,7 +157,7 @@ const Checkout = () => {
 
       const response = await axios.post(`${BACKEND_PORT}/api/orders`, orderData);
 
-      console.log(BACKEND_PORT);
+      // console.log(BACKEND_PORT);
 
       setOrderId(response.data.order.orderId);
       setSuccess(true);

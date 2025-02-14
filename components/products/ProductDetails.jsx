@@ -57,7 +57,6 @@ const ProductDetails = ({ navigation }) => {
 
   useEffect(() => {
     if (data) {
-      console.log("here", data);
       setItemDescription(data.description);
       setQuantity(data.quantity ? data.quantity : 0);
     }

@@ -62,6 +62,7 @@ const CartList = ({ cart }) => {
             `${item.id}-${item.size ?? index}`;
           }}
           nestedScrollEnabled={true}
+          scrollEnabled={false}
           data={cart}
           renderItem={({ item }) => <CartCardVIew item={item} handleRefetch={handleRefetch} />}
         />
