@@ -10,14 +10,11 @@ import useDelete from "../hook/useDelete";
 import { BACKEND_PORT } from "@env";
 import axios from "axios";
 
-import Clipboard from "expo-clipboard";
-
 const OrderDetails = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { products, totals, orderId, item } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
-  const { deleteStatus, errorStatus, redelete } = useDelete(`carts/user`);
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorState, setErrorState] = useState(false);
@@ -241,17 +238,55 @@ const OrderDetails = () => {
                       </View>
                     ))}
                   </View>
-
-                  <View>
-                    {/* Uncomment if you need to include the amount and button */}
-                    {/* <Text style={styles.amount}>Estimated Amount: {item.totalAmount}</Text>
-                  <TouchableOpacity style={styles.button1} onPress={handleNext}>
-                    <Text style={styles.nextText}>Next</Text>
-                  </TouchableOpacity> */}
-                  </View>
                 </View>
               </ScrollView>
             </View>
+
+            <View style={[styles.paymentRow, { justifyContent: "center" }]}>
+              <View style={styles.payFlex}>
+                <Text style={styles.paymentDetails}>Payment status</Text>
+                <Text
+                  style={{
+                    backgroundColor:
+                      item.paymentStatus === "pending"
+                        ? "#C0DAFF"
+                        : item.paymentStatus === "paid"
+                        ? "#CBFCCD"
+                        : COLORS.themey, // Default color
+                    paddingVertical: 4,
+                    paddingHorizontal: 8,
+                    borderRadius: SIZES.medium,
+                  }}
+                >
+                  {item?.paymentStatus}
+                </Text>
+              </View>
+              <View style={styles.payFlex}>
+                <Text style={styles.paymentDetails}>Payment Amount</Text>
+                <Text style={styles.paymentDetails}>
+                  {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
+                    .format(item?.totalAmount)
+                    .replace("Ksh", "")}
+                </Text>
+              </View>
+              <View style={styles.payFlex}>
+                <Text style={styles.paymentDetails}>Delivery Amount</Text>
+                <Text style={styles.paymentDetails}>
+                  {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
+                    .format(item?.deliveryAmount)
+                    .replace("Ksh", "")}
+                </Text>
+              </View>
+              <View style={styles.payFlex}>
+                <Text style={styles.paymentDetails}>Total Amount</Text>
+                <Text style={styles.paymentDetails}>
+                  {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
+                    .format(item.totalAmount + item?.deliveryAmount)
+                    .replace("Ksh", "")}
+                </Text>
+              </View>
+            </View>
+
             <View style={[styles.relatedRow, { justifyContent: "center" }]}>
               <Text style={styles.relatedHeader}>Related information</Text>
               <View style={styles.wrapperRelated}>
@@ -335,6 +370,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 3,
     minHeight: SIZES.height / 5,
     marginTop: 10,
+  },
+  paymentRow: {
+    backgroundColor: COLORS.themew,
+    width: SIZES.width - 20,
+    marginStart: 10,
+    borderRadius: SIZES.medium,
+    paddingHorizontal: 3,
+    minHeight: SIZES.height / 8,
+    marginTop: 10,
+    paddingTop: 5,
   },
   upperButtons: {
     width: SIZES.width - 20,
@@ -517,8 +562,22 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     paddingVertical: 6,
   },
+  paymentDetails: {
+    marginHorizontal: 10,
+    paddingVertical: 6,
+    fontWeight: "700",
+  },
   selectedText: {
     fontFamily: "GtAlpine",
     fontSize: SIZES.medium,
+  },
+  payFlex: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 5,
+    justifyContent: "space-between",
+  },
+  smallTop: {
+    marginTop: 5,
   },
 });
