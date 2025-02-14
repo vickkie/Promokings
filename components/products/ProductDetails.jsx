@@ -40,7 +40,7 @@ const ProductDetails = ({ navigation }) => {
     typeof price === "number" ? price : price != null ? parseFloat(String(price).replace(/[^0-9.-]+/g, "")) : 0;
 
   const [shortDescription, setShortDescription] = useState("");
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(10);
 
   const [itemDescription, setItemDescription] = useState(item.description || ".");
   const { userData, userLogin } = useContext(AuthContext);
@@ -152,7 +152,6 @@ const ProductDetails = ({ navigation }) => {
           <View style={styles.details}>
             <View style={styles.titleRow}>
               <Text style={styles.title}>{item.title}</Text>
-              <Text style={styles.quantity}>{quantity}</Text>
             </View>
             <View style={styles.ratingRow}>
               <View style={styles.priceWrapper}>
@@ -218,9 +217,9 @@ const ProductDetails = ({ navigation }) => {
             <View style={styles.cartRow}>
               <TouchableOpacity
                 onPress={() => {
-                  quantity > 0 ? handleAddToCart() : "";
+                  handleAddToCart();
                 }}
-                style={quantity > 0 ? styles.cartBtn : styles.cartBtnOut}
+                style={styles.cartBtn}
               >
                 {isLoadingCart ? (
                   <ActivityIndicator size="small" color={COLORS.white} />
@@ -229,15 +228,15 @@ const ProductDetails = ({ navigation }) => {
                     {feedback.status === "error" ? "Failed to add" : "Added to cart successfully"}
                   </Text>
                 ) : (
-                  <Text style={styles.cartTitle}>{quantity > 0 ? "Order now" : "Out of stock"}</Text>
+                  <Text style={styles.cartTitle}>{"Order now"}</Text>
                 )}
               </TouchableOpacity>
 
               <TouchableOpacity
                 onPress={() => {
-                  quantity > 0 ? handleAddToCart() : "";
+                  handleAddToCart();
                 }}
-                style={quantity > 0 ? styles.addBtn : styles.addBtnOut}
+                style={styles.addBtn}
               >
                 {isLoadingCart ? (
                   <ActivityIndicator size="small" color={COLORS.lightWhite} />

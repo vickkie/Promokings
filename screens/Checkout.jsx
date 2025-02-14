@@ -20,8 +20,6 @@ import { AuthContext } from "../components/auth/AuthContext";
 import * as Yup from "yup";
 import IntlPhoneInput from "react-native-intl-phone-input";
 
-import useDelete from "../hook/useDelete";
-
 import CheckoutStep3 from "./Payments";
 import LottieView from "lottie-react-native";
 import { BACKEND_PORT } from "@env";
@@ -40,6 +38,9 @@ const Checkout = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [success, setSuccess] = useState(null);
   const [orderId, setOrderId] = useState(null);
+  const [stockData, setStockData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!userLogin) {
@@ -77,6 +78,27 @@ const Checkout = () => {
         .catch((err) => setPhoneError(err.errors[0]));
     }
   }, [phoneNumber]);
+
+  useEffect(() => {
+    const fetchStock = async () => {
+      try {
+        const productIds = products.map((product) => product.id); // Extract product IDs
+
+        const response = await axios.post(`${BACKEND_PORT}/api/products/stock`, {
+          productIds,
+        });
+        console.log(response.data.stock);
+        setStockData(response.data.stock); // Store stock data
+      } catch (err) {
+        console.error("Error fetching stock:", err);
+        setError("Failed to fetch stock data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStock();
+  }, [products]);
 
   const handleNext = () => {
     switch (step) {
@@ -268,56 +290,88 @@ const Checkout = () => {
                   </View>
 
                   <View style={{ width: SIZES.width - 27 }}>
-                    {products.map((item) => (
-                      <View style={styles.containerx} key={item.id}>
-                        <TouchableOpacity
-                          style={styles.imageContainer}
-                          onPress={() => navigation.navigate("ProductDetails", { item, itemid: item.id })}
-                        >
-                          <Image source={{ uri: item.imageUrl }} style={styles.image} />
-                        </TouchableOpacity>
-                        <View style={{ gap: 12 }}>
-                          <View style={styles.details}>
-                            <Text style={styles.title} numberOfLines={1}>
-                              {item.title}
-                            </Text>
-                          </View>
-                          <View style={styles.rowitem}>
-                            <View style={styles.xp}>
-                              <Text style={styles.semititle} numberOfLines={1}>
-                                SIZE-{item.size}
+                    {products.map((item) => {
+                      const availableStock = stockData[item.id] || 0; // Get stock from fetched data
+
+                      return (
+                        <View style={styles.containerx} key={item.id}>
+                          <TouchableOpacity
+                            style={styles.imageContainer}
+                            onPress={() => navigation.navigate("ProductDetails", { item, itemid: item.id })}
+                          >
+                            <Image source={{ uri: item.imageUrl }} style={styles.image} />
+                          </TouchableOpacity>
+
+                          <View style={{ gap: 12 }}>
+                            <View style={styles.details}>
+                              <Text style={styles.title} numberOfLines={1}>
+                                {item.title}
                               </Text>
                             </View>
-                          </View>
-                          <View style={styles.rowitem}>
-                            <View>
+
+                            <View style={styles.rowitem}>
+                              <View>
+                                <Text style={styles.semititle}>Size: {item.size}</Text>
+                              </View>
+                            </View>
+
+                            <View style={styles.rowitem}>
                               <Text style={styles.semititle}>
-                                <Text style={styles.semititle}>Quantity : {item.quantity}</Text>
+                                Quantity: {item.quantity}
+                                {item.quantity > availableStock ? (
+                                  <Text style={{ color: "red" }}> (Only {availableStock} left!)</Text>
+                                ) : null}
                               </Text>
                             </View>
 
                             <View style={styles.priceadd}>
                               <Text style={styles.semititle}>
-                                Total:
+                                Total:{" "}
                                 {new Intl.NumberFormat("en-US", { minimumFractionDigits: 2 }).format(
-                                  item.price * item.quantity || 0
+                                  item.price * item.quantity
                                 )}
                               </Text>
                             </View>
+
+                            {/* Show warning if product is out of stock */}
+                            {availableStock === 0 && (
+                              <Text style={{ color: "red", fontWeight: "bold" }}>Out of Stock</Text>
+                            )}
                           </View>
                         </View>
-                      </View>
-                    ))}
+                      );
+                    })}
                   </View>
 
                   <View>
                     <Text style={styles.amount}>Checkout Amount: Ksh {Number(estimatedAmount).toLocaleString()}</Text>
-                    <TouchableOpacity style={styles.button1} onPress={handleNext}>
-                      <Text style={styles.nextText}>Next</Text>
+
+                    {/* DISABLE BUTTON IF STOCK IS OUT */}
+                    <TouchableOpacity
+                      style={[
+                        styles.button1,
+                        (products.some((item) => item.quantity === 0) ||
+                          products.some((item) => item.quantity > (stockData[item.id] || 0))) && {
+                          backgroundColor: "gray",
+                        },
+                      ]}
+                      onPress={handleNext}
+                      disabled={
+                        products.some((item) => item.quantity === 0) ||
+                        products.some((item) => item.quantity > (stockData[item.id] || 0))
+                      }
+                    >
+                      <Text style={styles.nextText}>
+                        {products.some((item) => item.quantity === 0) ||
+                        products.some((item) => item.quantity > (stockData[item.id] || 0))
+                          ? "Out of Stock"
+                          : "Next"}
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 </View>
               )}
+
               {step === 2 && (
                 <View style={styles.stepContainer}>
                   <View style={styles.shippingContainer}>
@@ -514,8 +568,8 @@ const styles = StyleSheet.create({
   },
 
   imageContainer: {
-    height: 80,
-    width: 80,
+    height: 100,
+    width: 100,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: SIZES.medium,
@@ -524,8 +578,8 @@ const styles = StyleSheet.create({
   },
   image: {
     borderRadius: SIZES.medium,
-    height: "96%",
-    width: "96%",
+    height: "100%",
+    width: "100%",
   },
   rowitem: {
     flexDirection: "row",
