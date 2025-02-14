@@ -87,7 +87,7 @@ const FavouritesList = ({ wishlist = [] }) => {
     );
   }
 
-  if (wishlist.length === 0) {
+  if (!wishlist || wishlist.length === 0) {
     return (
       <View style={styles.containerx}>
         <View style={styles.containLottie}>

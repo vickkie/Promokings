@@ -119,8 +119,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   animation: {
-    width: SIZES.width,
-    height: "auto",
+    width: "100%",
+    height: "100%",
   },
   containerx: {
     minHeight: SIZES.height - 300,

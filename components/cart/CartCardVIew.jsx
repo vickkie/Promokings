@@ -9,7 +9,7 @@ import { useWish } from "../../contexts/WishContext";
 import { Ionicons, Fontisto } from "@expo/vector-icons";
 import { COLORS } from "../../constants";
 
-const CartCardView = ({ item }) => {
+const CartCardView = ({ item, handleRefresh }) => {
   // console.log(item);
   const navigation = useNavigation();
   const { cart, addToCart, removeFromCart } = useCart();
