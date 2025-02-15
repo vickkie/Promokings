@@ -7,6 +7,7 @@ import styles from "./productlist.style";
 import ProductsCardView from "./ProductsCardView";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
+import { BACKEND_PORT } from "@env";
 
 const ProductList = ({ sendDataToParent, routeParams }) => {
   const route = useRoute();
@@ -20,6 +21,7 @@ const ProductList = ({ sendDataToParent, routeParams }) => {
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [endReached, setEndReached] = useState(false);
   const [error, setError] = useState(null);
   const limit = 6; // Number of items per request
 
@@ -29,17 +31,20 @@ const ProductList = ({ sendDataToParent, routeParams }) => {
 
   // Fetch products from API
   const fetchProducts = async (reset = false) => {
-    if (loading) return;
-
+    if (loading) return; // Prevent multiple fetch calls
     setLoading(true);
+
     try {
-      const response = await axios.get(`http://192.168.100.20:3000/api/${routeParam}`, {
+      const response = await axios.get(`${BACKEND_PORT}/api/${routeParam}`, {
         params: { limit, offset: reset ? 0 : offset },
       });
 
-      // console.log(`http://192.168.100.20:3000/api/${routeParam}`, { limit, offset: reset ? 0 : offset, reset });
+      // Ensure unique products
+      setProducts((prev) => {
+        const newData = reset ? response.data : [...prev, ...response.data];
+        return Array.from(new Map(newData.map((item) => [item._id, item])).values());
+      });
 
-      setProducts((prev) => (reset ? response.data : [...prev, ...response.data]));
       setOffset((prev) => (reset ? limit : prev + limit));
       setError(null);
     } catch (err) {
@@ -54,6 +59,14 @@ const ProductList = ({ sendDataToParent, routeParams }) => {
   useEffect(() => {
     fetchProducts(true);
   }, [routeParam]);
+
+  const handleEndReached = () => {
+    if (!loading && !endReached) {
+      setEndReached(true);
+      fetchProducts(false);
+      setTimeout(() => setEndReached(false), 1000); // Delay next fetch
+    }
+  };
 
   // Refresh function
   const onRefresh = useCallback(() => {
@@ -115,7 +128,7 @@ const ProductList = ({ sendDataToParent, routeParams }) => {
         ref={scrollRef}
         onScroll={handleScroll}
         scrollEventThrottle={16}
-        keyExtractor={(item, index) => index.toString()} // Fix: Use index if _id is not guaranteed
+        keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())}
         contentContainerStyle={[{ columnGap: SIZES.medium }, styles.flatlistContainer]}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         numColumns={2}
@@ -125,7 +138,7 @@ const ProductList = ({ sendDataToParent, routeParams }) => {
         data={products}
         renderItem={({ item }) => <ProductsCardView item={item} />}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        onEndReached={() => fetchProducts(false)} // Infinite scroll
+        onEndReached={handleEndReached}
         onEndReachedThreshold={0.5}
         ListFooterComponent={loading && <ActivityIndicator size="large" />}
       />

@@ -86,8 +86,8 @@
       "fixed": ["Fixed Fatal crash bug on v1.3.4"]
     },
     {
-      "releaseDate": "2025-03-11",
-      "version": "1.3.5",
+      "releaseDate": "2025-03-15",
+      "version": "1.3.6",
       "whatsNew": ["Order payment tracking", "Cache in-app clearing","General UI improvements","Fast loading images"],
       "fixed": ["Easier profile update"]
     }
