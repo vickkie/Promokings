@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import CartList from "../components/cart/CartList";
@@ -37,8 +37,10 @@ const Cart = () => {
           </View>
 
           <View style={styles.lowerheader}>
-            <Text style={styles.heading}>My cart</Text>
-            <Text style={styles.statement}>{cartCount} items in my cart</Text>
+            <View style={{ display: "flex", justifyContent: "space-between", flexDirection: "row" }}>
+              <Text style={styles.heading}>My cart</Text>
+              <Text style={styles.statement}>{cartCount} items in my cart</Text>
+            </View>
             <View style={styles.location}>
               <TouchableOpacity style={styles.locationName} onPress={clearCart}>
                 <Icon name="location" size={24} />
@@ -55,6 +57,7 @@ const Cart = () => {
               </TouchableOpacity>
             </View>
           </View>
+          <Text style={styles.stepstext}>( Long press to add multiple )</Text>
         </View>
 
         <ScrollView>
@@ -79,6 +82,12 @@ const styles = StyleSheet.create({
     textAlign: "left",
     color: COLORS.themeb,
     marginStart: 20,
+  },
+  stepstext: {
+    fontFamily: "regular",
+    color: COLORS.gray2,
+    textAlign: "center",
+    paddingBottom: 6,
   },
   topheading: {
     fontSize: SIZES.medium,
@@ -134,7 +143,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     flex: 1,
     paddingTop: 20,
-    paddingBottom: 20,
+    paddingBottom: 5,
   },
   statement: {
     fontFamily: "regular",
