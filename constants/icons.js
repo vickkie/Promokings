@@ -22,6 +22,8 @@ import HomeFilledIcon from "../assets/svg/home-filled.svg";
 import UserCircleFilledIcon from "../assets/svg/user-circle-filled.svg";
 import UserCircleFilled from "../assets/svg/user-circle-fill.svg";
 import Menu2filledIcon from "../assets/svg/menu2-filled.svg";
+import ShopfilledIcon from "../assets/svg/shop-filled.svg";
+import ShopIcon from "../assets/svg/shop.svg";
 import SearchCircleFilledIcon from "../assets/svg/search-circle-filled.svg";
 import HeartFilledIcon from "../assets/svg/heart-filled.svg";
 import CloseCircleIcon from "../assets/svg/close-circle.svg";
@@ -75,6 +77,8 @@ import question from "../assets/svg/question.svg";
 import productapproved from "../assets/svg/product-good.svg";
 
 const iconMap = {
+  shop: ShopIcon,
+  shopfilled: ShopfilledIcon,
   productapproved: productapproved,
   checkempty: checkempty,
   web: web,

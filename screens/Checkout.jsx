@@ -302,7 +302,7 @@ const Checkout = () => {
                                 item: { ...item, _id: item.id },
                                 itemid: item.id,
                               });
-                              console.log(item);
+                              // console.log(item);
                             }}
                           >
                             <Image source={{ uri: item.imageUri || item.imageUrl }} style={styles.image} />

@@ -48,7 +48,7 @@ export const CartProvider = ({ children }) => {
         updatedCart = [...prevCart, { ...product, quantity: product.quantity || 1 }];
       }
 
-      console.log("Updated Cart:", JSON.stringify(updatedCart, null, 2));
+      // console.log("Updated Cart:", JSON.stringify(updatedCart, null, 2));
       return updatedCart;
     });
   };

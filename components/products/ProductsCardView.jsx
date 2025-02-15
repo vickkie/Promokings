@@ -55,7 +55,7 @@ const ProductsCardView = ({ item, refetch }) => {
 
   const { _id: id, title, price, imageUrl } = item || {};
 
-  console.log(imageUri);
+  // console.log(imageUri);
 
   if (!item._id) return null;
   // return null;

@@ -1,11 +1,10 @@
 import { FlatList, Text, View, SafeAreaView, ActivityIndicator, RefreshControl, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, memo } from "react";
 import { COLORS, SIZES } from "../../constants";
 import styles from "./productsRow.style";
 import ProductsCardView from "./ProductsCardView";
 import useFetch from "../../hook/useFetch";
 import { Ionicons } from "@expo/vector-icons";
-import { useCallback } from "react";
 
 const ProductsRow = () => {
   const { data, isLoading, error, refetch } = useFetch("products?limit=10&offset=0");
@@ -16,21 +15,20 @@ const ProductsRow = () => {
     try {
       refetch();
     } catch (error) {
+      console.error("Error refreshing:", error);
     } finally {
-      setRefreshing(false); // Ensure refreshing state is reset
+      setRefreshing(false);
     }
   }, [refetch]);
 
-  // Ensure data is treated as an array to avoid accessing .length of undefined
   const dataArray = Array.isArray(data) ? data : [];
-
-  const handleRefetch = () => {
+  const handleRefetch = useCallback(() => {
     refetch();
-  };
+  }, [refetch]);
 
-  // console.log("refetching", item);
+  const keyExtractor = useCallback((item) => item._id, []);
 
-  const keyExtractor = (item) => item._id;
+  const renderItem = useCallback(({ item }) => <ProductsCardView item={item} />, []);
 
   return (
     <View style={[styles.container, { marginBottom: 20 }]}>
@@ -56,10 +54,15 @@ const ProductsRow = () => {
         <FlatList
           data={dataArray}
           keyExtractor={keyExtractor}
-          renderItem={({ item }) => <ProductsCardView item={item} />}
+          renderItem={renderItem}
           horizontal
+          initialNumToRender={3}
+          maxToRenderPerBatch={5}
+          updateCellsBatchingPeriod={50}
+          removeClippedSubviews={true}
+          windowSize={21}
           contentContainerStyle={{ columnGap: 2 }}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
         />
       )}
     </View>

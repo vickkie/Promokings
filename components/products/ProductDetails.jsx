@@ -124,7 +124,7 @@ const ProductDetails = ({ navigation }) => {
 
   const transitionTag = item._id ? `${item._id}` : null;
 
-  console.log(imageUri);
+  // console.log(imageUri);
 
   return (
     <ScrollView>

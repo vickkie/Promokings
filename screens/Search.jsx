@@ -69,7 +69,7 @@ const Search = () => {
                 handleSearch();
               }}
             >
-              <Ionicons name="ios-search-circle" size={SIZES.xxLarge - 6} color={COLORS.white}></Ionicons>
+              <Ionicons name="search-circle-outline" size={SIZES.xxLarge - 6} color={COLORS.white}></Ionicons>
             </TouchableOpacity>
           </View>
         </View>

@@ -1,5 +1,5 @@
 import { FlatList, Text, View, SafeAreaView, ActivityIndicator, TouchableOpacity } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback, memo } from "react";
 import { COLORS, SIZES } from "../../constants";
 import styles from "./productsRow.style";
 import ProductsCardView from "./ProductsCardView";
@@ -8,15 +8,15 @@ import { Ionicons } from "@expo/vector-icons";
 
 const LatestProducts = () => {
   const { data, isLoading, error, refetch } = useFetch("products?limit=10&offset=10");
-
-  // Ensure data is treated as an array to avoid accessing .length of undefined
   const dataArray = Array.isArray(data) ? data : [];
 
-  const handleRefetch = () => {
+  const handleRefetch = useCallback(() => {
     refetch();
-  };
+  }, [refetch]);
 
-  const keyExtractor = (item) => item._id;
+  const keyExtractor = useCallback((item) => item._id, []);
+
+  const renderItem = useCallback(({ item }) => <ProductsCardView item={item} />, []);
 
   return (
     <View style={[styles.container, { marginBottom: 52 }]}>
@@ -42,9 +42,14 @@ const LatestProducts = () => {
         <FlatList
           data={dataArray}
           keyExtractor={keyExtractor}
-          renderItem={({ item }) => <ProductsCardView item={item} />}
-          contentContainerStyle={{ columnGap: 2 }}
+          renderItem={renderItem}
           horizontal
+          initialNumToRender={3}
+          maxToRenderPerBatch={5}
+          updateCellsBatchingPeriod={50}
+          removeClippedSubviews={true}
+          windowSize={21}
+          contentContainerStyle={{ columnGap: 2 }}
         />
       )}
     </View>

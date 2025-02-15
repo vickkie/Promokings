@@ -84,6 +84,12 @@
       "version": "1.3.5",
       "whatsNew": ["Local Favourite management", "Local cart management","General UI improvements","Speed improvement 50%"],
       "fixed": ["Fixed Fatal crash bug on v1.3.4"]
+    },
+    {
+      "releaseDate": "2025-03-11",
+      "version": "1.3.5",
+      "whatsNew": ["Order payment tracking", "Cache in-app clearing","General UI improvements","Fast loading images"],
+      "fixed": ["Easier profile update"]
     }
   ]
 }

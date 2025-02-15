@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Home, Search, Profile, Categories } from "../screens";
+import { Home, Search, Profile, Categories, Products } from "../screens";
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
 
@@ -52,6 +52,16 @@ const BottomTabNavigation = () => {
             <Icon name={focused ? "menu2filled" : "menu2"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
           ),
           tabBarLabel: "Categories",
+        }}
+      />
+      <Tab.Screen
+        name="Products"
+        component={Products}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Icon name={focused ? "shopfilled" : "shop"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
+          ),
+          tabBarLabel: "Products",
         }}
       />
       <Tab.Screen

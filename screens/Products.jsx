@@ -50,7 +50,10 @@ const Products = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-        <ProductList sendDataToParent={handleDataFromChild} />
+        <ProductList
+          sendDataToParent={handleDataFromChild}
+          routeParams={{ routeParam: "products", category: "All Products" }}
+        />
       </View>
     </SafeAreaView>
   );

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { ScrollView, View, Text, Image, TouchableOpacity, Alert, StyleSheet } from "react-native";
+import { ScrollView, View, Text, Image, TouchableOpacity, Alert, StyleSheet, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -156,20 +156,36 @@ const Profile = () => {
   };
 
   const renderProfilePicture = () => {
+    const [loading, setLoading] = useState(true);
+
     if (!userLogin) {
-      // User not logged in
+      // User not logged in, show default image
       return <Image source={require("../assets/images/userDefault.webp")} style={styles.profile} />;
     }
 
-    if (userData && userData.profilePicture) {
-      return <Image source={{ uri: `${userData.profilePicture}` }} style={styles.profile} />;
+    if (userData?.profilePicture) {
+      return (
+        <View style={{ position: "relative" }}>
+          {loading && (
+            <ActivityIndicator
+              size="small"
+              color="#000"
+              style={{ position: "absolute", alignSelf: "center", top: "50%" }}
+            />
+          )}
+          <Image
+            source={{ uri: userData.profilePicture }}
+            style={styles.profile}
+            onLoadStart={() => setLoading(true)}
+            onLoad={() => setLoading(false)}
+            onError={() => setLoading(false)} // Hide loader if error occurs
+          />
+        </View>
+      );
     }
 
     return <Image source={require("../assets/images/userDefault.webp")} style={styles.profile} />;
   };
-
-
-  
 
   return (
     <ScrollView>

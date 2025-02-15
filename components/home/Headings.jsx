@@ -16,7 +16,7 @@ const Headings = ({ heading }) => {
         <Text style={styles.headerTitle}>{heading}</Text>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("ProductList", { routeParam });
+            navigation.navigate("ProductList", { routeParam, category: "All Products" });
           }}
         >
           <Icon name="carousel" size={26} />
