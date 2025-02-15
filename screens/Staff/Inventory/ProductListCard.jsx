@@ -113,7 +113,7 @@ const ProductListCard = ({ item, isGridView }) => {
             {item.title}
           </Text>
           <Text style={styles.supplier} numberOfLines={1}>
-            {item.supplier}
+            {`${item.quantity} units`}
           </Text>
           <Text style={isGridView ? styles.gridPrice : styles.price}>Kshs {parseInt(item.price.replace("$", ""))}</Text>
         </View>

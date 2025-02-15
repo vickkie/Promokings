@@ -7,13 +7,24 @@ import { AuthContext } from "../../../components/auth/AuthContext";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
 import { COLORS, SIZES } from "../../../constants";
 import LatestProducts from "./LatestProducts";
+import useFetch from "../../../hook/useFetch";
+
+const zeroData = {
+  totalProducts: 0,
+  outOfStock: 0,
+  lowStock: 0,
+  availableStock: 0,
+};
 
 const InventoryDashboard = () => {
   const { userLogin, hasRole, userData } = useContext(AuthContext);
   const navigation = useNavigation();
   const route = useRoute();
 
+  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("products/stock-summary");
+
   const [userId, setUserId] = useState(null);
+  const [quantities, setQuanties] = useState(null);
   const [refreshList, setRefreshList] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -31,6 +42,7 @@ const InventoryDashboard = () => {
     useCallback(() => {
       if (route.params?.refreshList) {
         setRefreshList(true);
+        refetch();
       }
     }, [route.params])
   );
@@ -45,6 +57,10 @@ const InventoryDashboard = () => {
       setRefreshList(false); // Reset refreshList after refreshing
     }, 2000);
   }, []);
+
+  useEffect(() => {
+    refetch();
+  }, [refreshing]);
 
   const renderProfilePicture = () => {
     if (!userLogin) {
@@ -64,6 +80,14 @@ const InventoryDashboard = () => {
     //   BottomSheetRef.current.present();
     // }
   };
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      setQuanties(data);
+    } else if (!isLoading && !data) {
+      setQuanties(zeroData);
+    }
+  }, [isLoading, data]);
 
   return (
     <SafeAreaView style={styles.topSafeview}>
@@ -97,30 +121,58 @@ const InventoryDashboard = () => {
             <View style={styles.lowerWelcome}>
               <View style={styles.dashbboxWrapperp}>
                 <View style={styles.dashbboxWrapper}>
-                  <TouchableOpacity onPress={() => {}}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("EditProductList", {
+                        products: "products",
+                        refreshList: true,
+                      });
+                    }}
+                  >
                     <View style={[styles.dashBox, styles.box1]}>
-                      <Text style={styles.boxNUmber}>100</Text>
+                      <Text style={styles.boxNUmber}>{quantities?.totalProducts}</Text>
                       <Text style={styles.boxText}>Total products</Text>
                     </View>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => {}}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("EditProductList", {
+                        products: "products/stock-summary/out-of-stock",
+                        refreshList: true,
+                      });
+                    }}
+                  >
                     <View style={[styles.dashBox, styles.box2]}>
-                      <Text style={styles.boxNUmber}>35</Text>
+                      <Text style={styles.boxNUmber}>{quantities?.outOfStock}</Text>
                       <Text style={styles.boxText}>Out of stock</Text>
                     </View>
                   </TouchableOpacity>
                 </View>
                 <View style={styles.dashbboxWrapper}>
-                  <TouchableOpacity onPress={() => {}}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("EditProductList", {
+                        products: "products/stock-summary/low-stock",
+                        refreshList: true,
+                      });
+                    }}
+                  >
                     <View style={[styles.dashBox, styles.box3]}>
-                      <Text style={styles.boxNUmber}>70</Text>
-                      <Text style={styles.boxText}>Available stock</Text>
+                      <Text style={styles.boxNUmber}>{quantities?.lowStock}</Text>
+                      <Text style={styles.boxText}>Below Minimum</Text>
                     </View>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => {}}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("EditProductList", {
+                        products: "products/stock-summary/available",
+                        refreshList: true,
+                      });
+                    }}
+                  >
                     <View style={[styles.dashBox, styles.box4]}>
-                      <Text style={styles.boxNUmber}>100</Text>
-                      <Text style={styles.boxText}>Total products</Text>
+                      <Text style={styles.boxNUmber}>{quantities?.availableStock}</Text>
+                      <Text style={styles.boxText}>Above Minimun</Text>
                     </View>
                   </TouchableOpacity>
                 </View>

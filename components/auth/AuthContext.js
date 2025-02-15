@@ -40,7 +40,8 @@ const AuthProvider = ({ children }) => {
   const logout = async () => {
     setUserData(null);
     setUserLogin(false);
-    await AsyncStorage.removeItem("id");
+    // Clear AsyncStorage
+    await AsyncStorage.clear();
   };
 
   const userLogout = () => {

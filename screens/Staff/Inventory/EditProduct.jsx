@@ -43,6 +43,7 @@ const EditProduct = () => {
   const [supplier, setSupplier] = useState(product?.supplier || "");
   const [description, setDescription] = useState(product?.description || "");
   const [isEditable, setIsEditable] = useState(false);
+  const [quantity, setQuantity] = useState(product?.quantity || 0);
   const [uploading, setUploading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
@@ -62,6 +63,7 @@ const EditProduct = () => {
       setCategory(product?.category || "");
       setSupplier(product?.supplier || "");
       setDescription(product?.description || "");
+      setQuantity(product?.quantity || 0);
     } catch (error) {
       console.log("refresh failed");
     } finally {
@@ -104,8 +106,8 @@ const EditProduct = () => {
 
       if (response.status === 200 || response.status === 204) {
         showToast("success", "Product deleted successfully!");
-        navigation.navigate("Inventory Navigation");
-        navigation.navigate("EditProductsList", { refreshList: true });
+
+        navigation.replace("Inventory Dashboard", { refreshList: true });
       }
     } catch (error) {
       showToast("error", "Product deletion failed!", `${error}`);
@@ -130,6 +132,7 @@ const EditProduct = () => {
       category,
       supplier,
       description,
+      quantity,
     };
 
     try {
@@ -324,6 +327,15 @@ const EditProduct = () => {
                       })}
                   </Picker>
                 </View>
+              </View>
+              <View style={{ marginTop: 20 }}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Quantity"
+                  value={quantity?.toString() || ""} // Ensure it's a string
+                  onChangeText={(text) => setQuantity(text ? parseInt(text, 10) : 0)}
+                  keyboardType="numeric"
+                />
               </View>
 
               <View style={styles.pickerWrapper}>

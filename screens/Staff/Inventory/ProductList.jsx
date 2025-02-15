@@ -22,7 +22,17 @@ import { useFocusEffect } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
 
 const EditProductList = () => {
-  const { data, isLoading, error, refetch } = useFetch("products");
+  const route = useRoute();
+
+  const categoryTitle = route.params?.categoryTitle || "";
+  const products = route.params?.products ? route.params.products : "products";
+
+  // console.log(route.params);
+
+  const { data, isLoading, error, refetch } = useFetch(products);
+
+  const [refreshList, setRefreshList] = useState(false);
+
   const [refreshing, setRefreshing] = useState(false);
   const [isGridView, setIsGridView] = useState(true);
   const [categories, setCategories] = useState([]);
@@ -34,11 +44,6 @@ const EditProductList = () => {
   const scrollRef = useRef(null);
   const [showScrollTopButton, setShowScrollTopButton] = useState(false);
   const inputRef = useRef(null);
-
-  const route = useRoute();
-  const [refreshList, setRefreshList] = useState(false);
-
-  const categoryTitle = route.params?.categoryTitle || "";
 
   //refetch on update
   useFocusEffect(
@@ -67,6 +72,14 @@ const EditProductList = () => {
     }, [route.params, categoryTitle])
   );
 
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     if (route.params) {
+  //       navigation.setParams({ refreshList: undefined, products: "products" }); // Clear params
+  //     }
+  //   }, [route.params])
+  // );
+
   useEffect(() => {
     if (data.length > 0) {
       const uniqueCategories = [...new Set(data.map((item) => item.category))];
@@ -78,6 +91,7 @@ const EditProductList = () => {
     setRefreshing(true);
     try {
       refetch();
+      navigation.setParams({ refreshList: undefined, products: "products" }); // Clear params
     } catch (error) {
       // Handle error
     } finally {
@@ -256,7 +270,7 @@ const styles = StyleSheet.create({
     paddingTop: SIZES.xxSmall,
     paddingLeft: SIZES.small / 2,
     width: SIZES.width - SIZES.small,
-    // flex: 1,
+    paddingBottom: 510,
   },
   loadingContainer: {
     flex: 1,

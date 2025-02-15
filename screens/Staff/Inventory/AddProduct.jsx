@@ -35,6 +35,7 @@ const AddProduct = () => {
   const [image, setImage] = useState(null);
   const [loader, setLoader] = useState(false);
   const [category, setCategory] = useState("");
+  const [quantity, setQuantity] = useState(0);
   const [supplier, setSupplier] = useState("");
   const [description, setDescription] = useState("");
   const [isEditable, setIsEditable] = useState(false);
@@ -58,6 +59,7 @@ const AddProduct = () => {
       setCategory("");
       setSupplier("");
       setDescription("");
+      setQuantity(0);
     } catch (error) {
       console.log("refresh failed");
     } finally {
@@ -93,6 +95,7 @@ const AddProduct = () => {
       category,
       supplier,
       description,
+      quantity,
     };
 
     try {
@@ -120,9 +123,10 @@ const AddProduct = () => {
         setCategory("");
         setSupplier("");
         setDescription("");
+        setQuantity(0);
 
         // Navigate to dashboard
-        navigation.navigate("InventoryDashboard", { refreshList: true });
+        navigation.replace("Inventory Dashboard", { refreshList: true });
       }
     } catch (error) {
       console.log(error);
@@ -282,6 +286,15 @@ const AddProduct = () => {
                       return <Picker.Item key={cat._id} label={cat.title} value={cat.title} />;
                     })}
                 </Picker>
+              </View>
+              <View style={{ marginTop: 20 }}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Quantity"
+                  value={quantity}
+                  onChangeText={(text) => setQuantity(text)}
+                  keyboardType="numeric"
+                />
               </View>
 
               <View style={styles.pickerWrapper}>
