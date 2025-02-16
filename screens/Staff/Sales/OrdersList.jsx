@@ -15,9 +15,9 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { useNavigation } from "@react-navigation/native";
 
-const LatestOrders = ({ refreshList, setRefreshing }) => {
+const OrdersList = ({ refreshList, setRefreshing }) => {
   const navigation = useNavigation();
-  const { data, isLoading, error, refetch } = useFetch("orders?limit=5&offset=0");
+  const { data, isLoading, error, refetch } = useFetch("orders?limit=100&offset=0");
 
   // Ensure data is an array and sort by creation date
   const dataArray = Array.isArray(data.orders) ? data.orders : [];
@@ -126,7 +126,7 @@ const LatestOrders = ({ refreshList, setRefreshing }) => {
   );
 };
 
-export default LatestOrders;
+export default OrdersList;
 
 const styles = StyleSheet.create({
   container: {

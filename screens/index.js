@@ -23,7 +23,7 @@ import SystemMessages from "./SystemMessages";
 import OrderSuccess from "./OrderSuccess";
 import OrderDetails from "./OrderDetails";
 import InventoryDashboard from "./Staff/Inventory/InventoryDashboard";
-// import InventoryTabNavigation from "../navigation/InventoryTabNavigation";
+import OrdersSales from "./Staff/Sales/Orders";
 import EditProduct from "./Staff/Inventory/EditProduct";
 
 // import BottomTabNavigation from "../navigation/BottomTabNavigation";
@@ -75,4 +75,5 @@ export {
   EditCategory,
   PreviewProduct,
   SalesDashboard,
+  OrdersSales,
 };
