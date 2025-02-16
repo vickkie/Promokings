@@ -32,7 +32,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const LoginPage = ({ navigation }) => {
-  const { login } = useContext(AuthContext);
+  const { login, hasRole } = useContext(AuthContext);
   const [loader, setLoader] = useState(false);
   const [userType, setUserType] = useState("customer");
   const [obsecureText, setObsecureText] = useState(false);
@@ -55,51 +55,41 @@ const LoginPage = ({ navigation }) => {
     setLoader(true);
     try {
       const endpoint = `${BACKEND_PORT}/auth/login`;
-      console.log(endpoint);
       const data = { ...values, userType };
-      // console.log(data);
 
       const response = await axios.post(endpoint, data);
-      // console.log(response);
 
-      if (response.data && response.data.TOKEN) {
-        // Decode the token to get role information
-
-        const decodedToken = jwtDecode(response.data.TOKEN);
-
-        // console.log("decodeed token", decodedToken);
-        // console.log("token gotten", response.data.TOKEN);
-
-        const userRole = decodedToken.role || "customer";
-
-        await login(response.data);
-
-        if (response.data.staffId) {
-          // Redirect based on user role
-          switch (userRole) {
-            case "admin":
-              navigation.replace("AdminDashboard");
-              break;
-            case "inventory":
-              navigation.replace("Inventory Navigation");
-              break;
-            case "sales":
-              navigation.replace("SalesDashboard");
-              break;
-            case "finance":
-              navigation.replace("FinanceDashboard");
-              break;
-            default:
-              break;
-          }
-        } else {
-          navigation.replace("Bottom Navigation");
-        }
-      } else {
+      if (!response.data || !response.data.TOKEN) {
         Alert.alert("Error Logging", "Unexpected response. Please try again.");
+        return;
+      }
+
+      // Store login data
+      await login(response.data);
+
+      // Redirect based on role using hasRole from AuthContext
+      if (response.data.staffId) {
+        const roleRoutes = {
+          admin: "AdminDashboard",
+          inventory: "Inventory Navigation",
+          sales: "SalesDashboard",
+          finance: "FinanceDashboard",
+          customer: "Bottom Navigation",
+        };
+
+        for (const role in roleRoutes) {
+          if (hasRole(role)) {
+            navigation.replace(roleRoutes[role]);
+            return;
+          }
+        }
+
+        navigation.replace("Bottom Navigation");
+      } else {
+        navigation.replace("Bottom Navigation");
       }
     } catch (error) {
-      console.log(error);
+      console.log("me", error);
       Alert.alert("Error", "Oops! Error logging in. Please try again.");
     } finally {
       setLoader(false);

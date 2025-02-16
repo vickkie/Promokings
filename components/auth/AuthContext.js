@@ -1,6 +1,14 @@
 import React, { createContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { jwtDecode } from "jwt-decode";
+
+import atob from "core-js-pure/stable/atob";
+import btoa from "core-js-pure/stable/btoa";
+
+global.atob = atob;
+global.btoa = btoa;
+
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
@@ -33,7 +41,9 @@ const AuthProvider = ({ children }) => {
   const login = async (data) => {
     setUserData(data);
     setUserLogin(true);
+
     await AsyncStorage.setItem("id", JSON.stringify(data._id));
+
     await AsyncStorage.setItem(`user${data._id}`, JSON.stringify(data));
   };
 
@@ -55,7 +65,12 @@ const AuthProvider = ({ children }) => {
 
   // Utility function to check user's role
   const hasRole = (requiredRole) => {
-    return userData?.role === requiredRole;
+    if (!requiredRole || !userData) {
+      return false;
+    }
+    const decodedToken = jwtDecode(userData?.TOKEN);
+    const userRole = decodedToken.role || "customer";
+    return userRole === requiredRole;
   };
 
   const authContextValue = {

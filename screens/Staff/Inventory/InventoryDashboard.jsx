@@ -17,7 +17,7 @@ const zeroData = {
 };
 
 const InventoryDashboard = () => {
-  const { userLogin, hasRole, userData } = useContext(AuthContext);
+  const { userLogin, hasRole, userData, userLogout } = useContext(AuthContext);
   const navigation = useNavigation();
   const route = useRoute();
 
@@ -34,6 +34,7 @@ const InventoryDashboard = () => {
     } else if (hasRole("inventory")) {
       setUserId(userData._id);
     } else {
+      userLogout();
       navigation.replace("Login");
     }
   }, [userLogin, navigation, hasRole]);
