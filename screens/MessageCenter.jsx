@@ -1,10 +1,21 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "../constants/icons";
 import { SIZES, COLORS } from "../constants";
+import { AuthContext } from "../components/auth/AuthContext";
 
 const MessageCenter = ({ navigation }) => {
+  const { userData } = useContext(AuthContext);
+  const [userId, setUserId] = useState(null);
+  useEffect(() => {
+    if (userData && userData._id && userData.TOKEN) {
+      setUserId(userData._id);
+    } else {
+      navigation.navigate("Login");
+    }
+  }, [userData]);
+
   return (
     <SafeAreaView>
       <View style={styles.container}>
@@ -20,7 +31,13 @@ const MessageCenter = ({ navigation }) => {
           </View>
 
           <View style={styles.lowerRow}>
-            <TouchableOpacity onPress={() => navigation.navigate("Help")}>
+            <TouchableOpacity
+              onPress={() => {
+                if (userId) {
+                  navigation.navigate("Help");
+                }
+              }}
+            >
               <View style={[styles.menuItem(0.5)]}>
                 <View style={styles.itswrap}>
                   <Icon name="customerservice" size={24} color={COLORS.primary} />

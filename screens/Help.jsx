@@ -27,7 +27,7 @@ const Help = () => {
   const route = useRoute();
 
   useEffect(() => {
-    if (userData && userData._id) {
+    if (userData && userData._id && userData.TOKEN) {
       setUserId(userData._id);
       const sentRef = ref(db, `messages/${userData._id}/sent`);
       const replyRef = ref(db, `messages/${userData._id}/reply`);
@@ -74,73 +74,105 @@ const Help = () => {
   }, [route.params]);
 
   const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      alert("Sorry, we need camera roll permissions to make this work!");
-      return;
-    }
+    try {
+      // Request permission
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+        return;
+      }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    });
+      // Launch image picker
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      setSelectedImage(result.uri);
-      setIsPreviewVisible(true);
-      setImageFromRoute(false);
+      // Handle result
+      if (!result.canceled && result.assets.length > 0 && result.assets[0].uri) {
+        const imageUri = result.assets[0].uri;
+
+        // console.log(imageUri);
+
+        console.log("Selected Image URI:", imageUri);
+        setSelectedImage(imageUri);
+        setIsPreviewVisible(true);
+        setImageFromRoute(false);
+      }
+    } catch (error) {
+      console.error("Error picking image:", error);
     }
   };
 
   const handleSend = async (newMessages = [], type = "sent") => {
+    console.log("Sending message:", newMessages);
     if (newMessages.length === 0) return;
 
     const userMessagesRef = ref(db, `messages/${userData._id}/${type}`);
 
-    const messagePromises = newMessages.map(async (message) => {
+    const uploadImage = async (imageUri) => {
+      try {
+        const formData = new FormData();
+        formData.append("profilePicture", {
+          uri: imageUri,
+          name: `image_${Date.now()}.jpg`,
+          type: "image/jpeg",
+        });
+
+        const response = await fetch("http://192.168.100.20:3000/upload", {
+          method: "POST",
+          body: formData,
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        const result = await response.json();
+        return result.fileUrl || null;
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        return null;
+      }
+    };
+
+    setIsSending(true);
+
+    for (const message of newMessages) {
       const { text, createdAt, user } = message;
       let imageUrl = null;
 
       if (selectedImage && !imageFromRoute) {
-        try {
-          setIsSending(true);
-          const storage = getStorage();
-          const imageRef = storageRef(storage, `images/${uuid.v4()}`);
-          const response = await fetch(selectedImage);
-          const blob = await response.blob();
-          await uploadBytes(imageRef, blob);
-          imageUrl = await getDownloadURL(imageRef);
-        } catch (error) {
-          // console.error("Error uploading image:", error);
-        }
+        console.log("Uploading image...");
+        imageUrl = await uploadImage(selectedImage);
+        console.log("Image uploaded:", imageUrl);
       }
 
       try {
+        console.log("Pushing to Firebase...");
         await push(userMessagesRef, {
           _id: uuid.v4(),
           text: `${text}${prefilledMessage ? `\n\n${prefilledMessage}` : ""}`,
           createdAt: createdAt.getTime(),
-          user,
+          user: {
+            _id: user._id,
+            name: user.name,
+            avatar: user.avatar || null,
+          },
           image: itemImage || imageUrl,
         });
 
-        setIsSending(false);
+        console.log("Message successfully pushed to Firebase");
       } catch (error) {
-        // console.error("Error pushing message to database:", error);
+        console.error("Error pushing message to database:", error);
       }
+    }
 
-      // Invalidate the state variables after sending
-
-      setIsPreviewVisible(false);
-      setSelectedImage(null);
-      setPrefilledMessage("");
-      setItemId(null);
-      setItemName("");
-      setItemImage(null);
-    });
-
-    await Promise.all(messagePromises);
+    setIsSending(false);
+    setIsPreviewVisible(false);
+    setSelectedImage(null);
+    setPrefilledMessage("");
+    setItemId(null);
+    setItemName("");
+    setItemImage(null);
   };
 
   return (
