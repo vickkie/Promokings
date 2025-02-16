@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import { StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text } from "react-native";
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
 import { useRoute } from "@react-navigation/native";
@@ -10,13 +10,14 @@ import * as ImagePicker from "expo-image-picker";
 import Icon from "../constants/icons";
 import { COLORS, SIZES } from "../constants";
 import uuid from "react-native-uuid";
+import { BACKEND_PORT } from "@env";
 
 const Help = () => {
   const [messages, setMessages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [prefilledMessage, setPrefilledMessage] = useState("");
   const { userData } = useContext(AuthContext);
-  const [userId, setUserId] = useState(null);
+  // const [userId, setUserId] = useState(null);
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
   const [imageFromRoute, setImageFromRoute] = useState(false);
   const [itemId, setItemId] = useState(null);
@@ -26,12 +27,12 @@ const Help = () => {
 
   const route = useRoute();
 
+  const userId = useMemo(() => userData?._id, [userData]);
+  const sentRef = useMemo(() => ref(db, `messages/${userId}/sent`), [userId]);
+  const replyRef = useMemo(() => ref(db, `messages/${userId}/reply`), [userId]);
+
   useEffect(() => {
     if (userData && userData._id && userData.TOKEN) {
-      setUserId(userData._id);
-      const sentRef = ref(db, `messages/${userData._id}/sent`);
-      const replyRef = ref(db, `messages/${userData._id}/reply`);
-
       const handleDataChange = (snapshot, type) => {
         const data = snapshot.val();
         const newMessages = data
@@ -61,17 +62,16 @@ const Help = () => {
   }, [userData]);
 
   useEffect(() => {
-    if (route.params) {
-      const { item_id, item_name, item_image } = route.params;
-      setItemId(item_id);
-      setItemName(item_name);
-      setItemImage(item_image);
-      setSelectedImage(item_image);
-      setPrefilledMessage(`Inquiring about item:\n${item_name}\n(Ref: ${item_id})`);
-      setIsPreviewVisible(true);
-      setImageFromRoute(true);
-    }
-  }, [route.params]);
+    if (!route.params) return;
+    const { item_id, item_name, item_image } = route.params;
+    setItemId(item_id);
+    setItemName(item_name);
+    setItemImage(item_image);
+    setSelectedImage(item_image);
+    setPrefilledMessage(`Inquiring about item:\n${item_name}\n(Ref: ${item_id})`);
+    setIsPreviewVisible(true);
+    setImageFromRoute(true);
+  }, [route.params?.item_id]);
 
   const pickImage = async () => {
     try {
@@ -120,7 +120,7 @@ const Help = () => {
           type: "image/jpeg",
         });
 
-        const response = await fetch("http://192.168.100.20:3000/upload", {
+        const response = await fetch(`${BACKEND_PORT}/upload`, {
           method: "POST",
           body: formData,
           headers: { "Content-Type": "multipart/form-data" },
