@@ -28,6 +28,10 @@ const Register = ({ navigation }) => {
   const { responseData, setUpdateStatus, updateStatus, isLoading, error, errorMessage, postData } =
     usePost2("auth/register");
 
+  useEffect(() => {
+    console.log(responseData);
+  }, [responseData]);
+
   const inValidForm = () => {
     Alert.alert("Invalid Form", "Please provide required fields", [
       {
@@ -65,52 +69,33 @@ const Register = ({ navigation }) => {
       const { email, password, username } = value;
       const newdata = { email, password, username };
 
-      await postData(newdata);
+      const response = await axios.post(`${BACKEND_PORT}/auth/register`, newdata);
+
+      if (response.status === 201) {
+        console.log(response);
+        successRegister();
+        navigation.replace("Login");
+      } else {
+        throw new Error("Registration failed");
+      }
     } catch (err) {
-      // console.log(err);
       Alert.alert(
-        "Sorry. An error occured",
-        "Try again later",
+        "Sorry. An error occurred",
+        err.response?.data?.message || "Try again later",
         [
           {
             text: "OK",
             onPress: () => {
-              // console.log("OK Pressed")
               setUpdateStatus(null);
             },
           },
         ],
         { cancelable: false }
       );
+    } finally {
       setLoader(false);
     }
   };
-
-  useEffect(() => {
-    if (updateStatus === 201) {
-      successRegister();
-      navigation.replace("Login");
-    } else {
-      if (errorMessage !== null) {
-        Alert.alert(
-          "Sorry. An error occured",
-          errorMessage,
-          [
-            {
-              text: "I understand",
-              onPress: () => {
-                // console.log("OK Pressed")
-                setUpdateStatus(null);
-              },
-            },
-          ],
-          { cancelable: false }
-        );
-      }
-
-      setLoader(false);
-    }
-  }, [updateStatus, responseData, errorMessage]);
 
   return (
     <ScrollView>

@@ -54,8 +54,8 @@ const LoginPage = ({ navigation }) => {
   const handleLogin = async (values) => {
     setLoader(true);
     try {
-      const endpoint = `${BACKEND_PORT}/api/login`;
-      // console.log(endpoint);
+      const endpoint = `${BACKEND_PORT}/auth/login`;
+      console.log(endpoint);
       const data = { ...values, userType };
       // console.log(data);
 
@@ -110,7 +110,15 @@ const LoginPage = ({ navigation }) => {
     <ScrollView>
       <SafeAreaView style={{ marginHorizontal: 21 }}>
         <View>
-          <BackBtn onPress={() => navigation.goBack()} />
+          <BackBtn
+            onPress={() => {
+              if (navigation.canGoBack()) {
+                navigation.goBack();
+              } else {
+                navigation.replace("Bottom Navigation"); // Navigate to Home if no back stack
+              }
+            }}
+          />
           <Image source={require("../assets/images/promoshop1.webp")} style={styles.cover} />
           <Text style={styles.title}>Promokings Login</Text>
 
