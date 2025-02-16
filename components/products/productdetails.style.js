@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   containerWrapper: {
-    // marginTop: -SIZES.large,
+    borderRadius: SIZES.medium,
     backgroundColor: COLORS.themew,
     paddingTop: 10,
     paddingBottom: 10,
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   details: {
     // backgroundColor: "red",
     backgroundColor: COLORS.lightWhite,
-    marginTop: 5,
+    marginTop: -10,
     marginLeft: 5,
     marginRight: 5,
     width: SIZES.width - 10,
