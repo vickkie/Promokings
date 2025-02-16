@@ -1,12 +1,12 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
-  InventoryDashboard,
   EditProductList,
   AddProduct,
   StaffSettings,
   EditCategoriesList,
   EditCategory,
+  SalesDashboard,
 } from "../screens";
 
 import { COLORS } from "../constants/index";
@@ -58,7 +58,7 @@ const SalesTabNavigation = () => {
     <Tab.Navigator screenOptions={screenOptions}>
       <Tab.Screen
         name="SalesDashboard"
-        component={InventoryDashboard}
+        component={SalesDashboard}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon name={focused ? "homefilled" : "home"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />

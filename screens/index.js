@@ -36,6 +36,8 @@ import EditCategory from "./Staff/Inventory/EditCategory";
 
 import PreviewProduct from "./Staff/Inventory/PreviewProduct";
 
+import SalesDashboard from "./Staff/Sales/SalesDashboard";
+
 export {
   Home,
   OrderDetails,
@@ -72,4 +74,5 @@ export {
   AddCategory,
   EditCategory,
   PreviewProduct,
+  SalesDashboard,
 };

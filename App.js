@@ -48,6 +48,7 @@ import {
   AddCategory,
   EditCategory,
   PreviewProduct,
+  SalesDashboard,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -57,6 +58,7 @@ import InventoryTabNavigation from "./navigation/InventoryTabNavigation";
 // const BottomTabNavigation = React.lazy(() => import("./navigation/BottomTabNavigation"));
 
 import BrokenComponent from "./screens_options/BrokenComponent";
+import SalesTabNavigation from "./navigation/SalesTabNavigation";
 
 enableScreens();
 const Stack = createNativeStackNavigator();
@@ -106,6 +108,11 @@ export default function App() {
                       options={{ headerShown: false }}
                     />
                     <Stack.Screen
+                      name="Sales Navigation"
+                      component={SalesTabNavigation}
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
                       name="EditCategoriesList"
                       component={EditCategoriesList}
                       options={{ headerShown: false }}
@@ -145,6 +152,7 @@ export default function App() {
                       component={InventoryDashboard}
                       options={{ headerShown: false }}
                     />
+                    <Stack.Screen name="SalesDashboard" component={SalesDashboard} options={{ headerShown: false }} />
                   </Stack.Navigator>
                   <Toast />
                   {/* <BrokenComponent /> */}

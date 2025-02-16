@@ -69,8 +69,22 @@ const AuthProvider = ({ children }) => {
       return false;
     }
     const decodedToken = jwtDecode(userData?.TOKEN);
+
     const userRole = decodedToken.role || "customer";
     return userRole === requiredRole;
+  };
+  const getRole = (data) => {
+    console.log(data);
+
+    if (!data) {
+      console.log("no user data");
+      return "customer";
+    }
+
+    const decodedToken = jwtDecode(data?.TOKEN);
+
+    const userRole = decodedToken.role || "customer";
+    return userRole;
   };
 
   const authContextValue = {
@@ -81,6 +95,7 @@ const AuthProvider = ({ children }) => {
     logout,
     updateUserData,
     hasRole,
+    getRole,
   };
 
   return <AuthContext.Provider value={authContextValue}>{children}</AuthContext.Provider>;

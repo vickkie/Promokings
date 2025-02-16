@@ -32,7 +32,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const LoginPage = ({ navigation }) => {
-  const { login, hasRole } = useContext(AuthContext);
+  const { login, getRole, hasRole } = useContext(AuthContext);
   const [loader, setLoader] = useState(false);
   const [userType, setUserType] = useState("customer");
   const [obsecureText, setObsecureText] = useState(false);
@@ -67,25 +67,25 @@ const LoginPage = ({ navigation }) => {
       // Store login data
       await login(response.data);
 
-      // Redirect based on role using hasRole from AuthContext
-      if (response.data.staffId) {
-        const roleRoutes = {
-          admin: "AdminDashboard",
-          inventory: "Inventory Navigation",
-          sales: "SalesDashboard",
-          finance: "FinanceDashboard",
-          customer: "Bottom Navigation",
-        };
+      // Get role from AuthContext
+      const role = getRole(response.data); // Assuming this function exists in AuthContext
 
-        for (const role in roleRoutes) {
-          if (hasRole(role)) {
-            navigation.replace(roleRoutes[role]);
-            return;
-          }
-        }
+      console.log("Detected role:", role);
 
-        navigation.replace("Bottom Navigation");
+      // Role-based navigation
+      const roleRoutes = {
+        admin: "AdminDashboard",
+        inventory: "Inventory Navigation",
+        sales: "Sales Navigation",
+        finance: "FinanceDashboard",
+        customer: "Bottom Navigation",
+      };
+
+      if (role in roleRoutes) {
+        console.log("Navigating to:", roleRoutes[role]);
+        navigation.replace(roleRoutes[role]);
       } else {
+        console.log("Role not found, navigating to default.");
         navigation.replace("Bottom Navigation");
       }
     } catch (error) {

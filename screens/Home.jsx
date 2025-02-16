@@ -22,6 +22,8 @@ const Home = () => {
   useEffect(() => {
     if (userLogin && hasRole("inventory")) {
       navigation.replace("Inventory Navigation");
+    } else if (userLogin && hasRole("sales")) {
+      navigation.replace("Sales Navigation");
     }
   }, [userLogin, userData, hasRole, navigation]);
 
