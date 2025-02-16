@@ -72,7 +72,7 @@ const Register = ({ navigation }) => {
       const response = await axios.post(`${BACKEND_PORT}/auth/register`, newdata);
 
       if (response.status === 201) {
-        console.log(response);
+        // console.log(response);
         successRegister();
         navigation.replace("Login");
       } else {
