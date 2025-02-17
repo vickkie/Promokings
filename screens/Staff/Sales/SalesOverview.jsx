@@ -16,7 +16,7 @@ const zeroData = {
   availableStock: 0,
 };
 
-const SalesDashboard = () => {
+const SalesOverview = () => {
   const { userLogin, hasRole, userData, userLogout } = useContext(AuthContext);
   const navigation = useNavigation();
   const route = useRoute();
@@ -90,6 +90,30 @@ const SalesDashboard = () => {
     }
   }, [isLoading, data]);
 
+  const products = [
+    {
+      id: "1",
+      title: "Sales Report",
+      detail: "Get detailed sales information",
+      route: "PreviewProduct",
+      image: require("../../../assets/images/isometric.webp"),
+    },
+    {
+      id: "2",
+      title: "Sales Interactions",
+      detail: "Track your stock interactions",
+      route: "InventoryScreen",
+      image: require("../../../assets/images/baggift.webp"),
+    },
+    {
+      id: "3",
+      title: "Drivers",
+      detail: "Get information of available carriers",
+      route: "OrderAnalytics",
+      image: require("../../../assets/images/userDefault.webp"),
+    },
+  ];
+
   return (
     <SafeAreaView style={styles.topSafeview}>
       <HomeMenu ref={BottomSheetRef} />
@@ -97,8 +121,8 @@ const SalesDashboard = () => {
       <View style={styles.topWelcomeWrapper}>
         <View style={styles.appBarWrapper}>
           <View style={styles.appBar}>
-            <TouchableOpacity style={styles.buttonWrap} onPress={openMenu}>
-              <Icon name="menu" size={24} />
+            <TouchableOpacity style={styles.buttonWrap} nPress={() => navigation.goBack()}>
+              <Icon name="backbutton" size={24} />
             </TouchableOpacity>
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap2}>
@@ -109,11 +133,11 @@ const SalesDashboard = () => {
         </View>
         <View style={styles.greeting}>
           <Text style={styles.greetingMessage}>
-            <Text style={styles.username}>Sales Dashboard</Text>
+            <Text style={styles.username}>Sales & Management</Text>
           </Text>
         </View>
         <View style={styles.sloganWrapper}>
-          <Text style={styles.slogan}>{`Manager - ${userData?.username}`} </Text>
+          <Text style={styles.slogan}>{`Manage all you statistics here `}</Text>
         </View>
       </View>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
@@ -124,56 +148,28 @@ const SalesDashboard = () => {
                 <View style={styles.dashbboxWrapper}>
                   <TouchableOpacity
                     onPress={() => {
-                      // navigation.navigate("EditProductList", {
-                      //   products: "products",
-                      //   refreshList: true,
-                      // });
+                      navigation.navigate("EditProductList", {
+                        products: "products",
+                        refreshList: true,
+                      });
                     }}
                   >
                     <View style={[styles.dashBox, styles.box1]}>
-                      <Text style={styles.boxNUmber}>{quantities?.totalOrders}</Text>
-                      <Text style={styles.boxText}>Total Orders</Text>
+                      <Text style={styles.boxNUmber}>896,002</Text>
+                      <Text style={styles.boxText}>Gross profit</Text>
                     </View>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
-                      // navigation.navigate("EditProductList", {
-                      //   products: "products/stock-summary/out-of-stock",
-                      //   refreshList: true,
-                      // });
+                      navigation.navigate("EditProductList", {
+                        products: "products/stock-summary/out-of-stock",
+                        refreshList: true,
+                      });
                     }}
                   >
                     <View style={[styles.dashBox, styles.box2]}>
-                      <Text style={styles.boxNUmber}>{quantities?.pendingOrders}</Text>
-                      <Text style={styles.boxText}>Pending Orders</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.dashbboxWrapper}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      // navigation.navigate("EditProductList", {
-                      //   products: "products/stock-summary/low-stock",
-                      //   refreshList: true,
-                      // });
-                    }}
-                  >
-                    <View style={[styles.dashBox, styles.box3]}>
-                      <Text style={styles.boxNUmber}>{quantities?.todayOrders}</Text>
-                      <Text style={styles.boxText}>Today Orders</Text>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      // navigation.navigate("EditProductList", {
-                      //   products: "products/stock-summary/available",
-                      //   refreshList: true,
-                      // });
-                    }}
-                  >
-                    <View style={[styles.dashBox, styles.box4]}>
-                      <Text style={styles.boxNUmber}>{quantities?.processingOrders}</Text>
-                      <Text style={styles.boxText}>Processing orders</Text>
+                      <Text style={styles.boxNUmber}>1,000,000</Text>
+                      <Text style={styles.boxText}>Projected profit</Text>
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -181,12 +177,36 @@ const SalesDashboard = () => {
             </View>
           </View>
           <View style={{ paddingTop: 10, width: SIZES.width - 20, paddingHorizontal: 22 }}>
-            <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>
-              Latest Products
-            </Text>
+            <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>Management</Text>
           </View>
+
           <View style={styles.latestProducts}>
-            <LatestOrders refreshList={refreshList} setRefreshing={setRefreshing} />
+            {products.map((product) => (
+              <TouchableOpacity
+                key={product.id}
+                style={styles.latestProductCards}
+                onPress={() => navigation.navigate(product.route, { product })}
+              >
+                <View
+                  style={{
+                    borderRadius: 100,
+                    backgroundColor: COLORS.themey,
+                    width: 36,
+                    height: 36,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image source={product.image} style={styles.productImage} />
+                </View>
+
+                <View style={styles.orderDetails}>
+                  <Text style={styles.latestProductTitle}>{product.title}</Text>
+                  <Text style={styles.latestProductdetail}>{product.detail}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
       </ScrollView>
@@ -194,7 +214,7 @@ const SalesDashboard = () => {
   );
 };
 
-export default SalesDashboard;
+export default SalesOverview;
 
 const styles = StyleSheet.create({
   carouselContainer: {
@@ -372,7 +392,7 @@ const styles = StyleSheet.create({
   },
   boxNUmber: {
     fontFamily: "bold",
-    fontSize: SIZES.xxLarge - 8,
+    fontSize: SIZES.xLarge,
     color: COLORS.white,
   },
   boxText: {
@@ -391,5 +411,55 @@ const styles = StyleSheet.create({
     paddingHorizontal: 3,
     minHeight: SIZES.height / 2.5,
     marginBottom: 20,
+  },
+  latestProductCards: {
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.themeg,
+    borderRadius: SIZES.medium,
+    flexDirection: "row",
+    alignorders: "center",
+    gap: 6,
+    paddingVertical: 3,
+    backgroundColor: COLORS.lightWhite,
+    borderRadius: SIZES.medium,
+    minHeight: 70,
+    marginBottom: 10,
+    marginHorizontal: 4,
+  },
+  flexEnd: {
+    position: "absolute",
+    right: 10,
+  },
+  buttonView: {
+    display: "flex",
+    alignItems: "center",
+    // backgroundColor: "red",
+    alignItems: "center",
+    height: "100%",
+  },
+  latestProductTitle: {
+    fontSize: 16,
+    paddingStart: SIZES.small,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  latestProductdetail: {
+    fontSize: SIZES.small,
+    fontWeight: "regular",
+    color: COLORS.gray,
+    marginBottom: 5,
+  },
+  productImage: {
+    width: 35,
+    height: 35,
+    borderRadius: 100,
+    borderWidth: 2,
+    alignSelf: "center",
+    top: "auto",
+  },
+  productTitle: {
+    fontSize: SIZES.medium,
+    fontWeight: "bold",
+    color: COLORS.primary,
   },
 });

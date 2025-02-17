@@ -17,6 +17,7 @@ const OrdersSales = () => {
   const [refreshList, setRefreshList] = useState(refresh);
   const [refreshing, setRefreshing] = useState(false);
   const [irefresh, setiRefresh] = useState(refresh);
+  const [pending, setPending] = useState([]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -25,19 +26,21 @@ const OrdersSales = () => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
             <Icon name="backbutton" size={26} />
           </TouchableOpacity>
-          <Text style={styles.heading}>All Orders</Text>
+          <Text style={styles.heading}>All Sales</Text>
           <TouchableOpacity
             style={styles.buttonWrap}
-            // onPress={() => {
-            //   navigation.navigate("Sales Navigation");
-            // }}
+            onPress={() => {
+              pending.length > 0 && navigation.navigate("Sales Navigation");
+            }}
           >
-            <View style={styles.numbers}></View>
-            <Icon name="cart" size={26} />
+            <View style={styles.numbers}>
+              <Text>{pending.length}</Text>
+            </View>
+            <Icon name="pending" size={26} />
           </TouchableOpacity>
         </View>
 
-        <OrdersList irefresh={irefresh} setiRefresh={setiRefresh} />
+        <OrdersList irefresh={irefresh} setiRefresh={setiRefresh} setPending={setPending} />
       </View>
     </SafeAreaView>
   );
@@ -77,7 +80,7 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.large,
     top: SIZES.xxSmall,
     zIndex: 999,
-    height: 120,
+    height: 80,
   },
 
   backBtn: {

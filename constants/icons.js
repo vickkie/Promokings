@@ -75,9 +75,19 @@ import versionhistory from "../assets/svg/version-history.svg";
 import twitter from "../assets/svg/x.svg";
 import question from "../assets/svg/question.svg";
 import productapproved from "../assets/svg/product-good.svg";
+import invoice from "../assets/svg/invoice-paper.svg";
+import invoicefilled from "../assets/svg/invoice-paper-filled.svg";
+import truck from "../assets/svg/truck.svg";
+import truckfilled from "../assets/svg/truck-tick.svg";
+import pending from "../assets/svg/pending.svg";
 
 const iconMap = {
   shop: ShopIcon,
+  invoice: invoice,
+  pending: pending,
+  invoicefilled: invoicefilled,
+  truck: truck,
+  truckfilled: truckfilled,
   shopfilled: ShopfilledIcon,
   productapproved: productapproved,
   checkempty: checkempty,

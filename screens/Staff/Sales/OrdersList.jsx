@@ -17,7 +17,7 @@ import Icon from "../../../constants/icons";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
 
-const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh }) => {
+const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPending }) => {
   const navigation = useNavigation();
 
   const [data, setData] = useState([]);
@@ -26,7 +26,7 @@ const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh }) => {
   const [refreshing, setRefreshing2] = useState(false);
   const [endReached, setEndReached] = useState(false);
   const [error, setError] = useState(null);
-  const limit = 7;
+  const limit = 210000;
 
   // Fetch products from API
   const fetchData = async (reset = false) => {
@@ -46,6 +46,7 @@ const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh }) => {
       });
 
       setOffset((prev) => (reset ? limit : prev + limit));
+
       setError(null);
     } catch (err) {
       setError("Failed to fetch products.");
@@ -61,7 +62,7 @@ const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh }) => {
 
   // fetchData(true);
   const handleEndReached = () => {
-    if (!loading && !endReached) {
+    if (!loading && endReached) {
       setEndReached(true);
       fetchData(false);
       setTimeout(() => setEndReached(false), 1000); // Delay next fetch
@@ -78,11 +79,26 @@ const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh }) => {
   const dataArray = Array.isArray(data) ? data : [];
   const sortedData = dataArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
+  const pendingOrders = sortedData.filter(
+    (order) => ["paid", "pending"].includes(order.paymentStatus) && order.status === "pending"
+  );
+
+  useEffect(() => {
+    setPending(pendingOrders);
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
       onRefresh();
     }, [])
   );
+
+  // useEffect(() => {
+  //   if (irefresh) {
+  //     onRefresh();
+  //     setiRefresh(false);
+  //   }
+  // }, [irefresh, setiRefresh]);
 
   // Key extractor for FlatList
   const keyExtractor = (order) => order._id;
@@ -156,7 +172,11 @@ const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh }) => {
               textAlign: "center",
             }}
           >
-            {order.paymentStatus}
+            {order.paymentStatus === "pending"
+              ? "Unpaid"
+              : order.paymentStatus === "paid"
+              ? "Paid"
+              : order.paymentStatus}
           </Text>
         </View>
 
@@ -225,7 +245,7 @@ export default OrdersList;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 130,
+    marginTop: 90,
   },
   productImage: {
     width: 35,

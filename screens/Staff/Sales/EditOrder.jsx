@@ -141,8 +141,55 @@ const EditSalesOrder = () => {
       },
     ]);
   };
+  const handleApproveOrder = async () => {
+    const status = "approved";
 
-  const handleApprove = () => {};
+    if (!orderId) {
+      Alert.alert("Error", "Order ID is required!");
+      setUploading(false);
+      return;
+    }
+
+    Alert.alert("Confirm Approving", "Are you sure you want to approve this order?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+        onPress: () => setUploading(false),
+      },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            const response = await fetch(`${BACKEND_PORT}/api/order/${orderId}`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ status }),
+            });
+
+            const data = await response.json();
+
+            if (!data.success) {
+              throw new Error(data.message || "Failed to approve order");
+            }
+
+            alert("Order approved");
+            navigation.replace("OrdersSales", { refresh: true, refreshin: true });
+            setTimeout(() => {
+              navigation.navigate("Sales Navigation");
+            }, 500);
+          } catch (error) {
+            console.warn("Error approving Order:", error);
+            alert(error);
+          } finally {
+            setTimeout(() => {}, 2000);
+          }
+        },
+      },
+    ]);
+  };
 
   const handleDeleteOrder = async () => {
     setIsLoading(true);
@@ -347,8 +394,7 @@ const EditSalesOrder = () => {
                     <TouchableOpacity
                       style={styles.buttonWrap}
                       onPress={() => {
-                        setIsApproving(!isApproving);
-                        setIsAssigning(false);
+                        handleApproveOrder();
                       }}
                     >
                       <Icon name="pencil" size={26} />

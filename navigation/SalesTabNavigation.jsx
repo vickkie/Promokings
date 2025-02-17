@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { EditProductList, AddProduct, StaffSettings, OrdersSales, SalesDashboard } from "../screens";
+import { AddProduct, StaffSettings, OrdersSales, SalesDashboard, SalesOverview, SalesData } from "../screens";
 
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
@@ -70,8 +70,8 @@ const SalesTabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="AddProduct"
-        component={AddProduct}
+        name="SalesData"
+        component={SalesData}
         options={{
           tabBarIcon: ({ focused }) => (
             <TouchableOpacity
@@ -86,7 +86,11 @@ const SalesTabNavigation = () => {
               }}
             >
               <View style={shadowStyle}>
-                <Icon name={focused ? "add" : "add"} size={34} color={focused ? COLORS.primary : COLORS.gray2} />
+                <Icon
+                  name={focused ? "invoicefilled" : "invoice"}
+                  size={34}
+                  color={focused ? COLORS.primary : COLORS.gray2}
+                />
               </View>
             </TouchableOpacity>
           ),
@@ -94,17 +98,13 @@ const SalesTabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="EditProductList"
-        component={EditProductList}
+        name="SalesOverviews"
+        component={SalesOverview}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon
-              name={focused ? "productapproved" : "productapproved"}
-              size={32}
-              color={focused ? COLORS.primary : COLORS.gray2}
-            />
+            <Icon name={focused ? "truckfilled" : "truck"} size={32} color={focused ? COLORS.primary : COLORS.gray2} />
           ),
-          tabBarLabel: "Products",
+          tabBarLabel: "Deliveries",
         }}
       />
       <Tab.Screen

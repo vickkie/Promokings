@@ -39,7 +39,8 @@ import PreviewProduct from "./Staff/Inventory/PreviewProduct";
 import SalesDashboard from "./Staff/Sales/SalesDashboard";
 import OrderSalesDetails from "./Staff/Sales/OrderSalesDetails";
 import EditSalesOrder from "./Staff/Sales/EditOrder";
-
+import SalesOverview from "./Staff/Sales/SalesOverview";
+import SalesData from "./Staff/Sales/SalesData";
 export {
   Home,
   OrderDetails,
@@ -80,4 +81,6 @@ export {
   OrdersSales,
   OrderSalesDetails,
   EditSalesOrder,
+  SalesOverview,
+  SalesData,
 };
