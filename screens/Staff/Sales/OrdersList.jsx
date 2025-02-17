@@ -19,7 +19,6 @@ import { BACKEND_PORT } from "@env";
 
 const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh }) => {
   const navigation = useNavigation();
-  const { data: j, isLoading, error: e, refetch } = useFetch("orders?limit=1000&offset=0");
 
   const [data, setData] = useState([]);
   const [offset, setOffset] = useState(0);
@@ -27,7 +26,7 @@ const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh }) => {
   const [refreshing, setRefreshing2] = useState(false);
   const [endReached, setEndReached] = useState(false);
   const [error, setError] = useState(null);
-  const limit = 6;
+  const limit = 7;
 
   // Fetch products from API
   const fetchData = async (reset = false) => {
@@ -64,7 +63,7 @@ const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh }) => {
   const handleEndReached = () => {
     if (!loading && !endReached) {
       setEndReached(true);
-      fetchProducts(false);
+      fetchData(false);
       setTimeout(() => setEndReached(false), 1000); // Delay next fetch
     }
   };
@@ -79,29 +78,11 @@ const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh }) => {
   const dataArray = Array.isArray(data) ? data : [];
   const sortedData = dataArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-  const handleRefetch = () => {
-    refetch();
-  };
-
   useFocusEffect(
     useCallback(() => {
       onRefresh();
     }, [])
   );
-
-  // Handle refresh logic
-  useEffect(() => {
-    if (refreshList) {
-      const refetchResult = refetch();
-      if (refetchResult && typeof refetchResult.finally === "function") {
-        refetchResult.finally(() => {
-          setRefreshing(false);
-        });
-      } else {
-        setRefreshing(false);
-      }
-    }
-  }, [refreshList]);
 
   // Key extractor for FlatList
   const keyExtractor = (order) => order._id;
@@ -199,12 +180,12 @@ const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh }) => {
 
   return (
     <View style={[styles.container, { marginBottom: 20 }]}>
-      {isLoading ? (
+      {loading ? (
         <ActivityIndicator size={SIZES.xxLarge} color={COLORS.primary} />
       ) : error ? (
         <View style={styles.errorContainer}>
           <Text style={styles.errorMessage}>Looks like you're offline</Text>
-          <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
+          <TouchableOpacity onPress={onRefresh} style={styles.retryButton}>
             <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
             <Text style={styles.retryButtonText}>Retry Fetch</Text>
           </TouchableOpacity>
@@ -212,7 +193,7 @@ const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh }) => {
       ) : sortedData.length === 0 ? (
         <View style={styles.errorContainer}>
           <Text style={styles.errorMessage}>No orders at the moment</Text>
-          <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
+          <TouchableOpacity onPress={onRefresh} style={styles.retryButton}>
             <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
             <Text style={styles.retryButtonText}>Retry</Text>
           </TouchableOpacity>
@@ -222,7 +203,6 @@ const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh }) => {
           data={sortedData}
           keyExtractor={keyExtractor}
           renderItem={renderItem}
-          scrollEnabled={false}
           contentContainerStyle={{ padding: 4 }}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           onEndReached={handleEndReached}
