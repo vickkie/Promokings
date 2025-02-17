@@ -4,12 +4,19 @@ import { COLORS, SIZES } from "../../../constants";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import OrdersList from "./OrdersList";
 
 const OrdersSales = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { refresh } = route.params || false;
+  const { refreshin } = route.params || false;
+
+  const [refreshList, setRefreshList] = useState(refresh);
+  const [refreshing, setRefreshing] = useState(false);
+  const [irefresh, setiRefresh] = useState(refresh);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -21,16 +28,16 @@ const OrdersSales = () => {
           <Text style={styles.heading}>All Orders</Text>
           <TouchableOpacity
             style={styles.buttonWrap}
-            onPress={() => {
-              navigation.navigate("Sales Navigation");
-            }}
+            // onPress={() => {
+            //   navigation.navigate("Sales Navigation");
+            // }}
           >
             <View style={styles.numbers}></View>
             <Icon name="cart" size={26} />
           </TouchableOpacity>
         </View>
 
-        <OrdersList />
+        <OrdersList irefresh={irefresh} setiRefresh={setiRefresh} />
       </View>
     </SafeAreaView>
   );

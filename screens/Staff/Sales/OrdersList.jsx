@@ -8,24 +8,86 @@ import {
   Image,
   RefreshControl,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
 import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import Icon from "../../../constants/icons";
+import axios from "axios";
+import { BACKEND_PORT } from "@env";
 
-import { useNavigation } from "@react-navigation/native";
-
-const OrdersList = ({ refreshList, setRefreshing }) => {
+const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh }) => {
   const navigation = useNavigation();
-  const { data, isLoading, error, refetch } = useFetch("orders?limit=100&offset=0");
+  const { data: j, isLoading, error: e, refetch } = useFetch("orders?limit=1000&offset=0");
+
+  const [data, setData] = useState([]);
+  const [offset, setOffset] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing2] = useState(false);
+  const [endReached, setEndReached] = useState(false);
+  const [error, setError] = useState(null);
+  const limit = 6;
+
+  // Fetch products from API
+  const fetchData = async (reset = false) => {
+    if (loading) return; // Prevent multiple fetch calls
+    setLoading(true);
+
+    try {
+      const response = await axios.get(`${BACKEND_PORT}/api/orders`, {
+        params: { limit, offset: reset ? 0 : offset },
+      });
+
+      // Ensure unique products
+      setData((prev) => {
+        const newData = reset ? response.data.orders : [...prev, ...response.data.orders];
+
+        return Array.from(new Map(newData.map((item) => [item._id, item])).values());
+      });
+
+      setOffset((prev) => (reset ? limit : prev + limit));
+      setError(null);
+    } catch (err) {
+      setError("Failed to fetch products.");
+    } finally {
+      setLoading(false);
+      if (reset) setRefreshing2(false);
+    }
+  };
+  // Initial fetch
+  useEffect(() => {
+    fetchData(true);
+  }, []);
+
+  // fetchData(true);
+  const handleEndReached = () => {
+    if (!loading && !endReached) {
+      setEndReached(true);
+      fetchProducts(false);
+      setTimeout(() => setEndReached(false), 1000); // Delay next fetch
+    }
+  };
+
+  // Refresh function
+  const onRefresh = useCallback(() => {
+    setRefreshing2(true);
+    fetchData(true);
+  }, []);
 
   // Ensure data is an array and sort by creation date
-  const dataArray = Array.isArray(data.orders) ? data.orders : [];
+  const dataArray = Array.isArray(data) ? data : [];
   const sortedData = dataArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const handleRefetch = () => {
     refetch();
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      onRefresh();
+    }, [])
+  );
 
   // Handle refresh logic
   useEffect(() => {
@@ -58,10 +120,13 @@ const OrdersList = ({ refreshList, setRefreshing }) => {
           alignItems: "center",
         }}
         onPress={() => {
-          navigation.navigate("PreviewProduct", {
-            order: order,
-            orderid: order._id,
+          navigation.navigate("OrderSalesDetails", {
+            products: order?.products,
+            orderId: order._id,
+            item: order,
           });
+
+          console.log(order.products, order._id, order);
         }}
       >
         <Image source={require("../../../assets/images/isometric.webp")} style={styles.productImage} />
@@ -69,19 +134,65 @@ const OrdersList = ({ refreshList, setRefreshing }) => {
 
       <View style={styles.orderDetails}>
         <Text style={styles.latestProductTitle}>{order.orderId}</Text>
-        <Text style={styles.latestProductdetail}>Order status: {order.deliveryStatus}</Text>
+        <View style={styles.flexMe}>
+          <Text
+            style={{
+              backgroundColor:
+                order.status === "pending"
+                  ? "#C0DAFF"
+                  : order.status === "approved"
+                  ? "#CBFCCD"
+                  : order.status === "partial"
+                  ? "#F3D0CE"
+                  : order.status === "completed"
+                  ? "#F3D0CE"
+                  : order.status === "cancelled"
+                  ? "#F3D0CE"
+                  : COLORS.themey, // Default color
+              paddingVertical: 4,
+              paddingHorizontal: 8,
+              borderRadius: SIZES.medium,
+              width: 90,
+              textAlign: "center",
+            }}
+          >
+            {order.status}
+          </Text>
+          <Text
+            style={{
+              backgroundColor:
+                order.paymentStatus === "pending"
+                  ? "#C0DAFF"
+                  : order.paymentStatus === "paid"
+                  ? "#CBFCCD"
+                  : order.paymentStatus === "partial"
+                  ? "#F3D0CE"
+                  : COLORS.themey, // Default color
+              paddingVertical: 4,
+              paddingHorizontal: 8,
+              borderRadius: SIZES.medium,
+              width: 80,
+              textAlign: "center",
+            }}
+          >
+            {order.paymentStatus}
+          </Text>
+        </View>
+
+        <Text style={styles.productPrice}>+ KSHS {order.totalAmount}</Text>
       </View>
 
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate("PreviewProduct", {
-            order: order,
-            orderid: order._id,
+          navigation.navigate("OrderSalesDetails", {
+            products: order?.products,
+            orderId: order._id,
+            item: order,
           });
         }}
         style={[styles.flexEnd, styles.buttonView]}
       >
-        <Text style={styles.productPrice}>+ KSHS {order.totalAmount}</Text>
+        <Icon name="pencil" size={25} />
       </TouchableOpacity>
     </View>
   );
@@ -100,7 +211,7 @@ const OrdersList = ({ refreshList, setRefreshing }) => {
         </View>
       ) : sortedData.length === 0 ? (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorMessage}>No products at the moment</Text>
+          <Text style={styles.errorMessage}>No orders at the moment</Text>
           <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
             <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
             <Text style={styles.retryButtonText}>Retry</Text>
@@ -113,7 +224,10 @@ const OrdersList = ({ refreshList, setRefreshing }) => {
           renderItem={renderItem}
           scrollEnabled={false}
           contentContainerStyle={{ padding: 4 }}
-          refreshControl={<RefreshControl refreshing={refreshList} onRefresh={handleRefetch} />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          onEndReached={handleEndReached}
+          onEndReachedThreshold={0.5}
+          // refreshControl={<RefreshControl refreshing={refreshList} onRefresh={handleRefetch} />}
           ListEmptyComponent={
             <View style={styles.emptyList}>
               <Text style={styles.emptyListText}>No orders found</Text>
@@ -131,6 +245,7 @@ export default OrdersList;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 130,
   },
   productImage: {
     width: 35,
@@ -145,8 +260,7 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
   },
   productPrice: {
-    paddingTop: 20,
-    alignSelf: "center",
+    paddingTop: 10,
     fontSize: SIZES.small,
     color: COLORS.black,
     fontFamily: "medium",
@@ -198,9 +312,8 @@ const styles = StyleSheet.create({
   buttonView: {
     display: "flex",
     alignItems: "center",
-    // backgroundColor: "red",
-    alignItems: "center",
-    height: "100%",
+    justifyContent: "center",
+    height: 100,
   },
   latestProductTitle: {
     fontSize: 16,
@@ -212,5 +325,10 @@ const styles = StyleSheet.create({
     fontWeight: "regular",
     color: COLORS.gray,
     marginBottom: 5,
+  },
+  flexMe: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 6,
   },
 });

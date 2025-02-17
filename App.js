@@ -50,6 +50,8 @@ import {
   PreviewProduct,
   SalesDashboard,
   OrdersSales,
+  OrderSalesDetails,
+  EditSalesOrder,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -154,6 +156,12 @@ export default function App() {
                       options={{ headerShown: false }}
                     />
                     <Stack.Screen name="SalesDashboard" component={SalesDashboard} options={{ headerShown: false }} />
+                    <Stack.Screen
+                      name="OrderSalesDetails"
+                      component={OrderSalesDetails}
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen name="EditSalesOrder" component={EditSalesOrder} options={{ headerShown: false }} />
                     <Stack.Screen name="OrdersSales" component={OrdersSales} options={{ headerShown: false }} />
                   </Stack.Navigator>
                   <Toast />
