@@ -8,6 +8,7 @@ import HomeMenu from "../../../components/bottomsheets/HomeMenu";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
 import LatestOrders from "./LatestOrders";
+import SalesChart from "./SalesChart";
 
 const zeroData = {
   totalProducts: 0,
@@ -21,7 +22,7 @@ const SalesDashboard = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("orders/summary");
+  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("orders/salesData");
 
   const [userId, setUserId] = useState(null);
   const [quantities, setQuanties] = useState(null);
@@ -117,73 +118,12 @@ const SalesDashboard = () => {
         </View>
       </View>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <View style={{ flex: 1, borderRadius: 45, marginTop: 6 }}>
-          <View style={styles.lowerWelcomeWrapper}>
-            <View style={styles.lowerWelcome}>
-              <View style={styles.dashbboxWrapperp}>
-                <View style={styles.dashbboxWrapper}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      // navigation.navigate("EditProductList", {
-                      //   products: "products",
-                      //   refreshList: true,
-                      // });
-                    }}
-                  >
-                    <View style={[styles.dashBox, styles.box1]}>
-                      <Text style={styles.boxNUmber}>{quantities?.totalOrders}</Text>
-                      <Text style={styles.boxText}>Total Orders</Text>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      // navigation.navigate("EditProductList", {
-                      //   products: "products/stock-summary/out-of-stock",
-                      //   refreshList: true,
-                      // });
-                    }}
-                  >
-                    <View style={[styles.dashBox, styles.box2]}>
-                      <Text style={styles.boxNUmber}>{quantities?.pendingOrders}</Text>
-                      <Text style={styles.boxText}>Pending Orders</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.dashbboxWrapper}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      // navigation.navigate("EditProductList", {
-                      //   products: "products/stock-summary/low-stock",
-                      //   refreshList: true,
-                      // });
-                    }}
-                  >
-                    <View style={[styles.dashBox, styles.box3]}>
-                      <Text style={styles.boxNUmber}>{quantities?.todayOrders}</Text>
-                      <Text style={styles.boxText}>Today Orders</Text>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      // navigation.navigate("EditProductList", {
-                      //   products: "products/stock-summary/available",
-                      //   refreshList: true,
-                      // });
-                    }}
-                  >
-                    <View style={[styles.dashBox, styles.box4]}>
-                      <Text style={styles.boxNUmber}>{quantities?.processingOrders}</Text>
-                      <Text style={styles.boxText}>Processing orders</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
+        <View style={{ flex: 1, borderRadius: 45, marginTop: 0 }}>
+          <View style={styles.latestProducts}>
+            <SalesChart salesinData={quantities} />
           </View>
-          <View style={{ paddingTop: 10, width: SIZES.width - 20, paddingHorizontal: 22 }}>
-            <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>
-              Latest Products
-            </Text>
+          <View style={styles.latestHeader}>
+            <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>Latest Sales</Text>
           </View>
           <View style={styles.latestProducts}>
             <LatestOrders refreshList={refreshList} setRefreshing={setRefreshing} />
@@ -391,5 +331,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 3,
     minHeight: SIZES.height / 2.5,
     marginBottom: 20,
+    overflow: "hidden",
   },
+  latestHeader: { paddingTop: 2, width: SIZES.width - 20, paddingHorizontal: 22, marginTop: -6 },
 });

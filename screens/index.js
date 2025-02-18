@@ -41,6 +41,7 @@ import OrderSalesDetails from "./Staff/Sales/OrderSalesDetails";
 import EditSalesOrder from "./Staff/Sales/EditOrder";
 import SalesOverview from "./Staff/Sales/SalesOverview";
 import SalesData from "./Staff/Sales/SalesData";
+import SalesShipments from "./Staff/Sales/SalesShipment";
 export {
   Home,
   OrderDetails,
@@ -83,4 +84,5 @@ export {
   EditSalesOrder,
   SalesOverview,
   SalesData,
+  SalesShipments,
 };

@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Dimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 
-const SalesChart = () => {
+const SalesChart = ({ salesinData }) => {
   const screenWidth = Dimensions.get("window").width;
+  const [selectedPoint, setSelectedPoint] = useState(null);
+  // console.log(salesinData);
 
-  const salesData = {
+  const dummyData = {
     "2024-09": { actual: 3000, projected: 40000 },
     "2024-10": { actual: 2000, projected: 30000 },
     "2024-11": { actual: 200, projected: 4000 },
@@ -13,10 +15,19 @@ const SalesChart = () => {
     "2025-01": { actual: 6000, projected: 1000 },
     "2025-02": { actual: 4000, projected: 33447 },
   };
+  const salesData = salesinData?.salesByMonth || dummyData;
 
-  const labels = Object.keys(salesData).map((month) => month.slice(5));
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const labels = Object.keys(salesData).map((month) => monthNames[parseInt(month.slice(5)) - 1]);
   const actualData = Object.values(salesData).map((data) => data.actual);
   const projectedData = Object.values(salesData).map((data) => data.projected);
+
+  useEffect(() => {
+    if (selectedPoint) {
+      const timer = setTimeout(() => setSelectedPoint(null), 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedPoint]);
 
   const chartConfig = {
     backgroundColor: "#ffffff",
@@ -33,7 +44,7 @@ const SalesChart = () => {
       strokeWidth: 1,
     },
     propsForLabels: {
-      fontSize: 12,
+      fontSize: 10,
     },
   };
 
@@ -54,39 +65,49 @@ const SalesChart = () => {
   };
 
   return (
-    <View style={{ padding: 20, backgroundColor: "white" }}>
-      <Text
-        style={{
-          fontSize: 18,
-          fontWeight: "bold",
-          marginBottom: 10,
-          color: "#333",
-        }}
-      >
+    <View style={{ padding: 5, marginStart: -15, backgroundColor: "white" }}>
+      <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10, paddingStart: 20, color: "#333" }}>
         Sales Overview
       </Text>
+
       <LineChart
         data={data}
-        width={screenWidth - 40} // Account for padding
+        width={screenWidth + 40}
         height={220}
         chartConfig={chartConfig}
         bezier
-        style={{
-          marginVertical: 8,
-          borderRadius: 16,
-        }}
-        withInnerLines={true}
-        withOuterLines={false}
-        withVerticalLines={false}
-        withHorizontalLines={true}
-        withVerticalLabels={true}
-        withHorizontalLabels={true}
-        fromZero={true}
-        formatYLabel={(value) => `$${parseInt(value).toLocaleString()}`}
-        renderDotContent={({ x, y, index }) => {
-          return null; // Hide dots
+        style={{ marginVertical: 8 }}
+        fromZero
+        formatYLabel={(value) => `${parseInt(value).toLocaleString()}`}
+        onDataPointClick={({ value, index }) => {
+          setSelectedPoint({
+            month: labels[index],
+            actual: actualData[index],
+            projected: projectedData[index],
+          });
         }}
       />
+
+      {/* Display selected data point info */}
+      {selectedPoint && (
+        <View style={{ alignItems: "center", marginVertical: 10 }}>
+          <Text style={{ fontSize: 16, fontWeight: "bold" }}>{`Month: ${selectedPoint.month}`}</Text>
+          <Text style={{ color: "#87CEFA" }}>{`Actual Sales: ${selectedPoint.actual.toLocaleString()}`}</Text>
+          <Text style={{ color: "#FFB74D" }}>{`Projected Sales: ${selectedPoint.projected.toLocaleString()}`}</Text>
+        </View>
+      )}
+
+      {/* Legend */}
+      <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 10 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", marginRight: 15 }}>
+          <View style={{ width: 12, height: 12, backgroundColor: "#87CEFA", marginRight: 5 }} />
+          <Text>Actual Sales</Text>
+        </View>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={{ width: 12, height: 12, backgroundColor: "#FFB74D", marginRight: 5 }} />
+          <Text>Projected Sales</Text>
+        </View>
+      </View>
     </View>
   );
 };

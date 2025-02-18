@@ -1,6 +1,14 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { AddProduct, StaffSettings, OrdersSales, SalesDashboard, SalesOverview, SalesData } from "../screens";
+import {
+  AddProduct,
+  StaffSettings,
+  OrdersSales,
+  SalesDashboard,
+  SalesOverview,
+  SalesData,
+  SalesShipments,
+} from "../screens";
 
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
@@ -70,8 +78,8 @@ const SalesTabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="SalesData"
-        component={SalesData}
+        name="SalesOverviews"
+        component={SalesOverview}
         options={{
           tabBarIcon: ({ focused }) => (
             <TouchableOpacity
@@ -98,13 +106,13 @@ const SalesTabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="SalesOverviews"
-        component={SalesOverview}
+        name="SalesShipment"
+        component={SalesShipments}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon name={focused ? "truckfilled" : "truck"} size={32} color={focused ? COLORS.primary : COLORS.gray2} />
           ),
-          tabBarLabel: "Deliveries",
+          tabBarLabel: "Shipments",
         }}
       />
       <Tab.Screen

@@ -8,6 +8,7 @@ import HomeMenu from "../../../components/bottomsheets/HomeMenu";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
 import LatestOrders from "./LatestOrders";
+import SalesChart from "./SalesChart";
 
 const zeroData = {
   totalProducts: 0,
@@ -125,8 +126,11 @@ const SalesOverview = () => {
               <Icon name="backbutton" size={24} />
             </TouchableOpacity>
             <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap2}>
-                {renderProfilePicture()}
+              <TouchableOpacity
+                onPress={() => navigation.navigate("SalesShipments")}
+                style={[styles.backBtn, styles.buttonWrap]}
+              >
+                <Icon name="truckfilled" size={26} />
               </TouchableOpacity>
             </View>
           </View>
@@ -148,28 +152,56 @@ const SalesOverview = () => {
                 <View style={styles.dashbboxWrapper}>
                   <TouchableOpacity
                     onPress={() => {
-                      navigation.navigate("EditProductList", {
-                        products: "products",
-                        refreshList: true,
-                      });
+                      // navigation.navigate("EditProductList", {
+                      //   products: "products",
+                      //   refreshList: true,
+                      // });
                     }}
                   >
                     <View style={[styles.dashBox, styles.box1]}>
-                      <Text style={styles.boxNUmber}>896,002</Text>
-                      <Text style={styles.boxText}>Gross profit</Text>
+                      <Text style={styles.boxNUmber}>{quantities?.totalOrders}</Text>
+                      <Text style={styles.boxText}>Total Orders</Text>
                     </View>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
-                      navigation.navigate("EditProductList", {
-                        products: "products/stock-summary/out-of-stock",
-                        refreshList: true,
-                      });
+                      // navigation.navigate("EditProductList", {
+                      //   products: "products/stock-summary/out-of-stock",
+                      //   refreshList: true,
+                      // });
                     }}
                   >
                     <View style={[styles.dashBox, styles.box2]}>
-                      <Text style={styles.boxNUmber}>1,000,000</Text>
-                      <Text style={styles.boxText}>Projected profit</Text>
+                      <Text style={styles.boxNUmber}>{quantities?.pendingOrders}</Text>
+                      <Text style={styles.boxText}>Pending Orders</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.dashbboxWrapper}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      // navigation.navigate("EditProductList", {
+                      //   products: "products/stock-summary/low-stock",
+                      //   refreshList: true,
+                      // });
+                    }}
+                  >
+                    <View style={[styles.dashBox, styles.box3]}>
+                      <Text style={styles.boxNUmber}>{quantities?.todayOrders}</Text>
+                      <Text style={styles.boxText}>Today Orders</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      // navigation.navigate("EditProductList", {
+                      //   products: "products/stock-summary/available",
+                      //   refreshList: true,
+                      // });
+                    }}
+                  >
+                    <View style={[styles.dashBox, styles.box4]}>
+                      <Text style={styles.boxNUmber}>{quantities?.processingOrders}</Text>
+                      <Text style={styles.boxText}>Processing orders</Text>
                     </View>
                   </TouchableOpacity>
                 </View>
