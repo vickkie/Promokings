@@ -217,7 +217,7 @@ const SalesOverview = () => {
               <TouchableOpacity
                 key={product.id}
                 style={styles.latestProductCards}
-                onPress={() => navigation.navigate(product.route, { product })}
+                // onPress={() => navigation.navigate(product.route, { product })}
               >
                 <View
                   style={{

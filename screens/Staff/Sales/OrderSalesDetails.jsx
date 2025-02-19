@@ -43,23 +43,6 @@ const OrderSalesDetails = () => {
   const [userId, setUserId] = useState(null);
   const [phoneError, setPhoneError] = useState("");
 
-  function calculateQuantity(priceString, total) {
-    // Regex pattern to match numbers including decimal points and optional thousands separators
-    const regex = /\d{1,3}(,\d{3})*(\.\d+)?/g;
-
-    // Extract numeric part, considering potential thousands separators
-    const numericValueMatch = priceString.match(regex)?.[0];
-    if (!numericValueMatch) return "N/A";
-
-    // Remove thousands separators if present
-    const numericValue = numericValueMatch.replace(/,/g, "");
-
-    // Convert to float and perform calculation, ensuring total is a number
-    const quantity = isNaN(parseFloat(numericValue)) || isNaN(total) ? "N/A" : total / parseFloat(numericValue);
-
-    return quantity;
-  }
-
   useEffect(() => {
     // console.log(item.status);
   });
