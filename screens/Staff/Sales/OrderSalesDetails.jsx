@@ -17,7 +17,7 @@ const OrderSalesDetails = () => {
   const { products, totals, orderId, item } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
 
-  console.log(products, orderId, item);
+  // console.log(products, orderId, item);
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorState, setErrorState] = useState(false);

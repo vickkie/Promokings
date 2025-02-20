@@ -123,7 +123,7 @@ const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPend
             item: order,
           });
 
-          console.log(order.products, order._id, order);
+          // console.log(order.products, order._id, order);
         }}
       >
         <Image source={require("../../../assets/images/isometric.webp")} style={styles.productImage} />

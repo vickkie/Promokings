@@ -58,9 +58,10 @@ const LatestOrders = ({ refreshList, setRefreshing }) => {
           alignItems: "center",
         }}
         onPress={() => {
-          navigation.navigate("PreviewProduct", {
-            order: order,
-            orderid: order._id,
+          navigation.navigate("OrderSalesDetails", {
+            products: order?.products,
+            orderId: order._id,
+            item: order,
           });
         }}
       >

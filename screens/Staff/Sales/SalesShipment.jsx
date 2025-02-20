@@ -69,7 +69,7 @@ const SalesShipments = () => {
         const response = await fetch(`${BACKEND_PORT}/api/shipment/all`);
         const data = await response.json();
 
-        console.log(data[0].orderId);
+        // console.log(data[0].orderId);
         setOrders(data || []);
       } catch (err) {
         setError(err.message);
