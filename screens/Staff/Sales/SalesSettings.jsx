@@ -256,7 +256,10 @@ const SalesSettings = () => {
         <StatusBar backgroundColor={COLORS.themey} />
         <View style={{ width: "100%", height: SIZES.height / 4, overflow: "hidden" }}>
           {/* <Image source={require("../../../assets/images/abstract1.webp")} style={styles.cover} /> */}
-          <ProfileScreen profileImageUrl={userData.profilePicture} />
+          profileImageUrl=
+          {userData?.profilePicture
+            ? userData.profilePicture
+            : "https://res.cloudinary.com/drsuclnkw/image/upload/t_here1/productImage_f7sj7z"}
         </View>
         <View style={styles.profileContainer}>
           <TouchableOpacity onPress={() => navigation.navigate("SalesProfile")} style={styles.buttonWrap2}>
