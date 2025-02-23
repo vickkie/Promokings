@@ -101,7 +101,7 @@ const InventoryDashboard = () => {
               <Icon name="menu" size={24} />
             </TouchableOpacity>
             <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap2}>
+              <TouchableOpacity onPress={() => navigation.navigate("InventoryProfile")} style={styles.buttonWrap2}>
                 {renderProfilePicture()}
               </TouchableOpacity>
             </View>

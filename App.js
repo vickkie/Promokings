@@ -55,6 +55,12 @@ import {
   SalesOverview,
   SalesData,
   SalesShipments,
+  DeliveryDetails,
+  SalesProfile,
+  SalesSettings,
+  InventoryProfile,
+  DriverList,
+  DriverDetails,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -169,6 +175,16 @@ export default function App() {
                     <Stack.Screen name="OrdersSales" component={OrdersSales} options={{ headerShown: false }} />
                     <Stack.Screen name="SalesData" component={SalesData} options={{ headerShown: false }} />
                     <Stack.Screen name="SalesShipments" component={SalesShipments} options={{ headerShown: false }} />
+                    <Stack.Screen name="DeliveryDetails" component={DeliveryDetails} options={{ headerShown: false }} />
+                    <Stack.Screen name="SalesProfile" component={SalesProfile} options={{ headerShown: false }} />
+                    <Stack.Screen name="SalesSettings" component={SalesSettings} options={{ headerShown: false }} />
+                    <Stack.Screen
+                      name="InventoryProfile"
+                      component={InventoryProfile}
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen name="DriverList" component={DriverList} options={{ headerShown: false }} />
+                    <Stack.Screen name="DriverDetails" component={DriverDetails} options={{ headerShown: false }} />
                   </Stack.Navigator>
                   <Toast />
                   {/* <BrokenComponent /> */}

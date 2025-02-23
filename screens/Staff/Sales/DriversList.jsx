@@ -1,5 +1,15 @@
 import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
-import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet, RefreshControl } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView,
+  Image,
+  StatusBar,
+  StyleSheet,
+  RefreshControl,
+  Animated,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
@@ -7,8 +17,8 @@ import { AuthContext } from "../../../components/auth/AuthContext";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
-import LatestOrders from "./LatestOrders";
-import SalesChart from "./SalesChart";
+import { ActivityIndicator } from "react-native";
+import { FlatList } from "react-native";
 
 const zeroData = {
   totalProducts: 0,
@@ -17,17 +27,89 @@ const zeroData = {
   availableStock: 0,
 };
 
-const SalesOverview = () => {
+const fallbackImage = require("../../../assets/images/userDefault.webp");
+
+const DriverCard = ({ driver }) => {
+  const renderProfilePicture = () => {
+    if (driver && driver.profilePicture) {
+      return <Image source={{ uri: `${driver?.profilePicture}` }} style={styles.profilePicture} />;
+    }
+
+    return <Image source={require("../../../assets/images/userDefault.webp")} style={styles.profilePicture} />;
+  };
+  const opacity = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    const animateDot = () => {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(opacity, {
+            toValue: 0.3,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(opacity, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    };
+
+    if (driver?.status === "available" || driver?.status === "transit") {
+      animateDot();
+    }
+  }, [driver?.status]);
+  return (
+    <TouchableOpacity style={[styles.cardContainer, styles.driverCard]}>
+      <View style={styles.infoContainerx}>
+        <View style={styles.flexme}>{renderProfilePicture()}</View>
+        <View style={[styles.flexme, styles.spaceVertical]}>
+          <Text style={styles.driverName}>{driver.fullName}</Text>
+        </View>
+        <View style={[styles.flexme]}>
+          <Text style={styles.status}>{driver.numberPlate}</Text>
+        </View>
+
+        <View style={[styles.flexme, styles.spaceVertical]}>
+          <TouchableOpacity style={styles.roundedview}>
+            {/* Animated Dot */}
+            <View style={styles.statusContainer}>
+              <Animated.View
+                style={[
+                  styles.statusDot,
+                  {
+                    backgroundColor: driver?.status === "available" ? "green" : "red",
+                    opacity: opacity,
+                  },
+                ]}
+              />
+              <Text>
+                {driver?.status ? driver.status.charAt(0).toUpperCase() + driver.status.slice(1).toLowerCase() : ""}
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.roundview}>
+            <Image source={require("../../../assets/new-arrow.png")} style={styles.arrow} />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const DriverList = () => {
   const { userLogin, hasRole, userData, userLogout } = useContext(AuthContext);
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("orders/summary");
+  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("staff/drivers");
 
   const [userId, setUserId] = useState(null);
-  const [quantities, setQuanties] = useState(zeroData);
   const [refreshList, setRefreshList] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [drivers, setDrivers] = useState([]);
 
   useEffect(() => {
     if (!userLogin) {
@@ -51,9 +133,7 @@ const SalesOverview = () => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    setRefreshList(true); // This will trigger the refresh in LatestProducts
-
-    // Optionally reset the refreshing state after some delay
+    setRefreshList(true);
     setTimeout(() => {
       setRefreshing(false);
       setRefreshList(false); // Reset refreshList after refreshing
@@ -64,56 +144,15 @@ const SalesOverview = () => {
     refetch();
   }, [refreshing]);
 
-  const renderProfilePicture = () => {
-    if (!userLogin) {
-      return <Icon name="user" size={24} color="#000" />;
-    }
-    if (userData && userData.profilePicture) {
-      return <Image source={{ uri: `${userData.profilePicture}` }} style={styles.profilePicture} />;
-    }
-
-    return <Image source={require("../../../assets/images/userDefault.webp")} style={styles.profilePicture} />;
-  };
-
   const BottomSheetRef = useRef(null);
-
-  const openMenu = () => {
-    // if (BottomSheetRef.current) {
-    //   BottomSheetRef.current.present();
-    // }
-  };
 
   useEffect(() => {
     if (!isLoading && data) {
-      setQuanties(data);
+      setDrivers(data);
     } else if (!isLoading && !data) {
-      setQuanties(zeroData);
+      setDrivers(zeroData);
     }
   }, [isLoading, data]);
-
-  const products = [
-    {
-      id: "1",
-      title: "Sales Report",
-      detail: "Get detailed sales information",
-      route: "DriverList",
-      image: require("../../../assets/images/isometric.webp"),
-    },
-    {
-      id: "2",
-      title: "Sales Interactions",
-      detail: "Track your stock interactions",
-      route: "DriverList",
-      image: require("../../../assets/images/baggift.webp"),
-    },
-    {
-      id: "3",
-      title: "Drivers",
-      detail: "Get information of available carriers",
-      route: "DriverList",
-      image: require("../../../assets/images/userDefault.webp"),
-    },
-  ];
 
   return (
     <SafeAreaView style={styles.topSafeview}>
@@ -122,9 +161,15 @@ const SalesOverview = () => {
       <View style={styles.topWelcomeWrapper}>
         <View style={styles.appBarWrapper}>
           <View style={styles.appBar}>
-            <TouchableOpacity style={styles.buttonWrap} nPress={() => navigation.goBack()}>
+            <TouchableOpacity style={styles.buttonWrap} onPress={() => navigation.goBack()}>
               <Icon name="backbutton" size={24} />
             </TouchableOpacity>
+
+            <View style={styles.greeting}>
+              <Text style={styles.greetingMessage}>
+                <Text style={styles.username}>Driver Management</Text>
+              </Text>
+            </View>
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity
                 onPress={() => navigation.navigate("SalesShipments")}
@@ -135,118 +180,28 @@ const SalesOverview = () => {
             </View>
           </View>
         </View>
-        <View style={styles.greeting}>
-          <Text style={styles.greetingMessage}>
-            <Text style={styles.username}>Sales & Management</Text>
-          </Text>
-        </View>
+
         <View style={styles.sloganWrapper}>
-          <Text style={styles.slogan}>{`Manage all you statistics here `}</Text>
+          <Text style={styles.slogan}>{`All courriers available `}</Text>
         </View>
       </View>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={{ flex: 1, borderRadius: 45, marginTop: 6 }}>
-          <View style={styles.lowerWelcomeWrapper}>
-            <View style={styles.lowerWelcome}>
-              <View style={styles.dashbboxWrapperp}>
-                <View style={styles.dashbboxWrapper}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      // navigation.navigate("EditProductList", {
-                      //   products: "products",
-                      //   refreshList: true,
-                      // });
-                    }}
-                  >
-                    <View style={[styles.dashBox, styles.box1]}>
-                      <Text style={styles.boxNUmber}>{quantities?.totalOrders}</Text>
-                      <Text style={styles.boxText}>Total Orders</Text>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      // navigation.navigate("EditProductList", {
-                      //   products: "products/stock-summary/out-of-stock",
-                      //   refreshList: true,
-                      // });
-                    }}
-                  >
-                    <View style={[styles.dashBox, styles.box2]}>
-                      <Text style={styles.boxNUmber}>{quantities?.pendingOrders}</Text>
-                      <Text style={styles.boxText}>Pending Orders</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.dashbboxWrapper}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      // navigation.navigate("EditProductList", {
-                      //   products: "products/stock-summary/low-stock",
-                      //   refreshList: true,
-                      // });
-                    }}
-                  >
-                    <View style={[styles.dashBox, styles.box3]}>
-                      <Text style={styles.boxNUmber}>{quantities?.todayOrders}</Text>
-                      <Text style={styles.boxText}>Today Orders</Text>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      // navigation.navigate("EditProductList", {
-                      //   products: "products/stock-summary/available",
-                      //   refreshList: true,
-                      // });
-                    }}
-                  >
-                    <View style={[styles.dashBox, styles.box4]}>
-                      <Text style={styles.boxNUmber}>{quantities?.processingOrders}</Text>
-                      <Text style={styles.boxText}>Processing orders</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </View>
-          <View style={{ paddingTop: 10, width: SIZES.width - 20, paddingHorizontal: 22 }}>
-            <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>Management</Text>
-          </View>
-
-          <View style={styles.latestProducts}>
-            {products.map((product) => (
-              <TouchableOpacity
-                key={product.id}
-                style={styles.latestProductCards}
-                onPress={() => navigation.navigate(product.route, { product })}
-              >
-                <View
-                  style={{
-                    borderRadius: 100,
-                    backgroundColor: COLORS.themey,
-                    width: 36,
-                    height: 36,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image source={product.image} style={styles.productImage} />
-                </View>
-
-                <View style={styles.orderDetails}>
-                  <Text style={styles.latestProductTitle}>{product.title}</Text>
-                  <Text style={styles.latestProductdetail}>{product.detail}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
+          <FlatList
+            scrollEnabled={false}
+            data={drivers}
+            numColumns={2}
+            columnWrapperStyle={{ justifyContent: "space-between" }}
+            keyExtractor={(item, index) => (item._id ? item._id.toString() : index.toString())}
+            renderItem={({ item }) => <DriverCard driver={item} />}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default SalesOverview;
+export default DriverList;
 
 const styles = StyleSheet.create({
   carouselContainer: {
@@ -317,7 +272,7 @@ const styles = StyleSheet.create({
     marginEnd: 4,
   },
   topWelcomeWrapper: {
-    minHeight: 140,
+    minHeight: 90,
     backgroundColor: COLORS.themew,
     marginHorizontal: 4,
     borderRadius: SIZES.medium,
@@ -333,7 +288,7 @@ const styles = StyleSheet.create({
   },
   greetingMessage: {
     fontFamily: "bold",
-    fontSize: SIZES.xLarge,
+    fontSize: SIZES.large,
   },
   hello: {
     fontFamily: "regular",
@@ -368,7 +323,7 @@ const styles = StyleSheet.create({
   },
   topSafeview: {
     flex: 1,
-    backgroundColor: COLORS.themeg,
+    backgroundColor: "#F2F5EF",
     borderRadius: SIZES.medium,
     marginTop: SIZES.xxSmall,
   },
@@ -493,5 +448,87 @@ const styles = StyleSheet.create({
     fontSize: SIZES.medium,
     fontWeight: "bold",
     color: COLORS.primary,
+  },
+
+  cardContainer: {},
+  driverImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+  },
+  infoContainer: {
+    // flex: 1,
+    marginLeft: 15,
+  },
+  driverName: {
+    fontSize: SIZES.medium,
+    fontWeight: "semibold",
+    color: COLORS.black,
+  },
+  status: {
+    fontSize: SIZES.small,
+    color: COLORS.gray,
+  },
+  actionButton: {
+    backgroundColor: COLORS.primary,
+    padding: 10,
+    borderRadius: 50,
+  },
+  driverCard: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    margin: 5,
+    minHeight: 140,
+    backgroundColor: COLORS.themew,
+    borderRadius: 10,
+
+    alignItems: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 4,
+    borderRadius: SIZES.medium,
+    marginVertical: 1,
+  },
+  flexme: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+  },
+
+  infoContainerx: {
+    flex: 1,
+  },
+  roundview: {
+    height: 45,
+    width: 45,
+    borderRadius: 100,
+    backgroundColor: "#EEEFE7",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  roundedview: {
+    height: 45,
+    width: "68%",
+    borderRadius: 100,
+    backgroundColor: "white",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  spaceVertical: {
+    marginVertical: 5,
+  },
+  statusContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  statusDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
   },
 });

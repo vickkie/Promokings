@@ -102,7 +102,7 @@ const SalesDashboard = () => {
               <Icon name="menu" size={24} />
             </TouchableOpacity>
             <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap2}>
+              <TouchableOpacity onPress={() => navigation.navigate("SalesProfile")} style={styles.buttonWrap2}>
                 {renderProfilePicture()}
               </TouchableOpacity>
             </View>

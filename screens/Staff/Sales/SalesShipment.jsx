@@ -293,7 +293,7 @@ const SalesShipments = () => {
         </View>
         <TouchableOpacity
           onPress={() => {
-            // navigation.navigate("OrderDetails", { orderId, item, products, totals });
+            navigation.navigate("DeliveryDetails", { deliveryId });
           }}
           style={[styles.flexEnd, styles.buttonView]}
         >
@@ -421,12 +421,12 @@ const SalesShipments = () => {
                     <LottieView
                       source={require("../../../assets/data/emptybox.json")}
                       autoPlay
-                      loop
+                      // loop
                       style={styles.animation}
                     />
                   </View>
                   <View style={{ marginTop: -20, paddingBottom: 10 }}>
-                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}> Nothing to see here</Text>
+                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}> No Deliveries here</Text>
                   </View>
                 </View>
               )}

@@ -34,23 +34,20 @@ const clearCache = async () => {
   }
 };
 
-const StaffSettings = () => {
+const SalesSettings = () => {
   const navigation = useNavigation();
-  const { userData, hasRole, userLogout, userLogin } = useContext(AuthContext);
+  const { userData, userLogout, userLogin } = useContext(AuthContext);
   const { deleteStatus, isDeleting, errorStatus, redelete } = useDelete(`user/`);
 
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     if (!userLogin) {
-      navigation.replace("Login");
-    } else if (hasRole("inventory")) {
+      setUserId(1);
+    } else if (userData && userData._id) {
       setUserId(userData._id);
-    } else {
-      userLogout();
-      navigation.replace("Login");
     }
-  }, [userLogin, navigation, hasRole]);
+  }, [userLogin, userData]);
 
   const handleClearCache = () => {
     Alert.alert(
@@ -159,7 +156,7 @@ const StaffSettings = () => {
           <Image source={require("../../../assets/images/abstract1.webp")} style={styles.cover} />
         </View>
         <View style={styles.profileContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate("InventoryProfile")} style={styles.buttonWrap2}>
+          <TouchableOpacity onPress={() => navigation.navigate("SalesProfile")} style={styles.buttonWrap2}>
             {renderProfilePicture()}
           </TouchableOpacity>
           <View style={styles.versionWrapper}>
@@ -187,7 +184,7 @@ const StaffSettings = () => {
 
           {userData && (
             <View style={styles.menuWrapper}>
-              <TouchableOpacity onPress={() => navigation.navigate("InventoryProfile")}>
+              <TouchableOpacity onPress={() => navigation.navigate("SalesProfile")}>
                 <View style={styles.menuItem(0.5)}>
                   <Icon name="userhandup" size={24} color={COLORS.primary} />
                   <Text style={styles.menuText}>My profile</Text>
@@ -235,7 +232,7 @@ const StaffSettings = () => {
   );
 };
 
-export default StaffSettings;
+export default SalesSettings;
 
 const styles = StyleSheet.create({
   container: {

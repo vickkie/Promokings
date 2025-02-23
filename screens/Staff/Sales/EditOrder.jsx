@@ -65,7 +65,7 @@ const EditSalesOrder = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ orderId, driverId: assignedDriver }),
+          body: JSON.stringify({ orderId, driverId: assignedDriver, assignee: userData._id }),
         });
 
         const data = await response.json();

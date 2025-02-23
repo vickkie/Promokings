@@ -59,23 +59,39 @@ const AuthProvider = ({ children }) => {
   };
 
   const updateUserData = async (updatedData) => {
+    if (!updatedData || typeof updatedData !== "object") {
+      console.error("Invalid user data:", updatedData);
+      return;
+    }
+
     setUserData(updatedData);
-    await AsyncStorage.setItem(`user${updatedData._id}`, JSON.stringify(updatedData));
+
+    try {
+      const stringifiedData = JSON.stringify(updatedData);
+      await AsyncStorage.setItem(`user${updatedData._id}`, stringifiedData);
+    } catch (error) {
+      console.error("Error saving user data to AsyncStorage:", error);
+    }
   };
 
   // Utility function to check user's role
   const hasRole = (requiredRole) => {
-    if (!requiredRole || !userData) {
+    if (!requiredRole || !userData?.TOKEN) {
       return false;
     }
-    const decodedToken = jwtDecode(userData?.TOKEN);
 
-    const userRole = decodedToken.role || "customer";
-    return userRole === requiredRole;
+    try {
+      const decodedToken = jwtDecode(userData.TOKEN);
+      const userRole = decodedToken?.role || "customer";
+
+      return userRole === requiredRole;
+    } catch (error) {
+      console.error("Invalid token, cannot decode:", error);
+      return false;
+    }
   };
-  const getRole = (data) => {
-    console.log(data);
 
+  const getRole = (data) => {
     if (!data) {
       console.log("no user data");
       return "customer";

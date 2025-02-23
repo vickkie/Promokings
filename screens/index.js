@@ -22,19 +22,16 @@ import Faqs from "./Faqs";
 import SystemMessages from "./SystemMessages";
 import OrderSuccess from "./OrderSuccess";
 import OrderDetails from "./OrderDetails";
-import InventoryDashboard from "./Staff/Inventory/InventoryDashboard";
-import OrdersSales from "./Staff/Sales/Orders";
-import EditProduct from "./Staff/Inventory/EditProduct";
 
-// import BottomTabNavigation from "../navigation/BottomTabNavigation";
+import EditProduct from "./Staff/Inventory/EditProduct";
 import AddProduct from "./Staff/Inventory/AddProduct";
 import EditProductList from "./Staff/Inventory/ProductList";
 import StaffSettings from "./Staff/Inventory/Settings";
 import EditCategoriesList from "./Staff/Inventory/CategoriesList";
 import AddCategory from "./Staff/Inventory/AddCategory";
 import EditCategory from "./Staff/Inventory/EditCategory";
-
 import PreviewProduct from "./Staff/Inventory/PreviewProduct";
+import InventoryProfile from "./Staff/Inventory/InventoryProfile";
 
 import SalesDashboard from "./Staff/Sales/SalesDashboard";
 import OrderSalesDetails from "./Staff/Sales/OrderSalesDetails";
@@ -42,6 +39,14 @@ import EditSalesOrder from "./Staff/Sales/EditOrder";
 import SalesOverview from "./Staff/Sales/SalesOverview";
 import SalesData from "./Staff/Sales/SalesData";
 import SalesShipments from "./Staff/Sales/SalesShipment";
+import DeliveryDetails from "./Staff/Sales/DeliveryDetails";
+import SalesProfile from "./Staff/Sales/salesProfile";
+import SalesSettings from "./Staff/Sales/SalesSettings";
+import InventoryDashboard from "./Staff/Inventory/InventoryDashboard";
+import OrdersSales from "./Staff/Sales/Orders";
+import DriverDetails from "./Staff/Sales/DriverDetails";
+import DriverList from "./Staff/Sales/DriversList";
+
 export {
   Home,
   OrderDetails,
@@ -78,6 +83,9 @@ export {
   AddCategory,
   EditCategory,
   PreviewProduct,
+  InventoryProfile,
+
+  //sales
   SalesDashboard,
   OrdersSales,
   OrderSalesDetails,
@@ -85,4 +93,9 @@ export {
   SalesOverview,
   SalesData,
   SalesShipments,
+  DeliveryDetails,
+  SalesProfile,
+  SalesSettings,
+  DriverDetails,
+  DriverList,
 };

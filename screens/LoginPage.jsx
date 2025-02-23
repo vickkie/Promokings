@@ -70,7 +70,7 @@ const LoginPage = ({ navigation }) => {
       // Get role from AuthContext
       const role = getRole(response.data); // Assuming this function exists in AuthContext
 
-      console.log("Detected role:", role);
+      // console.log("Detected role:", role);
 
       // Role-based navigation
       const roleRoutes = {
@@ -82,14 +82,14 @@ const LoginPage = ({ navigation }) => {
       };
 
       if (role in roleRoutes) {
-        console.log("Navigating to:", roleRoutes[role]);
+        // console.log("Navigating to:", roleRoutes[role]);
         navigation.replace(roleRoutes[role]);
       } else {
-        console.log("Role not found, navigating to default.");
+        // console.log("Role not found, navigating to default.");
         navigation.replace("Bottom Navigation");
       }
     } catch (error) {
-      console.log("me", error);
+      console.log("error", error);
       Alert.alert("Error", "Oops! Error logging in. Please try again.");
     } finally {
       setLoader(false);

@@ -8,6 +8,7 @@ import {
   SalesOverview,
   SalesData,
   SalesShipments,
+  SalesSettings,
 } from "../screens";
 
 import { COLORS } from "../constants/index";
@@ -116,8 +117,8 @@ const SalesTabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="StaffSettings"
-        component={StaffSettings}
+        name="SalesSettings"
+        component={SalesSettings}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon name={focused ? "settings" : "settings"} size={26} color={focused ? COLORS.primary : COLORS.gray2} />
