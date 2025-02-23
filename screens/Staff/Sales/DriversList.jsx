@@ -17,8 +17,9 @@ import { AuthContext } from "../../../components/auth/AuthContext";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
-import { ActivityIndicator } from "react-native";
+
 import { FlatList } from "react-native";
+import { WebView } from "react-native-webview";
 
 const zeroData = {
   totalProducts: 0,
@@ -28,8 +29,60 @@ const zeroData = {
 };
 
 const fallbackImage = require("../../../assets/images/userDefault.webp");
+const profileImageUrl = "https://res.cloudinary.com/drsuclnkw/image/upload/v1740144369/profilePicture_u9f5dg.jpg";
 
-const DriverCard = ({ driver }) => {
+const ProfileScreen = () => {
+  const profileImageUrl = "https://res.cloudinary.com/drsuclnkw/image/upload/v1740149578/profilePicture_umqmjl.jpg";
+  const [gradientColors, setGradientColors] = useState(["#000000", "#222222"]);
+
+  const extractColors = `
+  (function() {
+    console.log("🚀 WebView script started");
+    window.ReactNativeWebView.postMessage("WebView script started");
+
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.src = "${profileImageUrl}";
+
+    img.onload = function() {
+      console.log("✅ Image loaded in WebView");
+      window.ReactNativeWebView.postMessage("Image loaded in WebView");
+    };
+
+    img.onerror = function() {
+      console.error("❌ Image failed to load");
+      window.ReactNativeWebView.postMessage("Image failed to load");
+    };
+  })();
+`;
+
+  return (
+    <View style={[{ flex: 1, backgroundColor: gradientColors[0] }]}>
+      <WebView
+        source={{ html: "<html><body></body></html>" }}
+        injectedJavaScript={extractColors}
+        onMessage={(event) => {
+          try {
+            const colors = JSON.parse(event.nativeEvent.data);
+            console.log("Colors received in React Native:", colors); // Log extracted colors
+
+            if (colors.error) {
+              console.error("ColorThief Error:", colors.error);
+            } else if (Array.isArray(colors) && colors.length > 1) {
+              setGradientColors([`rgb(${colors[0].join(",")})`, `rgb(${colors[1].join(",")})`]);
+            }
+          } catch (e) {
+            console.error("JSON Parse Error:", e);
+          }
+        }}
+        style={{ width: 1, height: 1, opacity: 0 }}
+      />
+      <Image source={{ uri: profileImageUrl }} style={{ width: 100, height: 100, borderRadius: 50 }} />
+    </View>
+  );
+};
+
+const DriverCard = ({ driver, isPressed, onPress, onPressOut }) => {
   const renderProfilePicture = () => {
     if (driver && driver.profilePicture) {
       return <Image source={{ uri: `${driver?.profilePicture}` }} style={styles.profilePicture} />;
@@ -62,7 +115,12 @@ const DriverCard = ({ driver }) => {
     }
   }, [driver?.status]);
   return (
-    <TouchableOpacity style={[styles.cardContainer, styles.driverCard]}>
+    <TouchableOpacity
+      style={[styles.driverCard, isPressed ? styles.pressed : styles.nopress]}
+      onPress={onPress}
+      onPressOut={onPressOut}
+      delayPressOut={2}
+    >
       <View style={styles.infoContainerx}>
         <View style={styles.flexme}>{renderProfilePicture()}</View>
         <View style={[styles.flexme, styles.spaceVertical]}>
@@ -110,6 +168,15 @@ const DriverList = () => {
   const [refreshList, setRefreshList] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [drivers, setDrivers] = useState([]);
+  const [pressedId, setPressedId] = useState(null);
+
+  const handlePress = (driverId) => {
+    setPressedId((prevId) => (prevId === driverId ? null : driverId));
+  };
+
+  const handlePressOut = () => {
+    setPressedId(null);
+  };
 
   useEffect(() => {
     if (!userLogin) {
@@ -187,13 +254,23 @@ const DriverList = () => {
       </View>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={{ flex: 1, borderRadius: 45, marginTop: 6 }}>
+          {/* <ProfileScreen /> */}
           <FlatList
             scrollEnabled={false}
             data={drivers}
             numColumns={2}
             columnWrapperStyle={{ justifyContent: "space-between" }}
             keyExtractor={(item, index) => (item._id ? item._id.toString() : index.toString())}
-            renderItem={({ item }) => <DriverCard driver={item} />}
+            renderItem={({ item }) => (
+              <DriverCard
+                driver={item}
+                isPressed={pressedId === item._id}
+                onPress={() => handlePress(item._id)}
+                onPressOut={() => {
+                  handlePressOut;
+                }}
+              />
+            )}
           />
         </View>
       </ScrollView>
@@ -332,87 +409,7 @@ const styles = StyleSheet.create({
     width: 52,
     borderRadius: 100,
   },
-  closeButton: {
-    position: "absolute",
-    top: 40,
-    right: 20,
-    backgroundColor: "white",
-    padding: 10,
-    borderRadius: 20,
-  },
-  closeButtonText: {
-    fontSize: 16,
-    color: "black",
-  },
-  dashbboxWrapper: {
-    width: SIZES.width - 20,
-    display: "flex",
-    flexDirection: "row",
-    gap: 10,
-    marginBottom: 10,
-  },
-  dashBox: {
-    justifyContent: "center",
-    width: SIZES.width / 2 - 14,
-    backgroundColor: COLORS.primary,
-    borderRadius: SIZES.medium,
-    height: SIZES.width / 2 - 50,
-    paddingStart: 40,
-  },
-  dashbboxWrapperp: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 7,
-  },
-  box1: {
-    backgroundColor: "#e3bdf4",
-  },
-  box2: {
-    backgroundColor: "#aed7f5",
-  },
-  box3: {
-    backgroundColor: COLORS.themey,
-  },
-  box4: {
-    backgroundColor: "#04c28f",
-    // #04c28f
-  },
-  boxNUmber: {
-    fontFamily: "bold",
-    fontSize: SIZES.xLarge,
-    color: COLORS.white,
-  },
-  boxText: {
-    fontFamily: "bold",
-    fontSize: SIZES.medium,
-    marginLeft: -14,
-    color: COLORS.themeb,
-  },
-  latestProducts: {
-    backgroundColor: COLORS.white,
-    marginTop: 10,
-    borderRadius: SIZES.medium,
-    width: SIZES.width - 10,
-    alignSelf: "center",
-    paddingVertical: SIZES.medium,
-    paddingHorizontal: 3,
-    minHeight: SIZES.height / 2.5,
-    marginBottom: 20,
-  },
-  latestProductCards: {
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.themeg,
-    borderRadius: SIZES.medium,
-    flexDirection: "row",
-    alignorders: "center",
-    gap: 6,
-    paddingVertical: 3,
-    backgroundColor: COLORS.lightWhite,
-    borderRadius: SIZES.medium,
-    minHeight: 70,
-    marginBottom: 10,
-    marginHorizontal: 4,
-  },
+
   flexEnd: {
     position: "absolute",
     right: 10,
@@ -424,33 +421,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: "100%",
   },
-  latestProductTitle: {
-    fontSize: 16,
-    paddingStart: SIZES.small,
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  latestProductdetail: {
-    fontSize: SIZES.small,
-    fontWeight: "regular",
-    color: COLORS.gray,
-    marginBottom: 5,
-  },
-  productImage: {
-    width: 35,
-    height: 35,
-    borderRadius: 100,
-    borderWidth: 2,
-    alignSelf: "center",
-    top: "auto",
-  },
-  productTitle: {
-    fontSize: SIZES.medium,
-    fontWeight: "bold",
-    color: COLORS.primary,
-  },
 
-  cardContainer: {},
   driverImage: {
     width: 50,
     height: 50,
@@ -530,5 +501,24 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
+  },
+  pressed: {
+    backgroundColor: COLORS.themey,
+  },
+  nopress: {
+    backgroundColor: COLORS.themew,
+  },
+
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  profileImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 3,
+    borderColor: "#fff",
   },
 });
