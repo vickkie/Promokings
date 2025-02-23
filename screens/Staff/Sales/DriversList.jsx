@@ -29,16 +29,16 @@ const zeroData = {
 };
 
 const fallbackImage = require("../../../assets/images/userDefault.webp");
-const profileImageUrl = "https://res.cloudinary.com/drsuclnkw/image/upload/v1740144369/profilePicture_u9f5dg.jpg";
+
+const profileImageUrl = "https://res.cloudinary.com/drsuclnkw/image/upload/v1739574545/profilePicture_lynjfy.jpg";
 
 const ProfileScreen = () => {
-  const profileImageUrl = "https://res.cloudinary.com/drsuclnkw/image/upload/v1740149578/profilePicture_umqmjl.jpg";
   const [gradientColors, setGradientColors] = useState(["#000000", "#222222"]);
 
   const extractColors = `
   (function() {
-    console.log("🚀 WebView script started");
-    window.ReactNativeWebView.postMessage("WebView script started");
+    console.log("✅ WebView script started");
+    window.ReactNativeWebView.postMessage(JSON.stringify({ type: "status", message: "WebView script started" }));
 
     const img = new Image();
     img.crossOrigin = "Anonymous";
@@ -46,35 +46,67 @@ const ProfileScreen = () => {
 
     img.onload = function() {
       console.log("✅ Image loaded in WebView");
-      window.ReactNativeWebView.postMessage("Image loaded in WebView");
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: "status", message: "Image loaded in WebView" }));
+
+      try {
+        if (!window.ColorThief) {
+          throw new Error("ColorThief.js not loaded");
+        }
+
+        const colorThief = new ColorThief();
+        const colors = colorThief.getPalette(img, 2); // Extract 2 colors
+
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: "colors", data: colors }));
+      } catch (error) {
+        console.error("❌ Color extraction failed:", error);
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: "error", message: error.message }));
+      }
     };
 
     img.onerror = function() {
       console.error("❌ Image failed to load");
-      window.ReactNativeWebView.postMessage("Image failed to load");
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: "error", message: "Image failed to load" }));
     };
   })();
-`;
+  `;
+
+  const handleMessage = (event) => {
+    try {
+      const parsedMessage = JSON.parse(event.nativeEvent.data);
+
+      if (parsedMessage.type === "status") {
+        console.log("ℹ️ Status:", parsedMessage.message);
+      } else if (
+        parsedMessage.type === "colors" &&
+        Array.isArray(parsedMessage.data) &&
+        parsedMessage.data.length > 1
+      ) {
+        setGradientColors([`rgb(${parsedMessage.data[0].join(",")})`, `rgb(${parsedMessage.data[1].join(",")})`]);
+      } else if (parsedMessage.type === "error") {
+        console.error("❌ Error:", parsedMessage.message);
+      } else {
+        console.warn("⚠️ Unknown message type received:", parsedMessage);
+      }
+    } catch (error) {
+      console.error("🚨 JSON Parse Error:", error);
+    }
+  };
 
   return (
     <View style={[{ flex: 1, backgroundColor: gradientColors[0] }]}>
       <WebView
-        source={{ html: "<html><body></body></html>" }}
-        injectedJavaScript={extractColors}
-        onMessage={(event) => {
-          try {
-            const colors = JSON.parse(event.nativeEvent.data);
-            console.log("Colors received in React Native:", colors); // Log extracted colors
-
-            if (colors.error) {
-              console.error("ColorThief Error:", colors.error);
-            } else if (Array.isArray(colors) && colors.length > 1) {
-              setGradientColors([`rgb(${colors[0].join(",")})`, `rgb(${colors[1].join(",")})`]);
-            }
-          } catch (e) {
-            console.error("JSON Parse Error:", e);
-          }
+        source={{
+          html: `
+          <html>
+            <head>
+              <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+            </head>
+            <body></body>
+          </html>
+          `,
         }}
+        injectedJavaScript={extractColors}
+        onMessage={handleMessage}
         style={{ width: 1, height: 1, opacity: 0 }}
       />
       <Image source={{ uri: profileImageUrl }} style={{ width: 100, height: 100, borderRadius: 50 }} />
@@ -254,7 +286,7 @@ const DriverList = () => {
       </View>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={{ flex: 1, borderRadius: 45, marginTop: 6 }}>
-          {/* <ProfileScreen /> */}
+          <ProfileScreen />
           <FlatList
             scrollEnabled={false}
             data={drivers}
