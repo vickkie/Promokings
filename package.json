@@ -59,7 +59,8 @@
     "react-native-webview": "13.6.4",
     "uuid": "^10.0.0",
     "yup": "^1.6.1",
-    "expo-dev-client": "~3.3.12"
+    "expo-dev-client": "~3.3.12",
+    "expo-updates": "~0.24.13"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

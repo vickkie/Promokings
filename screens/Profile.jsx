@@ -294,8 +294,6 @@ const Profile = () => {
       <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor={COLORS.themey} />
         <View style={{ width: "100%", height: SIZES.height / 4, overflow: "hidden" }}>
-          {/* <Image source={require("../assets/images/abstract1.webp")} style={styles.cover} /> */}
-
           <ProfileScreen
             profileImageUrl={
               userData?.profilePicture

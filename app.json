@@ -19,9 +19,11 @@
         "UIStatusBarHidden": false,
         "UIStatusBarStyle": "UIStatusBarStyleDefault"
       },
-      "bundleIdentifier": "com.uzitrake.promokings"
+      "bundleIdentifier": "com.uzitrake.promokings",
+      "versionCode": 3
     },
     "android": {
+      "versionCode": 3,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon-home.png",
         "backgroundColor": "#ffffff"
@@ -30,6 +32,9 @@
     },
     "web": {
       "favicon": "./assets/promoking-logoq.png"
+    },
+     "updates": {
+      "url": "https://u.expo.dev/ad23615f-cdde-436a-abe8-7754069538dc"
     },
     "extra": {
       "eas": {
