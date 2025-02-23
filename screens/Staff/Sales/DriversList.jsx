@@ -9,6 +9,7 @@ import {
   StyleSheet,
   RefreshControl,
   Animated,
+  FlatList,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/native";
@@ -18,100 +19,11 @@ import HomeMenu from "../../../components/bottomsheets/HomeMenu";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
 
-import { FlatList } from "react-native";
-import { WebView } from "react-native-webview";
-
 const zeroData = {
   totalProducts: 0,
   outOfStock: 0,
   lowStock: 0,
   availableStock: 0,
-};
-
-const fallbackImage = require("../../../assets/images/userDefault.webp");
-
-const profileImageUrl = "https://res.cloudinary.com/drsuclnkw/image/upload/v1739574545/profilePicture_lynjfy.jpg";
-
-const ProfileScreen = () => {
-  const [gradientColors, setGradientColors] = useState(["#000000", "#222222"]);
-
-  const extractColors = `
-  (function() {
-    console.log("✅ WebView script started");
-    window.ReactNativeWebView.postMessage(JSON.stringify({ type: "status", message: "WebView script started" }));
-
-    const img = new Image();
-    img.crossOrigin = "Anonymous";
-    img.src = "${profileImageUrl}";
-
-    img.onload = function() {
-      console.log("✅ Image loaded in WebView");
-      window.ReactNativeWebView.postMessage(JSON.stringify({ type: "status", message: "Image loaded in WebView" }));
-
-      try {
-        if (!window.ColorThief) {
-          throw new Error("ColorThief.js not loaded");
-        }
-
-        const colorThief = new ColorThief();
-        const colors = colorThief.getPalette(img, 2); // Extract 2 colors
-
-        window.ReactNativeWebView.postMessage(JSON.stringify({ type: "colors", data: colors }));
-      } catch (error) {
-        console.error("❌ Color extraction failed:", error);
-        window.ReactNativeWebView.postMessage(JSON.stringify({ type: "error", message: error.message }));
-      }
-    };
-
-    img.onerror = function() {
-      console.error("❌ Image failed to load");
-      window.ReactNativeWebView.postMessage(JSON.stringify({ type: "error", message: "Image failed to load" }));
-    };
-  })();
-  `;
-
-  const handleMessage = (event) => {
-    try {
-      const parsedMessage = JSON.parse(event.nativeEvent.data);
-
-      if (parsedMessage.type === "status") {
-        console.log("ℹ️ Status:", parsedMessage.message);
-      } else if (
-        parsedMessage.type === "colors" &&
-        Array.isArray(parsedMessage.data) &&
-        parsedMessage.data.length > 1
-      ) {
-        setGradientColors([`rgb(${parsedMessage.data[0].join(",")})`, `rgb(${parsedMessage.data[1].join(",")})`]);
-      } else if (parsedMessage.type === "error") {
-        console.error("❌ Error:", parsedMessage.message);
-      } else {
-        console.warn("⚠️ Unknown message type received:", parsedMessage);
-      }
-    } catch (error) {
-      console.error("🚨 JSON Parse Error:", error);
-    }
-  };
-
-  return (
-    <View style={[{ flex: 1, backgroundColor: gradientColors[0] }]}>
-      <WebView
-        source={{
-          html: `
-          <html>
-            <head>
-              <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
-            </head>
-            <body></body>
-          </html>
-          `,
-        }}
-        injectedJavaScript={extractColors}
-        onMessage={handleMessage}
-        style={{ width: 1, height: 1, opacity: 0 }}
-      />
-      <Image source={{ uri: profileImageUrl }} style={{ width: 100, height: 100, borderRadius: 50 }} />
-    </View>
-  );
 };
 
 const DriverCard = ({ driver, isPressed, onPress, onPressOut }) => {
@@ -286,7 +198,7 @@ const DriverList = () => {
       </View>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={{ flex: 1, borderRadius: 45, marginTop: 6 }}>
-          <ProfileScreen />
+          {/* <ProfileScreen /> */}
           <FlatList
             scrollEnabled={false}
             data={drivers}

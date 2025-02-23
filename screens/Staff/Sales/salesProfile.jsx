@@ -98,7 +98,7 @@ const SalesProfile = () => {
       //   console.log("response", response.data);
 
       if (response.status === 200) {
-        console.log(response.data);
+        // console.log(response.data);
         await updateUserData(response.data); // Update user data in context with response data
         successUpdate();
         setLocalProfilePicture(null); // Clear the local URI
@@ -126,7 +126,7 @@ const SalesProfile = () => {
     if (!pickerResult.canceled && pickerResult.assets && pickerResult.assets.length > 0) {
       const pickedUri = pickerResult.assets[0].uri;
       setLocalProfilePicture(pickedUri);
-      console.log(pickedUri);
+      // console.log(pickedUri);
     }
   };
 
