@@ -2,10 +2,9 @@ import "react-native-gesture-handler";
 import { enableScreens } from "react-native-screens";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
+import React, { useEffect } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
 import Toast from "react-native-toast-message";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -14,12 +13,7 @@ import ErrorBoundary2 from "./screens_options/ErrorBoundary";
 import { AuthProvider } from "./components/auth/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
 import { WishProvider } from "./contexts/WishContext";
-import {
-  chatScreenOptions,
-  systemScreenOptions,
-  successScreenOptions,
-  AboutScreenOptions,
-} from "./screens_options/AppHeaderOptions";
+import { chatScreenOptions, systemScreenOptions } from "./screens_options/AppHeaderOptions";
 import {
   Cart,
   OrderDetails,
@@ -65,12 +59,8 @@ import {
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
 import InventoryTabNavigation from "./navigation/InventoryTabNavigation";
-
-// const InventoryTabNavigation = React.lazy(() => import("./navigation/InventoryTabNavigation"));
-// const BottomTabNavigation = React.lazy(() => import("./navigation/BottomTabNavigation"));
-
-import BrokenComponent from "./screens_options/BrokenComponent";
 import SalesTabNavigation from "./navigation/SalesTabNavigation";
+import UpdateCheck from "./components/UpdateCheck";
 
 enableScreens();
 const Stack = createNativeStackNavigator();
@@ -103,6 +93,7 @@ export default function App() {
   return (
     <ErrorBoundary2>
       <GestureHandlerRootView style={{ flex: 1 }}>
+        <UpdateCheck />
         <BottomSheetModalProvider>
           <AuthProvider>
             <CartProvider>
@@ -141,7 +132,6 @@ export default function App() {
                     <Stack.Screen name="PreviewProduct" component={PreviewProduct} options={{ headerShown: false }} />
                     <Stack.Screen name="EditProduct" component={EditProduct} options={{ headerShown: false }} />
                     <Stack.Screen name="Add Product" component={AddProduct} options={{ headerShown: false }} />
-
                     <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }} />
                     <Stack.Screen name="ProductDetails" component={ProductDetails} options={{ headerShown: false }} />
                     <Stack.Screen name="ProductList" component={Products} options={{ headerShown: false }} />
@@ -187,7 +177,6 @@ export default function App() {
                     <Stack.Screen name="DriverDetails" component={DriverDetails} options={{ headerShown: false }} />
                   </Stack.Navigator>
                   <Toast />
-                  {/* <BrokenComponent /> */}
                 </NavigationContainer>
               </WishProvider>
             </CartProvider>

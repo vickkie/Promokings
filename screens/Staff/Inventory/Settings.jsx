@@ -3,6 +3,7 @@ import { ScrollView, View, Text, Image, TouchableOpacity, Alert, StyleSheet } fr
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { ActivityIndicator } from "react-native";
 
 import { COLORS, SIZES } from "../../../constants";
 import { useNavigation } from "@react-navigation/native";
@@ -12,6 +13,8 @@ import Icon from "../../../constants/icons";
 import * as FileSystem from "expo-file-system";
 import useDelete from "../../../hook/useDelete2";
 import { VERSION_LONG, VERSION_SHORT } from "@env";
+import WebView from "react-native-webview";
+import { LinearGradient } from "expo-linear-gradient";
 
 // Function to clear cache
 const clearCache = async () => {
@@ -32,6 +35,105 @@ const clearCache = async () => {
       text2: "There was an issue clearing the cache. Please try again later.",
     });
   }
+};
+
+const ProfileScreen = ({ profileImageUrl }) => {
+  const [gradientColors, setGradientColors] = useState(["rgb(43,58,68)", "rgb(177,196,199)"]);
+  const [webViewKey, setWebViewKey] = useState(0);
+
+  useEffect(() => {
+    setWebViewKey((prevKey) => prevKey + 1); // Force re-render when profileImageUrl changes
+  }, [profileImageUrl]);
+
+  const extractColors = `
+  (function() {
+   
+    window.ReactNativeWebView.postMessage(JSON.stringify({ type: "status", message: "WebView script started" }));
+
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.src = "${profileImageUrl}";
+
+    img.onload = function() {
+     
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: "status", message: "Image loaded in WebView" }));
+
+      try {
+        if (!window.ColorThief) {
+          throw new Error("ColorThief.js not loaded");
+        }
+
+        const colorThief = new ColorThief();
+        const colors = colorThief.getPalette(img, 2); // Extract 6 colors for a smooth gradient
+    
+
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: "colors", data: colors }));
+      } catch (error) {
+        console.error("❌ Color extraction failed:", error);
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: "error", message: error.message }));
+      }
+    };
+
+    img.onerror = function() {
+      console.error("❌ Image failed to load");
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: "error", message: "Image failed to load" }));
+    };
+  })();
+  `;
+
+  const handleMessage = (event) => {
+    try {
+      const parsedMessage = JSON.parse(event.nativeEvent.data);
+
+      if (parsedMessage.type === "status") {
+      } else if (parsedMessage.type === "colors" && Array.isArray(parsedMessage.data)) {
+        // Convert the extracted colors to rgb format
+        const smoothGradient = parsedMessage.data.map((color) => `rgb(${color.join(",")})`);
+        setGradientColors(smoothGradient);
+        console.log(smoothGradient);
+      } else if (parsedMessage.type === "error") {
+        console.error("❌ Error:", parsedMessage.message);
+      } else {
+        console.warn("⚠️ Unknown message type received:", parsedMessage);
+      }
+    } catch (error) {
+      console.error("🚨 JSON Parse Error:", error);
+    }
+  };
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: gradientColors[0],
+        backgroundImage: `linear-gradient(180deg, ${gradientColors.join(" , ")})`,
+      }}
+    >
+      <LinearGradient
+        colors={gradientColors}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={{ position: "absolute", width: "100%", height: "100%" }}
+      >
+        <WebView
+          key={webViewKey} // Forces re-render when profileImageUrl changes
+          source={{
+            html: `
+          <html>
+            <head>
+              <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+            </head>
+            <body></body>
+          </html>
+          `,
+          }}
+          injectedJavaScript={extractColors}
+          onMessage={handleMessage}
+          style={{ width: 1, height: 1, opacity: 0 }}
+        />
+      </LinearGradient>
+    </View>
+  );
 };
 
 const StaffSettings = () => {
@@ -139,13 +241,32 @@ const StaffSettings = () => {
   };
 
   const renderProfilePicture = () => {
+    const [loading, setLoading] = useState(true);
+
     if (!userLogin) {
-      // User not logged in
+      // User not logged in, show default image
       return <Image source={require("../../../assets/images/userDefault.webp")} style={styles.profile} />;
     }
 
-    if (userData && userData.profilePicture) {
-      return <Image source={{ uri: `${userData.profilePicture}` }} style={styles.profile} />;
+    if (userData?.profilePicture) {
+      return (
+        <View style={{ position: "relative" }}>
+          {loading && (
+            <ActivityIndicator
+              size="small"
+              color="#000"
+              style={{ position: "absolute", alignSelf: "center", top: "50%" }}
+            />
+          )}
+          <Image
+            source={{ uri: userData.profilePicture }}
+            style={styles.profile}
+            onLoadStart={() => setLoading(true)}
+            onLoad={() => setLoading(false)}
+            onError={() => setLoading(false)} // Hide loader if error occurs
+          />
+        </View>
+      );
     }
 
     return <Image source={require("../../../assets/images/userDefault.webp")} style={styles.profile} />;
@@ -156,7 +277,13 @@ const StaffSettings = () => {
       <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor={COLORS.themey} />
         <View style={{ width: "100%", height: SIZES.height / 4, overflow: "hidden" }}>
-          <Image source={require("../../../assets/images/abstract1.webp")} style={styles.cover} />
+          <ProfileScreen
+            profileImageUrl={
+              userData?.profilePicture
+                ? userData.profilePicture
+                : "https://res.cloudinary.com/drsuclnkw/image/upload/t_here1/productImage_f7sj7z"
+            }
+          />
         </View>
         <View style={styles.profileContainer}>
           <TouchableOpacity onPress={() => navigation.navigate("InventoryProfile")} style={styles.buttonWrap2}>

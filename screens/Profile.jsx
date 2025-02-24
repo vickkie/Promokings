@@ -18,7 +18,7 @@ import WebView from "react-native-webview";
 import { LinearGradient } from "expo-linear-gradient";
 
 const ProfileScreen = ({ profileImageUrl }) => {
-  const [gradientColors, setGradientColors] = useState(["#000000", "#222222"]);
+  const [gradientColors, setGradientColors] = useState(["rgb(43,58,68)", "rgb(177,196,199)"]);
   const [webViewKey, setWebViewKey] = useState(0);
 
   useEffect(() => {

@@ -5,10 +5,10 @@ import { useRoute } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
 import { db } from "../components/auth/firebase";
 import { ref, onValue, push } from "firebase/database";
-import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 import Icon from "../constants/icons";
 import { COLORS, SIZES } from "../constants";
+import "react-native-get-random-values";
 import uuid from "react-native-uuid";
 import { BACKEND_PORT } from "@env";
 
@@ -32,7 +32,7 @@ const Help = () => {
   const replyRef = useMemo(() => ref(db, `messages/${userId}/reply`), [userId]);
 
   useEffect(() => {
-    if (userData && userData._id && userData.TOKEN) {
+    if (userData && userData._id && userData?.TOKEN) {
       const handleDataChange = (snapshot, type) => {
         const data = snapshot.val();
         const newMessages = data

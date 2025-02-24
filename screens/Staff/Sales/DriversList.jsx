@@ -18,6 +18,7 @@ import { AuthContext } from "../../../components/auth/AuthContext";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
+import LottieView from "lottie-react-native";
 
 const zeroData = {
   totalProducts: 0,
@@ -41,13 +42,13 @@ const DriverCard = ({ driver, isPressed, onPress, onPressOut }) => {
       Animated.loop(
         Animated.sequence([
           Animated.timing(opacity, {
-            toValue: 0.3,
-            duration: 500,
+            toValue: 0.1,
+            duration: 1000,
             useNativeDriver: true,
           }),
           Animated.timing(opacity, {
             toValue: 1,
-            duration: 500,
+            duration: 1000,
             useNativeDriver: true,
           }),
         ])
@@ -88,7 +89,9 @@ const DriverCard = ({ driver, isPressed, onPress, onPressOut }) => {
                 ]}
               />
               <Text>
-                {driver?.status ? driver.status.charAt(0).toUpperCase() + driver.status.slice(1).toLowerCase() : ""}
+                {driver?.status
+                  ? driver.status.charAt(0).toUpperCase() + driver.status.slice(1).toLowerCase()
+                  : "Unknown"}
               </Text>
             </View>
           </TouchableOpacity>
@@ -196,9 +199,29 @@ const DriverList = () => {
           <Text style={styles.slogan}>{`All courriers available `}</Text>
         </View>
       </View>
+
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={{ flex: 1, borderRadius: 45, marginTop: 6 }}>
-          {/* <ProfileScreen /> */}
+          {!isLoading && !drivers && (
+            <View style={styles.lowerWelcome}>
+              <View style={styles.containerx}>
+                <View style={styles.containLottie}>
+                  <View style={styles.animationWrapper}>
+                    <LottieView
+                      source={require("../../../assets/data/delivery.json")}
+                      autoPlay
+                      loop={false}
+                      style={styles.animation}
+                    />
+                  </View>
+                  <View style={{ marginTop: 0, paddingBottom: 10 }}>
+                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Oops, No drivers available!</Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+          )}
+
           <FlatList
             scrollEnabled={false}
             data={drivers}
@@ -464,5 +487,30 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     borderWidth: 3,
     borderColor: "#fff",
+  },
+  containLottie: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: SIZES.width - 20,
+    flex: 1,
+  },
+  animationWrapper: {
+    width: 200,
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  animation: {
+    width: "100%",
+    height: "100%",
+  },
+  containerx: {
+    minHeight: SIZES.height - 300,
+    backgroundColor: COLORS.themeg,
+
+    width: SIZES.width - 20,
+    marginHorizontal: 10,
+    borderRadius: SIZES.medium,
   },
 });
