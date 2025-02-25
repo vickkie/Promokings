@@ -79,6 +79,7 @@ const LoginPage = ({ navigation }) => {
         sales: "Sales Navigation",
         finance: "FinanceDashboard",
         customer: "Bottom Navigation",
+        driver: "Driver Navigation",
       };
 
       if (role in roleRoutes) {

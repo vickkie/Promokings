@@ -7,7 +7,7 @@ import { BACKEND_PORT } from "@env";
 
 const CHECK_UPDATE_URL = `${BACKEND_PORT}/api/version/latest`;
 const SKIPPED_VERSION_KEY = "skipped_version";
-const CHECK_INTERVAL = 120000; // 2 minutes
+const CHECK_INTERVAL = 120000;
 
 export default function UpdateCheck() {
   const [updateUrl, setUpdateUrl] = useState("");
@@ -16,7 +16,10 @@ export default function UpdateCheck() {
   const [isChecking, setIsChecking] = useState(false);
 
   // Use applicationVersion for standalone builds, fallback to "dev" in development
-  const currentVersion = Application.applicationVersion || "dev";
+  const currentVersion = Application.nativeApplicationVersion || "dev";
+  const applicationName = Application.applicationName;
+
+  console.log(applicationName);
 
   useEffect(() => {
     checkForUpdates();
@@ -36,13 +39,22 @@ export default function UpdateCheck() {
       const response = await fetch(CHECK_UPDATE_URL);
       const data = await response.json();
 
+      if (applicationName === "Expo Go") {
+        setIsForced(false);
+        return;
+      }
+
       const newVersion = data.version;
       setLatestVersion(newVersion);
+      console.log(newVersion);
 
       const skippedVersion = await AsyncStorage.getItem(SKIPPED_VERSION_KEY);
 
       if (currentVersion !== newVersion && skippedVersion !== newVersion) {
-        setUpdateUrl(data.downloadUrl || "https://play.google.com/store/apps/details?id=com.uzitrake.promokings");
+        setUpdateUrl(
+          data?.downloadUrl ||
+            `https://github.com/vickkie/Promokings/releases/download/v${newVersion}/Promokings-v${newVersion}.apk`
+        );
         setIsForced(data.forceUpdate);
         showUpdateAlert(data.forceUpdate, newVersion);
       }

@@ -34,14 +34,14 @@
       "favicon": "./assets/promoking-logoq.png"
     },
      "updates": {
-      "url": "https://u.expo.dev/ad23615f-cdde-436a-abe8-7754069538dc"
+      "url": "https://u.expo.dev/963b311f-f10e-4395-81da-d500fc41924c"
     },
     "extra": {
       "eas": {
-        "projectId": "ad23615f-cdde-436a-abe8-7754069538dc"
+        "projectId": "963b311f-f10e-4395-81da-d500fc41924c"
       }
     },
-    "owner": "uzitrake"
+    "owner": "killoy"
   }
 }
 

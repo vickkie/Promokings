@@ -61,6 +61,7 @@ import BottomTabNavigation from "./navigation/BottomTabNavigation";
 import InventoryTabNavigation from "./navigation/InventoryTabNavigation";
 import SalesTabNavigation from "./navigation/SalesTabNavigation";
 import UpdateCheck from "./components/UpdateCheck";
+import DriverTabNavigation from "./navigation/DriverTabNavigator";
 
 enableScreens();
 const Stack = createNativeStackNavigator();
@@ -113,6 +114,11 @@ export default function App() {
                     <Stack.Screen
                       name="Sales Navigation"
                       component={SalesTabNavigation}
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="Driver Navigation"
+                      component={DriverTabNavigation}
                       options={{ headerShown: false }}
                     />
                     <Stack.Screen

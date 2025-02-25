@@ -33,6 +33,8 @@ import EditCategory from "./Staff/Inventory/EditCategory";
 import PreviewProduct from "./Staff/Inventory/PreviewProduct";
 import InventoryProfile from "./Staff/Inventory/InventoryProfile";
 
+//sales
+
 import SalesDashboard from "./Staff/Sales/SalesDashboard";
 import OrderSalesDetails from "./Staff/Sales/OrderSalesDetails";
 import EditSalesOrder from "./Staff/Sales/EditOrder";
@@ -46,6 +48,9 @@ import InventoryDashboard from "./Staff/Inventory/InventoryDashboard";
 import OrdersSales from "./Staff/Sales/Orders";
 import DriverDetails from "./Staff/Sales/DriverDetails";
 import DriverList from "./Staff/Sales/DriversList";
+
+//Driver
+import DriverDashboard from "./Staff/Driver/DriverDashboard";
 
 export {
   Home,
@@ -98,4 +103,7 @@ export {
   SalesSettings,
   DriverDetails,
   DriverList,
+
+  //Drivers
+  DriverDashboard,
 };

@@ -1,13 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {
-  DriverDashboard,
-  EditProductList,
-  AddProduct,
-  StaffSettings,
-  EditCategoriesList,
-  EditCategory,
-} from "../screens";
+import { DriverDashboard, EditProductList, AddProduct, StaffSettings, EditCategoriesList } from "../screens";
 
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
