@@ -51,6 +51,8 @@ import DriverList from "./Staff/Sales/DriversList";
 
 //Driver
 import DriverDashboard from "./Staff/Driver/DriverDashboard";
+import DriverSettings from "./Staff/Driver/DriverSettings";
+import DriverProfile from "./Staff/Driver/DriverProfile";
 
 export {
   Home,
@@ -106,4 +108,6 @@ export {
 
   //Drivers
   DriverDashboard,
+  DriverSettings,
+  DriverProfile,
 };

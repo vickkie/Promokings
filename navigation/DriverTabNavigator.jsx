@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { DriverDashboard, EditProductList, AddProduct, StaffSettings, EditCategoriesList } from "../screens";
+import { DriverDashboard, EditProductList, AddProduct, DriverSettings, EditCategoriesList } from "../screens";
 
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
@@ -108,8 +108,8 @@ const DriverTabNavigation = () => {
       />
 
       <Tab.Screen
-        name="Profile"
-        component={StaffSettings}
+        name="DriverSettings"
+        component={DriverSettings}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon name={focused ? "settings" : "settings"} size={26} color={focused ? COLORS.primary : COLORS.gray2} />

@@ -90,7 +90,7 @@ const ProfileScreen = ({ profileImageUrl }) => {
         // Convert the extracted colors to rgb format
         const smoothGradient = parsedMessage.data.map((color) => `rgb(${color.join(",")})`);
         setGradientColors(smoothGradient);
-        console.log(smoothGradient);
+        // console.log(smoothGradient);
       } else if (parsedMessage.type === "error") {
         console.error("❌ Error:", parsedMessage.message);
       } else {
@@ -136,7 +136,7 @@ const ProfileScreen = ({ profileImageUrl }) => {
   );
 };
 
-const StaffSettings = () => {
+const DriverSettings = () => {
   const navigation = useNavigation();
   const { userData, hasRole, userLogout, userLogin } = useContext(AuthContext);
   const { deleteStatus, isDeleting, errorStatus, redelete } = useDelete(`user/`);
@@ -146,7 +146,7 @@ const StaffSettings = () => {
   useEffect(() => {
     if (!userLogin) {
       navigation.replace("Login");
-    } else if (hasRole("inventory")) {
+    } else if (hasRole("driver")) {
       setUserId(userData._id);
     } else {
       userLogout();
@@ -286,7 +286,7 @@ const StaffSettings = () => {
           />
         </View>
         <View style={styles.profileContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate("InventoryProfile")} style={styles.buttonWrap2}>
+          <TouchableOpacity onPress={() => navigation.navigate("DriverProfile")} style={styles.buttonWrap2}>
             {renderProfilePicture()}
           </TouchableOpacity>
           <View style={styles.versionWrapper}>
@@ -314,7 +314,7 @@ const StaffSettings = () => {
 
           {userData && (
             <View style={styles.menuWrapper}>
-              <TouchableOpacity onPress={() => navigation.navigate("InventoryProfile")}>
+              <TouchableOpacity onPress={() => navigation.navigate("DriverProfile")}>
                 <View style={styles.menuItem(0.5)}>
                   <Icon name="userhandup" size={24} color={COLORS.primary} />
                   <Text style={styles.menuText}>My profile</Text>
@@ -362,7 +362,7 @@ const StaffSettings = () => {
   );
 };
 
-export default StaffSettings;
+export default DriverSettings;
 
 const styles = StyleSheet.create({
   container: {

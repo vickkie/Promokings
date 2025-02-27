@@ -18,7 +18,7 @@ import Toast from "react-native-toast-message";
 // Global axios-retry
 axiosRetry(axios, { retries: 3 });
 
-const InventoryProfile = () => {
+const DriverProfile = () => {
   const { userData, userLogin, updateUserData, userLogout, hasRole } = useContext(AuthContext);
   const navigation = useNavigation();
   const [loader, setLoader] = useState(false);
@@ -32,7 +32,7 @@ const InventoryProfile = () => {
         index: 0,
         routes: [{ name: "Login" }],
       });
-    } else if (hasRole("inventory")) {
+    } else if (hasRole("driver")) {
       setUserId(userData._id);
     } else {
       userLogout();
@@ -75,6 +75,8 @@ const InventoryProfile = () => {
       formData.append("location", values.location);
       formData.append("username", values.username);
       formData.append("staffId", userId);
+      formData.append("numberPlate", values.numberPlate);
+      formData.append("vehicle", values.vehicle);
       if (values.name) formData.append("name", values.name);
       // If a profile picture is selected, append it to formData
       if (localProfilePicture) {
@@ -91,11 +93,9 @@ const InventoryProfile = () => {
         formData.append("currentPassword", values.currentPassword);
         formData.append("newPassword", values.newPassword);
       }
+      console.log(formData);
 
       const endpoint = `${BACKEND_PORT}/api/staff/updateProfile`;
-
-      console.log(endpoint);
-      console.log(formData);
 
       const response = await axios.put(endpoint, formData, {
         headers: {
@@ -103,8 +103,8 @@ const InventoryProfile = () => {
         },
       });
 
+      console.log(response.data);
       if (response.status === 200) {
-        console.log(response.data);
         await updateUserData(response.data); // Update user data in context with response data
         successUpdate();
         setLocalProfilePicture(null); // Clear the local URI
@@ -114,7 +114,6 @@ const InventoryProfile = () => {
     }
     setLoader(false);
   };
-  console.log("picking");
 
   const pickImage = async () => {
     let result = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -145,6 +144,8 @@ const InventoryProfile = () => {
       email: Yup.string().email("Provide a valid email address").required("Required"),
       location: Yup.string().min(3, "Provide your location").required("Required"),
       username: Yup.string().min(3, "Provide a valid username").required("Required"),
+      numberPlate: Yup.string().min(3, "Provide a valid vehicle number plate").required("Required"),
+      vehicle: Yup.string().min(3, "Provide a valid vehicle type").required("Required"),
       currentPassword: showPasswordFields
         ? Yup.string().min(6, "Password must be at least 6 characters").required("Required")
         : Yup.string(),
@@ -252,6 +253,8 @@ const InventoryProfile = () => {
                 email: userData.email || "",
                 location: userData.location || "",
                 username: userData.username || "",
+                numberPlate: userData.numberPlate || "",
+                vehicle: userData.vehicle || "",
                 currentPassword: "",
                 newPassword: "",
                 confirmPassword: "",
@@ -308,6 +311,40 @@ const InventoryProfile = () => {
                       />
                     </View>
                     {touched.location && errors.location && <Text style={styles.errorMessage}>{errors.location}</Text>}
+                  </View>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Vehicle Type</Text>
+                    <View style={[styles.inputWrapper, touched.location && { borderColor: COLORS.secondary }]}>
+                      <TextInput
+                        placeholder="Enter Vehicle type"
+                        onFocus={() => setFieldTouched("vehicle")}
+                        onBlur={() => setFieldTouched("vehicle", "")}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        style={{ flex: 1 }}
+                        value={values.vehicle}
+                        onChangeText={handleChange("vehicle")}
+                      />
+                    </View>
+                    {touched.vehicle && errors.vehicle && <Text style={styles.errorMessage}>{errors.vehicle}</Text>}
+                  </View>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Number Plate</Text>
+                    <View style={[styles.inputWrapper, touched.location && { borderColor: COLORS.secondary }]}>
+                      <TextInput
+                        placeholder="Enter Number plate"
+                        onFocus={() => setFieldTouched("numberPlate")}
+                        onBlur={() => setFieldTouched("numberPlate", "")}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        style={{ flex: 1 }}
+                        value={values.numberPlate}
+                        onChangeText={handleChange("numberPlate")}
+                      />
+                    </View>
+                    {touched.numberPlate && errors.numberPlate && (
+                      <Text style={styles.errorMessage}>{errors.numberPlate}</Text>
+                    )}
                   </View>
                   <TouchableOpacity
                     style={styles.changePasswordButton}
@@ -400,7 +437,7 @@ const InventoryProfile = () => {
   );
 };
 
-export default InventoryProfile;
+export default DriverProfile;
 
 const styles = StyleSheet.create({
   textStyles: {

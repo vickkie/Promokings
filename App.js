@@ -55,6 +55,8 @@ import {
   InventoryProfile,
   DriverList,
   DriverDetails,
+  DriverSettings,
+  DriverProfile,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -181,6 +183,8 @@ export default function App() {
                     />
                     <Stack.Screen name="DriverList" component={DriverList} options={{ headerShown: false }} />
                     <Stack.Screen name="DriverDetails" component={DriverDetails} options={{ headerShown: false }} />
+                    <Stack.Screen name="DriverSettings" component={DriverSettings} options={{ headerShown: false }} />
+                    <Stack.Screen name="DriverProfile" component={DriverProfile} options={{ headerShown: false }} />
                   </Stack.Navigator>
                   <Toast />
                 </NavigationContainer>
