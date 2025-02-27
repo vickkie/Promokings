@@ -1,6 +1,14 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { DriverDashboard, EditProductList, AddProduct, DriverSettings, EditCategoriesList } from "../screens";
+import {
+  DriverDashboard,
+  EditProductList,
+  AddProduct,
+  DriverSettings,
+  EditCategoriesList,
+  ShipmentList,
+  Search,
+} from "../screens";
 
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
@@ -59,8 +67,8 @@ const DriverTabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="Shipments"
-        component={EditProductList}
+        name="ShipmentList"
+        component={ShipmentList}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon
@@ -73,18 +81,8 @@ const DriverTabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="Search"
-        component={EditCategoriesList}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon name={focused ? "menu2filled" : "menu2"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
-          ),
-          tabBarLabel: "",
-        }}
-      />
-      <Tab.Screen
-        name="History"
-        component={AddProduct}
+        name="DriverSearch"
+        component={Search}
         options={{
           tabBarIcon: ({ focused }) => (
             <TouchableOpacity
@@ -93,17 +91,28 @@ const DriverTabNavigation = () => {
                 width: 70,
                 borderRadius: 100,
                 marginTop: -10,
+                // borderColor: "#000",
                 backgroundColor: COLORS.themew,
                 justifyContent: "center",
                 alignItems: "center",
               }}
             >
               <View style={shadowStyle}>
-                <Icon name={focused ? "add" : "add"} size={34} color={focused ? COLORS.primary : COLORS.gray2} />
+                <Icon name={focused ? "search" : "search"} size={34} color={focused ? COLORS.primary : COLORS.gray2} />
               </View>
             </TouchableOpacity>
           ),
           tabBarLabel: "History",
+        }}
+      />
+      <Tab.Screen
+        name="Search"
+        component={EditCategoriesList}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Icon name={focused ? "menu2filled" : "menu2"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
+          ),
+          tabBarLabel: "",
         }}
       />
 

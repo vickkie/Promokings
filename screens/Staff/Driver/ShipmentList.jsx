@@ -21,7 +21,7 @@ import useFetch from "../../../hook/useFetch";
 import { BACKEND_PORT } from "@env";
 import Icon from "../../../constants/icons";
 
-const AddCategory = () => {
+const ShipmentList = () => {
   const navigation = useNavigation();
   const [title, setTitle] = useState("");
   const [imageUrl, setImageUrl] = useState("https://i.postimg.cc/j56q20rB/images.jpg");
@@ -148,60 +148,14 @@ const AddCategory = () => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
             <Icon name="backbutton" size={26} />
           </TouchableOpacity>
-          <Text style={styles.heading}>ADD CATEGORY</Text>
+          <Text style={styles.heading}>ALL SHIPMENTS</Text>
           <TouchableOpacity style={styles.buttonWrap} onPress={handleAddCategory}>
             <Icon name="add" size={26} />
           </TouchableOpacity>
         </View>
 
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-          <View style={styles.lowerRow}>
-            <View style={styles.form}>
-              <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
-                {image ? (
-                  <Image source={{ uri: image }} style={styles.imagePreview} />
-                ) : (
-                  <Image source={require("../../../assets/images/empty-product.png")} style={styles.imagePreview} />
-                )}
-              </TouchableOpacity>
-
-              <TextInput
-                style={styles.input}
-                placeholder="Category Title"
-                value={title}
-                onChangeText={(text) => setTitle(text)}
-              />
-
-              <TextInput
-                style={styles.descriptionInput}
-                placeholder="Category Description"
-                value={description}
-                onChangeText={(text) => setDescription(text)}
-                multiline
-              />
-
-              <View style={styles.imageUrlContainer}>
-                <TextInput
-                  style={[styles.input, styles.imageurl, !isEditable && styles.nonEditable]}
-                  placeholder="Image URL"
-                  value={imageUrl}
-                  onChangeText={(text) => setImageUrl(text)}
-                  editable={isEditable}
-                />
-                <TouchableOpacity style={styles.editButton} onPress={() => setIsEditable(!isEditable)}>
-                  <Icon name="pencil" size={27} />
-                </TouchableOpacity>
-              </View>
-
-              <TouchableOpacity style={styles.submitBtn} onPress={handleAddCategory}>
-                {uploading ? (
-                  <ActivityIndicator size={30} color={COLORS.themew} />
-                ) : (
-                  <Text style={styles.submitText}>Add Category</Text>
-                )}
-              </TouchableOpacity>
-            </View>
-          </View>
+          <View style={styles.lowerRow}></View>
         </ScrollView>
 
         {refreshing && (
@@ -370,4 +324,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddCategory;
+export default ShipmentList;

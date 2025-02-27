@@ -53,6 +53,7 @@ import DriverList from "./Staff/Sales/DriversList";
 import DriverDashboard from "./Staff/Driver/DriverDashboard";
 import DriverSettings from "./Staff/Driver/DriverSettings";
 import DriverProfile from "./Staff/Driver/DriverProfile";
+import ShipmentList from "./Staff/Driver/ShipmentList";
 
 export {
   Home,
@@ -110,4 +111,5 @@ export {
   DriverDashboard,
   DriverSettings,
   DriverProfile,
+  ShipmentList,
 };

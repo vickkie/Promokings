@@ -8,6 +8,7 @@ import HomeMenu from "../../../components/bottomsheets/HomeMenu";
 import { COLORS, SIZES } from "../../../constants";
 import LatestProducts from "./LatestProducts";
 import useFetch from "../../../hook/useFetch";
+import LatestOrders from "../Sales/LatestOrders";
 
 const DriverDashboard = () => {
   const { userLogin, hasRole, userData, userLogout } = useContext(AuthContext);
@@ -178,7 +179,7 @@ const DriverDashboard = () => {
         </View>
 
         <View style={styles.sloganWrapper}>
-          <Text style={styles.slogan}>Shipments management </Text>
+          <Text style={styles.slogan}>Driver Shipments panel </Text>
         </View>
       </View>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
@@ -198,31 +199,16 @@ const DriverDashboard = () => {
                     <CurrentOrder deliveryData={deliveries} isLoading={isLoading} />
                   </TouchableOpacity>
                 </View>
-                <View style={styles.dashbboxWrapper}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate("EditProductList", {
-                        products: "products/stock-summary/low-stock",
-                        refreshList: true,
-                      });
-                    }}
-                  >
-                    <View style={[styles.dashBox, styles.box3]}>
-                      <Text style={styles.boxNUmber}></Text>
-                      <Text style={styles.boxText}>Below Minimum</Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
               </View>
             </View>
           </View>
           <View style={{ paddingTop: 10, width: SIZES.width - 20, paddingHorizontal: 22 }}>
             <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>
-              Latest Products
+              Latest Deliveries
             </Text>
           </View>
           <View style={styles.latestProducts}>
-            <LatestProducts refreshList={refreshList} setRefreshing={setRefreshing} />
+            <LatestOrders refreshList={refreshList} setRefreshing={setRefreshing} />
           </View>
         </View>
       </ScrollView>
