@@ -33,7 +33,7 @@ const SalesDashboard = () => {
     if (!userLogin) {
       navigation.replace("Login");
     } else if (hasRole("sales")) {
-      setUserId(userData._id);
+      setUserId(userData?._id);
     } else {
       userLogout();
       navigation.replace("Login");
@@ -52,6 +52,7 @@ const SalesDashboard = () => {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setRefreshList(true); // This will trigger the refresh in LatestProducts
+    // refetch();
 
     // Optionally reset the refreshing state after some delay
     setTimeout(() => {
@@ -119,7 +120,7 @@ const SalesDashboard = () => {
       </View>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={{ flex: 1, borderRadius: 45, marginTop: 0 }}>
-          <View style={styles.latestProducts}>
+          <View key={quantities} style={styles.latestProducts}>
             <SalesChart salesinData={quantities} />
           </View>
           <View style={styles.latestHeader}>

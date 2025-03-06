@@ -5,7 +5,7 @@ import { LineChart } from "react-native-chart-kit";
 const SalesChart = ({ salesinData }) => {
   const screenWidth = Dimensions.get("window").width;
   const [selectedPoint, setSelectedPoint] = useState(null);
-  // console.log(salesinData);
+  console.log(salesinData);
 
   const dummyData = {
     "2024-09": { actual: 3000, projected: 40000 },
@@ -13,7 +13,7 @@ const SalesChart = ({ salesinData }) => {
     "2024-11": { actual: 200, projected: 4000 },
     "2024-12": { actual: 5000, projected: 2000 },
     "2025-01": { actual: 6000, projected: 1000 },
-    "2025-02": { actual: 4000, projected: 33447 },
+    "2025-02": { actual: 2000, projected: 33447 },
   };
   const salesData = salesinData?.salesByMonth || dummyData;
 
