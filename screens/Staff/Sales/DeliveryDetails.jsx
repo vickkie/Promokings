@@ -42,6 +42,7 @@ const DeliveryDetails = () => {
   };
 
   const PaymentMethodComponent = ({ item }) => {
+    console.log(item);
     return (
       <View>
         <View style={styles.selectedPayment}>
@@ -53,17 +54,17 @@ const DeliveryDetails = () => {
           <TextInput
             placeholder="phone number"
             style={{ flex: 1 }}
-            value={item?.paymentInfo.phoneNumber}
+            value={item?.paymentInfo?.phoneNumber}
             editable={false}
           />
         </View>
         <View style={styles.inputWrapper}>
           <Icon name="email" size={29} style={styles.iconStyle} color={COLORS.gray} />
-          <TextInput placeholder="email" style={{ flex: 1 }} value={item?.paymentInfo.email} editable={false} />
+          <TextInput placeholder="email" style={{ flex: 1 }} value={item?.paymentInfo?.email} editable={false} />
         </View>
         <View style={styles.inputWrapper}>
           <Icon name="location" size={29} style={styles.iconStyle} color={COLORS.gray} />
-          <TextInput placeholder="email" style={{ flex: 1 }} value={item?.shippingInfo.city} editable={false} />
+          <TextInput placeholder="email" style={{ flex: 1 }} value={item?.shippingInfo?.city} editable={false} />
         </View>
       </View>
     );
