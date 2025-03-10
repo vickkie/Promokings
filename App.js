@@ -59,6 +59,8 @@ import {
   DriverProfile,
   ShipmentList,
   InvoiceScreen,
+  ShipmentHistory,
+  ShipmentSearch,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -188,6 +190,8 @@ export default function App() {
                     <Stack.Screen name="DriverDetails" component={DriverDetails} options={{ headerShown: false }} />
                     <Stack.Screen name="DriverSettings" component={DriverSettings} options={{ headerShown: false }} />
                     <Stack.Screen name="DriverProfile" component={DriverProfile} options={{ headerShown: false }} />
+                    <Stack.Screen name="ShipmentHistory" component={ShipmentHistory} options={{ headerShown: false }} />
+                    <Stack.Screen name="ShipmentSearch" component={ShipmentSearch} options={{ headerShown: false }} />
                     <Stack.Screen name="ShipmentList" component={ShipmentList} options={{ headerShown: false }} />
                   </Stack.Navigator>
                   <Toast />

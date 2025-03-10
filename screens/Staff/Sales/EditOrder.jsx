@@ -459,7 +459,7 @@ const EditSalesOrder = () => {
                         handleApproveOrder();
                       }}
                     >
-                      <Icon name="pencil" size={26} />
+                      <Icon name="tick" size={26} />
                     </TouchableOpacity>
                   </View>
                 </View>

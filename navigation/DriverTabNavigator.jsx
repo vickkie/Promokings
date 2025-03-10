@@ -1,14 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {
-  DriverDashboard,
-  EditProductList,
-  AddProduct,
-  DriverSettings,
-  EditCategoriesList,
-  ShipmentList,
-  Search,
-} from "../screens";
+import { DriverDashboard, DriverSettings, ShipmentList, Search, ShipmentHistory, ShipmentSearch } from "../screens";
 
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
@@ -82,7 +74,7 @@ const DriverTabNavigation = () => {
       />
       <Tab.Screen
         name="DriverSearch"
-        component={Search}
+        component={ShipmentSearch}
         options={{
           tabBarIcon: ({ focused }) => (
             <TouchableOpacity
@@ -102,17 +94,17 @@ const DriverTabNavigation = () => {
               </View>
             </TouchableOpacity>
           ),
-          tabBarLabel: "History",
+          tabBarLabel: "",
         }}
       />
       <Tab.Screen
-        name="Search"
-        component={EditCategoriesList}
+        name="ShipmentHistory"
+        component={ShipmentHistory}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon name={focused ? "menu2filled" : "menu2"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
           ),
-          tabBarLabel: "",
+          tabBarLabel: "History",
         }}
       />
 

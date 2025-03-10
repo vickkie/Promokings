@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import {
   StyleSheet,
   View,
@@ -11,49 +11,25 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-
+import * as Yup from "yup";
+import * as ImagePicker from "expo-image-picker";
+import axios from "axios";
+import Toast from "react-native-toast-message";
 import { COLORS, SIZES } from "../../../constants";
 import { ScrollView } from "react-native-gesture-handler";
 import useFetch from "../../../hook/useFetch";
 import { BACKEND_PORT } from "@env";
 import Icon from "../../../constants/icons";
 import LatestShipments from "./LatestShipments";
-import { useFocusEffect } from "@react-navigation/native";
-import { useRoute } from "@react-navigation/native";
 
-const ShipmentList = () => {
+const ShipmentHistory = () => {
   const navigation = useNavigation();
-  const route = useRoute();
-  const [title, setTitle] = useState("");
-  const [imageUrl, setImageUrl] = useState("https://i.postimg.cc/j56q20rB/images.jpg");
-  const [image, setImage] = useState(null);
-  const [description, setDescription] = useState("");
-  const [uploading, setUploading] = useState(false);
-  const [isEditable, setIsEditable] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
+
   const [refreshList, setRefreshList] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
 
-  useFocusEffect(
-    useCallback(() => {
-      if (route.params?.refreshList) {
-        setRefreshList(true);
-      }
-    }, [route.params])
-  );
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setRefreshList(true);
-    //  reset the refreshing state after some delay
-    setTimeout(() => {
-      setRefreshing(false);
-      setRefreshList(false); // Reset refreshList after refreshing
-    }, 2000);
-  }, []);
-
-  const handleRefetch = () => {
-    onRefresh();
-  };
+  const onRefresh = useCallback(() => {}, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -62,9 +38,9 @@ const ShipmentList = () => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
             <Icon name="backbutton" size={26} />
           </TouchableOpacity>
-          <Text style={styles.heading}>ALL SHIPMENTS</Text>
-          <TouchableOpacity style={styles.buttonWrap} onPress={handleRefetch}>
-            <Icon name="refresh" size={26} />
+          <Text style={styles.heading}> SHIPMENTS History</Text>
+          <TouchableOpacity style={styles.buttonWrap} onPress={""}>
+            <Icon name="add" size={26} />
           </TouchableOpacity>
         </View>
 
@@ -75,7 +51,7 @@ const ShipmentList = () => {
               setRefreshing={setRefreshing}
               limit={1000}
               offset={0}
-              status={""}
+              status={"completed,cancelled"}
               search={""}
             />
           </View>
@@ -247,4 +223,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ShipmentList;
+export default ShipmentHistory;

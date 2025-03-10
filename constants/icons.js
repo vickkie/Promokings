@@ -83,8 +83,12 @@ import pending from "../assets/svg/pending.svg";
 import receipt from "../assets/svg/receipt.svg";
 import download from "../assets/svg/archive-down.svg";
 import share from "../assets/svg/share.svg";
+import tick from "../assets/svg/tick.svg";
+import refresh from "../assets/svg/refresh.svg";
 
 const iconMap = {
+  refresh: refresh,
+  tick: tick,
   receipt: receipt,
   download: download,
   share: share,

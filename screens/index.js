@@ -55,6 +55,8 @@ import DriverDashboard from "./Staff/Driver/DriverDashboard";
 import DriverSettings from "./Staff/Driver/DriverSettings";
 import DriverProfile from "./Staff/Driver/DriverProfile";
 import ShipmentList from "./Staff/Driver/ShipmentList";
+import ShipmentHistory from "./Staff/Driver/ShipmentsHIstory";
+import ShipmentSearch from "./Staff/Driver/ShipmentSearch";
 
 export {
   Home,
@@ -114,4 +116,6 @@ export {
   DriverSettings,
   DriverProfile,
   ShipmentList,
+  ShipmentHistory,
+  ShipmentSearch,
 };

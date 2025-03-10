@@ -8,19 +8,28 @@ import {
   Image,
   RefreshControl,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
 import { Ionicons } from "@expo/vector-icons";
 
 import { useNavigation } from "@react-navigation/native";
+import { AuthContext } from "../../../components/auth/AuthContext";
+import LottieView from "lottie-react-native";
 
-const LatestShipments = ({ refreshList, setRefreshing }) => {
+const LatestShipments = ({ refreshList, setRefreshing, limit, offset, status, search }) => {
+  const { hasRole, userData } = useContext(AuthContext);
   const navigation = useNavigation();
-  const { data, isLoading, error, refetch } = useFetch("orders?limit=5&offset=0");
+  const { data, isLoading, error, refetch } = useFetch(
+    `shipment/driver/${userData._id}?limit=${limit}&offset=${offset}` +
+      (status ? `&status=${status}` : "") +
+      (search ? `&search=${search}` : "")
+  );
+
+  const [deliveries, setDeliveries] = useState([]);
 
   // Ensure data is an array and sort by creation date
-  const dataArray = Array.isArray(data.orders) ? data.orders : [];
+  const dataArray = Array.isArray(data.deliveries) ? data.deliveries : [];
   const sortedData = dataArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   const handleRefetch = () => {
@@ -42,17 +51,18 @@ const LatestShipments = ({ refreshList, setRefreshing }) => {
   }, [refreshList]);
 
   // Key extractor for FlatList
-  const keyExtractor = (order) => order._id;
+  const keyExtractor = (shipment) => shipment._id;
 
   // Render individual order item
-  const renderItem = ({ item: order }) => (
+  const renderItem = ({ item: shipment }) => (
     <View style={styles.latestProductCards}>
       <TouchableOpacity
         style={{
           borderRadius: 100,
-          backgroundColor: COLORS.gray,
+          backgroundColor: COLORS.themew,
           width: 36,
           height: 36,
+          padding: 7,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -65,12 +75,12 @@ const LatestShipments = ({ refreshList, setRefreshing }) => {
           });
         }}
       >
-        <Image source={require("../../../assets/images/isometric.webp")} style={styles.productImage} />
+        <Image source={require("../../../assets/images/truck.png")} style={styles.productImage} />
       </TouchableOpacity>
 
       <View style={styles.orderDetails}>
-        <Text style={styles.latestProductTitle}>{order.orderId}</Text>
-        <Text style={styles.latestProductdetail}>Order status: {order.deliveryStatus}</Text>
+        <Text style={styles.latestProductTitle}>{shipment.deliveryId}</Text>
+        <Text style={styles.latestProductdetail}>Assigned: {new Date(shipment?.assignedAt).toLocaleString()}</Text>
       </View>
 
       <TouchableOpacity
@@ -82,7 +92,32 @@ const LatestShipments = ({ refreshList, setRefreshing }) => {
         }}
         style={[styles.flexEnd, styles.buttonView]}
       >
-        <Text style={styles.productPrice}>+ KSHS {order.totalAmount}</Text>
+        <Text
+          style={{
+            backgroundColor:
+              shipment.status === "pending"
+                ? "#C0DAFF"
+                : shipment.status === "approved"
+                ? "#CBFCCD"
+                : shipment.status === "completed"
+                ? "#F3D0CE"
+                : shipment.status === "cancelled"
+                ? "#F3D0CE"
+                : COLORS.themey, // Default color
+            paddingVertical: 4,
+            paddingHorizontal: 8,
+            borderRadius: SIZES.medium,
+            width: 90,
+            textAlign: "center",
+            marginTop: 20,
+            alignSelf: "center",
+            fontSize: SIZES.small,
+            color: COLORS.black,
+            fontFamily: "medium",
+          }}
+        >
+          {shipment?.status}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -99,14 +134,6 @@ const LatestShipments = ({ refreshList, setRefreshing }) => {
             <Text style={styles.retryButtonText}>Retry Fetch</Text>
           </TouchableOpacity>
         </View>
-      ) : sortedData.length === 0 ? (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorMessage}>No products at the moment</Text>
-          <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
-            <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
-            <Text style={styles.retryButtonText}>Retry</Text>
-          </TouchableOpacity>
-        </View>
       ) : (
         <FlatList
           data={sortedData}
@@ -116,8 +143,20 @@ const LatestShipments = ({ refreshList, setRefreshing }) => {
           contentContainerStyle={{ padding: 4 }}
           refreshControl={<RefreshControl refreshing={refreshList} onRefresh={handleRefetch} />}
           ListEmptyComponent={
-            <View style={styles.emptyList}>
-              <Text style={styles.emptyListText}>No orders found</Text>
+            <View style={styles.containerx}>
+              <View style={styles.containLottie}>
+                <View style={styles.animationWrapper}>
+                  <LottieView
+                    source={require("../../../assets/data/delivery.json")}
+                    autoPlay
+                    loop={false}
+                    style={styles.animation}
+                  />
+                </View>
+                <View style={{ marginTop: 0, paddingBottom: 10 }}>
+                  <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Oops, No shipments here!</Text>
+                </View>
+              </View>
             </View>
           }
           ItemSeparatorComponent={() => <View style={styles.separator} />}
@@ -185,11 +224,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignorders: "center",
     gap: 6,
-    paddingVertical: 3,
+    paddingVertical: 1,
     backgroundColor: COLORS.lightWhite,
     borderRadius: SIZES.medium,
     minHeight: 40,
     marginBottom: 10,
+    paddingTop: 12,
     marginHorizontal: 4,
   },
   flexEnd: {
@@ -213,5 +253,30 @@ const styles = StyleSheet.create({
     fontWeight: "regular",
     color: COLORS.gray,
     marginBottom: 5,
+  },
+  containLottie: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: SIZES.width - 20,
+    flex: 1,
+  },
+  animationWrapper: {
+    width: 200,
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  animation: {
+    width: "100%",
+    height: "100%",
+  },
+  containerx: {
+    flex: 1,
+    backgroundColor: COLORS.themeg,
+    marginTop: 2,
+    // width: SIZES.width - 20,
+    marginHorizontal: 10,
+    borderRadius: SIZES.medium,
   },
 });

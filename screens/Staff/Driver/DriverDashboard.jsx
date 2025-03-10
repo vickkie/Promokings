@@ -9,6 +9,7 @@ import { COLORS, SIZES } from "../../../constants";
 import LatestProducts from "./LatestProducts";
 import useFetch from "../../../hook/useFetch";
 import LatestOrders from "../Sales/LatestOrders";
+import LatestShipments from "./LatestShipments";
 
 const DriverDashboard = () => {
   const { userLogin, hasRole, userData, userLogout } = useContext(AuthContext);
@@ -30,6 +31,7 @@ const DriverDashboard = () => {
       navigation.replace("Login");
     } else if (hasRole("driver")) {
       setUserId(userData._id);
+      console.log(userData);
     } else {
       userLogout();
       navigation.replace("Login");
@@ -79,6 +81,7 @@ const DriverDashboard = () => {
   };
 
   useEffect(() => {
+    console.log(data);
     if (!isLoading && data) {
       setDeliveries(data[0]);
     }
@@ -98,7 +101,7 @@ const DriverDashboard = () => {
 
     // Dummy data if deliveryData is missing
     const dummyData = {
-      deliveryId: "DUMMY-12345",
+      deliveryId: "NO PENDING ORDER",
       orderId: {
         shippingInfo: { address: "Unknown", city: "Unknown" },
       },
@@ -204,11 +207,18 @@ const DriverDashboard = () => {
           </View>
           <View style={{ paddingTop: 10, width: SIZES.width - 20, paddingHorizontal: 22 }}>
             <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>
-              Latest Deliveries
+              Latest Assigned Deliveries
             </Text>
           </View>
           <View style={styles.latestProducts}>
-            <LatestOrders refreshList={refreshList} setRefreshing={setRefreshing} />
+            <LatestShipments
+              refreshList={refreshList}
+              setRefreshing={setRefreshing}
+              limit={10}
+              offset={0}
+              status={"pending"}
+              search={""}
+            />
           </View>
         </View>
       </ScrollView>
