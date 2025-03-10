@@ -58,6 +58,7 @@ import {
   DriverSettings,
   DriverProfile,
   ShipmentList,
+  InvoiceScreen,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -172,6 +173,7 @@ export default function App() {
                     <Stack.Screen name="EditSalesOrder" component={EditSalesOrder} options={{ headerShown: false }} />
                     <Stack.Screen name="SalesOverview" component={SalesOverview} options={{ headerShown: false }} />
                     <Stack.Screen name="OrdersSales" component={OrdersSales} options={{ headerShown: false }} />
+                    <Stack.Screen name="InvoiceScreen" component={InvoiceScreen} options={{ headerShown: false }} />
                     <Stack.Screen name="SalesData" component={SalesData} options={{ headerShown: false }} />
                     <Stack.Screen name="SalesShipments" component={SalesShipments} options={{ headerShown: false }} />
                     <Stack.Screen name="DeliveryDetails" component={DeliveryDetails} options={{ headerShown: false }} />

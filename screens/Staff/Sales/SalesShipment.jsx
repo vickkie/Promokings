@@ -22,7 +22,7 @@ import Toast from "react-native-toast-message";
 
 const SalesShipments = () => {
   const [userId, setUserId] = useState(null);
-  const { userData, userLogin, hasRole } = useContext(AuthContext);
+  const { userData, userLogin, hasRole, userLogout } = useContext(AuthContext);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const SalesShipments = () => {
       userLogout();
       navigation.replace("Login");
     }
-  }, [userLogin, navigation, hasRole]);
+  }, [userLogin, navigation, hasRole, userLogout]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All");

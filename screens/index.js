@@ -35,6 +35,7 @@ import InventoryProfile from "./Staff/Inventory/InventoryProfile";
 
 //sales
 
+import InvoiceScreen from "./Staff/Sales/InvoiceScreen";
 import SalesDashboard from "./Staff/Sales/SalesDashboard";
 import OrderSalesDetails from "./Staff/Sales/OrderSalesDetails";
 import EditSalesOrder from "./Staff/Sales/EditOrder";
@@ -106,6 +107,7 @@ export {
   SalesSettings,
   DriverDetails,
   DriverList,
+  InvoiceScreen,
 
   //Drivers
   DriverDashboard,

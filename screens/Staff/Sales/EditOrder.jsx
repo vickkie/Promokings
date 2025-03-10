@@ -322,7 +322,13 @@ const EditSalesOrder = () => {
               </TouchableOpacity>
               <Text style={styles.topheading}>Order Actions</Text>
 
-              <TouchableOpacity onPress={() => {}} style={styles.outWrap}>
+              <TouchableOpacity
+                onPress={() => {
+                  console.log(item);
+                  navigation.navigate("InvoiceScreen", { order: item });
+                }}
+                style={styles.outWrap}
+              >
                 <Icon name="home" size={28} />
               </TouchableOpacity>
             </View>
