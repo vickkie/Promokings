@@ -30,7 +30,7 @@ const InvoiceScreen = () => {
             body { font-family: Arial, sans-serif; padding: 20px; }
             .header { font-size: 20px; font-weight: bold; margin-bottom: 10px; text-align: center; }
             .logo { text-align: center; margin-bottom: 10px; }
-            .section { margin-top: 15px; }
+            .section { margin-top: 15px; display:flex;flex-direction:column;gap: 7px}
             .footer{
              margin-top: 20px; display: flex; justify-content: center; align-items: flex-end
             }
@@ -48,8 +48,15 @@ const InvoiceScreen = () => {
             <img src="https://res.cloudinary.com/drsuclnkw/image/upload/v1741609689/Promokings/promoking-logo_h3hu4v.png" width="81" height="69" />
           </div>
           <div class="header">Promokings Limited Kenya</div>
+
+          <div class="section">
           <div>16727 Nairobi, Kenya</div>
           <div>+254706676569</div>
+          <div>promokings@gmail.com</div>
+          <div>www.promokings.co.ke</div>
+          </div>
+
+
           <div class="section">
             <div class="bold">BILL TO:</div>
             <div>${order?.userId?.fullname || order?.userId?.username},</div>
@@ -83,33 +90,38 @@ const InvoiceScreen = () => {
           </table>
           <div class="section totalPrices">
             <div class="row spaceB2in">
-              <div>Total:</div> 
-              <div>KSh ${order?.totalAmount}</div>
+              <div>Sale total:</div> 
+              <div>KSh ${order?.totalAmount}.00</div>
+              
+              </div>
+            <div class="row spaceB2in">
+               <div>Additional Fees:</div>
+              <div>KSh ${order?.additionalFees || `0.00`}</div>
               
               </div>
             <div class="row spaceB2in">
                <div>Delivery:</div>
-              <div>KSh ${order?.deliveryAmount}</div>
+              <div>KSh ${order?.deliveryAmount}.00</div>
               
               </div>
             <div class="row spaceB2in">
               <div>Sub Total:</div> 
-              <div class="bold">KSh ${order?.subtotal}</div>
+              <div class="bold">KSh ${order?.subtotal}.00</div>
               </div>
           </div>
           <div class="section">
             <div class="bold">
-            Manager: Kamau Victor Mwangi
+            Manager: Kamau Victor
             </div>
             <div class="bold paddingTop">
             Signature 
             </div>
           </div>
-          <div class="section footer">
+          <div class=" footer">
           
-          <p class="footerthanks">
+          <div class="footerthanks">
           Thank you for doing business with us!
-          </p>
+          </div>
           </div>
         </body>
       </html>
