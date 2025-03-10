@@ -324,12 +324,13 @@ const EditSalesOrder = () => {
 
               <TouchableOpacity
                 onPress={() => {
-                  console.log(item);
-                  navigation.navigate("InvoiceScreen", { order: item });
+                  navigation.navigate("InvoiceScreen", {
+                    order: item,
+                  });
                 }}
                 style={styles.outWrap}
               >
-                <Icon name="home" size={28} />
+                <Icon name="receipt" size={28} />
               </TouchableOpacity>
             </View>
 

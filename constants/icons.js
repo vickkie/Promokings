@@ -80,8 +80,14 @@ import invoicefilled from "../assets/svg/invoice-paper-filled.svg";
 import truck from "../assets/svg/truck.svg";
 import truckfilled from "../assets/svg/truck-tick.svg";
 import pending from "../assets/svg/pending.svg";
+import receipt from "../assets/svg/receipt.svg";
+import download from "../assets/svg/archive-down.svg";
+import share from "../assets/svg/share.svg";
 
 const iconMap = {
+  receipt: receipt,
+  download: download,
+  share: share,
   shop: ShopIcon,
   invoice: invoice,
   pending: pending,
