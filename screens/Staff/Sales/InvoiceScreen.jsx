@@ -22,110 +22,153 @@ const InvoiceScreen = () => {
     navigation.goBack();
   }
 
-  const generateHTMLInvoice = () => {
+  const generateHTMLInvoice = (showWatermark = true) => {
     return `
-      <html>
-        <head>
-          <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            .header { font-size: 20px; font-weight: bold; margin-bottom: 10px; text-align: center; }
-            .logo { text-align: center; margin-bottom: 10px; }
-            .section { margin-top: 15px; display:flex;flex-direction:column;gap: 7px}
-            .footer{
-             margin-top: 20px; display: flex; justify-content: center; align-items: flex-end
-            }
-            .row { display: flex; justify-content: space-between; }
-            .bold { font-weight: bold; }
-            .table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-            .table th, .table td { border: 1px solid #ddd; padding: 8px; text-align: left; }.spaceB2in{margin-bottom:20px,}.footerthanks{
-            text-align:center}.totalPrices{
-            display:flex,justify-content:flex-end}.paddingTop{
-            padding-top:10px}
-          </style>
-        </head>
-        <body>
-          <div class="logo">
-            <img src="https://res.cloudinary.com/drsuclnkw/image/upload/v1741609689/Promokings/promoking-logo_h3hu4v.png" width="81" height="69" />
-          </div>
-          <div class="header">Promokings Limited Kenya</div>
-
-          <div class="section">
+    <html>
+      <head>
+        <style>
+          body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            position: relative;
+            ${!showWatermark ? "" : ""}
+          }
+          ${
+            showWatermark
+              ? `.watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 80px;
+            color: rgba(0, 0, 0, 0.1);
+            pointer-events: none;
+            z-index: -1;
+          }`
+              : ""
+          }
+          .header { 
+            font-size: 20px; 
+            font-weight: bold; 
+            margin-bottom: 10px; 
+            text-align: center; 
+          }
+          .logo { 
+            text-align: center; 
+            margin-bottom: 10px; 
+          }
+          .section { 
+            margin-top: 15px; 
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+          }
+          .footer{
+            margin-top: 20px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-end;
+          }
+          .row { 
+            display: flex; 
+            justify-content: space-between; 
+          }
+          .bold { 
+            font-weight: bold; 
+          }
+          .table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 15px; 
+          }
+          .table th, .table td { 
+            border: 1px solid #ddd; 
+            padding: 8px; 
+            text-align: left; 
+          }
+          .spaceB2in { 
+            margin-bottom: 20px; 
+          }
+          .totalPrices { 
+            display: flex; 
+            justify-content: flex-end; 
+          }
+          .paddingTop { 
+            padding-top: 10px; 
+          }
+        </style>
+      </head>
+      <body>
+        ${showWatermark ? `<div class="watermark">CONFIDENTIAL</div>` : ""}
+        <div class="logo">
+          <img src="https://res.cloudinary.com/drsuclnkw/image/upload/v1741609689/Promokings/promoking-logo_h3hu4v.png" width="81" height="69" />
+        </div>
+        <div class="header">Promokings Limited Kenya</div>
+        <div class="section">
           <div>16727 Nairobi, Kenya</div>
           <div>+254706676569</div>
           <div>promokings@gmail.com</div>
           <div>www.promokings.co.ke</div>
+        </div>
+        <div class="section">
+          <div class="bold">BILL TO:</div>
+          <div>${order?.userId?.fullname || order?.userId?.username},</div>
+          <div>${order?.shippingInfo?.address}, ${order?.shippingInfo?.city}</div>
+          <div>${order?.shippingInfo?.phoneNumber}</div>
+        </div>
+        <div class="section">
+          <div class="bold">INVOICE</div>
+          <div>Invoice Number: ${order?.orderId}</div>
+          <div>Order Date: ${new Date(order?.createdAt).toLocaleString()}</div>
+        </div>
+        <table class="table">
+          <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Total</th>
+          </tr>
+          ${order?.products
+            ?.map(
+              (product) => `
+                <tr>
+                  <td>${product?._id?.title}</td>
+                  <td>KSh ${product?._id?.price}</td>
+                  <td>${product?.quantity}</td>
+                  <td>KSh ${product?.quantity * product?._id?.price}</td>
+                </tr>
+              `
+            )
+            .join("")}
+        </table>
+        <div class="section totalPrices">
+          <div class="row spaceB2in">
+            <div>Sale total:</div> 
+            <div>KSh ${order?.totalAmount}.00</div>
           </div>
-
-
-          <div class="section">
-            <div class="bold">BILL TO:</div>
-            <div>${order?.userId?.fullname || order?.userId?.username},</div>
-            <div>${order?.shippingInfo?.address}, ${order?.shippingInfo?.city}</div>
-            <div>${order?.shippingInfo?.phoneNumber}</div>
+          <div class="row spaceB2in">
+            <div>Additional Fees:</div>
+            <div>KSh ${order?.additionalFees || `0.00`}</div>
           </div>
-          <div class="section">
-            <div class="bold">INVOICE</div>
-            <div>Invoice Number: ${order?.orderId}</div>
-            <div>Order Date: ${new Date(order?.createdAt).toLocaleString()}</div>
+          <div class="row spaceB2in">
+            <div>Delivery:</div>
+            <div>KSh ${order?.deliveryAmount}.00</div>
           </div>
-          <table class="table">
-            <tr>
-              <th>Item</th>
-              <th>Price</th>
-              <th>Qty</th>
-              <th>Total</th>
-            </tr>
-            ${order?.products
-              ?.map(
-                (product) => `
-                  <tr>
-                    <td>${product?._id?.title}</td>
-                    <td>KSh ${product?._id?.price}</td>
-                    <td>${product?.quantity}</td>
-                    <td>KSh ${product?.quantity * product?._id?.price}</td>
-                  </tr>
-                `
-              )
-              .join("")}
-          </table>
-          <div class="section totalPrices">
-            <div class="row spaceB2in">
-              <div>Sale total:</div> 
-              <div>KSh ${order?.totalAmount}.00</div>
-              
-              </div>
-            <div class="row spaceB2in">
-               <div>Additional Fees:</div>
-              <div>KSh ${order?.additionalFees || `0.00`}</div>
-              
-              </div>
-            <div class="row spaceB2in">
-               <div>Delivery:</div>
-              <div>KSh ${order?.deliveryAmount}.00</div>
-              
-              </div>
-            <div class="row spaceB2in">
-              <div>Sub Total:</div> 
-              <div class="bold">KSh ${order?.subtotal}.00</div>
-              </div>
+          <div class="row spaceB2in">
+            <div>Sub Total:</div> 
+            <div class="bold">KSh ${order?.subtotal}.00</div>
           </div>
-          <div class="section">
-            <div class="bold">
-            Manager: Kamau Victor
-            </div>
-            <div class="bold paddingTop">
-            Signature 
-            </div>
-          </div>
-          <div class=" footer">
-          
-          <div class="footerthanks">
-          Thank you for doing business with us!
-          </div>
-          </div>
-        </body>
-      </html>
-    `;
+        </div>
+        <div class="section">
+          <div class="bold">Manager: Kamau Victor</div>
+          <div class="bold paddingTop">Signature</div>
+        </div>
+        <div class="footer">
+          <div class="footerthanks">Thank you for doing business with us!</div>
+        </div>
+      </body>
+    </html>
+  `;
   };
 
   // Generate PDF in the background for saving and sharing
