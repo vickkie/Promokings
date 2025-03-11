@@ -21,7 +21,7 @@ const LatestShipments = ({ refreshList, setRefreshing, limit, offset, status, se
   const { hasRole, userData } = useContext(AuthContext);
   const navigation = useNavigation();
   const { data, isLoading, error, refetch } = useFetch(
-    `shipment/driver/${userData._id}?limit=${limit}&offset=${offset}` +
+    `shipment/driver/${userData?._id}?limit=${limit}&offset=${offset}` +
       (status ? `&status=${status}` : "") +
       (search ? `&search=${search}` : "")
   );
@@ -51,7 +51,7 @@ const LatestShipments = ({ refreshList, setRefreshing, limit, offset, status, se
   }, [refreshList]);
 
   // Key extractor for FlatList
-  const keyExtractor = (shipment) => shipment._id;
+  const keyExtractor = (shipment) => shipment?._id;
 
   // Render individual order item
   const renderItem = ({ item: shipment }) => (
@@ -95,7 +95,7 @@ const LatestShipments = ({ refreshList, setRefreshing, limit, offset, status, se
             backgroundColor:
               shipment.status === "pending"
                 ? "#C0DAFF"
-                : shipment.status === "approved"
+                : shipment.status === "delivered"
                 ? "#CBFCCD"
                 : shipment.status === "completed"
                 ? "#F3D0CE"

@@ -6,135 +6,96 @@ import { SIZES, COLORS } from "../../../constants";
 import { Picker } from "@react-native-picker/picker";
 import { ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 import { BACKEND_PORT } from "@env";
 import axios from "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import useFetch from "../../../hook/useFetch";
 
-const EditSalesOrder = () => {
+const EditShipmentDriver = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { products, totals, orderId, item: order } = route.params;
+  const { shipmentId, order, shipment } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
 
-  const {
-    data: alldrivers,
-    isLoading: driverLoading,
-    error,
-    refetch,
-    errorMessage: driverError,
-  } = useFetch("staff/drivers");
   const {
     data: delivery,
     isLoading: deliveryLoading,
     error: deliveryError,
     refetch: deliveryRefetch,
     errorMessage: deliveryErrorMessage,
-  } = useFetch(`orders/delivery/${orderId}`);
+  } = useFetch(`orders/${shipment?.orderId?._id}`);
+  //   console.log(shipment?.orderId?._id);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [drivers, setDrivers] = useState(null);
-  const [item, setItem] = useState(order);
+
+  const [item, setItem] = useState(shipment);
   const [deliveryData, setDeliveryData] = useState(null);
   const [assignedDriver, setAssignedDriver] = useState(null);
   const [isAssigning, setIsAssigning] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploading2, setUploading2] = useState(false);
+  const [driverNotes, setDriverNotes] = useState(shipment?.driverNotes);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    if (!driverLoading && alldrivers && !driverError) {
-      setDrivers(alldrivers);
-      //   console.log(alldrivers);
-    }
-  }, [driverLoading, alldrivers]);
-
-  useEffect(() => {
-    if (!deliveryLoading && delivery && !deliveryErrorMessage) {
-      setDeliveryData(Array.isArray(delivery) ? delivery[0] : delivery);
+    // console.log(delivery?.order);
+    if (!deliveryLoading && delivery && delivery?.status === "success") {
+      setDeliveryData(Array.isArray(delivery?.order) ? delivery?.order[0] : delivery?.order);
     }
   }, [deliveryLoading, delivery]);
 
-  const handleAssignDriver = async () => {
-    if (assignedDriver && orderId) {
-      setUploading(true);
-      try {
-        const response = await fetch(`${BACKEND_PORT}/api/orders/assignDriver`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ orderId, driverId: assignedDriver, assignee: userData._id }),
-        });
-
-        const data = await response.json();
-
-        if (!data.success) {
-          throw new Error(data.message || "Failed to assign driver");
-        }
-        setDeliveryData(data.delivery);
-
-        alert("Driver assigned successfully!");
-      } catch (error) {
-        console.warn("Error assigning driver:", error);
-        alert(error);
-      } finally {
-        setTimeout(() => {
-          setIsAssigning(false);
-          setAssignedDriver(null);
-          setUploading(false);
-        }, 2000);
-      }
-    }
-  };
   const handleCancelOrder = async () => {
     setUploading(true);
     const status = "cancelled";
 
-    if (!orderId) {
-      Alert.alert("Error", "Order ID is required!");
+    if (!shipmentId || !driverNotes) {
+      Alert.alert("Error", "shipment ID and driver notes is required!");
       setUploading(false);
       return;
     }
 
-    Alert.alert("Confirm cancelling", "Are you sure you want to cancel this order?", [
+    Alert.alert("Confirm cancelling", "Are you sure you want to cancel this delivery?", [
       {
         text: "Cancel",
         style: "cancel",
         onPress: () => setUploading(false),
       },
       {
-        text: "Delete",
+        text: "Confirm",
         style: "destructive",
         onPress: async () => {
           try {
-            const response = await fetch(`${BACKEND_PORT}/api/order/${orderId}`, {
-              method: "PATCH",
+            const response = await fetch(`${BACKEND_PORT}/api/shipment/${shipmentId}`, {
+              method: "PUT",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ status }),
+              body: JSON.stringify({ status, driverNotes }),
             });
 
             const data = await response.json();
 
-            if (!data.success) {
+            // console.log(shipmentId);
+            // console.log(data);
+
+            if (response.status !== 200) {
               throw new Error(data.message || "Failed to cancel order");
             }
 
-            alert("Order cancelled");
-            navigation.replace("OrdersSales", { refresh: true, refreshin: true });
-            setTimeout(() => {
-              navigation.navigate("Sales Navigation");
-            }, 500);
+            // When delivery is cancelled
+            Toast.show({
+              type: "success",
+              text1: "Delivery Cancelled",
+              text2: "The delivery has been cancelled successfully",
+            });
           } catch (error) {
-            console.warn("Error cancelling Order:", error);
+            console.warn("Error cancelling Delivery:", error);
             alert(error);
           } finally {
             setTimeout(() => {
-              setIsAssigning(false);
-              setAssignedDriver(null);
               setUploading(false);
             }, 2000);
           }
@@ -146,48 +107,57 @@ const EditSalesOrder = () => {
     setUploading2(true);
     const status = "delivered";
 
-    if (!orderId) {
-      Alert.alert("Error", "Order ID is required!");
-      setUploading(false);
+    if (!shipmentId || !driverNotes) {
+      Alert.alert("Error", "Order ID and driver notes are required!");
+      setUploading2(false);
       return;
     }
 
-    Alert.alert("Confirm completing", "Are you sure you want to complete this order?", [
+    Alert.alert("Confirm completing", "Are you sure you want to complete this delivery?", [
       {
         text: "Cancel",
         style: "cancel",
         onPress: () => setUploading2(false),
       },
       {
-        text: "Delete",
+        text: "Confirm",
         style: "destructive",
         onPress: async () => {
           try {
-            const response = await fetch(`${BACKEND_PORT}/api/order/${orderId}`, {
-              method: "PATCH",
+            const response = await fetch(`${BACKEND_PORT}/api/shipment/${shipmentId}`, {
+              method: "PUT",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ status }),
+              body: JSON.stringify({ status, driverNotes }),
             });
 
             const data = await response.json();
+            setItem(data);
 
-            if (!data.success) {
-              throw new Error(data.message || "Failed to complete order");
+            if (response.status === 200) {
+              // When delivery is cancelled
+              Toast.show({
+                type: "success",
+                text1: "Delivery Completed",
+                text2: "The delivery has been completed successfully",
+              });
+
+              setTimeout(() => {
+                navigation.navigate("Driver Navigation", {});
+              }, 3000);
+            } else {
+              Toast.show({
+                type: "error",
+                text1: "Completion update failed",
+                text2: "The delivery update Failed. Please contact Admin",
+              });
             }
-
-            alert("Order completed");
-            navigation.replace("OrdersSales", { refresh: true, refreshin: true });
-            setTimeout(() => {
-              navigation.navigate("Sales Navigation");
-            }, 500);
           } catch (error) {
-            console.warn("Error completting Order:", error);
+            console.warn("Error completting Delivery:", error);
             alert(error);
           } finally {
             setTimeout(() => {
-              setIsAssigning(false);
               setAssignedDriver(null);
               setUploading2(false);
             }, 2000);
@@ -195,115 +165,6 @@ const EditSalesOrder = () => {
         },
       },
     ]);
-  };
-  const handleApproveOrder = async () => {
-    const status = "approved";
-
-    if (!orderId) {
-      Alert.alert("Error", "Order ID is required!");
-      setUploading(false);
-      return;
-    }
-
-    Alert.alert("Confirm Approving", "Are you sure you want to approve this order?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-        onPress: () => setUploading(false),
-      },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            const response = await fetch(`${BACKEND_PORT}/api/order/${orderId}`, {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ status }),
-            });
-
-            const data = await response.json();
-
-            if (!data.success) {
-              throw new Error(data.message || "Failed to approve order");
-            }
-
-            alert("Order approved");
-            navigation.replace("OrdersSales", { refresh: true, refreshin: true });
-            setTimeout(() => {
-              navigation.navigate("Sales Navigation");
-            }, 500);
-          } catch (error) {
-            console.warn("Error approving Order:", error);
-            alert(error);
-          } finally {
-            setTimeout(() => {}, 2000);
-          }
-        },
-      },
-    ]);
-  };
-
-  const handleDeleteOrder = async () => {
-    setIsLoading(true);
-
-    if (!orderId) {
-      Alert.alert("Error", "Order ID is required!");
-      setUploading(false);
-      return;
-    }
-
-    Alert.alert("Confirm Deletion", "Are you sure you want to delete this order?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-        onPress: () => setUploading(false),
-      },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            const response = await axios.delete(`${BACKEND_PORT}/api/orders/${orderId}`);
-
-            if (response.data.success) {
-              Alert.alert("Success", "Order deleted successfully!");
-              navigation.navigate("OrdersSales");
-            } else {
-              throw new Error(response.data.message || "Failed to delete order");
-            }
-          } catch (error) {
-            console.error("Error deleting order:", error);
-            Alert.alert("Error", "Failed to delete order. Please try again.");
-          } finally {
-            setIsLoading(false);
-          }
-        },
-      },
-    ]);
-  };
-
-  const DriverDetails = () => {
-    if (!(isApproving || isAssigning || deliveryLoading)) {
-      return (
-        <View>
-          <View style={{ paddingHorizontal: 10 }}>
-            <Text>Assigned Driver : {deliveryData ? deliveryData?.driver?.fullName : "Unassigned"}</Text>
-          </View>
-          <View style={{ paddingHorizontal: 10 }}>
-            <Text>Assigned Time : {deliveryData ? deliveryData?.assignedAt : "Unassigned"}</Text>
-          </View>
-          <View style={{ paddingHorizontal: 10 }}>
-            <Text>Vehicle Registration: {deliveryData ? deliveryData?.driver?.numberPlate : "Unassigned"}</Text>
-          </View>
-          <View style={{ paddingHorizontal: 10 }}>
-            <Text>Phone Number: {deliveryData ? deliveryData?.driver?.phoneNumber : "Unassigned"}</Text>
-          </View>
-        </View>
-      );
-    }
   };
 
   return (
@@ -324,9 +185,10 @@ const EditSalesOrder = () => {
 
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate("InvoiceScreen", {
-                    order: item,
-                  });
+                  //   console.log(delivery);
+                  //   navigation.navigate("InvoiceScreen", {
+                  //     order: deliveryData,
+                  //   });
                 }}
                 style={styles.outWrap}
               >
@@ -335,7 +197,7 @@ const EditSalesOrder = () => {
             </View>
 
             <Text style={{ fontFamily: "GtAlpine", color: COLORS.themeb, fontSize: SIZES.medium, marginVertical: 15 }}>
-              Order id : {orderId}
+              Shipment No : {shipment?.deliveryId}
             </Text>
 
             <TouchableOpacity
@@ -362,7 +224,7 @@ const EditSalesOrder = () => {
                       ? "#D4641B"
                       : item.status === "delivered"
                       ? "#26A532"
-                      : item.status === "delivery"
+                      : item.status === "transit"
                       ? "#337DE7"
                       : item.status === "cancelled"
                       ? "#B65454"
@@ -374,7 +236,7 @@ const EditSalesOrder = () => {
             </TouchableOpacity>
 
             <View style={styles.stepsheader}>
-              <Text style={styles.stepstext}>You can track your order from here</Text>
+              <Text style={styles.stepstext}>You can update your shipment from here</Text>
             </View>
           </View>
 
@@ -382,145 +244,37 @@ const EditSalesOrder = () => {
             <View style={styles.lowerRow}>
               <ScrollView>
                 <View style={styles.stepContainer}>
-                  <View style={{ justifyContent: "center", marginVertical: 6 }}>
-                    <Text style={styles.relatedHeader}>NOTES</Text>
+                  <View style={{ justifyContent: "space-between", marginVertical: 6 }}>
+                    <View style={styles.actionFlex}>
+                      <Text style={styles.relatedHeader}>ADD NOTES</Text>
+                      <TouchableOpacity
+                        style={styles.buttonWrap}
+                        onPress={() => {
+                          setIsEditing(!isEditing);
+                        }}
+                      >
+                        <Icon name="pencil" size={26} />
+                      </TouchableOpacity>
+                    </View>
                   </View>
+
                   <View style={styles.inputWrapper2}>
-                    <TextInput style={{ flex: 1 }} value={item?.notes} editable={false} />
+                    <TextInput
+                      style={{ flex: 1, minHeight: 100, textAlignVertical: "top" }}
+                      onChangeText={setDriverNotes}
+                      value={driverNotes}
+                      editable={isEditing}
+                      multiline={true}
+                      numberOfLines={4} // Adjust as needed
+                    />
                   </View>
                 </View>
               </ScrollView>
             </View>
 
-            <View style={[styles.paymentRow, { justifyContent: "center" }]}>
-              <View style={styles.payFlex}>
-                <Text style={styles.paymentDetails}>Payment status</Text>
-                <Text
-                  style={{
-                    backgroundColor:
-                      item.paymentStatus === "pending"
-                        ? "#C0DAFF"
-                        : item.paymentStatus === "paid"
-                        ? "#CBFCCD"
-                        : item.paymentStatus === "partial"
-                        ? "#F3D0CE"
-                        : COLORS.themey, // Default color
-                    paddingVertical: 4,
-                    paddingHorizontal: 8,
-                    borderRadius: SIZES.medium,
-                  }}
-                >
-                  {item?.paymentStatus}
-                </Text>
-              </View>
-              <View style={styles.payFlex}>
-                <Text style={styles.paymentDetails}>Delivery Fees</Text>
-                <Text style={styles.paymentDetails}>
-                  {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
-                    .format(item?.deliveryAmount)
-                    .replace("Ksh", "")}
-                </Text>
-              </View>
-              <View style={styles.payFlex}>
-                <Text style={styles.paymentDetails}>Additional Fees</Text>
-                <Text style={styles.paymentDetails}>
-                  {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
-                    .format(item?.additionalFees)
-                    .replace("Ksh", "")}
-                </Text>
-              </View>
-              <View style={styles.payFlex}>
-                <Text style={styles.paymentDetails}>Total Amount</Text>
-                <Text style={styles.paymentDetails}>
-                  {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
-                    .format(item.subtotal)
-                    .replace("Ksh", "")}
-                </Text>
-              </View>
-            </View>
-
-            <View style={[styles.relatedRow, { marginBottom: 1 }]}>
-              <View style={styles.stepContainer}>
-                <View style={{ justifyContent: "space-between", marginTop: 10, display: "flex", flexDirection: "row" }}>
-                  <Text style={styles.relatedHeader}>Actions</Text>
-                  <View style={styles.actionFlex}>
-                    <TouchableOpacity
-                      style={styles.buttonWrap}
-                      onPress={() => {
-                        setIsAssigning(!isAssigning);
-                        setIsApproving(false);
-                      }}
-                    >
-                      <Icon name="delivery" size={26} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.buttonWrap}
-                      onPress={() => {
-                        handleApproveOrder();
-                      }}
-                    >
-                      <Icon name="tick" size={26} />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <DriverDetails />
-                <View style={styles.pickerWrapper}>
-                  {isAssigning && (
-                    <View>
-                      <View>
-                        <Text style={styles.pickerLabel}>Assign Driver</Text>
-                      </View>
-                      <View style={styles.pickerBox}>
-                        <Picker
-                          selectedValue={assignedDriver}
-                          onValueChange={(itemValue) => {
-                            setAssignedDriver(itemValue);
-                          }}
-                          style={styles.picker}
-                        >
-                          <Picker.Item label="Select a driver" value={""} style={styles.pickerBox} />
-                          {drivers &&
-                            drivers.map((sup) => <Picker.Item key={sup._id} label={sup.fullName} value={sup._id} />)}
-                        </Picker>
-                      </View>
-
-                      <TouchableOpacity style={styles.submitBtn} onPress={handleAssignDriver}>
-                        {uploading ? (
-                          <ActivityIndicator size={30} color={COLORS.themew} />
-                        ) : (
-                          <Text style={styles.submitText}>Assign Driver</Text>
-                        )}
-                      </TouchableOpacity>
-                    </View>
-                  )}
-
-                  {isApproving && (
-                    <>
-                      <Text style={styles.pickerLabel}>Assign Driver</Text>
-                      <View style={styles.pickerBox}>
-                        <Picker
-                          selectedValue={assignedDriver}
-                          onValueChange={(itemValue, itemIndex) => {
-                            setAssignedDriver(itemValue);
-                          }}
-                          style={styles.picker}
-                        >
-                          <Picker.Item label="Select a driver" value={""} style={styles.pickerBox} />
-                          {drivers &&
-                            drivers.map((sup) => {
-                              return <Picker.Item key={sup._id} label={sup.fullName} value={sup.name} />;
-                            })}
-                        </Picker>
-                      </View>
-                    </>
-                  )}
-                </View>
-              </View>
-            </View>
-
             <View style={[styles.relatedRow, { marginBottom: 10 }]}>
               <View>
-                <Text style={styles.relatedHeader}>Critical Actions</Text>
+                <Text style={styles.relatedHeader}> Actions</Text>
                 <TouchableOpacity style={styles.completeBtn} onPress={handleCompleteOrder}>
                   {uploading2 ? (
                     <ActivityIndicator size={30} color={COLORS.themew} />
@@ -528,18 +282,12 @@ const EditSalesOrder = () => {
                     <Text style={styles.submitText}>Mark Order Complete</Text>
                   )}
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelBtn} onPress={handleCancelOrder}>
+
+                <TouchableOpacity style={styles.deleteBtn} onPress={handleCancelOrder}>
                   {uploading ? (
                     <ActivityIndicator size={30} color={COLORS.themew} />
                   ) : (
                     <Text style={styles.submitText}>Cancel Order</Text>
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.deleteBtn} onPress={handleDeleteOrder}>
-                  {isLoading ? (
-                    <ActivityIndicator size={30} color={COLORS.themew} />
-                  ) : (
-                    <Text style={styles.submitText}>Delete Order</Text>
                   )}
                 </TouchableOpacity>
               </View>
@@ -551,7 +299,7 @@ const EditSalesOrder = () => {
   );
 };
 
-export default EditSalesOrder;
+export default EditShipmentDriver;
 
 const styles = StyleSheet.create({
   container: {
@@ -898,5 +646,6 @@ const styles = StyleSheet.create({
   actionFlex: {
     display: "flex",
     flexDirection: "row",
+    justifyContent: "space-between",
   },
 });

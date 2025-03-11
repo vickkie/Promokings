@@ -12,8 +12,11 @@ import ErrorBoundary2 from "./screens_options/ErrorBoundary";
 
 import { AuthProvider } from "./components/auth/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
+import { ProfileCompletionProvider } from "./components/auth/ProfileCompletionContext";
 import { WishProvider } from "./contexts/WishContext";
 import { chatScreenOptions, systemScreenOptions } from "./screens_options/AppHeaderOptions";
+
+// Screens from ./screens
 import {
   Cart,
   OrderDetails,
@@ -62,6 +65,7 @@ import {
   ShipmentHistory,
   ShipmentSearch,
   ShipmentDetails,
+  EditShipmentDriver,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -72,6 +76,62 @@ import DriverTabNavigation from "./navigation/DriverTabNavigator";
 
 enableScreens();
 const Stack = createNativeStackNavigator();
+
+// Array of screen definitions
+const screens = [
+  { name: "Bottom Navigation", component: BottomTabNavigation, options: { headerShown: false } },
+  { name: "Inventory Navigation", component: InventoryTabNavigation, options: { headerShown: false } },
+  { name: "Sales Navigation", component: SalesTabNavigation, options: { headerShown: false } },
+  { name: "Driver Navigation", component: DriverTabNavigation, options: { headerShown: false } },
+  { name: "EditCategoriesList", component: EditCategoriesList, options: { headerShown: false } },
+  { name: "Home", component: Home, options: { headerShown: false } },
+  { name: "EditCategory", component: EditCategory, options: { headerShown: false } },
+  { name: "AddCategory", component: AddCategory, options: { headerShown: false } },
+  { name: "StaffSettings", component: StaffSettings, options: { headerShown: false } },
+  { name: "EditProductsList", component: EditProductList, options: { headerShown: false } },
+  { name: "PreviewProduct", component: PreviewProduct, options: { headerShown: false } },
+  { name: "EditProduct", component: EditProduct, options: { headerShown: false } },
+  { name: "Add Product", component: AddProduct, options: { headerShown: false } },
+  { name: "Login", component: LoginPage, options: { headerShown: false } },
+  { name: "ProductDetails", component: ProductDetails, options: { headerShown: false } },
+  { name: "ProductList", component: Products, options: { headerShown: false } },
+  { name: "Favourites", component: Favourites, options: { headerShown: false } },
+  { name: "Categories", component: Categories, options: { headerShown: true } },
+  { name: "Cart", component: Cart, options: { headerShown: false } },
+  { name: "Checkout", component: Checkout, options: { headerShown: false } },
+  { name: "Orders", component: Orders, options: { headerShown: false } },
+  { name: "Register", component: Register, options: { headerShown: false } },
+  { name: "UserDetails", component: UserDetails, options: { headerShown: false } },
+  { name: "Message", component: MessageCenter, options: { headerShown: false } },
+  { name: "Help", component: Help, options: chatScreenOptions },
+  { name: "About", component: About, options: { headerShown: false } },
+  { name: "Faqs", component: Faqs, options: { headerShown: false } },
+  { name: "SystemMessages", component: SystemMessages, options: systemScreenOptions },
+  { name: "OrderSuccess", component: OrderSuccess, options: { headerShown: false } },
+  { name: "OrderDetails", component: OrderDetails, options: { headerShown: false } },
+  { name: "InventoryDashboard", component: InventoryDashboard, options: { headerShown: false } },
+  { name: "SalesDashboard", component: SalesDashboard, options: { headerShown: false } },
+  { name: "OrderSalesDetails", component: OrderSalesDetails, options: { headerShown: false } },
+  { name: "EditSalesOrder", component: EditSalesOrder, options: { headerShown: false } },
+  { name: "SalesOverview", component: SalesOverview, options: { headerShown: false } },
+  { name: "OrdersSales", component: OrdersSales, options: { headerShown: false } },
+  { name: "InvoiceScreen", component: InvoiceScreen, options: { headerShown: false } },
+  { name: "SalesData", component: SalesData, options: { headerShown: false } },
+  { name: "SalesShipments", component: SalesShipments, options: { headerShown: false } },
+  { name: "DeliveryDetails", component: DeliveryDetails, options: { headerShown: false } },
+  { name: "SalesProfile", component: SalesProfile, options: { headerShown: false } },
+  { name: "SalesSettings", component: SalesSettings, options: { headerShown: false } },
+  { name: "InventoryProfile", component: InventoryProfile, options: { headerShown: false } },
+  { name: "DriverList", component: DriverList, options: { headerShown: false } },
+  { name: "DriverDetails", component: DriverDetails, options: { headerShown: false } },
+  { name: "DriverSettings", component: DriverSettings, options: { headerShown: false } },
+  { name: "DriverProfile", component: DriverProfile, options: { headerShown: false } },
+  { name: "ShipmentHistory", component: ShipmentHistory, options: { headerShown: false } },
+  { name: "ShipmentSearch", component: ShipmentSearch, options: { headerShown: false } },
+  { name: "ShipmentDetails", component: ShipmentDetails, options: { headerShown: false } },
+  { name: "EditShipmentDriver", component: EditShipmentDriver, options: { headerShown: false } },
+  { name: "ShipmentList", component: ShipmentList, options: { headerShown: false } },
+];
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -104,102 +164,25 @@ export default function App() {
         <UpdateCheck />
         <BottomSheetModalProvider>
           <AuthProvider>
-            <CartProvider>
-              <WishProvider>
-                <NavigationContainer>
-                  <Stack.Navigator>
-                    <Stack.Screen
-                      name="Bottom Navigation"
-                      component={BottomTabNavigation}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="Inventory Navigation"
-                      component={InventoryTabNavigation}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="Sales Navigation"
-                      component={SalesTabNavigation}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="Driver Navigation"
-                      component={DriverTabNavigation}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="EditCategoriesList"
-                      component={EditCategoriesList}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-                    <Stack.Screen name="EditCategory" component={EditCategory} options={{ headerShown: false }} />
-                    <Stack.Screen name="AddCategory" component={AddCategory} options={{ headerShown: false }} />
-                    <Stack.Screen name="StaffSettings" component={StaffSettings} options={{ headerShown: false }} />
-                    <Stack.Screen
-                      name="EditProductsList"
-                      component={EditProductList}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen name="PreviewProduct" component={PreviewProduct} options={{ headerShown: false }} />
-                    <Stack.Screen name="EditProduct" component={EditProduct} options={{ headerShown: false }} />
-                    <Stack.Screen name="Add Product" component={AddProduct} options={{ headerShown: false }} />
-                    <Stack.Screen name="Login" component={LoginPage} options={{ headerShown: false }} />
-                    <Stack.Screen name="ProductDetails" component={ProductDetails} options={{ headerShown: false }} />
-                    <Stack.Screen name="ProductList" component={Products} options={{ headerShown: false }} />
-                    <Stack.Screen name="Favourites" component={Favourites} options={{ headerShown: false }} />
-                    <Stack.Screen name="Categories" component={Categories} options={{ headerShown: true }} />
-                    <Stack.Screen name="Cart" component={Cart} options={{ headerShown: false }} />
-                    <Stack.Screen name="Checkout" component={Checkout} options={{ headerShown: false }} />
-                    <Stack.Screen name="Orders" component={Orders} options={{ headerShown: false }} />
-                    <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
-                    <Stack.Screen name="UserDetails" component={UserDetails} options={{ headerShown: false }} />
-                    <Stack.Screen name="Message" component={MessageCenter} options={{ headerShown: false }} />
-                    <Stack.Screen name="Help" component={Help} options={chatScreenOptions} />
-                    <Stack.Screen name="About" component={About} options={{ headerShown: false }} />
-                    <Stack.Screen name="Faqs" component={Faqs} options={{ headerShown: false }} />
-                    <Stack.Screen name="SystemMessages" component={SystemMessages} options={systemScreenOptions} />
-                    <Stack.Screen name="OrderSuccess" component={OrderSuccess} options={{ headerShown: false }} />
-                    <Stack.Screen name="OrderDetails" component={OrderDetails} options={{ headerShown: false }} />
-                    <Stack.Screen
-                      name="InventoryDashboard"
-                      component={InventoryDashboard}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen name="SalesDashboard" component={SalesDashboard} options={{ headerShown: false }} />
-                    <Stack.Screen
-                      name="OrderSalesDetails"
-                      component={OrderSalesDetails}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen name="EditSalesOrder" component={EditSalesOrder} options={{ headerShown: false }} />
-                    <Stack.Screen name="SalesOverview" component={SalesOverview} options={{ headerShown: false }} />
-                    <Stack.Screen name="OrdersSales" component={OrdersSales} options={{ headerShown: false }} />
-                    <Stack.Screen name="InvoiceScreen" component={InvoiceScreen} options={{ headerShown: false }} />
-                    <Stack.Screen name="SalesData" component={SalesData} options={{ headerShown: false }} />
-                    <Stack.Screen name="SalesShipments" component={SalesShipments} options={{ headerShown: false }} />
-                    <Stack.Screen name="DeliveryDetails" component={DeliveryDetails} options={{ headerShown: false }} />
-                    <Stack.Screen name="SalesProfile" component={SalesProfile} options={{ headerShown: false }} />
-                    <Stack.Screen name="SalesSettings" component={SalesSettings} options={{ headerShown: false }} />
-                    <Stack.Screen
-                      name="InventoryProfile"
-                      component={InventoryProfile}
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen name="DriverList" component={DriverList} options={{ headerShown: false }} />
-                    <Stack.Screen name="DriverDetails" component={DriverDetails} options={{ headerShown: false }} />
-                    <Stack.Screen name="DriverSettings" component={DriverSettings} options={{ headerShown: false }} />
-                    <Stack.Screen name="DriverProfile" component={DriverProfile} options={{ headerShown: false }} />
-                    <Stack.Screen name="ShipmentHistory" component={ShipmentHistory} options={{ headerShown: false }} />
-                    <Stack.Screen name="ShipmentSearch" component={ShipmentSearch} options={{ headerShown: false }} />
-                    <Stack.Screen name="ShipmentDetails" component={ShipmentDetails} options={{ headerShown: false }} />
-                    <Stack.Screen name="ShipmentList" component={ShipmentList} options={{ headerShown: false }} />
-                  </Stack.Navigator>
-                  <Toast />
-                </NavigationContainer>
-              </WishProvider>
-            </CartProvider>
+            <ProfileCompletionProvider>
+              <CartProvider>
+                <WishProvider>
+                  <NavigationContainer>
+                    <Stack.Navigator>
+                      {screens.map((screen, index) => (
+                        <Stack.Screen
+                          key={index}
+                          name={screen.name}
+                          component={screen.component}
+                          options={screen.options}
+                        />
+                      ))}
+                    </Stack.Navigator>
+                    <Toast />
+                  </NavigationContainer>
+                </WishProvider>
+              </CartProvider>
+            </ProfileCompletionProvider>
           </AuthProvider>
         </BottomSheetModalProvider>
       </GestureHandlerRootView>

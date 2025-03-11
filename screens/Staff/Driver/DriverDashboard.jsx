@@ -17,7 +17,7 @@ const DriverDashboard = () => {
   const route = useRoute();
 
   const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch(
-    `shipment/myDeliveries/${userData._id}/status/transit`
+    `shipment/myDeliveries/${userData?._id}/status/pending`
   );
 
   const [userId, setUserId] = useState(null);
@@ -28,13 +28,19 @@ const DriverDashboard = () => {
 
   useEffect(() => {
     if (!userLogin) {
-      navigation.replace("Login");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      });
     } else if (hasRole("driver")) {
-      setUserId(userData._id);
+      setUserId(userData?._id);
       console.log(userData);
     } else {
       userLogout();
-      navigation.replace("Login");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      });
     }
   }, [userLogin, navigation, hasRole]);
 
@@ -174,7 +180,7 @@ const DriverDashboard = () => {
               </Text>
             </View>
             <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity onPress={() => navigation.navigate("InventoryProfile")} style={styles.buttonWrap2}>
+              <TouchableOpacity onPress={() => navigation.navigate("DriverProfile")} style={styles.buttonWrap2}>
                 {renderProfilePicture()}
               </TouchableOpacity>
             </View>
@@ -193,10 +199,11 @@ const DriverDashboard = () => {
                 <View style={styles.dashbboxWrapper}>
                   <TouchableOpacity
                     onPress={() => {
-                      navigation.navigate("EditProductList", {
-                        products: "products/stock-summary/out-of-stock",
-                        refreshList: true,
-                      });
+                      // console.log(deliveries);
+                      deliveries &&
+                        navigation.navigate("ShipmentDetails", {
+                          deliveryId: deliveries?.deliveryId,
+                        });
                     }}
                   >
                     <CurrentOrder deliveryData={deliveries} isLoading={isLoading} />

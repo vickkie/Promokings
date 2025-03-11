@@ -58,6 +58,7 @@ import ShipmentList from "./Staff/Driver/ShipmentList";
 import ShipmentHistory from "./Staff/Driver/ShipmentsHIstory";
 import ShipmentSearch from "./Staff/Driver/ShipmentSearch";
 import ShipmentDetails from "./Staff/Driver/ShipmentDetails";
+import EditShipmentDriver from "./Staff/Driver/EditShipment";
 
 export {
   Home,
@@ -120,4 +121,5 @@ export {
   ShipmentHistory,
   ShipmentSearch,
   ShipmentDetails,
+  EditShipmentDriver,
 };

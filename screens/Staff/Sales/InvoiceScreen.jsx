@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Button, Alert, Text, StyleSheet, Platform } from "react-native";
 import * as Print from "expo-print";
 import * as FileSystem from "expo-file-system";
-import * as DocumentPicker from "expo-document-picker";
+
 import { WebView } from "react-native-webview";
 import { shareAsync } from "expo-sharing";
 import { useRoute, useNavigation } from "@react-navigation/native";

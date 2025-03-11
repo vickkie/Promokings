@@ -20,12 +20,14 @@ const ShipmentDetails = () => {
   const [products, setProducts] = useState([]);
   const [orderId, setOrderId] = useState(null);
   const [item, setItem] = useState(null);
+  const [delivery, setDelivery] = useState(null);
   const [customerDetails, setcustomerDetails] = useState(null);
 
   useEffect(() => {
     if (!dataLoading && data) {
       //   console.log(data?.userId);
       //   console.log(ErrorMessage);
+      setDelivery(data);
       setOrderId(data?.orderId?._id);
       setItem(data?.orderId);
       setcustomerDetails(data?.orderId?.userId);
@@ -82,7 +84,16 @@ const ShipmentDetails = () => {
               </TouchableOpacity>
               <Text style={styles.topheading}>Delivery details</Text>
 
-              <TouchableOpacity onPress={() => {}} style={styles.outWrap}>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("EditShipmentDriver", {
+                    shipmentId: data?._id,
+                    order: item?.orderId,
+                    shipment: delivery,
+                  });
+                }}
+                style={styles.outWrap}
+              >
                 <Icon name="pencil" size={28} />
               </TouchableOpacity>
             </View>
@@ -94,13 +105,13 @@ const ShipmentDetails = () => {
             <TouchableOpacity
               style={{
                 backgroundColor:
-                  item?.status === "pending"
+                  delivery?.status === "pending"
                     ? "#ffedd2"
-                    : item?.status === "delivered"
+                    : delivery?.status === "delivered"
                     ? "#CBFCCD"
-                    : item?.status === "delivery"
+                    : delivery?.status === "delivery"
                     ? "#C0DAFF"
-                    : item?.status === "cancelled"
+                    : delivery?.status === "cancelled"
                     ? "#F3D0CE"
                     : COLORS.themey, // Default color
                 paddingVertical: 4,
@@ -111,18 +122,18 @@ const ShipmentDetails = () => {
               <Text
                 style={{
                   color:
-                    item?.status === "pending"
+                    delivery?.status === "pending"
                       ? "#D4641B"
-                      : item?.status === "delivered"
+                      : delivery?.status === "delivered"
                       ? "#26A532"
-                      : item?.status === "delivery"
+                      : delivery?.status === "delivery"
                       ? "#337DE7"
-                      : item?.status === "cancelled"
+                      : delivery?.status === "cancelled"
                       ? "#B65454"
                       : COLORS.primary,
                 }}
               >
-                {item?.status === "transit" ? "in delivery" : item?.status}
+                {delivery?.status === "transit" ? "in delivery" : delivery?.status}
               </Text>
             </TouchableOpacity>
 
@@ -144,24 +155,27 @@ const ShipmentDetails = () => {
 
                       <View style={{ width: SIZES.width - 27 }}>
                         {Array.isArray(products) &&
-                          products.map((product) => (
-                            <View style={styles.containerx} key={product._id?._id}>
-                              <View style={{ gap: 12 }}>
-                                <View style={styles.details}>
-                                  <Text style={styles.title} numberOfLines={1}>
-                                    {product._id?.title}
-                                  </Text>
-                                </View>
-
-                                <View style={styles.rowitem}>
-                                  <View>
-                                    <Text style={styles.semititle}>Quantity: {product?.quantity}</Text>
+                          products.map((product) => {
+                            // console.log(product?._id?.quantity);
+                            return (
+                              <View style={styles.containerx} key={product._id?._id}>
+                                <View style={{ gap: 12 }}>
+                                  <View style={styles.details}>
+                                    <Text style={styles.title} numberOfLines={1}>
+                                      {product._id?.title}
+                                    </Text>
                                   </View>
-                                  <View style={styles.priceadd}></View>
+
+                                  <View style={styles.rowitem}>
+                                    <View>
+                                      <Text style={styles.semititle}>Quantity: {product?._id?.quantity}</Text>
+                                    </View>
+                                    <View style={styles.priceadd}></View>
+                                  </View>
                                 </View>
                               </View>
-                            </View>
-                          ))}
+                            );
+                          })}
                       </View>
                     </View>
                   </ScrollView>
@@ -172,11 +186,10 @@ const ShipmentDetails = () => {
                   <View style={styles.wrapperRelated}>
                     <View style={styles.leftRelated}>
                       <TouchableOpacity style={styles.supplierImage}>
-                        {/* {console.log(customerDetails)} */}
                         <Image
                           source={
                             customerDetails?.profilePicture
-                              ? { uri: customerDetails.profileImage }
+                              ? { uri: customerDetails.profilePicture }
                               : require("../../../assets/images/userDefault.webp")
                           }
                           style={{ width: 40, height: 40, borderRadius: 1999 }}
@@ -221,7 +234,7 @@ const ShipmentDetails = () => {
                 <ScrollView style={[styles.relatedRow, { marginBottom: 10 }]}>
                   <View style={styles.stepContainer}>
                     <View style={{ justifyContent: "center", marginVertical: 6 }}>
-                      <Text style={styles.relatedHeader}>NOTES</Text>
+                      <Text style={styles.relatedHeader}>DISPATCH NOTES</Text>
                     </View>
                     <View style={styles.inputWrapper2}>
                       <TextInput style={{ flex: 1 }} value={item?.notes} editable={false} />

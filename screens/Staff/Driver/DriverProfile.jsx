@@ -14,12 +14,24 @@ import { BACKEND_PORT } from "@env";
 import * as ImagePicker from "expo-image-picker";
 import ButtonMain from "../../../components/ButtonMain";
 import Toast from "react-native-toast-message";
+import ProfileCompletion from "../ProfileCompletion";
+import { ProfileCompletionContext } from "../../../components/auth/ProfileCompletionContext";
 
 // Global axios-retry
 axiosRetry(axios, { retries: 3 });
 
 const DriverProfile = () => {
   const { userData, userLogin, updateUserData, userLogout, hasRole } = useContext(AuthContext);
+
+  const {
+    completionPercentage,
+    missingFields,
+    message,
+    isComplete,
+    refreshProfileCompletion,
+    syncProfileCompletionFromServer,
+  } = useContext(ProfileCompletionContext);
+
   const navigation = useNavigation();
   const [loader, setLoader] = useState(false);
   const [profilePicture, setProfilePicture] = useState(userData?.profilePicture || null);
@@ -65,6 +77,7 @@ const DriverProfile = () => {
       { cancelable: false }
     );
   };
+  // console.log();
 
   const updateUserProfile = async (values) => {
     setLoader(true);
@@ -209,7 +222,7 @@ const DriverProfile = () => {
         </TouchableOpacity>
         <View style={styles.upperRow}>
           <View style={styles.upperButtons}>
-            <Text style={styles.topprofileheading}>Profile settings</Text>
+            {/* <Text style={styles.topprofileheading}>Profile settings</Text> */}
           </View>
           {userLogin ? (
             <TouchableOpacity onPress={logout} style={styles.outWrap}>
@@ -218,7 +231,11 @@ const DriverProfile = () => {
           ) : (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("Login");
+                userLogout();
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: "Login" }],
+                });
               }}
               style={[styles.outWrap, styles.rotateMe]}
             >
@@ -226,11 +243,38 @@ const DriverProfile = () => {
             </TouchableOpacity>
           )}
           <View style={styles.lowerheader}>
-            <Text style={styles.heading}>Edit your profile</Text>
-            <Text style={styles.statement}>You can edit your profile from here</Text>
+            <Text style={[styles.heading, { alignSelf: "center" }]}>Profile settings</Text>
+
+            <View>
+              {isComplete && completionPercentage === 100 && (
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#CBFCCD",
+                    paddingVertical: 4,
+                    paddingHorizontal: 8,
+                    borderRadius: SIZES.medium,
+                    width: 120,
+                    alignSelf: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#26A532",
+                    }}
+                  >
+                    Profile completed
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+            <Text style={[styles.statement, { alignItems: "center", textAlign: "center" }]}>
+              You can edit your profile from here
+            </Text>
           </View>
         </View>
       </View>
+      <ProfileCompletion></ProfileCompletion>
+
       <ScrollView>
         <View style={styles.detailsWrapper}>
           <View style={styles.imageWrapper}>
@@ -477,7 +521,7 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.large,
     top: SIZES.xxSmall,
     zIndex: 2,
-    minHeight: 140,
+    minHeight: 150,
   },
   upperButtons: {
     width: SIZES.width - 20,

@@ -19,8 +19,8 @@
         "UIStatusBarHidden": false,
         "UIStatusBarStyle": "UIStatusBarStyleDefault"
       },
-      "bundleIdentifier": "com.uzitrake.promokings",
-      "versionCode": 4
+      "bundleIdentifier": "com.uzitrake.promokings"
+     
     },
     "android": {
       "versionCode": 4,
@@ -34,7 +34,7 @@
       "favicon": "./assets/promoking-logoq.png"
     },
      "updates": {
-      "url": "https://u.expo.dev/963b311f-f10e-4395-81da-d500fc41924c"
+      "url": "https://github.com/vickkie/Promokings"
     },
     "extra": {
       "eas": {

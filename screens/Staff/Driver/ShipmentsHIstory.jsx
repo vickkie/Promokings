@@ -51,7 +51,7 @@ const ShipmentHistory = () => {
               setRefreshing={setRefreshing}
               limit={1000}
               offset={0}
-              status={"completed,cancelled"}
+              status={"delivered,cancelled"}
               search={""}
             />
           </View>
