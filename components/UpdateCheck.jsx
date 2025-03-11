@@ -15,17 +15,27 @@ export default function UpdateCheck() {
   const [latestVersion, setLatestVersion] = useState(null);
   const [isChecking, setIsChecking] = useState(false);
 
-  // Use applicationVersion for standalone builds, fallback to "dev" in development
+  // Get current app version
   const currentVersion = Application.nativeApplicationVersion || "dev";
   const applicationName = Application.applicationName;
-
-  console.log(applicationName);
 
   useEffect(() => {
     checkForUpdates();
     const interval = setInterval(checkForUpdates, CHECK_INTERVAL);
     return () => clearInterval(interval);
   }, []);
+
+  // Function to compare versions
+  const isNewerVersion = (current, latest) => {
+    const parseVersion = (ver) => ver.split(".").map(Number);
+    const [cMajor, cMinor, cPatch] = parseVersion(current);
+    const [lMajor, lMinor, lPatch] = parseVersion(latest);
+
+    if (lMajor > cMajor) return true;
+    if (lMajor === cMajor && lMinor > cMinor) return true;
+    if (lMajor === cMajor && lMinor === cMinor && lPatch > cPatch) return true;
+    return false;
+  };
 
   const checkForUpdates = async () => {
     setIsChecking(true);
@@ -43,14 +53,14 @@ export default function UpdateCheck() {
         setIsForced(false);
         return;
       }
+      console.log(data.version);
 
       const newVersion = data.version;
       setLatestVersion(newVersion);
-      console.log(newVersion);
 
       const skippedVersion = await AsyncStorage.getItem(SKIPPED_VERSION_KEY);
 
-      if (currentVersion !== newVersion && skippedVersion !== newVersion) {
+      if (isNewerVersion(currentVersion, newVersion) && skippedVersion !== newVersion) {
         setUpdateUrl(
           data?.downloadUrl ||
             `https://github.com/vickkie/Promokings/releases/download/v${newVersion}/Promokings-v${newVersion}.apk`
@@ -85,9 +95,14 @@ export default function UpdateCheck() {
     }
   };
 
-  const openStore = (url) => {
-    Linking.openURL(url).catch((err) => console.error("Failed to open store:", err));
+  const openStore = async (url) => {
+    const canOpen = await Linking.canOpenURL(url);
+    if (canOpen) {
+      Linking.openURL(url);
+    } else {
+      Alert.alert("Error", "Unable to open the update link.");
+    }
   };
 
-  return;
+  return null;
 }

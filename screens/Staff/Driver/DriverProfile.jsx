@@ -106,7 +106,7 @@ const DriverProfile = () => {
         formData.append("currentPassword", values.currentPassword);
         formData.append("newPassword", values.newPassword);
       }
-      console.log(formData);
+      // console.log(formData);
 
       const endpoint = `${BACKEND_PORT}/api/staff/updateProfile`;
 
@@ -116,7 +116,7 @@ const DriverProfile = () => {
         },
       });
 
-      console.log(response.data);
+      // console.log(response.data);
       if (response.status === 200) {
         await updateUserData(response.data); // Update user data in context with response data
         successUpdate();
