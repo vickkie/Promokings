@@ -68,10 +68,8 @@ const LatestShipments = ({ refreshList, setRefreshing, limit, offset, status, se
           alignItems: "center",
         }}
         onPress={() => {
-          navigation.navigate("OrderSalesDetails", {
-            products: order?.products,
-            orderId: order._id,
-            item: order,
+          navigation.navigate("ShipmentDetails", {
+            deliveryId: shipment?.deliveryId,
           });
         }}
       >
@@ -82,12 +80,12 @@ const LatestShipments = ({ refreshList, setRefreshing, limit, offset, status, se
         <Text style={styles.latestProductTitle}>{shipment.deliveryId}</Text>
         <Text style={styles.latestProductdetail}>Assigned: {new Date(shipment?.assignedAt).toLocaleString()}</Text>
       </View>
+      {console.log(shipment?.deliveryId)}
 
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate("PreviewProduct", {
-            order: order,
-            orderid: order._id,
+          navigation.navigate("ShipmentDetails", {
+            deliveryId: shipment?.deliveryId,
           });
         }}
         style={[styles.flexEnd, styles.buttonView]}

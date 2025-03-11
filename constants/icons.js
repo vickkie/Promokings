@@ -85,8 +85,10 @@ import download from "../assets/svg/archive-down.svg";
 import share from "../assets/svg/share.svg";
 import tick from "../assets/svg/tick.svg";
 import refresh from "../assets/svg/refresh.svg";
+import city from "../assets/svg/city.svg";
 
 const iconMap = {
+  city: city,
   refresh: refresh,
   tick: tick,
   receipt: receipt,
