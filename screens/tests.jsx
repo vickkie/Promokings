@@ -10,10 +10,13 @@ import Icon from "../constants/icons";
 import { COLORS } from "../constants";
 import uuid from "react-native-uuid";
 
+
 const Help = () => {
   const [messages, setMessages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const { userData } = useContext(AuthContext);
+
+
   const [userId, setUserId] = useState(null);
 
   useEffect(() => {

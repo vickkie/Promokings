@@ -14,7 +14,7 @@ import axios from "axios";
 
 import { BACKEND_PORT } from "@env";
 
-const CompleteProfile = forwardRef((props, ref) => {
+const CustomerCompleteProfile = forwardRef((props, ref) => {
   const snapPoints = useMemo(() => [370, 425], []);
   const navigation = useNavigation();
   const {
@@ -70,7 +70,7 @@ const CompleteProfile = forwardRef((props, ref) => {
         formData.append(key, values[key]);
       });
 
-      const endpoint = `${BACKEND_PORT}/api/staff/updateDetails/${userData._id}`;
+      const endpoint = `${BACKEND_PORT}/api/user/updateDetails/${userData._id}`;
       const payload = {
         ...userData,
         ...values,
@@ -165,7 +165,7 @@ const CompleteProfile = forwardRef((props, ref) => {
   );
 });
 
-export default CompleteProfile;
+export default CustomerCompleteProfile;
 
 const styles = StyleSheet.create({
   container: {

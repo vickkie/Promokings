@@ -13,7 +13,7 @@ const staffPositionSpecificFields = {
 };
 const staffRoles = ["inventory", "finance", "admin", "driver", "sales", "supplier", "dispatcher", "customerservice"];
 
-const customerRequiredFields = ["username", "email", "password", "address", "phoneNumber"];
+const customerRequiredFields = ["username", "email", "password", "location", "phoneNumber", "firstname", "lastname"];
 // (Add any additional customer-specific fields as needed)
 
 const ProfileCompletionProvider = ({ children }) => {
@@ -88,7 +88,7 @@ const ProfileCompletionProvider = ({ children }) => {
 
       // console.log(endpoint);
     } else {
-      endpoint = `${BACKEND_PORT}/api/customer/v1/incompleteFields/${userData._id}`;
+      endpoint = `${BACKEND_PORT}/api/user/v1/incomplete/${userData._id}`;
     }
 
     try {

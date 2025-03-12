@@ -14,6 +14,9 @@ import { BACKEND_PORT } from "@env";
 import * as ImagePicker from "expo-image-picker";
 import ButtonMain from "../components/ButtonMain";
 import Toast from "react-native-toast-message";
+import { ProfileCompletionContext } from "../components/auth/ProfileCompletionContext";
+import ProfileCompletion from "./Staff/ProfileCompletion";
+import UserProfileCompletion from "./UserProfileCompletion";
 
 // Global axios-retry
 axiosRetry(axios, { retries: 3 });
@@ -25,6 +28,15 @@ const UserDetails = () => {
   const [localProfilePicture, setLocalProfilePicture] = useState(null); // New state variable for local image URI
   const [userId, setUserId] = useState(null);
   const { userData, userLogin, updateUserData, userLogout } = useContext(AuthContext);
+  const {
+    completionPercentage,
+    missingFields,
+    message,
+    isComplete,
+    refreshProfileCompletion,
+    syncProfileCompletionFromServer,
+  } = useContext(ProfileCompletionContext);
+
   const [showPasswordFields, setShowPasswordFields] = useState(false); // State for toggling password fields
 
   useEffect(() => {
@@ -194,9 +206,6 @@ const UserDetails = () => {
           <Icon name="backbutton" size={26} />
         </TouchableOpacity>
         <View style={styles.upperRow}>
-          <View style={styles.upperButtons}>
-            <Text style={styles.topprofileheading}>Profile settings</Text>
-          </View>
           {userLogin ? (
             <TouchableOpacity onPress={logout} style={styles.outWrap}>
               <Icon name="logout" size={26} />
@@ -212,11 +221,38 @@ const UserDetails = () => {
             </TouchableOpacity>
           )}
           <View style={styles.lowerheader}>
-            <Text style={styles.heading}>Edit your profile</Text>
-            <Text style={styles.statement}>You can edit your profile from here</Text>
+            <Text style={[styles.heading, { alignSelf: "center" }]}>Profile settings</Text>
+
+            <View>
+              {isComplete && completionPercentage === 100 && (
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: "#CBFCCD",
+                    paddingVertical: 4,
+                    paddingHorizontal: 8,
+                    borderRadius: SIZES.medium,
+                    width: 120,
+                    alignSelf: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#26A532",
+                    }}
+                  >
+                    Profile completed
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+            <Text style={[styles.statement, { alignItems: "center", textAlign: "center" }]}>
+              You can edit your profile from here
+            </Text>
           </View>
         </View>
       </View>
+      <UserProfileCompletion />
+
       <ScrollView>
         <View style={styles.detailsWrapper}>
           <View style={styles.imageWrapper}>
