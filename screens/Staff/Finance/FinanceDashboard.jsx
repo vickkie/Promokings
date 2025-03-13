@@ -7,7 +7,7 @@ import { AuthContext } from "../../../components/auth/AuthContext";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
-import LatestOrders from "./LatestOrders";
+import LatestPayments from "./LatestPayments";
 import SalesChart from "./SalesChart";
 
 const zeroData = {
@@ -42,11 +42,16 @@ const FinanceDashboard = () => {
 
   useFocusEffect(
     useCallback(() => {
+      console.log("Full Route Object:", route);
+
       if (route.params?.refreshList) {
         setRefreshList(true);
         refetch();
+
+        // Clear param to prevent infinite loops
+        navigation.setParams({ refreshList: false });
       }
-    }, [route.params])
+    }, [route.params, navigation])
   );
 
   const onRefresh = useCallback(() => {
@@ -129,7 +134,7 @@ const FinanceDashboard = () => {
             </Text>
           </View>
           <View style={styles.latestProducts}>
-            <LatestOrders refreshList={refreshList} setRefreshing={setRefreshing} />
+            <LatestPayments refreshList={refreshList} setRefreshList={setRefreshList} setRefreshing={setRefreshing} />
           </View>
         </View>
       </ScrollView>

@@ -15,7 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { useNavigation } from "@react-navigation/native";
 
-const LatestOrders = ({ refreshList, setRefreshing }) => {
+const LatestPayments = ({ refreshList, setRefreshing, setRefreshList }) => {
   const navigation = useNavigation();
   const { data, isLoading, error, refetch } = useFetch("orders?limit=5&offset=0");
 
@@ -34,9 +34,11 @@ const LatestOrders = ({ refreshList, setRefreshing }) => {
       if (refetchResult && typeof refetchResult.finally === "function") {
         refetchResult.finally(() => {
           setRefreshing(false);
+          setRefreshList(false);
         });
       } else {
         setRefreshing(false);
+        setRefreshList(false);
       }
     }
   }, [refreshList]);
@@ -54,7 +56,7 @@ const LatestOrders = ({ refreshList, setRefreshing }) => {
   const renderItem = ({ item: order }) => {
     // Get the payment method from order object
     const paymentMethod = order?.paymentInfo?.selectedPaymentMethod?.toLowerCase();
-    console.log(order);
+    // console.log(order);
 
     // Use mapped image or fallback
     const paymentLogo = paymentLogos[paymentMethod] || require("../../../assets/images/logos/paysafecard.png");
@@ -73,7 +75,7 @@ const LatestOrders = ({ refreshList, setRefreshing }) => {
             alignItems: "center",
           }}
           onPress={() => {
-            navigation.navigate("OrderSalesDetails", {
+            navigation.navigate("OrderPaymentDetails", {
               products: order?.products,
               orderId: order._id,
               item: order,
@@ -114,7 +116,7 @@ const LatestOrders = ({ refreshList, setRefreshing }) => {
 
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("OrderSalesDetails", {
+            navigation.navigate("OrderPaymentDetails", {
               products: order?.products,
               orderId: order._id,
               item: order,
@@ -158,7 +160,7 @@ const LatestOrders = ({ refreshList, setRefreshing }) => {
           refreshControl={<RefreshControl refreshing={refreshList} onRefresh={handleRefetch} />}
           ListEmptyComponent={
             <View style={styles.emptyList}>
-              <Text style={styles.emptyListText}>No orders found</Text>
+              <Text style={styles.emptyListText}>No Payments found</Text>
             </View>
           }
           ItemSeparatorComponent={() => <View style={styles.separator} />}
@@ -168,7 +170,7 @@ const LatestOrders = ({ refreshList, setRefreshing }) => {
   );
 };
 
-export default LatestOrders;
+export default LatestPayments;
 
 const styles = StyleSheet.create({
   container: {

@@ -214,7 +214,10 @@ const ShipmentDetails = () => {
                       <TouchableOpacity
                         style={styles.reachWrapper}
                         onPress={() => {
-                          customerDetails ? handleCallPress(customerDetails?.phoneNumber) : "";
+                          const phoneNumber = customerDetails?.phoneNumber || item?.paymentInfo?.phoneNumber;
+                          if (phoneNumber) {
+                            handleCallPress(phoneNumber);
+                          }
                         }}
                       >
                         <Icon name="call" size={20} />

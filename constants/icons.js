@@ -86,8 +86,17 @@ import share from "../assets/svg/share.svg";
 import tick from "../assets/svg/tick.svg";
 import refresh from "../assets/svg/refresh.svg";
 import city from "../assets/svg/city.svg";
+import calendar from "../assets/svg/calendar.svg";
+import card from "../assets/svg/card-pos-line.svg";
+import cardfilled from "../assets/svg/card-pos.svg";
+import cardsearch from "../assets/svg/card-search-light.svg";
+import cardsearchfilled from "../assets/svg/card-search.svg";
 
 const iconMap = {
+  cardsearchfilled: cardsearchfilled,
+  cardsearch: cardsearch,
+  card: card,
+  cardfilled: cardfilled,
   city: city,
   refresh: refresh,
   tick: tick,
@@ -116,6 +125,7 @@ const iconMap = {
   mpesa: mpesa,
   email: email,
   call: call,
+  calendar: calendar,
   tracker: tracker,
   check: check,
   isometric: Isometric1,

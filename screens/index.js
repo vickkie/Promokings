@@ -59,10 +59,15 @@ import ShipmentHistory from "./Staff/Driver/ShipmentsHIstory";
 import ShipmentSearch from "./Staff/Driver/ShipmentSearch";
 import ShipmentDetails from "./Staff/Driver/ShipmentDetails";
 import EditShipmentDriver from "./Staff/Driver/EditShipment";
+import PaymentList from "./Staff/Finance/PaymentsList";
 
 //finance
 
 import FinanceDashboard from "./Staff/Finance/FinanceDashboard";
+import OrderPaymentDetails from "./Staff/Finance/OrderPaymentDetails";
+import EditPaymentDetails from "./Staff/Finance/EditPaymentDetails";
+import Payments from "./Staff/Finance/Payments";
+import PaymentsHistory from "./Staff/Finance/PaymentsHistory";
 
 export {
   Home,
@@ -129,4 +134,9 @@ export {
 
   //finance
   FinanceDashboard,
+  OrderPaymentDetails,
+  EditPaymentDetails,
+  PaymentList,
+  Payments,
+  PaymentsHistory,
 };

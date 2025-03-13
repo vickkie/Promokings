@@ -67,6 +67,11 @@ import {
   ShipmentDetails,
   EditShipmentDriver,
   FinanceDashboard,
+  OrderPaymentDetails,
+  EditPaymentDetails,
+  PaymentList,
+  Payments,
+  PaymentsHistory,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -135,6 +140,11 @@ const screens = [
   { name: "EditShipmentDriver", component: EditShipmentDriver, options: { headerShown: false } },
   { name: "ShipmentList", component: ShipmentList, options: { headerShown: false } },
   { name: "FinanceDashboard", component: FinanceDashboard, options: { headerShown: false } },
+  { name: "OrderPaymentDetails", component: OrderPaymentDetails, options: { headerShown: false } },
+  { name: "EditPaymentDetails", component: EditPaymentDetails, options: { headerShown: false } },
+  { name: "PaymentList", component: PaymentList, options: { headerShown: false } },
+  { name: "Payments", component: Payments, options: { headerShown: false } },
+  { name: "PaymentsHistory", component: PaymentsHistory, options: { headerShown: false } },
 ];
 
 export default function App() {

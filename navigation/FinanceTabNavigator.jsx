@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { OrdersSales, SalesOverview, SalesData, SalesShipments, SalesSettings, FinanceDashboard } from "../screens";
+import { SalesOverview, SalesSettings, FinanceDashboard, Payments, PaymentsHistory } from "../screens";
 
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
@@ -60,13 +60,13 @@ const FinanceTabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="OrdersSales"
-        component={OrdersSales}
+        name="Payments"
+        component={Payments}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon name={focused ? "menu2filled" : "menu2"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
+            <Icon name={focused ? "cardfilled" : "card"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
           ),
-          tabBarLabel: "Orders",
+          tabBarLabel: "Payments",
         }}
       />
       <Tab.Screen
@@ -86,11 +86,7 @@ const FinanceTabNavigation = () => {
               }}
             >
               <View style={shadowStyle}>
-                <Icon
-                  name={focused ? "invoicefilled" : "invoice"}
-                  size={34}
-                  color={focused ? COLORS.primary : COLORS.gray2}
-                />
+                <Icon name={focused ? "search" : "search"} size={34} color={focused ? COLORS.primary : COLORS.gray2} />
               </View>
             </TouchableOpacity>
           ),
@@ -98,13 +94,17 @@ const FinanceTabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="SalesShipment"
-        component={SalesShipments}
+        name="PaymentsHistory"
+        component={PaymentsHistory}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon name={focused ? "truckfilled" : "truck"} size={32} color={focused ? COLORS.primary : COLORS.gray2} />
+            <Icon
+              name={!focused ? "cardsearch" : "cardsearchfilled"}
+              size={32}
+              color={focused ? COLORS.primary : COLORS.gray2}
+            />
           ),
-          tabBarLabel: "Shipments",
+          tabBarLabel: "History",
         }}
       />
       <Tab.Screen
