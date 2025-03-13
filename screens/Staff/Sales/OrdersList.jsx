@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
 import { COLORS, SIZES } from "../../../constants";
-import useFetch from "../../../hook/useFetch";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";

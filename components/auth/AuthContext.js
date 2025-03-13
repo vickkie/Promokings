@@ -3,11 +3,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { jwtDecode } from "jwt-decode";
 
-import atob from "core-js-pure/stable/atob";
-import btoa from "core-js-pure/stable/btoa";
+import { Buffer } from "buffer";
 
-global.atob = atob;
-global.btoa = btoa;
+global.atob = (input) => Buffer.from(input, "base64").toString("utf-8");
+global.btoa = (input) => Buffer.from(input, "utf-8").toString("base64");
 
 const AuthContext = createContext();
 
