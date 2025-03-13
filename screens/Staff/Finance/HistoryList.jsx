@@ -21,9 +21,9 @@ import { FlatList } from "react-native";
 import LottieView from "lottie-react-native";
 
 // Example tabs
-const TABS = ["All", "pending", "partial", "paid"];
+const TABS = ["All", "partial", "paid"];
 
-const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPending, setRefreshList }) => {
+const HistoryList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPending, setRefreshList }) => {
   const navigation = useNavigation();
 
   const [data, setData] = useState([]);
@@ -361,7 +361,7 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
   );
 };
 
-export default PaymentList;
+export default HistoryList;
 
 // -------------------------------
 // 10. Styles
@@ -406,11 +406,9 @@ const styles = StyleSheet.create({
   retryButton: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 10,
     backgroundColor: COLORS.primary,
     padding: SIZES.small,
     borderRadius: SIZES.small,
-    justifyContent: "center",
   },
   retryButtonText: {
     color: COLORS.white,
@@ -529,10 +527,7 @@ const styles = StyleSheet.create({
   },
   searchButton: {
     position: "absolute",
-    right: 10,
-    backgroundColor: COLORS.themey,
-    padding: 9.5,
-    borderRadius: 100,
+    right: 17,
   },
   containLottie: {
     justifyContent: "center",

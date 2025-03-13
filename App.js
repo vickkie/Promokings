@@ -72,6 +72,8 @@ import {
   PaymentList,
   Payments,
   PaymentsHistory,
+  FinanceProfile,
+  FinanceSettings,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -145,6 +147,8 @@ const screens = [
   { name: "PaymentList", component: PaymentList, options: { headerShown: false } },
   { name: "Payments", component: Payments, options: { headerShown: false } },
   { name: "PaymentsHistory", component: PaymentsHistory, options: { headerShown: false } },
+  { name: "FinanceProfile", component: FinanceProfile, options: { headerShown: false } },
+  { name: "FinanceSettings", component: FinanceSettings, options: { headerShown: false } },
 ];
 
 export default function App() {

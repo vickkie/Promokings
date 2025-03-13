@@ -68,7 +68,8 @@ import OrderPaymentDetails from "./Staff/Finance/OrderPaymentDetails";
 import EditPaymentDetails from "./Staff/Finance/EditPaymentDetails";
 import Payments from "./Staff/Finance/Payments";
 import PaymentsHistory from "./Staff/Finance/PaymentsHistory";
-
+import FinanceSettings from "./Staff/Finance/FinanceSettings";
+import FinanceProfile from "./Staff/Finance/FinanceProfile";
 export {
   Home,
   OrderDetails,
@@ -139,4 +140,6 @@ export {
   PaymentList,
   Payments,
   PaymentsHistory,
+  FinanceProfile,
+  FinanceSettings,
 };

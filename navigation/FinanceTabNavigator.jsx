@@ -1,10 +1,9 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { SalesOverview, SalesSettings, FinanceDashboard, Payments, PaymentsHistory } from "../screens";
+import { FinanceDashboard, Payments, PaymentsHistory, FinanceSettings } from "../screens";
 
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 const Tab = createBottomTabNavigator();
 import { StyleSheet, View } from "react-native";
@@ -69,30 +68,7 @@ const FinanceTabNavigation = () => {
           tabBarLabel: "Payments",
         }}
       />
-      <Tab.Screen
-        name="SalesOverviews"
-        component={SalesOverview}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TouchableOpacity
-              style={{
-                height: 70,
-                width: 70,
-                borderRadius: 100,
-                marginTop: -10,
-                backgroundColor: COLORS.themew,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <View style={shadowStyle}>
-                <Icon name={focused ? "search" : "search"} size={34} color={focused ? COLORS.primary : COLORS.gray2} />
-              </View>
-            </TouchableOpacity>
-          ),
-          tabBarLabel: "",
-        }}
-      />
+
       <Tab.Screen
         name="PaymentsHistory"
         component={PaymentsHistory}
@@ -108,8 +84,8 @@ const FinanceTabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="SalesSettings"
-        component={SalesSettings}
+        name="FinanceSettings"
+        component={FinanceSettings}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon name={focused ? "settings" : "settings"} size={26} color={focused ? COLORS.primary : COLORS.gray2} />

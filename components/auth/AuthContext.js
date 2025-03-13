@@ -99,7 +99,10 @@ const AuthProvider = ({ children }) => {
 
     const decodedToken = jwtDecode(data?.TOKEN);
 
-    const userRole = decodedToken.role || "customer";
+    // const userRole = decodedToken.role || "customer";
+    // return userRole;
+
+    const userRole = decodedToken.position || "customer";
     return userRole;
   };
 

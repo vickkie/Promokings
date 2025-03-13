@@ -6,7 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
-import PaymentList from "./PaymentsList";
+import HistoryList from "./HistoryList";
 
 const PaymentsHistory = () => {
   const navigation = useNavigation();
@@ -26,21 +26,10 @@ const PaymentsHistory = () => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
             <Icon name="backbutton" size={26} />
           </TouchableOpacity>
-          <Text style={styles.heading}>All payments</Text>
-          <TouchableOpacity
-            style={styles.buttonWrap}
-            onPress={() => {
-              pending.length > 0 && navigation.navigate("Payments");
-            }}
-          >
-            <View style={styles.numbers}>
-              <Text>{pending.length}</Text>
-            </View>
-            <Icon name="pending" size={26} />
-          </TouchableOpacity>
+          <Text style={styles.heading}>Payments History</Text>
         </View>
 
-        <PaymentList
+        <HistoryList
           irefresh={irefresh}
           setiRefresh={setiRefresh}
           setPending={setPending}
@@ -79,13 +68,14 @@ const styles = StyleSheet.create({
     width: SIZES.width - 14,
     marginHorizontal: SIZES.xSmall - 4,
     flexDirection: "row",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     alignItems: "center",
     position: "absolute",
     backgroundColor: COLORS.themeg,
     borderRadius: SIZES.large,
     top: SIZES.xxSmall,
     zIndex: 999,
+    gap: 20,
     height: 80,
   },
 
