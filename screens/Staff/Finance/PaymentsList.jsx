@@ -334,25 +334,39 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
           onEndReachedThreshold={0.1}
           ListFooterComponent={loading && hasMore ? <ActivityIndicator size="large" color={COLORS.primary} /> : null}
           ListEmptyComponent={
-            <View style={styles.containerx}>
-              <View style={styles.containLottie}>
-                <View style={styles.animationWrapper}>
-                  <LottieView
-                    source={require("../../../assets/data/card-payment.json")}
-                    autoPlay
-                    loop={false}
-                    style={styles.animation}
-                  />
-                </View>
-                <View style={{ marginTop: 0, paddingBottom: 20 }}>
-                  <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Oops, No Payments here!</Text>
-                  <TouchableOpacity onPress={onRefresh} style={styles.retryButton}>
-                    <Ionicons size={24} name="reload-circle" color={COLORS.white} />
-                    <Text style={styles.retryButtonText}>Retry</Text>
-                  </TouchableOpacity>
+            loading ? (
+              <View style={styles.containerx}>
+                <View style={styles.containLottie}>
+                  <View style={styles.animationWrapper}>
+                    <LottieView
+                      source={require("../../../assets/data/loading.json")}
+                      autoPlay
+                      loop={false}
+                      style={styles.animation}
+                    />
+                  </View>
+                  <View style={{ marginTop: 0, paddingBottom: 20 }}>
+                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Loading!</Text>
+                  </View>
                 </View>
               </View>
-            </View>
+            ) : (
+              <View style={styles.containerx}>
+                <View style={styles.containLottie}>
+                  <View style={styles.animationWrapper}>
+                    <LottieView
+                      source={require("../../../assets/data/card-payment.json")}
+                      autoPlay
+                      loop={false}
+                      style={styles.animation}
+                    />
+                  </View>
+                  <View style={{ marginTop: 0, paddingBottom: 20 }}>
+                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Oops, No Payments here!</Text>
+                  </View>
+                </View>
+              </View>
+            )
           }
           ItemSeparatorComponent={() => <View style={styles.separator} />}
         />

@@ -102,6 +102,12 @@
       "version": "1.3.9",
       "whatsNew": ["Profile Completion Tracking","Delivery Update","Detailed Delivery Tracking","Security updates","General UI improvements","Shipment assignments"],
       "fixed": ["Major Crash Bug on version 1.3.8"]
+    },
+    {
+      "releaseDate": "2025-03-11",
+      "version": "1.3.9",
+      "whatsNew": ["App size optimization","General UI improvements","Shipment assignments"],
+      "fixed": ["Changelog date updates"]
     }
   ]
 }
