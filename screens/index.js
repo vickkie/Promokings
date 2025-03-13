@@ -60,6 +60,10 @@ import ShipmentSearch from "./Staff/Driver/ShipmentSearch";
 import ShipmentDetails from "./Staff/Driver/ShipmentDetails";
 import EditShipmentDriver from "./Staff/Driver/EditShipment";
 
+//finance
+
+import FinanceDashboard from "./Staff/Finance/FinanceDashboard";
+
 export {
   Home,
   OrderDetails,
@@ -122,4 +126,7 @@ export {
   ShipmentSearch,
   ShipmentDetails,
   EditShipmentDriver,
+
+  //finance
+  FinanceDashboard,
 };

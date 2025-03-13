@@ -74,16 +74,18 @@ const LoginPage = ({ navigation }) => {
 
       // Role-based navigation
       const roleRoutes = {
-        admin: "AdminDashboard",
+        admin: "Admin Navigation",
         inventory: "Inventory Navigation",
         sales: "Sales Navigation",
-        finance: "FinanceDashboard",
+        finance: "Finance Navigation",
         customer: "Bottom Navigation",
         driver: "Driver Navigation",
+        dispatch: "Dispatch Navigation",
+        supplier: "Supplier Navigation",
       };
 
       if (role in roleRoutes) {
-        // console.log("Navigating to:", roleRoutes[role]);
+        console.log("Navigating to:", roleRoutes[role]);
         navigation.replace(roleRoutes[role]);
       } else {
         // console.log("Role not found, navigating to default.");

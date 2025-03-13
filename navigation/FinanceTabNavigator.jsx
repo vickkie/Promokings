@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { OrdersSales, SalesDashboard, SalesOverview, SalesData, SalesShipments, SalesSettings } from "../screens";
+import { OrdersSales, SalesOverview, SalesData, SalesShipments, SalesSettings, FinanceDashboard } from "../screens";
 
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
@@ -46,12 +46,12 @@ const shadowStyle = {
   elevation: 12, // Android elevation
 };
 
-const SalesTabNavigation = () => {
+const FinanceTabNavigation = () => {
   return (
     <Tab.Navigator screenOptions={screenOptions}>
       <Tab.Screen
-        name="SalesDashboard"
-        component={SalesDashboard}
+        name="FinanceDashboard"
+        component={FinanceDashboard}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon name={focused ? "homefilled" : "home"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
@@ -121,6 +121,6 @@ const SalesTabNavigation = () => {
   );
 };
 
-export default SalesTabNavigation;
+export default FinanceTabNavigation;
 
 const styles = StyleSheet.create({});

@@ -19,7 +19,7 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
       const startTime = Date.now(); // Start time for response time logging
 
       const url = `${BACKEND_PORT}/api/${endpoint}`;
-      console.log(url);
+      // console.log(url);
 
       const headers = {};
 

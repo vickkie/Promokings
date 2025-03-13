@@ -66,6 +66,7 @@ import {
   ShipmentSearch,
   ShipmentDetails,
   EditShipmentDriver,
+  FinanceDashboard,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -73,12 +74,14 @@ import InventoryTabNavigation from "./navigation/InventoryTabNavigation";
 import SalesTabNavigation from "./navigation/SalesTabNavigation";
 import UpdateCheck from "./components/UpdateCheck";
 import DriverTabNavigation from "./navigation/DriverTabNavigator";
+import FinanceTabNavigation from "./navigation/FinanceTabNavigator";
 
 enableScreens();
 const Stack = createNativeStackNavigator();
 
 // Array of screen definitions
 const screens = [
+  { name: "Finance Navigation", component: FinanceTabNavigation, options: { headerShown: false } },
   { name: "Bottom Navigation", component: BottomTabNavigation, options: { headerShown: false } },
   { name: "Inventory Navigation", component: InventoryTabNavigation, options: { headerShown: false } },
   { name: "Sales Navigation", component: SalesTabNavigation, options: { headerShown: false } },
@@ -131,6 +134,7 @@ const screens = [
   { name: "ShipmentDetails", component: ShipmentDetails, options: { headerShown: false } },
   { name: "EditShipmentDriver", component: EditShipmentDriver, options: { headerShown: false } },
   { name: "ShipmentList", component: ShipmentList, options: { headerShown: false } },
+  { name: "FinanceDashboard", component: FinanceDashboard, options: { headerShown: false } },
 ];
 
 export default function App() {
