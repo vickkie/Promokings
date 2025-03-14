@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { ScrollView, View, Text, Image, TouchableOpacity, Alert, StyleSheet, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
@@ -337,7 +337,7 @@ const Profile = () => {
               </TouchableOpacity>
               <TouchableOpacity onPress={() => navigation.navigate("Favourites")}>
                 <View style={styles.menuItem(0.5)}>
-                  <Icon name="heart-outline" size={24} color={COLORS.primary} />
+                  <MaterialCommunityIcons name="heart-outline" size={24} color={COLORS.primary} />
                   <Text style={styles.menuText}>Wishlist</Text>
                 </View>
               </TouchableOpacity>
@@ -368,27 +368,27 @@ const Profile = () => {
               </TouchableOpacity>
               <TouchableOpacity onPress={handleClearCache}>
                 <View style={styles.menuItem(0.5)}>
-                  <Icon name="reload" size={24} color={COLORS.primary} />
+                  <MaterialCommunityIcons name="reload" size={24} color={COLORS.primary} />
                   <Text style={styles.menuText}>Clear cache</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={handleDeleteAccount}>
                 <View style={styles.menuItem(0.5)}>
-                  <Icon name="person-remove-outline" size={24} color={COLORS.primary} />
+                  <Ionicons name="person-remove-outline" size={24} color={COLORS.primary} />
                   <Text style={styles.menuText}>Delete Account</Text>
                 </View>
               </TouchableOpacity>
               {userLogin ? (
                 <TouchableOpacity onPress={logout}>
                   <View style={styles.menuItem(0.5)}>
-                    <Icon name="logout" size={24} color={COLORS.primary} />
+                    <MaterialCommunityIcons name="logout" size={24} color={COLORS.primary} />
                     <Text style={styles.menuText}>Logout</Text>
                   </View>
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity onPress={login}>
                   <View style={styles.menuItem(0.5)}>
-                    <Icon name="login" size={24} color={COLORS.primary} />
+                    <MaterialCommunityIcons name="login" size={24} color={COLORS.primary} />
                     <Text style={styles.menuText}>Login</Text>
                   </View>
                 </TouchableOpacity>
