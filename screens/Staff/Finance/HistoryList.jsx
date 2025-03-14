@@ -169,7 +169,7 @@ const HistoryList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
   // 6. Pending Orders
   // -------------------------------
   const pendingOrders = useMemo(() => {
-    return sortedData.filter((order) => ["pending", "partial"].includes(order.paymentStatus));
+    return sortedData.filter((order) => ["pending"].includes(order.paymentStatus));
   }, [sortedData]);
 
   // Let parent know about pending orders
