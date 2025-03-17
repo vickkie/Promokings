@@ -31,6 +31,13 @@ const MessageCenter = ({ navigation }) => {
           </View>
 
           <View style={styles.lowerRow}>
+            <TouchableOpacity onPress={() => navigation.navigate("ChatListScreen")}>
+              <View style={styles.menuItem(0.5)}>
+                <Icon name="message" size={24} color={COLORS.primary} />
+                <Text style={styles.menuText}>Chat with others</Text>
+              </View>
+            </TouchableOpacity>
+
             <TouchableOpacity
               onPress={() => {
                 if (userId) {

@@ -1,20 +1,22 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useContext } from "react";
 import { StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text } from "react-native";
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
 import { db } from "../components/auth/firebase";
-import { ref, onValue, push } from "firebase/database";
+import { ref, onValue, set, update } from "firebase/database";
 import * as ImagePicker from "expo-image-picker";
 import Icon from "../constants/icons";
 import { COLORS, SIZES } from "../constants";
+import { StatusBar } from "expo-status-bar";
 import "react-native-get-random-values";
 import uuid from "react-native-uuid";
-import { BACKEND_PORT } from "@env";
 
 const ChatScreen = () => {
   const route = useRoute();
+  const navigation = useNavigation();
   const { userData } = useContext(AuthContext);
+
   // chatWith is the chosen user (from ChatListScreen)
   const chatWith = route.params?.chatWith;
 
@@ -24,7 +26,7 @@ const ChatScreen = () => {
     return [userData._id, chatWith._id].sort().join("_");
   }, [userData, chatWith]);
 
-  // Reference to the conversation in the Firebase Realtime Database
+  // Reference to the conversation in Firebase
   const conversationRef = useMemo(() => {
     return conversationId ? ref(db, `messages/${conversationId}`) : null;
   }, [conversationId]);
@@ -35,25 +37,49 @@ const ChatScreen = () => {
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
   const [isSending, setIsSending] = useState(false);
 
-  // Listen for real-time updates from Firebase under the conversation ID
+  // Listen for real-time updates from Firebase
   useEffect(() => {
     if (!conversationRef) return;
+
     const unsubscribe = onValue(conversationRef, (snapshot) => {
       const data = snapshot.val();
-      const loadedMessages = data
-        ? Object.keys(data).map((key) => ({
-            _id: key,
-            ...data[key],
-          }))
-        : [];
-      // Sort messages descending by createdAt timestamp
+      if (!data) return;
+
+      // Map each key directly to _id
+      const loadedMessages = Object.keys(data).map((key) => ({
+        _id: key,
+        ...data[key],
+      }));
+
+      // Sort messages by createdAt timestamp
       const sortedMessages = loadedMessages.sort((a, b) => b.createdAt - a.createdAt);
+
       setMessages(sortedMessages);
     });
+
     return () => unsubscribe();
   }, [conversationRef]);
 
-  // Allow users to pick an image (if needed)
+  // Update readBy inside each message node using the message _id (which is your UUID)
+  useEffect(() => {
+    if (!conversationRef || messages.length === 0) return;
+
+    const updates = {};
+
+    messages.forEach((msg) => {
+      if (msg.firebaseKey && (!msg.readBy || !msg.readBy.includes(userData._id))) {
+        updates[`${msg.firebaseKey}/readBy`] = [...(msg.readBy || []), userData._id];
+      }
+    });
+
+    if (Object.keys(updates).length > 0) {
+      update(ref(db, `messages/${conversationId}`), updates).catch((error) =>
+        console.error("Error updating read status:", error)
+      );
+    }
+  }, [messages, conversationRef, userData._id]);
+
+  // Allow users to pick an image
   const pickImage = async () => {
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -67,8 +93,7 @@ const ChatScreen = () => {
         quality: 1,
       });
       if (!result.canceled && result.assets.length > 0 && result.assets[0].uri) {
-        const imageUri = result.assets[0].uri;
-        setSelectedImage(imageUri);
+        setSelectedImage(result.assets[0].uri);
         setIsPreviewVisible(true);
       }
     } catch (error) {
@@ -76,10 +101,9 @@ const ChatScreen = () => {
     }
   };
 
-  // Send messages to Firebase under the conversation
+  // Send messages to Firebase under the conversation node using your generated UUID
   const handleSend = async (newMessages = []) => {
     if (!conversationRef || newMessages.length === 0) return;
-
     setIsSending(true);
 
     // Helper: upload image if one is selected
@@ -91,7 +115,6 @@ const ChatScreen = () => {
           name: `image_${Date.now()}.jpg`,
           type: "image/jpeg",
         });
-
         const response = await fetch(`${BACKEND_PORT}/upload`, {
           method: "POST",
           body: formData,
@@ -106,36 +129,82 @@ const ChatScreen = () => {
     };
 
     for (const message of newMessages) {
-      const { text, createdAt, user } = message;
       let imageUrl = null;
       if (selectedImage) {
         imageUrl = await uploadImage(selectedImage);
       }
+
+      // Generate your own UUID for the message key
+      const messageId = uuid.v4();
+
       try {
-        await push(conversationRef, {
-          _id: uuid.v4(),
-          text: `${text}${prefilledMessage ? `\n\n${prefilledMessage}` : ""}`,
-          createdAt: createdAt.getTime(),
+        await set(ref(db, `messages/${conversationId}/${messageId}`), {
+          text: `${message.text}${prefilledMessage ? `\n\n${prefilledMessage}` : ""}`,
+          createdAt: message.createdAt.getTime(),
           user: {
             _id: userData._id,
             name: userData.username,
             avatar: userData.profilePicture || null,
           },
           image: imageUrl,
+          readBy: [userData._id],
         });
       } catch (error) {
-        console.error("Error pushing message to database:", error);
+        console.error("Error saving message to database:", error);
       }
     }
-
     setIsSending(false);
     setIsPreviewVisible(false);
     setSelectedImage(null);
     setPrefilledMessage("");
   };
 
+  // Memoized bubble renderer for performance
+  const MemoizedBubble = React.memo((props) => {
+    const { currentMessage } = props;
+    const isSent = currentMessage.type === "sent";
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={{
+          left: {
+            backgroundColor: isSent ? COLORS.lightGrey : COLORS.white,
+            marginBottom: 5,
+          },
+          right: {
+            marginBottom: 5,
+          },
+        }}
+        textStyle={{
+          right: { color: COLORS.white },
+          left: { color: isSent ? COLORS.black : COLORS.darkGrey },
+        }}
+      />
+    );
+  });
+  MemoizedBubble.displayName = "MemoizedBubble";
+
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor={COLORS.themey} />
+      <View style={styles.wrapper}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
+          <Icon name="backbutton" size={26} />
+        </TouchableOpacity>
+        <View style={styles.upperRow}>
+          <View style={styles.upperButtons}>
+            <Text style={styles.heading}>{chatWith?.username || "Chat"}</Text>
+          </View>
+          <TouchableOpacity onPress={() => {}} style={styles.buttonWrap2}>
+            {chatWith?.profilePicture ? (
+              <Image source={{ uri: chatWith.profilePicture }} style={styles.profilePicture} />
+            ) : (
+              <Image source={require("../assets/images/userDefault.webp")} style={styles.profilePicture} />
+            )}
+          </TouchableOpacity>
+        </View>
+      </View>
+
       {isPreviewVisible && (
         <View style={styles.previewBox}>
           <Text style={{ paddingStart: 2, fontWeight: "600", marginBottom: -10 }}>Picked image</Text>
@@ -171,6 +240,7 @@ const ChatScreen = () => {
             name: userData.username,
             avatar: userData.profilePicture,
           }}
+          shouldUpdateMessage={(prevProps, nextProps) => prevProps.currentMessage._id !== nextProps.currentMessage._id}
           renderInputToolbar={(props) => <InputToolbar {...props} containerStyle={styles.inputBox} />}
           renderActions={(props) => (
             <Actions
@@ -180,36 +250,7 @@ const ChatScreen = () => {
               icon={() => <Icon name="camerafilled" size={30} />}
             />
           )}
-          renderBubble={(props) => {
-            const { currentMessage } = props;
-            // You can optionally customize bubble styles based on your logic.
-            const isSent = currentMessage.type === "sent";
-            return (
-              <Bubble
-                {...props}
-                wrapperStyle={{
-                  left: {
-                    backgroundColor: isSent ? COLORS.lightGrey : COLORS.white,
-                    marginBottom: 5,
-                  },
-                  right: {
-                    marginBottom: 5,
-                  },
-                }}
-                textStyle={{
-                  right: { color: COLORS.white },
-                  left: { color: isSent ? COLORS.black : COLORS.darkGrey },
-                }}
-              />
-            );
-          }}
-          renderAvatar={(props) => {
-            return (
-              <View style={styles.avatarContainer}>
-                <Image source={require("../assets/icon-home.png")} style={styles.avatarImage} />
-              </View>
-            );
-          }}
+          renderBubble={(props) => <MemoizedBubble {...props} />}
           renderSend={(props) => {
             const { text, onSend } = props;
             return (
@@ -313,5 +354,107 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: "center",
     alignItems: "center",
+  },
+  wrapper: {
+    flexDirection: "column",
+    position: "absolute",
+    top: 2,
+  },
+  backBtn: {
+    left: 10,
+  },
+  buttonView: {
+    backgroundColor: COLORS.themew,
+    padding: 12,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 30,
+    height: 30,
+    transform: [{ rotate: "180deg" }],
+  },
+  buttonWrap: {
+    backgroundColor: COLORS.themeg,
+    padding: 12,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    zIndex: 9,
+    top: 10,
+    left: 10,
+  },
+  upperRow: {
+    width: SIZES.width - 12,
+    marginHorizontal: 6,
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: COLORS.themew,
+    borderRadius: SIZES.large,
+    top: SIZES.xxSmall,
+    zIndex: 2,
+    minHeight: 60,
+  },
+  upperButtons: {
+    width: SIZES.width - 20,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: SIZES.medium,
+  },
+  topprofileheading: {
+    fontSize: SIZES.medium,
+    textAlign: "center",
+    color: COLORS.themeb,
+    fontFamily: "semibold",
+  },
+  outWrap: {
+    backgroundColor: COLORS.themeg,
+    padding: 12,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: 5,
+    right: 10,
+  },
+  lowerheader: {
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    width: SIZES.width - 20,
+    marginTop: 5,
+    paddingTop: SIZES.xSmall,
+    paddingBottom: 20,
+  },
+  heading: {
+    fontFamily: "bold",
+    textTransform: "capitalize",
+    fontSize: SIZES.xLarge + 3,
+    textAlign: "left",
+    color: COLORS.themeb,
+    marginStart: 20,
+  },
+  statement: {
+    fontFamily: "regular",
+    paddingLeft: 20,
+    paddingVertical: 5,
+    color: COLORS.gray2,
+    textAlign: "center",
+  },
+  buttonWrap2: {
+    backgroundColor: COLORS.hyperlight,
+    borderRadius: 100,
+    width: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    right: 13,
+    top: 5,
+  },
+  profilePicture: {
+    height: 52,
+    width: 52,
+    borderRadius: 100,
   },
 });

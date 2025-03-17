@@ -21,12 +21,14 @@ const ChatListScreen = ({}) => {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [searchQuery]);
 
   const fetchUsers = async () => {
     try {
       const userRole = userData?.position || "customer";
-      const response = await fetch(`${BACKEND_URL}/api/chat/chat-users?userId=${userData._id}&role=${userRole}`);
+      const response = await fetch(
+        `${BACKEND_URL}/api/chat/chat-users?userId=${userData._id}&role=${userRole}&search=${searchQuery}`
+      );
 
       if (!response.ok) throw new Error("Failed to fetch users");
 
