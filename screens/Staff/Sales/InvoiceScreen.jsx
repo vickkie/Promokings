@@ -298,7 +298,7 @@ const InvoiceScreen = () => {
             </View>
 
             <View style={styles.stepsheader}>
-              <Text style={styles.stepstext}>Generate receipt and mail from here</Text>
+              <Text style={styles.stepstext}>Generated Order receipt </Text>
             </View>
           </View>
 

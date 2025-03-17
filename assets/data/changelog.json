@@ -104,9 +104,9 @@
       "fixed": ["Major Crash Bug on version 1.3.8"]
     },
     {
-      "releaseDate": "2025-03-11",
-      "version": "1.3.9",
-      "whatsNew": ["App size optimization","General UI improvements","Shipment assignments"],
+      "releaseDate": "2025-03-17",
+      "version": "1.4.0",
+      "whatsNew": ["App size optimization","Company details added","Customer receipt generation","General UI improvements","Shipment assignments"],
       "fixed": ["Changelog date updates"]
     }
   ]

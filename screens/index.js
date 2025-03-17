@@ -22,6 +22,7 @@ import Faqs from "./Faqs";
 import SystemMessages from "./SystemMessages";
 import OrderSuccess from "./OrderSuccess";
 import OrderDetails from "./OrderDetails";
+import AboutUs from "./AboutUs";
 
 import EditProduct from "./Staff/Inventory/EditProduct";
 import AddProduct from "./Staff/Inventory/AddProduct";
@@ -70,7 +71,12 @@ import Payments from "./Staff/Finance/Payments";
 import PaymentsHistory from "./Staff/Finance/PaymentsHistory";
 import FinanceSettings from "./Staff/Finance/FinanceSettings";
 import FinanceProfile from "./Staff/Finance/FinanceProfile";
+
+import ChatListScreen from "./ChatListScreen";
+import ChatScreen from "./ChatScreen";
 export {
+  ChatListScreen,
+  ChatScreen,
   Home,
   OrderDetails,
   Search,
@@ -93,6 +99,7 @@ export {
   MessageCenter,
   Help,
   About,
+  AboutUs,
   Faqs,
   SystemMessages,
   InventoryDashboard,

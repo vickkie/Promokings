@@ -10,7 +10,7 @@ import LottieView from "lottie-react-native";
 const Faqs = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
   const { data, isLoading, error } = useFetch("faqs");
-  const [faqData, setFaqData] = useState([]); // Change to an empty array
+  const [companyData, setCompanyData] = useState([]); // Change to an empty array
 
   const toggleExpand = (index) => {
     setExpandedIndex((prevIndex) => (prevIndex === index ? null : index));
@@ -19,7 +19,8 @@ const Faqs = ({ navigation }) => {
   // Update faqData when data changes
   useEffect(() => {
     if (data) {
-      setFaqData(data);
+      setCompanyData(data);
+      console.log(data);
     }
   }, [data]);
 

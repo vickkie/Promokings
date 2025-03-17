@@ -144,8 +144,15 @@ const OrderDetails = () => {
               </TouchableOpacity>
               <Text style={styles.topheading}>Order details</Text>
 
-              <TouchableOpacity onPress={() => {}} style={styles.outWrap}>
-                <Icon name="tracker" size={28} />
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("InvoiceScreen", {
+                    order: item,
+                  });
+                }}
+                style={styles.outWrap}
+              >
+                <Icon name="receipt" size={28} />
               </TouchableOpacity>
             </View>
 

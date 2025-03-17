@@ -33,6 +33,7 @@ import {
   MessageCenter,
   Help,
   About,
+  AboutUs,
   Faqs,
   Home,
   SystemMessages,
@@ -74,6 +75,8 @@ import {
   PaymentsHistory,
   FinanceProfile,
   FinanceSettings,
+  ChatListScreen,
+  ChatScreen,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -115,6 +118,7 @@ const screens = [
   { name: "Message", component: MessageCenter, options: { headerShown: false } },
   { name: "Help", component: Help, options: chatScreenOptions },
   { name: "About", component: About, options: { headerShown: false } },
+  { name: "AboutUs", component: AboutUs, options: { headerShown: false } },
   { name: "Faqs", component: Faqs, options: { headerShown: false } },
   { name: "SystemMessages", component: SystemMessages, options: systemScreenOptions },
   { name: "OrderSuccess", component: OrderSuccess, options: { headerShown: false } },
@@ -149,6 +153,8 @@ const screens = [
   { name: "PaymentsHistory", component: PaymentsHistory, options: { headerShown: false } },
   { name: "FinanceProfile", component: FinanceProfile, options: { headerShown: false } },
   { name: "FinanceSettings", component: FinanceSettings, options: { headerShown: false } },
+  { name: "ChatListScreen", component: ChatListScreen, options: { headerShown: false } },
+  { name: "ChatScreen", component: ChatScreen, options: { headerShown: false } },
 ];
 
 export default function App() {

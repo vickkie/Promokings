@@ -360,10 +360,16 @@ const Profile = () => {
                   <Text style={styles.menuText}>Message Center</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.navigate("About")}>
+              <TouchableOpacity onPress={() => navigation.navigate("ChatListScreen")}>
+                <View style={styles.menuItem(0.5)}>
+                  <Icon name="message" size={24} color={COLORS.primary} />
+                  <Text style={styles.menuText}>About</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate("AboutUs")}>
                 <View style={styles.menuItem(0.5)}>
                   <Icon name="about" size={24} color={COLORS.primary} />
-                  <Text style={styles.menuText}>About</Text>
+                  <Text style={styles.menuText}>About Us</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={handleClearCache}>
