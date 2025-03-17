@@ -62,10 +62,8 @@ const ChatListScreen = ({}) => {
     }
   };
 
-  // if (loading) return <ActivityIndicator size="large" color="blue" style={{ marginTop: 20 }} />;
-
   return (
-    <SafeAreaView style={styles.containerx}>
+    <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={COLORS.themey} />
       <View style={{ marginTop: 0 }}>
         <View style={styles.wrapper}>
