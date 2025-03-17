@@ -25,19 +25,27 @@ const MessageCenter = ({ navigation }) => {
               <Icon size={30} name="backbutton" />
             </TouchableOpacity>
             <Text style={styles.heading}>Message Center</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Help")} style={styles.buttonWrap}>
+            <TouchableOpacity onPress={() => navigation.navigate("ChatListScreen")} style={styles.buttonWrap}>
               <Icon size={30} name="messagefilled" />
             </TouchableOpacity>
           </View>
 
           <View style={styles.lowerRow}>
-            <TouchableOpacity onPress={() => navigation.navigate("ChatListScreen")}>
-              <View style={styles.menuItem(0.5)}>
-                <Icon name="message" size={24} color={COLORS.primary} />
-                <Text style={styles.menuText}>Chat with others</Text>
+            <TouchableOpacity
+              onPress={() => {
+                if (userId) {
+                  navigation.navigate("ChatListScreen");
+                }
+              }}
+            >
+              <View style={[styles.menuItem(0.5)]}>
+                <View style={styles.itswrap}>
+                  <Icon name="message" size={24} color={COLORS.primary} />
+                  <Text style={styles.menuText}>Messaging</Text>
+                </View>
+                <Icon name="forward" size={24} color={COLORS.primary} />
               </View>
             </TouchableOpacity>
-
             <TouchableOpacity
               onPress={() => {
                 if (userId) {
@@ -48,7 +56,7 @@ const MessageCenter = ({ navigation }) => {
               <View style={[styles.menuItem(0.5)]}>
                 <View style={styles.itswrap}>
                   <Icon name="customerservice" size={24} color={COLORS.primary} />
-                  <Text style={styles.menuText}>Contact us with chat</Text>
+                  <Text style={styles.menuText}>Contact Customer service</Text>
                 </View>
                 <Icon name="forward" size={24} color={COLORS.primary} />
               </View>
