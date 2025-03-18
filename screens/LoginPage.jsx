@@ -101,15 +101,21 @@ const LoginPage = ({ navigation }) => {
     <ScrollView>
       <SafeAreaView style={{ marginHorizontal: 21 }}>
         <View>
-          <BackBtn
+          <TouchableOpacity
             onPress={() => {
+              console.log("going home");
               if (navigation.canGoBack()) {
                 navigation.goBack();
               } else {
-                navigation.replace("Bottom Navigation"); // Navigate to Home if no back stack
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: "Bottom Navigation", params: { screen: "Home" } }],
+                });
               }
             }}
-          />
+          >
+            <BackBtn />
+          </TouchableOpacity>
           <Image source={require("../assets/images/promoshop1.webp")} style={styles.cover} />
           <Text style={styles.title}>Promokings Login</Text>
 
