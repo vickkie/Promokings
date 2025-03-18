@@ -103,6 +103,7 @@ const ChatListScreen = () => {
       console.error("Error starting chat:", error);
     }
   };
+  const capitalize = (str) => (str ? str.replace(/\b\w/g, (char) => char.toUpperCase()) : "");
 
   return (
     <SafeAreaView style={styles.container}>
@@ -159,7 +160,7 @@ const ChatListScreen = () => {
                   return (
                     <TouchableOpacity
                       onPress={() => startChat(item)}
-                      style={{ flexDirection: "row", alignItems: "center", padding: 10 }}
+                      style={{ flexDirection: "row", alignItems: "center", padding: 10, gap: 8 }}
                     >
                       {item?.profilePicture ? (
                         <Image
@@ -171,8 +172,8 @@ const ChatListScreen = () => {
                       )}
 
                       <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
-                        <Text style={{ fontSize: 18 }}>
-                          {item?.fullname || item?.username} ({item?.position || "customer"})
+                        <Text style={styles.username}>
+                          {capitalize(item?.fullname || item?.username)} ({capitalize(item?.position || "customer")})
                         </Text>
                         {unreadCount > 0 && (
                           <View style={styles.unreadBadge}>

@@ -20,16 +20,18 @@ const Home = () => {
   const { cart } = useCart();
 
   useEffect(() => {
-    if (userLogin && hasRole("inventory")) {
-      navigation.replace("Inventory Navigation");
-    } else if (userLogin && hasRole("sales")) {
-      navigation.replace("Sales Navigation");
-    } else if (userLogin && hasRole("driver")) {
-      navigation.replace("Driver Navigation");
-    } else if (userLogin && hasRole("finance")) {
-      navigation.replace("Finance Navigation");
+    if (userLogin) {
+      if (hasRole("inventory")) {
+        navigation.replace("Inventory Navigation");
+      } else if (hasRole("sales")) {
+        navigation.replace("Sales Navigation");
+      } else if (hasRole("driver")) {
+        navigation.replace("Driver Navigation");
+      } else if (hasRole("finance")) {
+        navigation.replace("Finance Navigation");
+      }
     }
-  }, [userLogin, userData, hasRole, navigation]);
+  }, [userLogin, hasRole]);
 
   const renderProfilePicture = () => {
     if (!userLogin) {
