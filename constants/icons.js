@@ -91,11 +91,13 @@ import card from "../assets/svg/card-pos-line.svg";
 import cardfilled from "../assets/svg/card-pos.svg";
 import cardsearch from "../assets/svg/card-search-light.svg";
 import cardsearchfilled from "../assets/svg/card-search.svg";
+import clock from "../assets/svg/clock.svg";
 
 const iconMap = {
   cardsearchfilled: cardsearchfilled,
   cardsearch: cardsearch,
   card: card,
+  clock: clock,
   cardfilled: cardfilled,
   city: city,
   refresh: refresh,

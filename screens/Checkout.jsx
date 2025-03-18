@@ -24,7 +24,6 @@ import CheckoutStep3 from "./Payments";
 import LottieView from "lottie-react-native";
 import { BACKEND_PORT } from "@env";
 import axios from "axios";
-import Products from "./Products";
 
 const Checkout = () => {
   const route = useRoute();
@@ -42,6 +41,7 @@ const Checkout = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  //user loggin chexks
   useEffect(() => {
     if (!userLogin) {
       setUserId(1);
@@ -60,9 +60,13 @@ const Checkout = () => {
   const [email, setEmail] = useState(userData ? userData.email : "");
   const [allcountries, setallCountries] = useState([]);
   const [filteredCountries, setFilteredCountries] = useState(allcountries);
-
+  const [deliveryMethod, setDeliveryMethod] = useState(null);
+  const [stores, setStores] = useState([]);
+  const [pickupStore, setPickupStore] = useState([]);
   const [userId, setUserId] = useState(null);
   const [phoneError, setPhoneError] = useState("");
+
+  //phone number check on checkout
 
   const checkoutSchema = Yup.object().shape({
     phoneNumber: Yup.string()
@@ -78,6 +82,8 @@ const Checkout = () => {
         .catch((err) => setPhoneError(err.errors[0]));
     }
   }, [phoneNumber]);
+
+  //fetch stock availability
 
   useEffect(() => {
     const fetchStock = async () => {
@@ -100,20 +106,40 @@ const Checkout = () => {
     fetchStock();
   }, [products]);
 
+  //fetch the pickup stores
+
+  useEffect(() => {
+    const fetchStores = async () => {
+      try {
+        const response = await axios.get(`${BACKEND_PORT}/api/store/all`);
+        if (response.data.success) {
+          setStores(response.data.stores);
+        }
+      } catch (error) {
+        console.log("Error fetching stores:", error);
+      }
+    };
+
+    fetchStores();
+  }, []);
+
   const handleNext = () => {
+    console.log(step);
+    console.log(deliveryMethod);
+
     switch (step) {
-      case 2:
-        if (phoneError) {
+      case 3:
+        if (deliveryMethod === "shipping" && phoneError) {
           // Do nothing or handle error
-        } else if (phoneNumber === "") {
+        } else if (deliveryMethod === "shipping" && phoneNumber === "") {
           setPhoneError("Please fill this field");
-        } else if (address === "") {
+        } else if (deliveryMethod === "shipping" && address === "") {
           setPhoneError("Please fill shipping address field");
         } else {
           setStep(step + 1);
         }
         break;
-      case 4:
+      case 5:
         setStep(step);
         break;
       default:
@@ -128,22 +154,36 @@ const Checkout = () => {
   const handlePrevious = () => {
     if (step > 1) {
       setStep(step - 1);
-    } else if (step > 3) {
+    } else if (step > 4) {
       setStep(step);
     }
   };
 
   const handleSubmitOrder = async (paymentInfo) => {
-    // ✅ Replace `id` with `_id` for every item in the array
+    // ✅ Replaced `id` with `_id` for every item in the array
     const formattedProducts = products.map(({ id: _id, ...rest }) => ({ _id, ...rest }));
 
     const orderData = {
       userId,
       products: formattedProducts,
-      shippingInfo: { address, city, phoneNumber: finalPhoneNumber },
+      ...(deliveryMethod === "shipping" && {
+        shippingInfo: {
+          address,
+          city,
+          phoneNumber: finalPhoneNumber,
+        },
+      }),
+      ...(deliveryMethod === "pickup" && {
+        pickupInfo: {
+          locationId: pickupStore?._id,
+          locationName: pickupStore?.name,
+          address: pickupStore?.address,
+        },
+      }),
       paymentInfo,
       totalAmount: estimatedAmount,
       additionalFees: 0,
+      deliveryMethod,
       subtotal: estimatedAmount + additionalFees,
     };
 
@@ -151,13 +191,14 @@ const Checkout = () => {
 
     handleNext(); // This moves to the next step in the UI
 
+    console.log(orderData);
+    // return;
+
     try {
       setIsLoading(true);
       setErrorState(false);
 
       const response = await axios.post(`${BACKEND_PORT}/api/orders`, orderData);
-
-      // console.log(BACKEND_PORT);
 
       setOrderId(response.data.order.orderId);
       setSuccess(true);
@@ -275,6 +316,7 @@ const Checkout = () => {
               <View style={styles.dot(step === 1 ? COLORS.themey : COLORS.themeg)} />
               <View style={styles.dot(step === 2 ? COLORS.themey : COLORS.themeg)} />
               <View style={styles.dot(step === 3 ? COLORS.themey : COLORS.themeg)} />
+              <View style={styles.dot(step === 4 ? COLORS.themey : COLORS.themeg)} />
             </View>
             <View style={styles.stepsheader}>
               <Text style={styles.stepstext}>Just a couple of steps and you good to go</Text>
@@ -377,48 +419,66 @@ const Checkout = () => {
                   </View>
                 </View>
               )}
-
               {step === 2 && (
                 <View style={styles.stepContainer}>
-                  <View style={styles.shippingContainer}>
-                    <Text style={styles.label}>Shipping City Name</Text>
-                    <TextInput
-                      style={[styles.input]}
-                      placeholder={userData.location}
-                      value={userData.location}
-                      onChangeText={setCity}
-                    />
-                    <Text style={styles.label}>Shipping Address</Text>
-                    <TextInput style={styles.input} value={address} onChangeText={setAddress} />
-                    <Text style={styles.label}>Shipping email</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder={userData.email}
-                      value={email}
-                      onChangeText={setEmail}
-                    />
+                  <View style={styles.deliveryMethod}>
+                    <Text style={styles.deliveryHead}>Choose Delivery Method</Text>
 
-                    <Text style={styles.label}>Phone Number</Text>
+                    {/* Delivery Options */}
+                    <View style={styles.deliveryOptions}>
+                      <TouchableOpacity
+                        style={[styles.optionCard, deliveryMethod === "shipping" && styles.selectedCard]}
+                        onPress={() => setDeliveryMethod("shipping")}
+                      >
+                        <View style={styles.flexme}>
+                          <Icon name="truck" size={25} />
 
-                    <View style={[styles.input2, phoneError ? styles.errorb : styles.successb]}>
-                      <IntlPhoneInput
-                        ref={(ref) => (phoneInput = ref)}
-                        customModal={renderCustomModal}
-                        defaultCountry="KE"
-                        lang="EN"
-                        onChangeText={onChangeText}
-                        flagStyle={styles.flagWidth}
-                        containerStyle={styles.input22}
-                      />
+                          <Text style={[styles.optionTitle, deliveryMethod === "shipping" && styles.selectedText]}>
+                            Shipping
+                          </Text>
+                          <Text style={styles.optionPrice}>{"(Price Per Distance)"}</Text>
+                        </View>
+                        <Text style={[styles.optionDescription, deliveryMethod === "shipping" && styles.selectedText]}>
+                          Get your order delivered to your address within 3-5 business days.
+                        </Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={[
+                          styles.optionCard,
+                          deliveryMethod === "pickup" && styles.selectedCard,
+                          stores && stores.length === 0 && styles.disabledOption, // Disable if no stores
+                        ]}
+                        onPress={() => stores && stores.length > 0 && setDeliveryMethod("pickup")}
+                        disabled={stores && stores.length === 0}
+                      >
+                        <View style={styles.flexme}>
+                          <Icon name="shop" size={25} />
+                          <Text style={[styles.optionTitle, deliveryMethod === "pickup" && styles.selectedText]}>
+                            Pickup
+                          </Text>
+                          <Text style={styles.optionPrice}>{stores && stores.length > 0 ? "(Free)" : "N/A"}</Text>
+                        </View>
+                        <Text style={[styles.optionDescription, deliveryMethod === "pickup" && styles.selectedText]}>
+                          {stores && stores.length > 0
+                            ? "Pick up your order from our store or a designated location"
+                            : "No pickup locations available."}
+                        </Text>
+
+                        <Text style={[styles.selectedText2, deliveryMethod === "pickup" && styles.selectedText2]}>
+                          [{`${stores?.length || 0} locations available`}]
+                        </Text>
+                      </TouchableOpacity>
                     </View>
 
+                    {/* Navigation Buttons */}
                     <View style={styles.next2wrapper}>
                       <TouchableOpacity onPress={handlePrevious} style={styles.previous}>
                         <Text>
                           <Icon name="backbutton" size={36} />
                         </Text>
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={handleNext} style={styles.next2}>
+                      <TouchableOpacity onPress={handleNext} style={styles.next2} disabled={!deliveryMethod}>
                         <Text style={styles.buttonText}>Next step</Text>
                       </TouchableOpacity>
                     </View>
@@ -427,6 +487,113 @@ const Checkout = () => {
               )}
 
               {step === 3 && (
+                <View style={styles.stepContainer}>
+                  {/* Shipping Form */}
+                  {deliveryMethod === "shipping" && (
+                    <>
+                      <View style={styles.shippingContainer}>
+                        <Text style={styles.label}>Shipping City Name</Text>
+                        <TextInput
+                          style={styles.input}
+                          placeholder={userData.location}
+                          value={city}
+                          onChangeText={setCity}
+                        />
+
+                        <Text style={styles.label}>Shipping Address</Text>
+                        <TextInput style={styles.input} value={address} onChangeText={setAddress} />
+
+                        <Text style={styles.label}>Shipping Email</Text>
+                        <TextInput
+                          style={styles.input}
+                          placeholder={userData.email}
+                          value={email}
+                          onChangeText={setEmail}
+                        />
+
+                        <Text style={styles.label}>Phone Number</Text>
+                        <View style={[styles.input2, phoneError ? styles.errorb : styles.successb]}>
+                          <IntlPhoneInput
+                            ref={(ref) => (phoneInput = ref)}
+                            customModal={renderCustomModal}
+                            defaultCountry="KE"
+                            lang="EN"
+                            onChangeText={onChangeText}
+                            flagStyle={styles.flagWidth}
+                            containerStyle={styles.input22}
+                          />
+                        </View>
+                      </View>
+                      <View style={styles.next2wrapper}>
+                        <TouchableOpacity
+                          onPress={handlePrevious}
+                          style={styles.previous}
+                          disabled={(deliveryMethod === "shipping" && !city) || !address || !email}
+                        >
+                          <Text>
+                            <Icon name="backbutton" size={36} />
+                          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handleNext} style={styles.next2}>
+                          <Text style={styles.buttonText}>Next step</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </>
+                  )}
+
+                  {/* Pickup Form */}
+                  {deliveryMethod === "pickup" && (
+                    <>
+                      <View style={styles.pickupContainer}>
+                        <Text style={styles.deliveryHead}>Select Pickup Store</Text>
+
+                        <View style={styles.storeList}>
+                          {stores.map((store) => (
+                            <TouchableOpacity
+                              key={store._id}
+                              style={[styles.storeCard, pickupStore === store && styles.selectedStore]}
+                              onPress={() => setPickupStore(store)}
+                            >
+                              <View>
+                                <Text style={[styles.storeTitle, pickupStore === store._id && styles.selectedStored]}>
+                                  {store.name}
+                                </Text>
+                                <Text style={[styles.storeDetails, pickupStore === store._id && styles.selectedStored]}>
+                                  {store.address}, {store.city}
+                                </Text>
+                                <Text style={[styles.storeDetails, pickupStore === store._id && styles.selectedStored]}>
+                                  📞 {store.phoneNumber}
+                                </Text>
+                                <Text style={[styles.storeDetails, pickupStore === store._id && styles.selectedStored]}>
+                                  🕒 {store.openHours}
+                                </Text>
+                              </View>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      </View>
+
+                      {/* Navigation Buttons */}
+                      <View style={styles.next2wrapper}>
+                        <TouchableOpacity onPress={handlePrevious} style={styles.previous}>
+                          <Text>
+                            <Icon name="backbutton" size={36} />
+                          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={handleNext}
+                          style={styles.next2}
+                          disabled={deliveryMethod === "pickup" && !pickupStore}
+                        >
+                          <Text style={styles.buttonText}>Next step</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </>
+                  )}
+                </View>
+              )}
+
+              {step === 4 && (
                 <>
                   <View style={styles.stepContainer}>
                     <CheckoutStep3
@@ -670,8 +837,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     gap: 10,
-    position: "absolute",
-    bottom: 20,
+    marginTop: 20,
+    // position: "absolute",
+    // bottom: 20,
   },
   next2: {
     justifyContent: "center",
@@ -710,7 +878,7 @@ const styles = StyleSheet.create({
     marginStart: SIZES.large,
   },
   shippingContainer: {
-    minHeight: SIZES.height - 220,
+    minHeight: SIZES.height / 2,
     marginTop: SIZES.xxLarge,
   },
   buttonText: {
@@ -807,5 +975,94 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  deliveryMethod: {
+    minHeight: 300,
+  },
+
+  deliveryHead: {
+    fontSize: 18,
+    fontWeight: "bold",
+
+    padding: 15,
+  },
+  deliveryOptions: {
+    borderRadius: 10,
+    padding: 10,
+  },
+  optionCard: {
+    backgroundColor: COLORS.themew,
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  selectedCard: {
+    backgroundColor: COLORS.themeg,
+    borderColor: "#00a478",
+  },
+  optionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  optionPrice: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  optionDescription: {
+    fontSize: 14,
+
+    marginTop: 5,
+  },
+  selectedText: {
+    color: COLORS.themeb,
+  },
+  selectedText2: {
+    color: COLORS.themeb,
+    fontSize: 14,
+    fontWeight: "bold",
+    marginTop: 7,
+  },
+  pickupContainer: {
+    marginTop: 10,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  storeList: {
+    gap: 10,
+  },
+  storeCard: {
+    backgroundColor: "#f9f9f9",
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  selectedStore: {
+    color: COLORS.themew,
+    backgroundColor: "#34D399", // Green highlight
+    borderColor: "#059669",
+  },
+  storeTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  storeDetails: {
+    fontSize: 14,
+  },
+  selectedStored: {
+    color: COLORS.themew,
+  },
+  flexme: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 15,
   },
 });

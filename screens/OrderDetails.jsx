@@ -94,7 +94,7 @@ const OrderDetails = () => {
         value = item.paymentInfo.phoneNumber;
         break;
       default:
-        iconName = "question-circle"; // Fallback icon
+        iconName = "question"; // Fallback icon
         value = "Enter details";
     }
 
@@ -120,10 +120,90 @@ const OrderDetails = () => {
           <Icon name="email" size={29} style={styles.iconStyle} color={COLORS.gray} />
           <TextInput placeholder="email" style={{ flex: 1 }} value={item.paymentInfo.email} editable={false} />
         </View>
-        <View style={styles.inputWrapper}>
-          <Icon name="location" size={29} style={styles.iconStyle} color={COLORS.gray} />
-          <TextInput placeholder="email" style={{ flex: 1 }} value={item.shippingInfo.city} editable={false} />
+      </View>
+    );
+  };
+  const DeliveryMethodComponent = ({ item }) => {
+    const DeliveryMethod = item?.orderType || "shipping";
+
+    return (
+      <View>
+        <View style={styles.selectedPayment}>
+          <Text style={styles.selectedText}>Delivery Method : {`[ ${DeliveryMethod} ]`}</Text>
         </View>
+
+        {DeliveryMethod === "shipping" ? (
+          <>
+            <View style={styles.inputWrapper}>
+              <Icon name={"truck"} size={30} style={styles.iconStyle} color={COLORS.gray} />
+              <TextInput style={{ flex: 1 }} value={item?.shippingInfo?.address} editable={false} />
+            </View>
+            {item?.shippingInfo && (
+              <View style={styles.inputWrapper}>
+                <Icon name="location" size={29} style={styles.iconStyle} color={COLORS.gray} />
+                <TextInput placeholder="email" style={{ flex: 1 }} value={item?.shippingInfo?.city} editable={false} />
+              </View>
+            )}
+            <View style={styles.inputWrapper}>
+              <Icon name="email" size={29} style={styles.iconStyle} color={COLORS.gray} />
+              <TextInput placeholder="email" style={{ flex: 1 }} value={item.paymentInfo.email} editable={false} />
+            </View>
+            <View style={styles.inputWrapper}>
+              <Icon name="call" size={29} style={styles.iconStyle} color={COLORS.gray} />
+              <TextInput
+                placeholder="phone number"
+                style={{ flex: 1 }}
+                value={item.paymentInfo.phoneNumber}
+                editable={false}
+              />
+            </View>
+          </>
+        ) : (
+          <>
+            <View style={styles.inputWrapper}>
+              <Icon name={"shop"} size={30} style={styles.iconStyle} color={COLORS.gray} />
+              <TextInput style={{ flex: 1 }} value={item?.pickupInfo?.locationId?.name} editable={false} />
+            </View>
+            <View style={styles.inputWrapper}>
+              <Icon name="location" size={29} style={styles.iconStyle} color={COLORS.gray} />
+              <TextInput
+                placeholder="email"
+                style={{ flex: 1 }}
+                value={item?.pickupInfo?.locationId?.city}
+                editable={false}
+              />
+            </View>
+            {/* {console.log(item?.pickupInfo)} */}
+
+            <View style={styles.inputWrapper}>
+              <Icon name="location" size={29} style={styles.iconStyle} color={COLORS.gray} />
+              <TextInput
+                placeholder="location"
+                style={{ flex: 1 }}
+                value={item?.pickupInfo?.locationId?.address}
+                editable={false}
+              />
+            </View>
+            <View style={styles.inputWrapper}>
+              <Icon name="call" size={29} style={styles.iconStyle} color={COLORS.gray} />
+              <TextInput
+                placeholder="phone number"
+                style={{ flex: 1 }}
+                value={item?.pickupInfo?.locationId?.phoneNumber}
+                editable={false}
+              />
+            </View>
+            <View style={styles.inputWrapper}>
+              <Icon name="clock" size={29} style={styles.iconStyle} color={COLORS.gray} />
+              <TextInput
+                placeholder="Open Hours"
+                style={{ flex: 1 }}
+                value={item?.pickupInfo?.locationId?.openHours}
+                editable={false}
+              />
+            </View>
+          </>
+        )}
       </View>
     );
   };
@@ -327,6 +407,14 @@ const OrderDetails = () => {
               </View>
 
               <PaymentMethodComponent item={item} />
+            </View>
+            <View style={[styles.relatedRow, { marginBottom: 10 }]}>
+              <View>
+                <Text style={styles.relatedHeader}>Delivery Information</Text>
+              </View>
+              {/* {console.log(item)} */}
+
+              <DeliveryMethodComponent item={item} />
             </View>
           </ScrollView>
         </View>

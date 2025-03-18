@@ -110,16 +110,33 @@ const InvoiceScreen = () => {
           <div>promokings@gmail.com</div>
           <div>www.promokings.co.ke</div>
         </div>
+
         <div class="section">
+        
           <div class="bold">BILL TO:</div>
-          <div>${order?.userId?.fullname || order?.userId?.username},</div>
-          <div>${order?.shippingInfo?.address}, ${order?.shippingInfo?.city}</div>
-          <div>${order?.shippingInfo?.phoneNumber}</div>
+ 
+        <div>${
+          order?.userId?.fullname || `${order?.userId?.firstname || ""} ${order?.userId?.lastname || ""}`.trim()
+        }</div>
+
+          ${order?.shippingInfo ? `<div>${order?.shippingInfo.address}, ${order?.shippingInfo.city}</div>` : ""}
+          ${
+            order.pickupInfo
+              ? `<div>${order?.pickupInfo.locationId.name}</div>
+              <div>${order?.pickupInfo.locationId.address}</div>
+              <div>${order?.pickupInfo.locationId.city}</div>
+              <div>${order?.pickupInfo.locationId.phoneNumber}</div>
+              `
+              : ""
+          }
+         
+ 
         </div>
         <div class="section">
           <div class="bold">INVOICE</div>
           <div>Invoice Number: ${order?.orderId}</div>
           <div>Order Date: ${new Date(order?.createdAt).toLocaleString()}</div>
+          <div>Order Type: ${order?.orderType || "shipping"}</div>
         </div>
         <table class="table">
           <tr>
