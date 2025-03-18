@@ -65,10 +65,9 @@ const ChatScreen = () => {
     if (!conversationRef || messages.length === 0) return;
 
     const updates = {};
-
     messages.forEach((msg) => {
-      if (msg.firebaseKey && (!msg.readBy || !msg.readBy.includes(userData._id))) {
-        updates[`${msg.firebaseKey}/readBy`] = [...(msg.readBy || []), userData._id];
+      if (!msg.readBy || !msg.readBy.includes(userData._id)) {
+        updates[`${msg._id}/readBy`] = [...(msg.readBy || []), userData._id];
       }
     });
 
