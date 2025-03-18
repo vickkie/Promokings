@@ -6,17 +6,19 @@ import { COLORS, SIZES } from "../constants";
 import Icon from "../constants/icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import { ScrollView } from "react-native-gesture-handler";
 import LottieView from "lottie-react-native";
+import { db } from "../components/auth/firebase";
+import { ref, onValue } from "firebase/database";
 
 import { BACKEND_PORT } from "@env";
 
-const ChatListScreen = ({}) => {
+const ChatListScreen = () => {
   const BACKEND_URL = BACKEND_PORT;
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { userData, userLogin, hasRole } = useContext(AuthContext);
+  const { userData } = useContext(AuthContext);
   const [searchQuery, setSearchQuery] = useState("");
+  const [unreadCounts, setUnreadCounts] = useState({}); // New state for unread counts
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -34,13 +36,51 @@ const ChatListScreen = ({}) => {
 
       const data = await response.json();
       setUsers(data);
-      // console.log(data);
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  // For each chat conversation, listen for unread messages in Firebase
+  useEffect(() => {
+    // Array to store unsubscribe functions
+    const listeners = [];
+
+    // Loop through each user in the list
+    users.forEach((user) => {
+      // Compute conversationId by sorting the two IDs
+      const conversationId = [userData._id, user._id].sort().join("_");
+      const conversationRef = ref(db, `messages/${conversationId}`);
+
+      const unsubscribe = onValue(conversationRef, (snapshot) => {
+        const data = snapshot.val();
+        let count = 0;
+
+        if (data) {
+          // Convert messages object to array
+          const messagesArr = Object.values(data);
+          messagesArr.forEach((msg) => {
+            // Count only messages from the other user that haven't been read
+            if (msg.user._id !== userData._id && (!msg.readBy || !msg.readBy.includes(userData._id))) {
+              count++;
+            }
+          });
+        }
+
+        // Update unreadCounts state for this conversation
+        setUnreadCounts((prev) => ({ ...prev, [conversationId]: count }));
+      });
+
+      listeners.push(unsubscribe);
+    });
+
+    // Cleanup: unsubscribe all listeners when users change or component unmounts
+    return () => {
+      listeners.forEach((unsubscribe) => unsubscribe());
+    };
+  }, [users, userData._id]);
 
   const startChat = async (user) => {
     try {
@@ -110,25 +150,39 @@ const ChatListScreen = ({}) => {
                 style={styles.flatlist}
                 data={users}
                 keyExtractor={(item) => item?._id.toString()}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    onPress={() => startChat(item)}
-                    style={{ flexDirection: "row", alignItems: "center", padding: 10 }}
-                  >
-                    {item?.profilePicture ? (
-                      <Image
-                        source={{ uri: item?.profilePicture }}
-                        style={{ width: 50, height: 50, borderRadius: 25, marginRight: 10 }}
-                      />
-                    ) : (
-                      <Image source={require("../assets/images/userDefault.webp")} style={styles.profilePicture} />
-                    )}
+                renderItem={({ item }) => {
+                  // Compute the conversationId for this chat
+                  const conversationId = [userData._id, item._id].sort().join("_");
+                  // Get unread count or default to 0
+                  const unreadCount = unreadCounts[conversationId] || 0;
 
-                    <Text style={{ fontSize: 18 }}>
-                      {item?.fullname || item?.username} ({item?.position || "customer"})
-                    </Text>
-                  </TouchableOpacity>
-                )}
+                  return (
+                    <TouchableOpacity
+                      onPress={() => startChat(item)}
+                      style={{ flexDirection: "row", alignItems: "center", padding: 10 }}
+                    >
+                      {item?.profilePicture ? (
+                        <Image
+                          source={{ uri: item?.profilePicture }}
+                          style={{ width: 50, height: 50, borderRadius: 25, marginRight: 10 }}
+                        />
+                      ) : (
+                        <Image source={require("../assets/images/userDefault.webp")} style={styles.profilePicture} />
+                      )}
+
+                      <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
+                        <Text style={{ fontSize: 18 }}>
+                          {item?.fullname || item?.username} ({item?.position || "customer"})
+                        </Text>
+                        {unreadCount > 0 && (
+                          <View style={styles.unreadBadge}>
+                            <Text style={styles.unreadText}>{unreadCount}</Text>
+                          </View>
+                        )}
+                      </View>
+                    </TouchableOpacity>
+                  );
+                }}
                 ListEmptyComponent={
                   <View style={styles.containLottie}>
                     <View style={styles.animationWrapper}>
@@ -461,5 +515,17 @@ const styles = StyleSheet.create({
   },
   flatlist: {
     marginBottom: 190,
+  },
+  unreadBadge: {
+    backgroundColor: "red",
+    borderRadius: 12,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    alignSelf: "flex-start",
+    marginTop: 4,
+  },
+  unreadText: {
+    color: "white",
+    fontSize: 12,
   },
 });
