@@ -106,7 +106,7 @@ const ChatListScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={COLORS.themey} />
+      {/* <StatusBar backgroundColor={COLORS.themey} /> */}
       <View style={{ marginTop: 0 }}>
         <View style={styles.wrapper}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
