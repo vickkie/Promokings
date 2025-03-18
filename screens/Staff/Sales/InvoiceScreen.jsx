@@ -21,6 +21,7 @@ const InvoiceScreen = () => {
   if (!order) {
     navigation.goBack();
   }
+  console.log(order);
 
   const generateHTMLInvoice = (showWatermark = true) => {
     return `
@@ -116,10 +117,18 @@ const InvoiceScreen = () => {
           <div class="bold">BILL TO:</div>
  
         <div>${
-          order?.userId?.fullname || `${order?.userId?.firstname || ""} ${order?.userId?.lastname || ""}`.trim()
+          order?.userId?.fullname ||
+          `${order?.userId?.firstname || ""} ${order?.userId?.lastname || ""}`.trim() ||
+          `${order?.userId?.username}`
         }</div>
 
-          ${order?.shippingInfo ? `<div>${order?.shippingInfo.address}, ${order?.shippingInfo.city}</div>` : ""}
+          ${
+            order?.shippingInfo
+              ? `<div>${order?.shippingInfo.address}</div>
+            
+            <div>${order?.shippingInfo.city}</div>`
+              : ""
+          }
           ${
             order.pickupInfo
               ? `<div>${order?.pickupInfo.locationId.name}</div>

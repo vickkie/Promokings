@@ -412,7 +412,6 @@ const OrderDetails = () => {
               <View>
                 <Text style={styles.relatedHeader}>Delivery Information</Text>
               </View>
-              {/* {console.log(item)} */}
 
               <DeliveryMethodComponent item={item} />
             </View>
