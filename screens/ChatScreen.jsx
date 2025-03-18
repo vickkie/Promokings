@@ -8,7 +8,7 @@ import { ref, onValue, set, update } from "firebase/database";
 import * as ImagePicker from "expo-image-picker";
 import Icon from "../constants/icons";
 import { COLORS, SIZES } from "../constants";
-import { StatusBar } from "expo-status-bar";
+
 import "react-native-get-random-values";
 import uuid from "react-native-uuid";
 
@@ -185,7 +185,6 @@ const ChatScreen = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={COLORS.themey} />
       <View style={styles.wrapper}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
           <Icon name="backbutton" size={26} />

@@ -107,6 +107,7 @@ const ChatListScreen = ({}) => {
               </View>
             ) : (
               <FlatList
+                style={styles.flatlist}
                 data={users}
                 keyExtractor={(item) => item?._id.toString()}
                 renderItem={({ item }) => (
@@ -457,5 +458,8 @@ const styles = StyleSheet.create({
   animation: {
     width: "100%",
     height: "100%",
+  },
+  flatlist: {
+    marginBottom: 190,
   },
 });
