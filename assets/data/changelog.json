@@ -108,6 +108,12 @@
       "version": "1.4.0",
       "whatsNew": ["App size optimization","Company details added","Customer receipt generation","General UI improvements","Shipment assignments"],
       "fixed": ["Changelog date updates"]
+    },
+    {
+      "releaseDate": "2025-03-18",
+      "version": "1.4.1",
+      "whatsNew": ["Customer order pickup","Global chat system across users","Company About Us","User order receipt generation","New messages notification"],
+      "fixed": [""]
     }
   ]
 }
