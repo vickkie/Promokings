@@ -29,6 +29,8 @@ const Home = () => {
         navigation.replace("Driver Navigation");
       } else if (hasRole("finance")) {
         navigation.replace("Finance Navigation");
+      } else if (hasRole("dispatcher")) {
+        navigation.replace("Dispatch Navigation");
       }
     }
   }, [userLogin, hasRole]);

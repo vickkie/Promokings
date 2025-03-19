@@ -77,6 +77,13 @@ import {
   FinanceSettings,
   ChatListScreen,
   ChatScreen,
+  EditDispatchOrder,
+  OrderDispatchDetails,
+  OrdersDispatch,
+  DispatchShipments,
+  DispatcherSettings,
+  DispatcherProfile,
+  DeliveryDispatchDetails,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -86,6 +93,7 @@ import UpdateCheck from "./components/UpdateCheck";
 import DriverTabNavigation from "./navigation/DriverTabNavigator";
 import FinanceTabNavigation from "./navigation/FinanceTabNavigator";
 import OneSignalId from "./components/auth/oneSignal";
+import DispatcherTabNavigation from "./navigation/DispatcherTabNavigation ";
 
 enableScreens();
 const Stack = createNativeStackNavigator();
@@ -97,6 +105,7 @@ const screens = [
   { name: "Inventory Navigation", component: InventoryTabNavigation, options: { headerShown: false } },
   { name: "Sales Navigation", component: SalesTabNavigation, options: { headerShown: false } },
   { name: "Driver Navigation", component: DriverTabNavigation, options: { headerShown: false } },
+  { name: "Dispatch Navigation", component: DispatcherTabNavigation, options: { headerShown: false } },
   { name: "EditCategoriesList", component: EditCategoriesList, options: { headerShown: false } },
   { name: "Home", component: Home, options: { headerShown: false } },
   { name: "EditCategory", component: EditCategory, options: { headerShown: false } },
@@ -156,6 +165,13 @@ const screens = [
   { name: "FinanceSettings", component: FinanceSettings, options: { headerShown: false } },
   { name: "ChatListScreen", component: ChatListScreen, options: { headerShown: false } },
   { name: "ChatScreen", component: ChatScreen, options: { headerShown: false } },
+  { name: "EditDispatchOrder", component: EditDispatchOrder, options: { headerShown: false } },
+  { name: "OrderDispatchDetails", component: OrderDispatchDetails, options: { headerShown: false } },
+  { name: "OrderDispatch", component: OrdersDispatch, options: { headerShown: false } },
+  { name: "DispatchShipments", component: DispatchShipments, options: { headerShown: false } },
+  { name: "DispatchSettings", component: DispatcherSettings, options: { headerShown: false } },
+  { name: "DispatcherProfile", component: DispatcherProfile, options: { headerShown: false } },
+  { name: "DeliveryDispatchDetails", component: DeliveryDispatchDetails, options: { headerShown: false } },
 ];
 
 export default function App() {
@@ -190,7 +206,7 @@ export default function App() {
 
         <BottomSheetModalProvider>
           <AuthProvider>
-            <OneSignalId />
+            {/* <OneSignalId /> */}
             <ProfileCompletionProvider>
               <CartProvider>
                 <WishProvider>

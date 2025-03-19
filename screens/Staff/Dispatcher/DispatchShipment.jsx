@@ -10,38 +10,38 @@ import {
   SafeAreaView,
   ScrollView,
 } from "react-native";
-import { COLORS, SIZES } from "../constants";
-import Icon from "../constants/icons";
+import { COLORS, SIZES } from "../../../constants";
+import Icon from "../../../constants/icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { AuthContext } from "../components/auth/AuthContext";
+import { AuthContext } from "../../../components/auth/AuthContext";
 import LottieView from "lottie-react-native";
 import { BACKEND_PORT } from "@env";
 import { StatusBar } from "expo-status-bar";
 import * as Clipboard from "expo-clipboard";
 import Toast from "react-native-toast-message";
 
-const Orders = () => {
+const DispatchShipments = () => {
   const [userId, setUserId] = useState(null);
-  const { userData, userLogin } = useContext(AuthContext);
+  const { userData, userLogin, hasRole, userLogout } = useContext(AuthContext);
   const navigation = useNavigation();
 
   useEffect(() => {
     if (!userLogin) {
-      setUserId(1);
-      navigation.navigate("Login");
-      return;
-    } else if (userData && userData._id) {
+      navigation.replace("Login");
+    } else if (hasRole("dispatcher")) {
       setUserId(userData._id);
+    } else {
+      userLogout();
+      navigation.replace("Login");
     }
-  }, [userLogin, userData]);
-
-  // const { data, isLoading, error, refetch } = useFetch(`orders/user/${userId}`);
+  }, [userLogin, navigation, hasRole, userLogout]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [ordersData, setOrdersData] = useState([]);
   const [products, setProducts] = useState("");
   const [orderItems, setOrderItems] = useState("");
+  const [refetch, setRefetch] = useState(false);
 
   const [sortedOrdersData, setSortedOrdersData] = useState([]);
   const [last3orders, setlast3orders] = useState([]);
@@ -53,7 +53,7 @@ const Orders = () => {
 
   useEffect(() => {
     if (!userLogin) {
-      setUserId(1); // Consider handling this differently, maybe redirecting to login immediately
+      setUserId(1);
       navigation.navigate("Login");
       return;
     } else if (userData && userData._id) {
@@ -66,47 +66,50 @@ const Orders = () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch(`${BACKEND_PORT}/api/orders/user/${userId}`);
+        const response = await fetch(`${BACKEND_PORT}/api/shipment/all`);
         const data = await response.json();
 
-        // console.log(data);
+        // console.log(data[0].orderId);
         setOrders(data || []);
       } catch (err) {
         setError(err.message);
       } finally {
         setIsLoading(false);
+        setRefetch(false);
       }
     };
 
     if (userId) {
       fetchData();
     }
-  }, [userId]);
+  }, [userId, refetch]);
 
   useEffect(() => {
     // console.log(data);
   }, [data, ordersData]);
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     refetch();
-  //   }, [])
-  // );
+  useFocusEffect(
+    useCallback(() => {
+      setRefetch(true);
+      setTimeout(() => setRefetch(false), 500);
+    }, [])
+  );
 
   useEffect(() => {
-    if (!isLoading && !error && data.orders && data.orders.length !== 0) {
+    if (!isLoading && !error && data && data.length !== 0) {
       // Destructure orders from data
-      const orders = data.orders || [];
-      setOrdersData(orders);
+      const shipments = data || [];
+      setOrdersData(shipments);
 
       // Sort orders
-      const sortedOrders = [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const sortedOrders = [...shipments].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setSortedOrdersData(sortedOrders);
 
       // Get the latest three orders
-      const latestThreeOrders = sortedOrders.slice(0, 3).map((order) => ({
-        id: order.orderId,
+      const latestThreeOrders = sortedOrders.slice(0, 3).map((shipment) => ({
+        id: shipment.deliveryId,
       }));
+      //   console.log("last 3", latestThreeOrders);
 
       setlast3orders(latestThreeOrders);
     }
@@ -115,45 +118,35 @@ const Orders = () => {
   const primaryData = [
     {
       id: "1",
-      title: "Order tracker",
-      image: require("../assets/images/isometric.webp"),
-      // shippingId: "V789456AR123",
-      shippingId: last3orders[0] ? last3orders[0].id : "Order now",
-
-      color: "#ffedd2",
-      stylez: '{"height": 220, "width": 220, "position": "absolute", "right": -50, "top": -10, "opacity": 0.6}',
-    },
-    {
-      id: "2",
       // title: "Small Box Packing",
       title: "Shipment Tracker",
-      image: require("../assets/images/isometric2.png"),
-      shippingId: last3orders[1] ? last3orders[1].id : "Order now",
+      image: require("../../../assets/images/isometric2.png"),
+      shippingId: last3orders[0] ? last3orders[0].id : "No shipment assigned",
       color: "#a3eed8",
       stylez:
         '{"height": 170, "width": 170, "position": "absolute", "right": -67, "top": 25, "opacity": 0.8,"transform": [{ "rotate": "-15deg" }]}',
     },
     {
-      id: "3",
-      title: "Order tracker",
+      id: "2",
+      title: "Delivery tracker",
       // title: "Gift Packing",
-      image: require("../assets/images/gift.webp"),
+      image: require("../../../assets/images/gift.webp"),
       color: "#e6bfdf",
-      shippingId: last3orders[2] ? last3orders[2].id : "Order now",
+      shippingId: last3orders[2] ? last3orders[2].id : "No shipment assigned",
 
       stylez: '{"height": 220, "width": 220, "position": "absolute", "right": -70, "top": 10, "opacity": 0.6}',
     },
   ];
 
   useEffect(() => {
-    if (sortedOrdersData.length > 0) {
-      function extractProductDetails(orders) {
-        orders.forEach((order) => {
-          // console.log("orderid", order._id);
+    if (sortedOrdersData.orderId?.products?.length > 0) {
+      function extractProductDetails(shipments) {
+        shipments.forEach((shipment) => {
+          //   console.log("orderid", orderId._id);
 
           setOrderItems();
 
-          order.products.forEach((product) => {
+          shipment.orderId.products.forEach((product) => {
             // console.log(product);
             const items = product._id;
 
@@ -169,7 +162,7 @@ const Orders = () => {
           });
         });
       }
-      extractProductDetails(data.orders);
+      extractProductDetails(data);
     }
   }, [sortedOrdersData, data]);
 
@@ -177,12 +170,12 @@ const Orders = () => {
     if (selectedStatus === "All") {
       return sortedOrdersData;
     }
-    return sortedOrdersData.filter((order) => order.status === selectedStatus);
+    return sortedOrdersData.filter((shipment) => shipment.status === selectedStatus);
   }, [selectedStatus, sortedOrdersData]);
 
   const filterOrdersBySearchQuery = useCallback(
-    (orders) => {
-      return orders.filter((order) => order.orderId.includes(searchQuery));
+    (shipment) => {
+      return shipment.filter((delivery) => delivery.deliveryId.includes(searchQuery));
     },
     [searchQuery]
   );
@@ -213,7 +206,7 @@ const Orders = () => {
         style={{
           backgroundColor: color || COLORS.themey,
           height: 170,
-          width: 250,
+          width: 300,
           borderRadius: SIZES.medium,
           overflow: "hidden",
         }}
@@ -242,19 +235,21 @@ const Orders = () => {
     );
   };
 
-  const SearchResultCard = ({ orderId, item, products, status, icon, color, totals }) => {
-    const titles = products
-      .map((product, index) => {
-        const { title } = product._id || {};
-        return {
-          title,
-        };
-      })
-      .filter(({ title }) => Boolean(title)); // Filter out undefined titles, in case some products don't have titles
+  const SearchResultCard = ({ deliveryDriver, deliveryId, orderId, item, products, status, icon, color, totals }) => {
+    const titles =
+      Array.isArray(products) &&
+      products
+        .map((product, index) => {
+          const { title } = product._id || {};
+          return {
+            title,
+          };
+        })
+        .filter(({ title }) => Boolean(title)); // Filter out undefined titles, in case some products don't have titles
 
-    const titlesString = titles.map(({ title }) => title).join(", ");
+    const titlesString = orderId[1];
 
-    // console.log("titles", titlesString);
+    // console.log("titles", deliveryId);
 
     return (
       <View
@@ -290,12 +285,15 @@ const Orders = () => {
         </TouchableOpacity>
 
         <View>
-          <Text style={styles.searchResultTitle}>{titlesString}</Text>
-          <Text style={styles.searchResultdetail}>Order id : {orderId}</Text>
+          <Text style={styles.searchResultTitle}>{deliveryId}</Text>
+          <Text style={styles.searchResultdetail}>
+            {" "}
+            {deliveryDriver?.fullName} - {deliveryDriver?.numberPlate}
+          </Text>
         </View>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("OrderDetails", { orderId, item, products, totals });
+            navigation.navigate("DeliveryDispatchDetails", { deliveryId });
           }}
           style={[styles.flexEnd, styles.buttonView]}
         >
@@ -308,7 +306,7 @@ const Orders = () => {
   const renderCards = useCallback(
     ({ item }) => (
       <Card
-        title={item.title}
+        title={item.deliveryId}
         image={item.image}
         color={item.color}
         stylez={item.stylez}
@@ -328,22 +326,22 @@ const Orders = () => {
           </TouchableOpacity>
           <View style={styles.upperRow}>
             <View style={styles.upperButtons}>
-              <Text style={styles.heading}>My orders</Text>
+              <Text style={styles.heading}>Shipment Tracker</Text>
             </View>
             <TouchableOpacity onPress={() => {}} style={styles.outWrap}>
               <Icon name="bellfilled" size={26} />
             </TouchableOpacity>
             <View style={styles.lowerheader}>
-              <Text style={styles.statement}>Thankyou for shopping with us</Text>
+              <Text style={styles.statement}>Track deliveries shipment </Text>
             </View>
           </View>
         </View>
 
         <ScrollView>
-          <View style={{ marginTop: 130 }}>
-            <View style={{ paddingTop: 20, width: SIZES.width - 20, paddingHorizontal: 22 }}>
+          <View style={{ marginTop: 110 }}>
+            <View style={{ paddingTop: 10, width: SIZES.width - 20, paddingHorizontal: 22 }}>
               <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>
-                Latest orders
+                Latest Shipments
               </Text>
             </View>
 
@@ -361,7 +359,7 @@ const Orders = () => {
             <View style={styles.searchBarContainer}>
               <TextInput
                 style={styles.searchInput}
-                placeholder="Search orders"
+                placeholder="Search Shipment"
                 value={searchQuery}
                 onChangeText={setSearchQuery}
               />
@@ -372,7 +370,7 @@ const Orders = () => {
 
             <FlatList
               horizontal
-              data={["All", "pending", "delivery", "delivered"]}
+              data={["All", "pending", "transit", "completed", "failed"]}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={[styles.filterButton, selectedStatus === item && styles.selectedFilter]}
@@ -400,6 +398,8 @@ const Orders = () => {
                     return (
                       <SearchResultCard
                         item={item}
+                        deliveryId={item.deliveryId}
+                        deliveryDriver={item.driverId}
                         orderId={item.orderId}
                         products={item.products}
                         totals={item.totalAmount}
@@ -419,14 +419,14 @@ const Orders = () => {
                 <View style={styles.containLottie}>
                   <View style={styles.animationWrapper}>
                     <LottieView
-                      source={require("../assets/data/emptybox.json")}
+                      source={require("../../../assets/data/emptybox.json")}
                       autoPlay
-                      loop
+                      // loop
                       style={styles.animation}
                     />
                   </View>
                   <View style={{ marginTop: -20, paddingBottom: 10 }}>
-                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}> Nothing to see here</Text>
+                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}> No Deliveries here</Text>
                   </View>
                 </View>
               )}
@@ -438,7 +438,7 @@ const Orders = () => {
   );
 };
 
-export default Orders;
+export default DispatchShipments;
 
 const styles = StyleSheet.create({
   container: {
@@ -494,7 +494,7 @@ const styles = StyleSheet.create({
     marginTop: SIZES.medium,
   },
   topprofileheading: {
-    fontSize: SIZES.medium,
+    fontSize: SIZES.medium - 3,
     textAlign: "center",
     color: COLORS.themeb,
     fontFamily: "semibold",
@@ -513,14 +513,14 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     width: SIZES.width - 20,
-    marginTop: 15,
+    marginTop: 0,
     paddingTop: SIZES.xSmall,
-    paddingBottom: 20,
+    paddingBottom: 15,
   },
   heading: {
     fontFamily: "bold",
     textTransform: "capitalize",
-    fontSize: SIZES.xLarge + 3,
+    fontSize: SIZES.xLarge,
     textAlign: "left",
     color: COLORS.themeb,
     marginStart: 20,

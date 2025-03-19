@@ -130,8 +130,6 @@ const DriverList = () => {
       navigation.replace("Login");
     } else if (hasRole("sales")) {
       setUserId(userData._id);
-    } else if (hasRole("dispatcher")) {
-      setUserId(userData._id);
     } else {
       userLogout();
       navigation.replace("Login");

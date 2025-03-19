@@ -72,8 +72,23 @@ import PaymentsHistory from "./Staff/Finance/PaymentsHistory";
 import FinanceSettings from "./Staff/Finance/FinanceSettings";
 import FinanceProfile from "./Staff/Finance/FinanceProfile";
 
-import ChatListScreen from "./ChatListScreen";
+//disp[atcher]
+
+import DispatchDashboard from "./Staff/Dispatcher/DispatchDashboard";
+import EditDispatchOrder from "./Staff/Dispatcher/EditOrder";
 import ChatScreen from "./ChatScreen";
+import OrderDispatchDetails from "./Staff/Dispatcher/OrderSalesDetails";
+import OrdersDispatch from "./Staff/Dispatcher/Orders";
+import DispatchShipments from "./Staff/Dispatcher/DispatchShipment";
+import DispatcherProfile from "./Staff/Dispatcher/DispatchProfile";
+import DispatcherSettings from "./Staff/Dispatcher/DispatchSettings";
+import DeliveryDispatchDetails from "./Staff/Dispatcher/DeliveryDetails";
+
+// import DriverList as D from "./Staff/Dispatcher/DriversList";
+// import DriverDetails from "./Staff/Dispatcher/DriverDetails";
+
+import ChatListScreen from "./ChatListScreen";
+
 export {
   ChatListScreen,
   ChatScreen,
@@ -149,4 +164,14 @@ export {
   PaymentsHistory,
   FinanceProfile,
   FinanceSettings,
+
+  //dispatcher
+  DispatchDashboard,
+  EditDispatchOrder,
+  OrderDispatchDetails,
+  OrdersDispatch,
+  DispatchShipments,
+  DispatcherProfile,
+  DispatcherSettings,
+  DeliveryDispatchDetails,
 };

@@ -92,8 +92,16 @@ import cardfilled from "../assets/svg/card-pos.svg";
 import cardsearch from "../assets/svg/card-search-light.svg";
 import cardsearchfilled from "../assets/svg/card-search.svg";
 import clock from "../assets/svg/clock.svg";
+import steeringlight from "../assets/svg/steering-wheel-light.svg";
+import steeringdark from "../assets/svg/steering-wheel.svg";
+import deliverydark from "../assets/svg/delivery-dark.svg";
+import deliverylight from "../assets/svg/delivery-filled.svg";
 
 const iconMap = {
+  deliverylight: deliverylight,
+  deliverydark: deliverydark,
+  steeringlight: steeringlight,
+  steeringdark: steeringdark,
   cardsearchfilled: cardsearchfilled,
   cardsearch: cardsearch,
   card: card,

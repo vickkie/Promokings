@@ -6,9 +6,8 @@ import Icon from "../../../constants/icons";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
 import { COLORS, SIZES } from "../../../constants";
+import LatestOrders from "./LatestShipments";
 import useFetch from "../../../hook/useFetch";
-import LatestOrders from "./LatestOrders";
-import SalesChart from "./SalesChart";
 
 const zeroData = {
   totalProducts: 0,
@@ -17,22 +16,22 @@ const zeroData = {
   availableStock: 0,
 };
 
-const SalesOverview = () => {
+const DispatchDashboard = () => {
   const { userLogin, hasRole, userData, userLogout } = useContext(AuthContext);
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("orders/summary");
+  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("orders/summary/dispatch");
 
   const [userId, setUserId] = useState(null);
-  const [quantities, setQuanties] = useState(zeroData);
+  const [quantities, setQuanties] = useState(null);
   const [refreshList, setRefreshList] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     if (!userLogin) {
       navigation.replace("Login");
-    } else if (hasRole("sales")) {
+    } else if (hasRole("dispatcher")) {
       setUserId(userData._id);
     } else {
       userLogout();
@@ -64,7 +63,24 @@ const SalesOverview = () => {
     refetch();
   }, [refreshing]);
 
+  const renderProfilePicture = () => {
+    if (!userLogin) {
+      return <Icon name="user" size={24} color="#000" />;
+    }
+    if (userData && userData.profilePicture) {
+      return <Image source={{ uri: `${userData.profilePicture}` }} style={styles.profilePicture} />;
+    }
+
+    return <Image source={require("../../../assets/images/userDefault.webp")} style={styles.profilePicture} />;
+  };
+
   const BottomSheetRef = useRef(null);
+
+  const openMenu = () => {
+    // if (BottomSheetRef.current) {
+    //   BottomSheetRef.current.present();
+    // }
+  };
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -74,30 +90,6 @@ const SalesOverview = () => {
     }
   }, [isLoading, data]);
 
-  const products = [
-    {
-      id: "1",
-      title: "Sales Report",
-      detail: "Get detailed sales information",
-      route: "DriverList",
-      image: require("../../../assets/images/isometric.webp"),
-    },
-    {
-      id: "2",
-      title: "Sales Interactions",
-      detail: "Track your stock interactions",
-      route: "DriverList",
-      image: require("../../../assets/images/baggift.webp"),
-    },
-    {
-      id: "3",
-      title: "Drivers",
-      detail: "Get information of available carriers",
-      route: "DriverList",
-      image: require("../../../assets/images/userDefault.webp"),
-    },
-  ];
-
   return (
     <SafeAreaView style={styles.topSafeview}>
       <HomeMenu ref={BottomSheetRef} />
@@ -105,26 +97,23 @@ const SalesOverview = () => {
       <View style={styles.topWelcomeWrapper}>
         <View style={styles.appBarWrapper}>
           <View style={styles.appBar}>
-            <TouchableOpacity style={styles.buttonWrap} nPress={() => navigation.goBack()}>
-              <Icon name="backbutton" size={24} />
+            <TouchableOpacity style={styles.buttonWrap} onPress={openMenu}>
+              <Icon name="menu" size={24} />
             </TouchableOpacity>
             <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("SalesShipments")}
-                style={[styles.backBtn, styles.buttonWrap]}
-              >
-                <Icon name="truckfilled" size={26} />
+              <TouchableOpacity onPress={() => navigation.navigate("DispatcherProfile")} style={styles.buttonWrap2}>
+                {renderProfilePicture()}
               </TouchableOpacity>
             </View>
           </View>
         </View>
         <View style={styles.greeting}>
           <Text style={styles.greetingMessage}>
-            <Text style={styles.username}>Sales & Management</Text>
+            <Text style={styles.username}>Dispatcher Dashboard</Text>
           </Text>
         </View>
         <View style={styles.sloganWrapper}>
-          <Text style={styles.slogan}>{`Manage all you statistics here `}</Text>
+          <Text style={styles.slogan}>Driver & shipments management </Text>
         </View>
       </View>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
@@ -143,7 +132,7 @@ const SalesOverview = () => {
                   >
                     <View style={[styles.dashBox, styles.box1]}>
                       <Text style={styles.boxNUmber}>{quantities?.totalOrders}</Text>
-                      <Text style={styles.boxText}>Total Orders</Text>
+                      <Text style={styles.boxText}>Total Shipments</Text>
                     </View>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -156,7 +145,7 @@ const SalesOverview = () => {
                   >
                     <View style={[styles.dashBox, styles.box2]}>
                       <Text style={styles.boxNUmber}>{quantities?.pendingOrders}</Text>
-                      <Text style={styles.boxText}>Pending Orders</Text>
+                      <Text style={styles.boxText}>Pending Shipment</Text>
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -171,20 +160,13 @@ const SalesOverview = () => {
                   >
                     <View style={[styles.dashBox, styles.box3]}>
                       <Text style={styles.boxNUmber}>{quantities?.todayOrders}</Text>
-                      <Text style={styles.boxText}>Today Orders</Text>
+                      <Text style={styles.boxText}>Today Shipments</Text>
                     </View>
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      // navigation.navigate("EditProductList", {
-                      //   products: "products/stock-summary/available",
-                      //   refreshList: true,
-                      // });
-                    }}
-                  >
+                  <TouchableOpacity onPress={() => {}}>
                     <View style={[styles.dashBox, styles.box4]}>
-                      <Text style={styles.boxNUmber}>{quantities?.processingOrders}</Text>
-                      <Text style={styles.boxText}>Processing orders</Text>
+                      <Text style={styles.boxNUmber}>{quantities?.shippingDeliveries}</Text>
+                      <Text style={styles.boxText}>Processing </Text>
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -192,36 +174,13 @@ const SalesOverview = () => {
             </View>
           </View>
           <View style={{ paddingTop: 10, width: SIZES.width - 20, paddingHorizontal: 22 }}>
-            <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>Management</Text>
+            <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>
+              Latest Pending Shipments
+            </Text>
           </View>
 
           <View style={styles.latestProducts}>
-            {products.map((product) => (
-              <TouchableOpacity
-                key={product.id}
-                style={styles.latestProductCards}
-                onPress={() => navigation.navigate(product.route, { product })}
-              >
-                <View
-                  style={{
-                    borderRadius: 100,
-                    backgroundColor: COLORS.themey,
-                    width: 36,
-                    height: 36,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image source={product.image} style={styles.productImage} />
-                </View>
-
-                <View style={styles.orderDetails}>
-                  <Text style={styles.latestProductTitle}>{product.title}</Text>
-                  <Text style={styles.latestProductdetail}>{product.detail}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
+            <LatestOrders refreshList={refreshList} setRefreshing={setRefreshing} />
           </View>
         </View>
       </ScrollView>
@@ -229,7 +188,7 @@ const SalesOverview = () => {
   );
 };
 
-export default SalesOverview;
+export default DispatchDashboard;
 
 const styles = StyleSheet.create({
   carouselContainer: {
@@ -407,7 +366,7 @@ const styles = StyleSheet.create({
   },
   boxNUmber: {
     fontFamily: "bold",
-    fontSize: SIZES.xLarge,
+    fontSize: SIZES.xxLarge - 8,
     color: COLORS.white,
   },
   boxText: {
@@ -426,55 +385,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 3,
     minHeight: SIZES.height / 2.5,
     marginBottom: 20,
-  },
-  latestProductCards: {
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.themeg,
-    borderRadius: SIZES.medium,
-    flexDirection: "row",
-    alignorders: "center",
-    gap: 6,
-    paddingVertical: 3,
-    backgroundColor: COLORS.lightWhite,
-    borderRadius: SIZES.medium,
-    minHeight: 70,
-    marginBottom: 10,
-    marginHorizontal: 4,
-  },
-  flexEnd: {
-    position: "absolute",
-    right: 10,
-  },
-  buttonView: {
-    display: "flex",
-    alignItems: "center",
-    // backgroundColor: "red",
-    alignItems: "center",
-    height: "100%",
-  },
-  latestProductTitle: {
-    fontSize: 16,
-    paddingStart: SIZES.small,
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  latestProductdetail: {
-    fontSize: SIZES.small,
-    fontWeight: "regular",
-    color: COLORS.gray,
-    marginBottom: 5,
-  },
-  productImage: {
-    width: 35,
-    height: 35,
-    borderRadius: 100,
-    borderWidth: 2,
-    alignSelf: "center",
-    top: "auto",
-  },
-  productTitle: {
-    fontSize: SIZES.medium,
-    fontWeight: "bold",
-    color: COLORS.primary,
   },
 });
