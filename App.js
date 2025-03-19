@@ -2,7 +2,7 @@ import "react-native-gesture-handler";
 import { enableScreens } from "react-native-screens";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import Toast from "react-native-toast-message";
@@ -85,6 +85,7 @@ import SalesTabNavigation from "./navigation/SalesTabNavigation";
 import UpdateCheck from "./components/UpdateCheck";
 import DriverTabNavigation from "./navigation/DriverTabNavigator";
 import FinanceTabNavigation from "./navigation/FinanceTabNavigator";
+import OneSignalId from "./components/auth/oneSignal";
 
 enableScreens();
 const Stack = createNativeStackNavigator();
@@ -186,8 +187,10 @@ export default function App() {
     <ErrorBoundary2>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <UpdateCheck />
+
         <BottomSheetModalProvider>
           <AuthProvider>
+            <OneSignalId />
             <ProfileCompletionProvider>
               <CartProvider>
                 <WishProvider>

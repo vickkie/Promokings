@@ -18,6 +18,7 @@ import CustomButton from "../components/Button";
 import { COLORS, SIZES } from "../constants";
 import { BACKEND_PORT } from "@env";
 import Icon from "../constants/icons";
+import { StatusBar } from "react-native";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string().min(8, "Password must be at least 8 characters").required("Required"),
@@ -99,6 +100,7 @@ const LoginPage = ({ navigation }) => {
 
   return (
     <ScrollView>
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.themey} />
       <SafeAreaView style={{ marginHorizontal: 21 }}>
         <View>
           <BackBtn

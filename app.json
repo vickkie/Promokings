@@ -2,7 +2,7 @@
   "expo": {
     "name": "Promokings",
     "slug": "promokings",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "orientation": "portrait",
     "icon": "./assets/icon-home.png",
     "userInterfaceStyle": "light",
@@ -20,7 +20,6 @@
         "UIStatusBarStyle": "UIStatusBarStyleDefault"
       },
       "bundleIdentifier": "com.uzitrake.promokings"
-     
     },
     "android": {
       "versionCode": 4,
@@ -33,7 +32,7 @@
     "web": {
       "favicon": "./assets/promoking-logoq.png"
     },
-     "updates": {
+    "updates": {
       "url": "https://github.com/vickkie/Promokings"
     },
     "extra": {
@@ -41,7 +40,16 @@
         "projectId": "963b311f-f10e-4395-81da-d500fc41924c"
       }
     },
-    "owner": "killoy"
+    "owner": "killoy",
+    "plugins": [
+     [
+      "onesignal-expo-plugin",
+      {
+      "mode": "development"
+      }
+    ]
+   ]
+
+
   }
 }
-
