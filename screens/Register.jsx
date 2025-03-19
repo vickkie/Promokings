@@ -74,7 +74,7 @@ const Register = ({ navigation }) => {
       if (response.status === 201) {
         // console.log(response);
         successRegister();
-        navigation.replace("Login");
+        navigation.navigate("Login");
       } else {
         throw new Error("Registration failed");
       }

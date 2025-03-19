@@ -42,7 +42,7 @@ const UserDetails = () => {
   useEffect(() => {
     if (!userLogin) {
       setUserId(1);
-      navigation.navigate("Login");
+      // navigation.navigate("Login");
       return;
     } else if (userData && userData._id) {
       setUserId(userData._id);

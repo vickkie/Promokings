@@ -211,7 +211,7 @@ export default function App() {
               <CartProvider>
                 <WishProvider>
                   <NavigationContainer>
-                    <Stack.Navigator>
+                    <Stack.Navigator initialRouteName="Bottom Navigation">
                       {screens.map((screen, index) => (
                         <Stack.Screen
                           key={index}

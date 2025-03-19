@@ -36,6 +36,10 @@ const LoginPage = ({ navigation }) => {
   const [userType, setUserType] = useState("customer");
   const [obsecureText, setObsecureText] = useState(false);
 
+  React.useEffect(() => {
+    console.log("Navigated to LoginPage");
+  }, []);
+
   const inValidForm = () => {
     Alert.alert("Invalid Form", "Please provide required fields", [
       {
@@ -79,7 +83,7 @@ const LoginPage = ({ navigation }) => {
         finance: "Finance Navigation",
         customer: "Bottom Navigation",
         driver: "Driver Navigation",
-        dispatch: "Dispatch Navigation",
+        dispatcher: "Dispatch Navigation",
         supplier: "Supplier Navigation",
       };
 

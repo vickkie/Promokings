@@ -27,7 +27,8 @@ const ChatListScreen = () => {
 
   const fetchUsers = async () => {
     try {
-      const userRole = userData?.position || "customer";
+      const userRole = userData?.position || userData?.role || "customer";
+
       const response = await fetch(
         `${BACKEND_URL}/api/chat/chat-users?userId=${userData._id}&role=${userRole}&search=${searchQuery}`
       );
