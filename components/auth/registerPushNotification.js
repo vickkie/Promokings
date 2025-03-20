@@ -12,10 +12,14 @@ export async function registerForPushNotificationsAsync(userId) {
   if (!Device.isDevice) {
     console.log("Must use physical device for push notifications");
     return;
+  } else {
+    console.log("is device");
   }
 
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
   let finalStatus = existingStatus;
+
+  console.log(finalStatus);
 
   if (existingStatus !== "granted") {
     const { status } = await Notifications.requestPermissionsAsync();
@@ -27,7 +31,10 @@ export async function registerForPushNotificationsAsync(userId) {
     return;
   }
 
+  console.log(existingStatus, finalStatus);
+
   const projectId = Constants.expoConfig?.extra?.eas?.projectId;
+
   const token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
   console.log("Expo Push Token:", token);
 

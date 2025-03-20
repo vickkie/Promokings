@@ -27,7 +27,8 @@
         "foregroundImage": "./assets/icon-home.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.uzitrake.promokings"
+      "package": "com.uzitrake.promokings",
+       "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./assets/promoking-logoq.png"

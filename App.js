@@ -16,6 +16,8 @@ import { ProfileCompletionProvider } from "./components/auth/ProfileCompletionCo
 import { WishProvider } from "./contexts/WishContext";
 import { chatScreenOptions, systemScreenOptions } from "./screens_options/AppHeaderOptions";
 
+import { navigationRef } from "./Helpers/NavigationService";
+
 // Screens from ./screens
 import {
   Cart,
@@ -100,6 +102,7 @@ import DispatcherTabNavigation from "./navigation/DispatcherTabNavigation ";
 import PushNotification from "./components/auth/pushNotification";
 
 enableScreens();
+
 const Stack = createNativeStackNavigator();
 
 // Array of screen definitions
@@ -213,11 +216,11 @@ export default function App() {
         <BottomSheetModalProvider>
           <AuthProvider>
             {/* <OneSignalId /> */}
-            <PushNotification />
             <ProfileCompletionProvider>
               <CartProvider>
                 <WishProvider>
                   <NavigationContainer>
+                    <PushNotification />
                     <Stack.Navigator initialRouteName="Bottom Navigation">
                       {screens.map((screen, index) => (
                         <Stack.Screen

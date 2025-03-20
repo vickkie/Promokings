@@ -64,7 +64,8 @@
     "uuid": "^10.0.0",
     "yup": "^1.6.1",
     "expo-notifications": "~0.27.8",
-    "expo-device": "~5.9.4"
+    "expo-device": "~5.9.4",
+    "expo-modules-core": "~1.11.14"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
