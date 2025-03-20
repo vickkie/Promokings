@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 
 import { Buffer } from "buffer";
+import { startPermissionCheck } from "./registerPushNotification";
 
 global.atob = (input) => Buffer.from(input, "base64").toString("utf-8");
 global.btoa = (input) => Buffer.from(input, "utf-8").toString("base64");
@@ -17,6 +18,12 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     checkExistingUser();
   }, []);
+
+  useEffect(() => {
+    if (userData?._id) {
+      startPermissionCheck(userData._id);
+    }
+  }, [userData]);
 
   const checkExistingUser = async () => {
     try {

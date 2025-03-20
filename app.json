@@ -28,7 +28,10 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.uzitrake.promokings",
-       "useNextNotificationsApi": true
+       "useNextNotificationsApi": true,
+       "permissions": [
+       "NOTIFICATIONS"
+       ]
     },
     "web": {
       "favicon": "./assets/promoking-logoq.png"
