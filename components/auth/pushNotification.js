@@ -10,8 +10,8 @@ import * as Haptics from "expo-haptics";
 // Ensure notifications are handled correctly
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: false, // Prevents default alert popup, we show custom one
-    shouldPlaySound: true, // Uses the system's default sound
+    shouldShowAlert: false,
+    shouldPlaySound: true,
     shouldSetBadge: true,
   }),
 });
