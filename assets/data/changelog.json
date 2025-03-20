@@ -114,6 +114,12 @@
       "version": "1.4.1",
       "whatsNew": ["Customer order pickup","Global chat system across users","Company About Us","User order receipt generation","New messages notification"],
       "fixed": [""]
+    },
+    {
+      "releaseDate": "2025-03-19",
+      "version": "1.4.2",
+      "whatsNew": ["Dispatch management","Global Ui improvement","New messages notification"],
+      "fixed": ["Forced navigation to login page"]
     }
   ]
 }

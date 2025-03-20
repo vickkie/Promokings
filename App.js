@@ -84,6 +84,8 @@ import {
   DispatcherSettings,
   DispatcherProfile,
   DeliveryDispatchDetails,
+  MainCenter,
+  AddBid,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -115,6 +117,7 @@ const screens = [
   { name: "PreviewProduct", component: PreviewProduct, options: { headerShown: false } },
   { name: "EditProduct", component: EditProduct, options: { headerShown: false } },
   { name: "Add Product", component: AddProduct, options: { headerShown: false } },
+  { name: "AddBid", component: AddBid, options: { headerShown: false } },
   { name: "Login", component: LoginPage, options: { headerShown: false } },
   { name: "ProductDetails", component: ProductDetails, options: { headerShown: false } },
   { name: "ProductList", component: Products, options: { headerShown: false } },
@@ -134,6 +137,7 @@ const screens = [
   { name: "OrderSuccess", component: OrderSuccess, options: { headerShown: false } },
   { name: "OrderDetails", component: OrderDetails, options: { headerShown: false } },
   { name: "InventoryDashboard", component: InventoryDashboard, options: { headerShown: false } },
+  { name: "InventoryMaincenter", component: MainCenter, options: { headerShown: false } },
   { name: "SalesDashboard", component: SalesDashboard, options: { headerShown: false } },
   { name: "OrderSalesDetails", component: OrderSalesDetails, options: { headerShown: false } },
   { name: "EditSalesOrder", component: EditSalesOrder, options: { headerShown: false } },
@@ -206,7 +210,7 @@ export default function App() {
 
         <BottomSheetModalProvider>
           <AuthProvider>
-            {/* <OneSignalId /> */}
+            <OneSignalId />
             <ProfileCompletionProvider>
               <CartProvider>
                 <WishProvider>

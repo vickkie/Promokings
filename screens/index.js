@@ -33,6 +33,8 @@ import AddCategory from "./Staff/Inventory/AddCategory";
 import EditCategory from "./Staff/Inventory/EditCategory";
 import PreviewProduct from "./Staff/Inventory/PreviewProduct";
 import InventoryProfile from "./Staff/Inventory/InventoryProfile";
+import MainCenter from "./Staff/Inventory/MainCenter";
+import AddBid from "./Staff/Inventory/AddBid";
 
 //sales
 
@@ -121,6 +123,7 @@ export {
   // BottomTabNavigation,
   // InventoryTabNavigation,
   AddProduct,
+  AddBid,
   EditProductList,
   EditProduct,
   StaffSettings,
@@ -129,6 +132,7 @@ export {
   EditCategory,
   PreviewProduct,
   InventoryProfile,
+  MainCenter,
 
   //sales
   SalesDashboard,

@@ -96,8 +96,20 @@ import steeringlight from "../assets/svg/steering-wheel-light.svg";
 import steeringdark from "../assets/svg/steering-wheel.svg";
 import deliverydark from "../assets/svg/delivery-dark.svg";
 import deliverylight from "../assets/svg/delivery-filled.svg";
+import businesscash from "../assets/svg/business-cash.svg";
+import treebox from "../assets/svg/tree-box.svg";
+import contract from "../assets/svg/business-contract.svg";
+import megaphone from "../assets/svg/share-megaphone.svg";
+import datafile from "../assets/svg/data-file.svg";
+import barcode from "../assets/svg/shopping-barcode.svg";
 
 const iconMap = {
+  barcode: barcode,
+  datafile: datafile,
+  megaphone: megaphone,
+  contract: contract,
+  treebox: treebox,
+  businesscash: businesscash,
   deliverylight: deliverylight,
   deliverydark: deliverydark,
   steeringlight: steeringlight,

@@ -7,6 +7,7 @@ import {
   StaffSettings,
   EditCategoriesList,
   EditCategory,
+  MainCenter,
 } from "../screens";
 
 import { COLORS } from "../constants/index";
@@ -77,8 +78,8 @@ const InventoryTabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="AddProduct"
-        component={AddProduct}
+        name="InventoryMaincenter"
+        component={MainCenter}
         options={{
           tabBarIcon: ({ focused }) => (
             <TouchableOpacity

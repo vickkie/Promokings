@@ -6,7 +6,6 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  Switch,
   Alert,
   ActivityIndicator,
   RefreshControl,
@@ -21,44 +20,36 @@ import Toast from "react-native-toast-message";
 import { COLORS, SIZES } from "../../../constants";
 import { ScrollView } from "react-native-gesture-handler";
 import { Picker } from "@react-native-picker/picker";
-import useFetch from "../../../hook/useFetch";
-
+import DatePicker from "react-native-date-picker"; // Import date picker
 import { BACKEND_PORT } from "@env";
 
-const AddProduct = () => {
+const AddBid = () => {
   const navigation = useNavigation();
-  const [title, setTitle] = useState("");
-  const [price, setPrice] = useState("");
-  const [availability, setAvailability] = useState(false);
+  const [productName, setProductName] = useState("");
+  const [expectedPrice, seExpectedPrice] = useState("");
+  const [quantity, setQuantity] = useState(0);
+  const [bidDescription, setBidDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("https://i.postimg.cc/j56q20rB/images.jpg");
-  const [productId, setProductId] = useState(generateProductId());
+  const [deadline, setDeadline] = useState(new Date()); // Deadline state
+  const [open, setOpen] = useState(false); // Controls DatePicker modal
+
   const [image, setImage] = useState(null);
   const [loader, setLoader] = useState(false);
-  const [category, setCategory] = useState("");
-  const [quantity, setQuantity] = useState(0);
-  const [supplier, setSupplier] = useState("");
-  const [suppliers, setSuppliers] = useState([{ id: "KINGS_COLLECTION", name: "Kings Collection" }]);
-  const [description, setDescription] = useState("");
   const [isEditable, setIsEditable] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
-  const { data: dataSuppliers, isLoading: isSupplierLoading, error: SupplierError } = useFetch("v2/supplier");
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     try {
       // Reset form fields
-      setTitle("");
-      setPrice("");
-      setAvailability(false);
+      setProductName("");
+      seExpectedPrice("");
       setImageUrl("https://i.postimg.cc/j56q20rB/images.jpg");
-      setProductId(generateProductId());
       setImage(null);
-      setCategory("");
-      setSupplier("");
-      setDescription("");
+      setBidDescription("");
       setQuantity(0);
+      setDeadline(new Date());
     } catch (error) {
       console.log("refresh failed");
     } finally {
@@ -68,63 +59,51 @@ const AddProduct = () => {
     }
   }, []);
 
-  function generateProductId() {
-    const randomId = Math.random().toString(36).substr(2, 7).toUpperCase();
-    return `PRK-P${randomId}`;
-  }
   const toggleEditable = () => {
     setIsEditable(!isEditable);
   };
 
   const validationSchema = Yup.object().shape({
-    title: Yup.string().required("Product title is required"),
-    price: Yup.number().required("Price is required").positive("Price must be a positive number"),
-    category: Yup.string().required("Category is required"),
-    supplier: Yup.string().required("Supplier is required"),
-    description: Yup.string().required("Description is required"),
+    productName: Yup.string().required("Product Name is required"),
+    expectedPrice: Yup.number().required("Price is required").positive("Price must be a positive number"),
+    bidDescription: Yup.string().required("Description is required"),
+    deadline: Yup.date().required("Deadline is required"),
   });
 
-  const handleAddProduct = async () => {
-    const newProduct = {
-      productId,
-      title,
-      price,
-      availability,
-      imageUrl: imageUrl,
-      category,
-      supplier,
-      description,
+  const handleAddBid = async () => {
+    const newBidRequest = {
+      productName,
       quantity,
+      expectedPrice,
+      bidDescription,
+      deadline, // include deadline in the request
     };
 
     try {
       if (image) {
         const uploadedImageUrl = await uploadImage(image);
         setImageUrl(uploadedImageUrl);
-        newProduct.imageUrl = uploadedImageUrl;
+        newBidRequest.imageUrl = uploadedImageUrl;
       }
 
       // Validate with Yup
-      await validationSchema.validate(newProduct);
-      // Now that the image is uploaded, proceed to add the product
-      //   console.log("New Product:", newProduct);
-      const response = await axios.post(`${BACKEND_PORT}/api/products`, newProduct);
+      await validationSchema.validate(newBidRequest);
+
+      // Send bid to backend (Make sure you have the correct request ID)
+      const response = await axios.post(`${BACKEND_PORT}/api/inventory-requests`, newBidRequest);
 
       if (response.status === 200 || response.status === 201) {
-        showToast("success", "Product added successfully!");
-        // Reset form fields
-        setTitle("");
-        setPrice("");
-        setAvailability(false);
-        setImageUrl("https://i.postimg.cc/j56q20rB/images.jpg");
-        setProductId(generateProductId());
-        setImage(null);
-        setCategory("");
-        setSupplier("");
-        setDescription("");
-        setQuantity(0);
+        showToast("success", "Bid added successfully!");
 
-        // Navigate to dashboard
+        // Reset form fields
+        setProductName("");
+        seExpectedPrice("");
+        setBidDescription("");
+        setQuantity(0);
+        setImageUrl("https://i.postimg.cc/j56q20rB/images.jpg");
+        setDeadline(new Date());
+
+        // Navigate back to inventory dashboard
         navigation.navigate("Inventory Navigation", {
           screen: "InventoryDashboard",
           params: { refreshList: true },
@@ -132,7 +111,7 @@ const AddProduct = () => {
       }
     } catch (error) {
       console.log(error);
-      showToast("error", "Product doesn't meet the required standard", error.message);
+      showToast("error", "Failed to add bid", error.message);
     }
   };
 
@@ -143,33 +122,25 @@ const AddProduct = () => {
       const formData = new FormData();
       const fileType = image.split(".").pop(); // Extract the file extension
 
-      // Adjust the field name to 'profilePicture' to match the server's expectation
       formData.append("file", {
         uri: image,
         name: `productImage.${fileType}`, // Use the extracted file extension
         type: `image/${fileType}`,
       });
 
-      // Assuming BACKEND_PORT is correctly defined to point to your server's address
       const response = await axios.post(`${BACKEND_PORT}/upload`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
 
-      //   console.log(response);
-
       if (response.status === 200) {
-        // Update to extract 'fileUrl' from the response data
-
         setUploading(false);
-        return response.data.fileUrl; // Return the uploaded image URL from the response
+        return response.data.fileUrl;
       } else {
-        setAvailability(false);
         throw new Error("Image upload failed");
       }
     } catch (err) {
-      //   console.log("outer layer", err);
       showToast("error", "Image upload failed", "Please try again.");
       throw err;
     } finally {
@@ -194,7 +165,6 @@ const AddProduct = () => {
     if (!pickerResult.canceled && pickerResult.assets && pickerResult.assets.length > 0) {
       const pickedUri = pickerResult.assets[0].uri;
       setImage(pickedUri);
-      //   console.log("picked uri", pickedUri);
     }
   };
 
@@ -214,9 +184,9 @@ const AddProduct = () => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
             <Icon name="backbutton" size={26} />
           </TouchableOpacity>
-          <Text style={styles.heading}>ADD PRODUCT</Text>
-          <TouchableOpacity style={styles.buttonWrap} onPress={handleAddProduct}>
-            <Icon name="add" size={26} />
+          <Text style={styles.heading}>ADD NEW PRODUCT BID</Text>
+          <TouchableOpacity style={styles.buttonWrap} onPress={() => {}}>
+            <Icon name="megaphone" size={26} />
           </TouchableOpacity>
         </View>
 
@@ -232,32 +202,27 @@ const AddProduct = () => {
               </TouchableOpacity>
 
               <TextInput
-                style={[styles.input, styles.nonEditable]}
-                placeholder="Product ID"
-                value={productId}
-                editable={false}
-              />
-              <TextInput
                 style={styles.input}
                 placeholder="Product Title"
-                value={title}
-                onChangeText={(text) => setTitle(text)}
+                value={productName}
+                onChangeText={(text) => setProductName(text)}
               />
               <TextInput
                 style={styles.input}
-                placeholder="Price"
-                value={price}
-                onChangeText={(text) => setPrice(text)}
+                placeholder="Expected Price"
+                value={expectedPrice}
+                onChangeText={(text) => seExpectedPrice(text)}
                 keyboardType="numeric"
               />
 
               <TextInput
                 style={styles.descriptionInput}
-                placeholder="Product Description"
-                value={description}
-                onChangeText={(text) => setDescription(text)}
+                placeholder="Bid Product Description"
+                value={bidDescription}
+                onChangeText={(text) => setBidDescription(text)}
                 multiline
               />
+
               <View style={styles.imageurlContainer}>
                 <TextInput
                   style={[styles.input, styles.imageurl, !isEditable ? styles.nonEditable : ""]}
@@ -266,71 +231,51 @@ const AddProduct = () => {
                   onChangeText={(text) => setImageUrl(text)}
                   editable={isEditable}
                 />
-
                 <TouchableOpacity style={styles.editButton} onPress={toggleEditable}>
                   <Icon name="pencil" size={27} />
                 </TouchableOpacity>
               </View>
 
-              <View style={styles.pickerWrapper}>
-                <Text style={styles.pickerLabel}>Category</Text>
-                <Picker
-                  selectedValue={category}
-                  onValueChange={(itemValue, itemIndex) => {
-                    setCategory(itemValue);
-                  }}
-                  style={styles.picker}
-                >
-                  <Picker.Item label="Select a category" value={""} />
-                  {categories &&
-                    categories.map((cat) => {
-                      //
-                      return <Picker.Item key={cat._id} label={cat.title} value={cat.title} />;
-                    })}
-                </Picker>
-              </View>
               <View style={{ marginTop: 20 }}>
                 <TextInput
                   style={styles.input}
                   placeholder="Quantity"
-                  value={quantity}
+                  value={quantity.toString()}
                   onChangeText={(text) => setQuantity(text)}
                   keyboardType="numeric"
                 />
               </View>
 
-              <View style={styles.pickerWrapper}>
-                <Text style={styles.pickerLabel}>Supplier</Text>
-                <Picker
-                  selectedValue={supplier}
-                  onValueChange={(itemValue) => setSupplier(itemValue)}
-                  style={styles.picker}
+              {/* Deadline Picker */}
+              <View style={{ marginTop: 20 }}>
+                <Text style={{ fontSize: 16, marginBottom: 5 }}>Select Deadline</Text>
+                <TouchableOpacity
+                  onPress={() => setOpen(true)}
+                  style={{ padding: 10, borderWidth: 1, borderRadius: 5, borderColor: COLORS.gray }}
                 >
-                  <Picker.Item label="Select a supplier" value="" />
-                  {suppliers &&
-                    suppliers.map((sup) => (
-                      <Picker.Item
-                        key={sup.id}
-                        label={sup.name}
-                        value={sup.name}
-                        color="black"
-                        fontFamily="medium"
-                        enabled={true}
-                      />
-                    ))}
-                </Picker>
+                  <Text>{deadline.toDateString()}</Text>
+                </TouchableOpacity>
+                <DatePicker
+                  modal
+                  open={open}
+                  date={deadline}
+                  mode="date"
+                  minimumDate={new Date()} // Prevent selecting past dates
+                  onConfirm={(selectedDate) => {
+                    setOpen(false);
+                    setDeadline(selectedDate);
+                  }}
+                  onCancel={() => {
+                    setOpen(false);
+                  }}
+                />
               </View>
 
-              <View style={styles.availabilityRow}>
-                <Text>Available:</Text>
-                <Switch value={availability} onValueChange={(value) => setAvailability(value)} />
-              </View>
-
-              <TouchableOpacity style={styles.submitBtn} onPress={handleAddProduct}>
+              <TouchableOpacity style={styles.submitBtn} onPress={handleAddBid}>
                 {uploading ? (
                   <ActivityIndicator size={30} color={COLORS.themew} />
                 ) : (
-                  <Text style={styles.submitText}>Add Product</Text>
+                  <Text style={styles.submitText}>Add New Bid</Text>
                 )}
               </TouchableOpacity>
             </View>
@@ -434,6 +379,8 @@ const styles = StyleSheet.create({
   submitBtn: {
     backgroundColor: COLORS.primary,
     padding: 15,
+    marginTop: 10,
+    paddingVertical: 20,
     borderRadius: SIZES.medium,
     alignItems: "center",
   },
@@ -462,7 +409,7 @@ const styles = StyleSheet.create({
   heading: {
     fontFamily: "bold",
     textTransform: "uppercase",
-    fontSize: SIZES.large,
+    fontSize: SIZES.medium,
     textAlign: "center",
     color: COLORS.themeb,
   },
@@ -503,4 +450,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddProduct;
+export default AddBid;
