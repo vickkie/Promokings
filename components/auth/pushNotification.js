@@ -116,12 +116,11 @@ export default function PushNotification() {
             }}
             style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
           >
-            {/* Avatar (Replace with user image if available) */}
             <Image
               source={
                 notification.data?.avatar
                   ? { uri: notification.data.avatar }
-                  : require("../../assets/images/userDefault.png") // Local placeholder image
+                  : require("../../assets/images/userDefault.webp")
               }
               style={{ width: 40, height: 40, borderRadius: 20, marginRight: 10 }}
             />
