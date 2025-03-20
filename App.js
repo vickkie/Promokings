@@ -94,8 +94,10 @@ import SalesTabNavigation from "./navigation/SalesTabNavigation";
 import UpdateCheck from "./components/UpdateCheck";
 import DriverTabNavigation from "./navigation/DriverTabNavigator";
 import FinanceTabNavigation from "./navigation/FinanceTabNavigator";
-import OneSignalId from "./components/auth/oneSignal";
+// import OneSignalId from "./components/auth/oneSignal";
 import DispatcherTabNavigation from "./navigation/DispatcherTabNavigation ";
+
+import PushNotification from "./components/auth/pushNotification";
 
 enableScreens();
 const Stack = createNativeStackNavigator();
@@ -210,7 +212,8 @@ export default function App() {
 
         <BottomSheetModalProvider>
           <AuthProvider>
-            <OneSignalId />
+            {/* <OneSignalId /> */}
+            <PushNotification />
             <ProfileCompletionProvider>
               <CartProvider>
                 <WishProvider>
