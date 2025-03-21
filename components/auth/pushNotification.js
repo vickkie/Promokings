@@ -72,7 +72,10 @@ export default function PushNotification() {
         console.log("Notification Clicked:", response);
         const data = response.notification.request.content.data;
         if (data?.conversationId) {
-          navigation.navigate("ChatScreen", { conversationId: data.conversationId });
+          navigation.navigate("ChatScreen", {
+            conversationId: data.conversationId,
+            chatWith: data?.chatWith,
+          });
         }
       });
     }
@@ -110,7 +113,10 @@ export default function PushNotification() {
           <TouchableOpacity
             onPress={() => {
               if (notification.data?.conversationId) {
-                navigation.navigate("ChatScreen", { conversationId: notification.data.conversationId });
+                navigation.navigate("ChatScreen", {
+                  conversationId: notification.data.conversationId,
+                  chatWith: notification.data?.chatWith,
+                });
               }
               setNotification(null); // Hide after tap
             }}
