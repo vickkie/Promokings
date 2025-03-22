@@ -31,8 +31,11 @@ const Home = () => {
         navigation.replace("Finance Navigation");
       } else if (hasRole("dispatcher")) {
         navigation.replace("Dispatch Navigation");
+      } else if (hasRole("supplier")) {
+        navigation.replace("Supplier Navigation");
       }
     }
+    console.log(userData?.position);
   }, [userLogin, hasRole]);
 
   const renderProfilePicture = () => {

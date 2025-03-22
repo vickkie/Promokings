@@ -9,12 +9,12 @@ const ProfileCompletionContext = createContext();
 const staffRequiredFields = ["username", "email", "password", "position", "fullName", "staffId", "phoneNumber"];
 const staffPositionSpecificFields = {
   driver: ["vehicle", "numberPlate"],
-  supplier: ["supplierProfile"],
 };
 const staffRoles = ["inventory", "finance", "admin", "driver", "sales", "supplier", "dispatcher", "customerservice"];
 
 const customerRequiredFields = ["username", "email", "password", "location", "phoneNumber", "firstname", "lastname"];
-// (Add any additional customer-specific fields as needed)
+
+const supplierRequiredFields = ["name", "email", "phoneNumber", "address"];
 
 const ProfileCompletionProvider = ({ children }) => {
   const { userData } = useContext(AuthContext);
@@ -28,31 +28,43 @@ const ProfileCompletionProvider = ({ children }) => {
     let completedCount = 0;
     let missing = [];
 
-    staffRequiredFields.forEach((field) => {
-      if (!user[field]) {
-        missing.push(field);
-      } else {
-        completedCount++;
-      }
-    });
-
-    if (user.position in staffPositionSpecificFields) {
-      staffPositionSpecificFields[user.position].forEach((field) => {
+    if (user.position === "supplier") {
+      supplierRequiredFields.forEach((field) => {
         if (!user[field]) {
           missing.push(field);
         } else {
           completedCount++;
         }
       });
+    } else {
+      staffRequiredFields.forEach((field) => {
+        if (!user[field]) {
+          missing.push(field);
+        } else {
+          completedCount++;
+        }
+      });
+
+      if (user.position in staffPositionSpecificFields) {
+        staffPositionSpecificFields[user.position].forEach((field) => {
+          if (!user[field]) {
+            missing.push(field);
+          } else {
+            completedCount++;
+          }
+        });
+      }
     }
 
-    const totalFields = staffRequiredFields.length + (staffPositionSpecificFields[user.position]?.length || 0);
+    const totalFields =
+      user.position === "supplier"
+        ? supplierRequiredFields.length
+        : staffRequiredFields.length + (staffPositionSpecificFields[user.position]?.length || 0);
     const completion = ((completedCount / totalFields) * 100).toFixed(2);
 
     setCompletionPercentage(completion);
     setMissingFields(missing);
-    setMessage(message);
-    setIsComplete(isComplete);
+    setIsComplete(missing.length === 0);
     await AsyncStorage.setItem("profileCompletion", JSON.stringify({ completion, missing }));
   };
 

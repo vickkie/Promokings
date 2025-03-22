@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { COLORS, SIZES } from "../../../constants";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -8,6 +8,7 @@ import { AuthContext } from "../../../components/auth/AuthContext";
 import Toast from "react-native-toast-message";
 import * as FileSystem from "expo-file-system";
 import Icon from "../../../constants/icons";
+import InventoryAdd from "../../../components/bottomsheets/InventoryAdd";
 
 // Function to cache image
 const cacheImage = async (uri) => {
@@ -64,27 +65,6 @@ const ProductListCard = ({ item, isGridView }) => {
     loadImage();
   }, [item.imageUrl]);
 
-  const addWishlist = async () => {
-    setIsWished(!isWished);
-
-    if (userLogin && item._id) {
-      const cartData = {
-        userId: userId,
-        favouriteItem: item._id,
-      };
-      try {
-        addFavourite(cartData);
-
-        showToast("success", "Added to your wishlist", "Item was successfully added");
-      } catch (error) {
-        // console.log(error);
-        showToast("error", "Ooops, Failed to add to Wishlist", "Try again later");
-      } finally {
-        setTimeout(() => setFeedback(null), 5000);
-      }
-    }
-  };
-
   const showToast = (type, text1, text2) => {
     Toast.show({
       type: type,
@@ -95,42 +75,61 @@ const ProductListCard = ({ item, isGridView }) => {
 
   const transitionTag = item._id ? `${item._id}` : null;
 
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate("PreviewProduct", {
-          item: item,
-          itemid: item._id,
-        });
-      }}
-    >
-      <View style={!isGridView ? styles.container : styles.gridCard}>
-        <View style={isGridView ? styles.imageContainer : styles.imageList}>
-          <Image source={{ uri: imageUri || item.imageUrl }} style={styles.image} sharedTransitionTag={transitionTag} />
-        </View>
-        <View style={styles.details}>
-          <Text style={styles.title} numberOfLines={1}>
-            {item.title}
-          </Text>
-          <Text style={styles.supplier} numberOfLines={1}>
-            {`${item.quantity} units`}
-          </Text>
-          <Text style={isGridView ? styles.gridPrice : styles.price}>Kshs {parseInt(item.price.replace("$", ""))}</Text>
-        </View>
+  const BottomSheetRef = useRef(null);
 
-        <TouchableOpacity
-          style={isGridView ? styles.addBtn : styles.editPencil}
-          onPress={() => {
-            navigation.navigate("EditProduct", {
-              item: item,
-              itemid: item._id,
-            });
-          }}
-        >
-          <Icon name="pencil" size={27} color={COLORS.primary} />
-        </TouchableOpacity>
-      </View>
-    </TouchableOpacity>
+  const openMenu = () => {
+    if (BottomSheetRef.current) {
+      BottomSheetRef.current.present();
+    }
+  };
+
+  return (
+    <>
+      <InventoryAdd ref={BottomSheetRef} item={item} />
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("PreviewProduct", {
+            item: item,
+            itemid: item._id,
+          });
+        }}
+      >
+        <View style={!isGridView ? styles.container : styles.gridCard}>
+          <View style={isGridView ? styles.imageContainer : styles.imageList}>
+            <Image
+              source={{ uri: imageUri || item.imageUrl }}
+              style={styles.image}
+              sharedTransitionTag={transitionTag}
+            />
+          </View>
+          <View style={styles.details}>
+            <Text style={styles.title} numberOfLines={1}>
+              {item.title}
+            </Text>
+            <Text style={styles.supplier} numberOfLines={1}>
+              {`${item.quantity} units`}
+            </Text>
+            <Text style={isGridView ? styles.gridPrice : styles.price}>
+              Kshs {parseInt(item.price.replace("$", ""))}
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            style={isGridView ? styles.addBtn : styles.editPencil}
+            // onPress={() => {
+            //   navigation.navigate("EditProduct", {
+            //     item: item,
+            //     itemid: item._id,
+            //   });
+            // }}
+
+            onPress={openMenu}
+          >
+            <Icon name="pencil" size={27} color={COLORS.primary} />
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    </>
   );
 };
 

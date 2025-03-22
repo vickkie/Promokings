@@ -20,31 +20,62 @@ import Toast from "react-native-toast-message";
 import { COLORS, SIZES } from "../../../constants";
 import { ScrollView } from "react-native-gesture-handler";
 import { Picker } from "@react-native-picker/picker";
-import DatePicker from "react-native-date-picker"; // Import date picker
+import DatePicker from "react-native-date-picker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { BACKEND_PORT } from "@env";
+import { useRoute } from "@react-navigation/native";
 
 const AddBid = () => {
   const navigation = useNavigation();
-  const [productName, setProductName] = useState("");
-  const [expectedPrice, seExpectedPrice] = useState("");
+
+  const route = useRoute();
+  // Get product from route params if it exists
+  const product = route.params?.product;
+
+  // Use product details as initial values if available, or fallback to empty/default values
+  const [productName, setProductName] = useState(product?.title || "");
+  const [expectedPrice, setExpectedPrice] = useState("");
   const [quantity, setQuantity] = useState(0);
   const [bidDescription, setBidDescription] = useState("");
-  const [imageUrl, setImageUrl] = useState("https://i.postimg.cc/j56q20rB/images.jpg");
-  const [deadline, setDeadline] = useState(new Date()); // Deadline state
-  const [open, setOpen] = useState(false); // Controls DatePicker modal
+  const [imageUrl, setImageUrl] = useState(product?.imageUrl || "https://i.postimg.cc/j56q20rB/images.jpg");
 
   const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(product?.imageUrl || "");
   const [loader, setLoader] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [deadline, setDeadline] = useState(new Date());
+  const [open, setOpen] = useState(false); // Controls DatePicker modal
+
+  const [mode, setMode] = useState("date");
+  const [show, setShow] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setShow(false);
+    setDeadline(currentDate);
+  };
+
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode("date");
+  };
+
+  const showTimepicker = () => {
+    showMode("time");
+  };
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     try {
       // Reset form fields
       setProductName("");
-      seExpectedPrice("");
+      setExpectedPrice("");
       setImageUrl("https://i.postimg.cc/j56q20rB/images.jpg");
       setImage(null);
       setBidDescription("");
@@ -76,7 +107,7 @@ const AddBid = () => {
       quantity,
       expectedPrice,
       bidDescription,
-      deadline, // include deadline in the request
+      deadline,
     };
 
     try {
@@ -97,7 +128,7 @@ const AddBid = () => {
 
         // Reset form fields
         setProductName("");
-        seExpectedPrice("");
+        setExpectedPrice("");
         setBidDescription("");
         setQuantity(0);
         setImageUrl("https://i.postimg.cc/j56q20rB/images.jpg");
@@ -196,6 +227,8 @@ const AddBid = () => {
               <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
                 {image ? (
                   <Image source={{ uri: image }} style={styles.imagePreview} />
+                ) : imagePreview ? (
+                  <Image source={{ uri: imagePreview }} style={styles.imagePreview} />
                 ) : (
                   <Image source={require("../../../assets/images/empty-product.png")} style={styles.imagePreview} />
                 )}
@@ -211,7 +244,7 @@ const AddBid = () => {
                 style={styles.input}
                 placeholder="Expected Price"
                 value={expectedPrice}
-                onChangeText={(text) => seExpectedPrice(text)}
+                onChangeText={(text) => setExpectedPrice(text)}
                 keyboardType="numeric"
               />
 
@@ -248,27 +281,25 @@ const AddBid = () => {
 
               {/* Deadline Picker */}
               <View style={{ marginTop: 20 }}>
-                <Text style={{ fontSize: 16, marginBottom: 5 }}>Select Deadline</Text>
+                <Text style={{ fontSize: 16, marginBottom: 5, paddingHorizontal: 12 }}>Select Deadline</Text>
                 <TouchableOpacity
-                  onPress={() => setOpen(true)}
-                  style={{ padding: 10, borderWidth: 1, borderRadius: 5, borderColor: COLORS.gray }}
+                  onPress={() => {
+                    setOpen(true);
+                    showDatepicker();
+                  }}
+                  style={styles.input}
                 >
                   <Text>{deadline.toDateString()}</Text>
+                  {show && (
+                    <DateTimePicker
+                      testID="dateTimePicker"
+                      value={deadline}
+                      mode={mode}
+                      is24Hour={true}
+                      onChange={onChange}
+                    />
+                  )}
                 </TouchableOpacity>
-                <DatePicker
-                  modal
-                  open={open}
-                  date={deadline}
-                  mode="date"
-                  minimumDate={new Date()} // Prevent selecting past dates
-                  onConfirm={(selectedDate) => {
-                    setOpen(false);
-                    setDeadline(selectedDate);
-                  }}
-                  onCancel={() => {
-                    setOpen(false);
-                  }}
-                />
               </View>
 
               <TouchableOpacity style={styles.submitBtn} onPress={handleAddBid}>

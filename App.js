@@ -88,6 +88,9 @@ import {
   DeliveryDispatchDetails,
   MainCenter,
   AddBid,
+  SupplierProfile,
+  SupplierDashboard,
+  SupplierSettings,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -96,6 +99,7 @@ import SalesTabNavigation from "./navigation/SalesTabNavigation";
 import UpdateCheck from "./components/UpdateCheck";
 import DriverTabNavigation from "./navigation/DriverTabNavigator";
 import FinanceTabNavigation from "./navigation/FinanceTabNavigator";
+import SupplierTabNavigation from "./navigation/SupplierTabNavigation";
 // import OneSignalId from "./components/auth/oneSignal";
 import DispatcherTabNavigation from "./navigation/DispatcherTabNavigation ";
 
@@ -108,6 +112,7 @@ const Stack = createNativeStackNavigator();
 // Array of screen definitions
 const screens = [
   { name: "Finance Navigation", component: FinanceTabNavigation, options: { headerShown: false } },
+  { name: "Supplier Navigation", component: SupplierTabNavigation, options: { headerShown: false } },
   { name: "Bottom Navigation", component: BottomTabNavigation, options: { headerShown: false } },
   { name: "Inventory Navigation", component: InventoryTabNavigation, options: { headerShown: false } },
   { name: "Sales Navigation", component: SalesTabNavigation, options: { headerShown: false } },
@@ -181,6 +186,9 @@ const screens = [
   { name: "DispatchSettings", component: DispatcherSettings, options: { headerShown: false } },
   { name: "DispatcherProfile", component: DispatcherProfile, options: { headerShown: false } },
   { name: "DeliveryDispatchDetails", component: DeliveryDispatchDetails, options: { headerShown: false } },
+  { name: "SupplierProfile", component: SupplierProfile, options: { headerShown: false } },
+  { name: "SupplierDashboard", component: SupplierDashboard, options: { headerShown: false } },
+  { name: "SupplierSettings", component: SupplierSettings, options: { headerShown: false } },
 ];
 
 export default function App() {

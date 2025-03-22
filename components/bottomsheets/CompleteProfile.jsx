@@ -70,13 +70,21 @@ const CompleteProfile = forwardRef((props, ref) => {
         formData.append(key, values[key]);
       });
 
-      const endpoint = `${BACKEND_PORT}/api/staff/updateDetails/${userData._id}`;
+      let endpoint;
+
+      if (userData?.position === "supplier" || userData?.role === "supplier") {
+        endpoint = `${BACKEND_PORT}/api/staff/updateDetails/supplier/${userData._id}`;
+      } else {
+        endpoint = `${BACKEND_PORT}/api/staff/updateDetails/${userData._id}`;
+      }
+
       const payload = {
         ...userData,
         ...values,
       };
 
-      // console.log(endpoint, payload);
+      console.log(endpoint, payload);
+      // return;
 
       const response = await axios.put(endpoint, payload, {
         headers: {

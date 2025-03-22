@@ -102,7 +102,7 @@ export default function PushNotification() {
             top: 0,
             left: 0,
             right: 0,
-            backgroundColor: "#128C7E", // WhatsApp green
+            backgroundColor: "#128C7E",
             padding: 12,
             flexDirection: "row",
             alignItems: "center",

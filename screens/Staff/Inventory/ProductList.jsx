@@ -16,6 +16,7 @@ import ProductListCard from "./ProductListCard";
 import { Ionicons } from "@expo/vector-icons";
 import Icon from "../../../constants/icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import InventoryAdd from "../../../components/bottomsheets/InventoryAdd";
 
 import { useFocusEffect } from "@react-navigation/native";
 
@@ -72,13 +73,13 @@ const EditProductList = () => {
     }, [route.params, categoryTitle])
   );
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     if (route.params) {
-  //       navigation.setParams({ refreshList: undefined, products: "products" }); // Clear params
-  //     }
-  //   }, [route.params])
-  // );
+  const BottomSheetRef = React.useRef(null);
+
+  const openMenu = () => {
+    if (BottomSheetRef.current) {
+      BottomSheetRef.current.present();
+    }
+  };
 
   useEffect(() => {
     if (data.length > 0) {
@@ -131,6 +132,7 @@ const EditProductList = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <InventoryAdd ref={BottomSheetRef} />
       <View style={styles.topWelcomeWrapper}>
         <View style={styles.appBarWrapper}>
           <View style={styles.appBar}>

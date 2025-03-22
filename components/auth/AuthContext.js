@@ -45,6 +45,7 @@ const AuthProvider = ({ children }) => {
   };
 
   const login = async (data) => {
+    await AsyncStorage.clear();
     setUserData(data);
     setUserLogin(true);
 

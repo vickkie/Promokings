@@ -91,6 +91,12 @@ import DeliveryDispatchDetails from "./Staff/Dispatcher/DeliveryDetails";
 
 import ChatListScreen from "./ChatListScreen";
 
+//supplier
+
+import SupplierDashboard from "./Staff/Supplier/SupplierDashboard";
+import SupplierProfile from "./Staff/Supplier/SupplierProfile";
+import SupplierSettings from "./Staff/Supplier/SupplierSettings";
+
 export {
   ChatListScreen,
   ChatScreen,
@@ -178,4 +184,9 @@ export {
   DispatcherProfile,
   DispatcherSettings,
   DeliveryDispatchDetails,
+
+  //supplier
+  SupplierDashboard,
+  SupplierProfile,
+  SupplierSettings,
 };
