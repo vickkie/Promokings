@@ -19,9 +19,13 @@ import { COLORS, SIZES } from "../constants";
 import { BACKEND_PORT } from "@env";
 import Icon from "../constants/icons";
 import { StatusBar } from "react-native";
+import Toast from "react-native-toast-message";
 
 const validationSchema = Yup.object().shape({
-  password: Yup.string().min(8, "Password must be at least 8 characters").required("Required"),
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters")
+    .transform((value) => (value ? value.trim() : value))
+    .required("Required"),
   email: Yup.string().email("Provide a valid email address").required("Required"),
   staffId: Yup.string().when("userType", {
     is: "staff",
@@ -62,7 +66,8 @@ const LoginPage = ({ navigation }) => {
 
       const response = await axios.post(endpoint, data);
 
-      if (!response.data || !response.data.TOKEN) {
+      // Check response status and token first
+      if (response.status !== 200 || !response.data || !response.data.TOKEN) {
         Alert.alert("Error Logging", "Unexpected response. Please try again.");
         return;
       }
@@ -71,9 +76,7 @@ const LoginPage = ({ navigation }) => {
       await login(response.data);
 
       // Get role from AuthContext
-      const role = getRole(response.data); // Assuming this function exists in AuthContext
-
-      // console.log("Detected role:", role);
+      const role = getRole(response.data);
 
       // Role-based navigation
       const roleRoutes = {
@@ -91,12 +94,12 @@ const LoginPage = ({ navigation }) => {
         console.log("Navigating to:", roleRoutes[role]);
         navigation.replace(roleRoutes[role]);
       } else {
-        // console.log("Role not found, navigating to default.");
         navigation.replace("Bottom Navigation");
       }
     } catch (error) {
-      console.log("error", error);
-      Alert.alert("Error", "Oops! Error logging in. Please try again.");
+      // Pull the error message from the response
+      const errorMsg = error.response?.data?.message || "Oops! Error logging in. Please try again.";
+      Alert.alert("Login Failure", errorMsg);
     } finally {
       setLoader(false);
     }
@@ -105,6 +108,7 @@ const LoginPage = ({ navigation }) => {
   return (
     <ScrollView>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.themey} />
+
       <SafeAreaView style={{ marginHorizontal: 21 }}>
         <View>
           <BackBtn
@@ -139,6 +143,7 @@ const LoginPage = ({ navigation }) => {
               isValid,
               setFieldTouched,
               touched,
+              setFieldValue,
             }) => (
               <View>
                 <View style={styles.chooseWrapper}>
@@ -184,7 +189,7 @@ const LoginPage = ({ navigation }) => {
                       autoCorrect={false}
                       style={{ flex: 1 }}
                       value={values.email}
-                      onChangeText={handleChange("email")}
+                      onChangeText={(text) => setFieldValue("email", text.trim())}
                     />
                   </View>
                   {touched.email && errors.email && <Text style={styles.errorMessage}>{errors.email}</Text>}

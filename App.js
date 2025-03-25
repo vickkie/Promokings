@@ -6,6 +6,8 @@ import React, { useEffect, useContext } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import Toast from "react-native-toast-message";
+import toastConfig from "./utils/toastConfig";
+
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import ErrorBoundary2 from "./screens_options/ErrorBoundary";
@@ -243,7 +245,7 @@ export default function App() {
                         />
                       ))}
                     </Stack.Navigator>
-                    <Toast />
+                    <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
                   </NavigationContainer>
                 </WishProvider>
               </CartProvider>

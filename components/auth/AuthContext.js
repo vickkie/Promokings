@@ -45,7 +45,8 @@ const AuthProvider = ({ children }) => {
   };
 
   const login = async (data) => {
-    await AsyncStorage.clear();
+    await AsyncStorage.removeItem("id");
+
     setUserData(data);
     setUserLogin(true);
 
@@ -53,12 +54,12 @@ const AuthProvider = ({ children }) => {
 
     await AsyncStorage.setItem(`user${data?._id}`, JSON.stringify(data));
   };
-
   const logout = async () => {
     setUserData(null);
     setUserLogin(false);
-    // Clear AsyncStorage
-    await AsyncStorage.clear();
+
+    await AsyncStorage.removeItem("id");
+    await AsyncStorage.removeItem(`user${userData?._id}`);
   };
 
   const userLogout = () => {

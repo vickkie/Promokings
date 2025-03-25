@@ -12,6 +12,9 @@ import axios from "axios";
 import { BACKEND_PORT } from "@env";
 import Toast from "react-native-toast-message";
 import usePost2 from "../hook/usePost2";
+import IntlPhoneInput from "react-native-intl-phone-input";
+import { Modal } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string().min(8, "Password must be at least 8 characters").required("Required"),
@@ -20,16 +23,25 @@ const validationSchema = Yup.object().shape({
     .required("Required"),
   email: Yup.string().email("Provide a valid email address").required("Required"),
   username: Yup.string().min(3, "Provide a valid username").required("Required"),
+  phoneNumber: Yup.string()
+    .min(4)
+    .required("Phone number is required")
+    .matches(/^\+?[0-9]+$/, "Phone number must contain only digits"),
 });
 
 const Register = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
   const [obsecureText, setObsecureText] = useState(true);
+
+  const [finalPhoneNumber, setfinalPhoneNumber] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [allcountries, setallCountries] = useState([]);
+  const [filteredCountries, setFilteredCountries] = useState(allcountries);
   const { responseData, setUpdateStatus, updateStatus, isLoading, error, errorMessage, postData } =
     usePost2("auth/register");
 
   useEffect(() => {
-    console.log(responseData);
+    // console.log(responseData);
   }, [responseData]);
 
   const inValidForm = () => {
@@ -66,8 +78,12 @@ const Register = ({ navigation }) => {
     setLoader(true);
 
     try {
-      const { email, password, username } = value;
-      const newdata = { email, password, username };
+      const { email, password, username, phoneNumber } = value;
+      const newdata = { email, password, username, phoneNumber };
+
+      // console.log(finalPhoneNumber);
+
+      // return;
 
       const response = await axios.post(`${BACKEND_PORT}/auth/register`, newdata);
 
@@ -97,6 +113,71 @@ const Register = ({ navigation }) => {
     }
   };
 
+  const handleSearch = (query) => {
+    const filtered = allcountries.filter((country) => {
+      return country?.en?.toLowerCase().includes(query?.toLowerCase());
+    });
+    setFilteredCountries(filtered);
+  };
+
+  const renderCustomModal = (modalVisible, countries, onCountryChange) => {
+    // console.log(countries);
+    setallCountries(countries);
+
+    return (
+      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+          <View style={styles.modalContainer}>
+            <View style={styles.searchContainer}>
+              <TextInput style={styles.searchInput} placeholder="Search Country" onChangeText={handleSearch} />
+              <Text style={styles.searchIcon}>🔍</Text>
+            </View>
+
+            {/* Country List */}
+            <FlatList
+              data={filteredCountries}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    onCountryChange(item.code);
+                    // console.log(item.code);
+                  }}
+                >
+                  <View style={styles.countryItem}>
+                    <Text style={styles.flag}>{item.flag}</Text>
+                    <Text style={styles.countryName}>{item.en}</Text>
+                    <Text style={styles.countryCode}>{item.dialCode}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+
+            {/* Close Button */}
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => {
+                this.phoneInput.hideModal();
+                setFilteredCountries(countries);
+              }}
+            >
+              <Text style={styles.closeButtonText}>CLOSE</Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </Modal>
+    );
+  };
+
+  useEffect(() => {
+    if (finalPhoneNumber) {
+      validationSchema
+        .validate({ finalPhoneNumber })
+        .then(() => setPhoneError(""))
+        .catch((err) => setPhoneError(err.errors[0]));
+    }
+  }, [finalPhoneNumber]);
+
   return (
     <ScrollView>
       <SafeAreaView style={{ marginHorizontal: 20 }}>
@@ -112,6 +193,7 @@ const Register = ({ navigation }) => {
               password: "",
               confirmPassword: "",
               username: "",
+              phoneNumber: "",
             }}
             validationSchema={validationSchema}
             onSubmit={(values) => registerUser(values)}
@@ -126,6 +208,7 @@ const Register = ({ navigation }) => {
               isValid,
               setFieldTouched,
               touched,
+              setFieldValue,
             }) => (
               <View>
                 <View style={styles.wrapper}>
@@ -176,6 +259,23 @@ const Register = ({ navigation }) => {
                   </View>
 
                   {touched.email && errors.email && <Text style={styles.errorMessage}>{errors.email}</Text>}
+                </View>
+
+                <Text style={styles.label}>Phone Number</Text>
+
+                <View style={[styles.input2, phoneError ? styles.errorb : styles.successb]}>
+                  <IntlPhoneInput
+                    ref={(ref) => (phoneInput = ref)}
+                    customModal={renderCustomModal}
+                    defaultCountry="KE"
+                    lang="EN"
+                    onChangeText={({ dialCode, unmaskedPhoneNumber }) => {
+                      setFieldValue("phoneNumber", `${dialCode}${unmaskedPhoneNumber}`);
+                      setfinalPhoneNumber(unmaskedPhoneNumber);
+                    }}
+                    flagStyle={styles.flagWidth}
+                    containerStyle={styles.input22}
+                  />
                 </View>
 
                 <View style={styles.wrapper}>
@@ -267,7 +367,7 @@ export default Register;
 
 const styles = StyleSheet.create({
   cover: {
-    height: SIZES.height / 3.8,
+    height: SIZES.height / 4.8,
     width: SIZES.width - 60,
     resizeMode: "contain",
     marginBottom: SIZES.medium,
@@ -320,5 +420,67 @@ const styles = StyleSheet.create({
     marginTop: 2,
     textAlign: "center",
     marginBottom: 20,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "white",
+    margin: 20,
+    borderRadius: 10,
+    padding: 20,
+  },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    height: 40,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+  },
+  searchIcon: {
+    fontSize: 20,
+    marginLeft: 10,
+  },
+  countryItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f0f0f0",
+  },
+  flag: {
+    fontSize: 24,
+    marginRight: 10,
+  },
+  // flagWidth: {
+  //   height: 40,
+  //   width: 50,
+  // },
+  countryName: {
+    flex: 1,
+    fontSize: 16,
+    color: "#333",
+  },
+  countryCode: {
+    fontSize: 16,
+    color: "#888",
+  },
+
+  closeButton: {
+    marginTop: 20,
+    backgroundColor: "#007BFF",
+    paddingVertical: 10,
+    alignItems: "center",
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
