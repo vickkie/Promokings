@@ -27,7 +27,10 @@ const cacheImage = async (uri) => {
 
 const RequestCard = ({ item, isGridView }) => {
   const navigation = useNavigation();
-  const [imageUri, setImageUri] = useState("");
+  const [imageUri, setImageUri] = useState(false);
+  const [bidAccepted, setBidAccepted] = useState(false);
+  const [lostBid, setLostBid] = useState(false);
+  const { userData } = useContext(AuthContext);
 
   useEffect(() => {
     const loadImage = async () => {
@@ -43,14 +46,38 @@ const RequestCard = ({ item, isGridView }) => {
   const BottomSheetRef = useRef(null);
   const openMenu = () => BottomSheetRef.current?.present();
 
+  //  const filteredBids =
+  //    !loading && bidData && bidData[0]?.bids ? bidData[0].bids.filter((bid) => bid.supplier !== null) : [];
+
+  //  useEffect(() => {
+  //    !loading && bidData && userData?.supplierProfile?._id
+  //      ? filteredBids.find((bid) => {
+  //          if (bid.supplier._id === userData.supplierProfile._id) {
+  //            setHaveBid(true);
+  //            setOldBid(bid?.bidPrice);
+  //          }
+  //        })
+  //      : null;
+  //  }, [loading, bidData]);
+
+  console.log(item?.selectedSupplier);
+
+  useEffect(() => {
+    if (item?.selectedSupplier === userData?.supplierProfile?._id) {
+      console.log("what");
+      setBidAccepted(true);
+    } else if (item?.selectedSupplier !== null) {
+      setLostBid(true);
+    }
+  }, []);
   return (
     <>
-      <SupplierBid ref={BottomSheetRef} item={item} />
+      <SupplierBid ref={BottomSheetRef} bidAccepted={bidAccepted} lostBid={lostBid} item={item} />
       <TouchableOpacity onPress={openMenu}>
         <View
           style={[
             !isGridView ? styles.container : styles.gridCard,
-            { backgroundColor: item.status === "Accepted" ? "#a3eed8" : COLORS.themeg },
+            { backgroundColor: bidAccepted ? "#a3eed8" : lostBid ? "#F3D0CE" : COLORS.themeg },
           ]}
         >
           <View style={isGridView ? styles.imageContainer : styles.imageList}>
@@ -69,7 +96,8 @@ const RequestCard = ({ item, isGridView }) => {
             </Text>
 
             <Text style={[styles.price, { color: item.status === "Accepted" ? "#fff" : "red" }]}>
-              Status: {item?.status}
+              Status:{" "}
+              {item?.status === "Pending" ? "Open Bid" : lostBid ? "Bid Lost" : bidAccepted ? "Won Bid" : "Pending"}
             </Text>
           </View>
           <TouchableOpacity style={isGridView ? styles.addBtn : styles.editPencil} onPress={openMenu}>

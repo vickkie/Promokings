@@ -210,25 +210,26 @@ const InventoryRequests = () => {
             ref={scrollRef}
             onScroll={handleScroll}
             scrollEventThrottle={16}
-            ListEmptyComponent={
-              <View>
-                <Text>Hey</Text>
-              </View>
-            }
             key={flatListKey}
             keyExtractor={(item) => item._id}
             contentContainerStyle={[{ columnGap: SIZES.medium }, styles.flatlistContainer]}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
             numColumns={isGridView ? 2 : 1}
             data={filteredData}
-            renderItem={({ item }) => <RequestCard item={item} isGridView={isGridView} />}
+            renderItem={({ item }) => (
+              <RequestCard
+                item={item}
+                // userData={userData}
+                isGridView={isGridView}
+              />
+            )}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           />
         )}
 
         {filteredData.length === 0 && !isLoading && (
           <View style={styles.errorContainer}>
-            <Text style={styles.errorMessage}>Sorry, no products available</Text>
+            <Text style={styles.errorMessage}>Sorry, no bids available</Text>
             <TouchableOpacity onPress={refetch} style={styles.retryButton}>
               <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
               <Text style={styles.retryButtonText}>Retry Again</Text>

@@ -25,7 +25,7 @@ const cacheImage = async (uri) => {
   }
 };
 
-const BidListCard = ({ item, isGridView }) => {
+const BidListCard = ({ item, refetch, isGridView }) => {
   const navigation = useNavigation();
   const [imageUri, setImageUri] = useState("");
 
@@ -45,7 +45,7 @@ const BidListCard = ({ item, isGridView }) => {
 
   return (
     <>
-      <BidToInventory ref={BottomSheetRef} item={item} />
+      <BidToInventory ref={BottomSheetRef} item={item} refetch={refetch} />
       <TouchableOpacity onPress={openMenu}>
         <View style={!isGridView ? styles.container : styles.gridCard}>
           <View style={isGridView ? styles.imageContainer : styles.imageList}>

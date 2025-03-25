@@ -38,7 +38,7 @@ const BidList = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [isGridView, setIsGridView] = useState(true);
   const [statuses, setstatuses] = useState(["Pending", "Accepted", "Rejected"]);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedStatus, setselectedStatus] = useState("");
   const [searching, setIsSearching] = useState(false);
   const [searchText, setSearchText] = useState("");
 
@@ -60,18 +60,6 @@ const BidList = () => {
         //  cleanup logic i will add
       };
     }, [route.params, refreshList])
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      if (route.params?.categoryTitle && categoryTitle !== "") {
-        setSelectedCategory(categoryTitle);
-      }
-
-      return () => {
-        //  cleanup logic i will add if i need
-      };
-    }, [route.params, categoryTitle])
   );
 
   const BottomSheetRef = React.useRef(null);
@@ -125,7 +113,11 @@ const BidList = () => {
   };
 
   // Filter products based on selected category, selected and search text
-  const filteredData = data.filter((item) => item.productName.toLowerCase().includes(searchText.toLowerCase()));
+  const filteredData = data.filter(
+    (item) =>
+      item.productName.toLowerCase().includes(searchText.toLowerCase()) &&
+      item.status.toLowerCase().includes(selectedStatus.toLowerCase())
+  );
 
   const flatListKey = isGridView ? "grid" : "list"; // Key for FlatList
 
@@ -175,13 +167,13 @@ const BidList = () => {
                 <Ionicons name="chevron-down" size={16} color="#000" />
               </View>
               <Picker
-                selectedValue={selectedCategory}
+                selectedValue={selectedStatus}
                 style={styles.picker}
-                onValueChange={(itemValue) => setSelectedCategory(itemValue)}
+                onValueChange={(itemValue) => setselectedStatus(itemValue)}
               >
                 <Picker.Item label="All Status" value="" />
-                {statuses.map((category, index) => (
-                  <Picker.Item key={index} label={category} value={category} />
+                {statuses.map((status, index) => (
+                  <Picker.Item key={index} label={status} value={status} />
                 ))}
               </Picker>
             </TouchableOpacity>
@@ -211,18 +203,13 @@ const BidList = () => {
             ref={scrollRef}
             onScroll={handleScroll}
             scrollEventThrottle={16}
-            ListEmptyComponent={
-              <View>
-                <Text>Hey</Text>
-              </View>
-            }
             key={flatListKey}
             keyExtractor={(item) => item._id}
             contentContainerStyle={[{ columnGap: SIZES.medium }, styles.flatlistContainer]}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
             numColumns={isGridView ? 2 : 1}
             data={filteredData}
-            renderItem={({ item }) => <BidListCard item={item} isGridView={isGridView} />}
+            renderItem={({ item }) => <BidListCard item={item} isGridView={isGridView} refetch={refetch} />}
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
           />
         )}

@@ -24,8 +24,9 @@ import { BACKEND_PORT } from "@env";
 
 const SupplierBid = forwardRef((props, ref) => {
   // Assuming product details are passed in props.item
-  const { item } = props; // product details object
-  const snapPoints = useMemo(() => ["80%", "80%"], []);
+  const { item, lostBid, bidAccepted } = props; // product details object
+
+  const snapPoints = useMemo(() => ["70%", "80%"], []);
   const navigation = useNavigation();
   const { userData, userLogin } = useContext(AuthContext);
 
@@ -40,6 +41,11 @@ const SupplierBid = forwardRef((props, ref) => {
   const [refreshing, setRefreshing2] = useState(false);
   const [haveBid, setHaveBid] = useState(false);
   const [oldBid, setOldBid] = useState(false);
+  const [ilostBid, setIlostBid] = useState(false);
+
+  useEffect(() => {
+    console.log(ilostBid, bidAccepted);
+  }, [ilostBid]);
 
   const [error, setError] = useState(null);
 
@@ -110,7 +116,6 @@ const SupplierBid = forwardRef((props, ref) => {
   const fetchBidData = async (reset = false) => {
     if (loading || !item?._id) return;
 
-    console.log("is fetching Bid");
     setLoading(true);
 
     try {
@@ -200,7 +205,7 @@ const SupplierBid = forwardRef((props, ref) => {
       : null;
   }, [loading, bidData]);
 
-  console.log(haveBid);
+  // console.log(haveBid);
 
   const handleEditBid = () => {
     setIsEditing(!isEditing);
@@ -215,6 +220,7 @@ const SupplierBid = forwardRef((props, ref) => {
         // Assuming index 1 means fully open
         if (index === 1) {
           fetchBidData(true);
+          setIlostBid(lostBid);
         }
       }}
       enablePanDownToClose={false}
@@ -265,7 +271,7 @@ const SupplierBid = forwardRef((props, ref) => {
             <Text style={styles.productDescription}>{item?.bidDescription || "Product description goes here."}</Text>
           </View>
 
-          {(userLogin && userData !== null && !haveBid) || isEditing ? (
+          {(userLogin && userData !== null && !ilostBid && !haveBid) || isEditing ? (
             <Formik
               initialValues={{
                 bidPrice: "",
@@ -318,6 +324,11 @@ const SupplierBid = forwardRef((props, ref) => {
               <TouchableOpacity style={styles.editButton} onPress={handleEditBid}>
                 <Text style={styles.editButtonText}>Edit</Text>
               </TouchableOpacity>
+            </View>
+          )}
+          {ilostBid && (
+            <View style={styles.lostbidContainer}>
+              <Text>Supply Bid Lost</Text>
             </View>
           )}
         </View>
@@ -478,6 +489,15 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     padding: 10,
     backgroundColor: "#f2f2f2",
+    borderRadius: 8,
+  },
+  lostbidContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 10,
+    padding: 10,
+    backgroundColor: "#F3D0CE",
     borderRadius: 8,
   },
   productDescription: {

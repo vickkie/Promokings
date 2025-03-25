@@ -12,7 +12,7 @@ import { BACKEND_PORT } from "@env";
 
 const BidToInventory = forwardRef((props, ref) => {
   // Assuming product details are passed in props.item
-  const { item } = props; // product details object
+  const { item, refetch } = props; // product details object
   const snapPoints = useMemo(() => ["80%", "80%"], []);
   const navigation = useNavigation();
   const { userData, userLogin } = useContext(AuthContext);
@@ -22,9 +22,21 @@ const BidToInventory = forwardRef((props, ref) => {
   const [loading, setLoading] = useState(false);
   const [offset, setOffset] = useState(0);
   const [limit, setLimit] = useState(2100);
+  const [bidData, setBidData] = useState(item);
   const [refreshing, setRefreshing2] = useState(false);
+  const [haveBid, setHaveBid] = useState(false);
 
   const [error, setError] = useState(null);
+
+  const filteredBids =
+    !loading && bidData?.bids.filter((bid) => bid.supplier !== null && typeof bid.supplier === "object");
+
+  useEffect(() => {
+    if (!loading && bidData) {
+      const foundBid = filteredBids.find((bid) => bid.supplier._id === bid?.selectedSupplier);
+      // setHaveBid(foundBid ? true : false);
+    }
+  }, [loading, bidData]);
 
   useEffect(() => {
     if (!userLogin) {
@@ -58,8 +70,6 @@ const BidToInventory = forwardRef((props, ref) => {
     setLoading(true);
 
     try {
-      console.log(item?.inventoryId);
-
       const response = await axios.get(`${BACKEND_PORT}/api/products/${item?.inventoryId}`, {
         params: { limit, offset: reset ? 0 : offset },
       });
@@ -78,18 +88,41 @@ const BidToInventory = forwardRef((props, ref) => {
     } catch (err) {
       setError("Failed to fetch products.");
     } finally {
-      console.log("checking hey");
       setLoading(false);
       if (reset) setRefreshing2(false);
     }
   };
+
+  // Fetch bid data from API
+  const fetchBidData = async (reset = false) => {
+    if (loading || !item?._id) return;
+
+    setLoading(true);
+
+    try {
+      const response = await axios.get(`${BACKEND_PORT}/api/inventory-requests/${item?._id}`, {
+        params: { limit, offset: reset ? 0 : offset },
+      });
+
+      if (response.status === 200) {
+        setBidData(response.data);
+      }
+
+      setOffset((prev) => (reset ? limit : prev + limit));
+
+      setError(null);
+    } catch (err) {
+      setError("Failed to fetch bids.");
+    } finally {
+      setLoading(false);
+      if (reset) setRefreshing2(false);
+    }
+  };
+
   // Initial fetch
   useEffect(() => {
     fetchData(true);
   }, []);
-  useEffect(() => {
-    console.log(product);
-  }, [product]);
 
   // Handler for accepting a bid
   const handleAcceptBid = (bid) => {
@@ -120,6 +153,40 @@ const BidToInventory = forwardRef((props, ref) => {
     } catch (error) {
       console.error("Error accepting bid:", error);
       showToast("error", "Failed", "Could not accept bid");
+    } finally {
+      refetch();
+    }
+  };
+  const handleCancelBid = (bid) => {
+    Alert.alert("Cancel Bid", `Cancel bid from ${bid.supplier?.name || "Unknown"} for KES ${bid.bidPrice}?`, [
+      { text: "Exit", style: "cancel" },
+      {
+        text: "Confirm",
+        onPress: () => cancelBid(bid),
+      },
+    ]);
+  };
+
+  const cancelBid = async (bid) => {
+    try {
+      const payload = {
+        selectedSupplier: null,
+        status: "Pending",
+      };
+
+      const endpoint = `${BACKEND_PORT}/api/inventory-requests/status/${item?._id}`;
+
+      const response = await axios.patch(endpoint, { ...payload });
+
+      if (response.status === 200) {
+        showToast("success", "Bid Cancelled", `Cancelled bid from ${bid.supplier?.name || "Unknown"}`);
+        bottomSheetRef.current?.dismiss();
+      }
+    } catch (error) {
+      console.error("Error cancelling bid:", error);
+      showToast("error", "Failed", "Could not accept bid");
+    } finally {
+      refetch();
     }
   };
 
@@ -131,17 +198,30 @@ const BidToInventory = forwardRef((props, ref) => {
 
   // Render each bid item in the FlatList
   const renderBidItem = ({ item: bid }) => {
-    console.log(item);
     return (
       <View style={styles.bidItemContainer}>
         <View style={styles.bidInfo}>
           <Text style={styles.bidSupplier}>Supplier: {bid.supplier?.name || "Unknown"}</Text>
           <Text style={styles.bidPrice}>KES {bid.bidPrice}</Text>
-          <Text style={styles.bidStatus}>Status: {bid.status}</Text>
+          <Text style={styles.bidStatus}>Status: {item.status}</Text>
         </View>
-        <TouchableOpacity style={styles.acceptButton} onPress={() => handleAcceptBid(bid)}>
-          <Text style={styles.acceptButtonText}>Accept</Text>
-        </TouchableOpacity>
+
+        {bid.supplier?._id === bidData?.selectedSupplier ? (
+          <TouchableOpacity style={styles.cancelButton} onPress={() => handleCancelBid(bid)}>
+            <Text style={styles.acceptButtonText}>Cancel</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={[
+              styles.acceptButton,
+              item?.selectedSupplier !== null && bid.supplier?._id !== bidData?.selectedSupplier && styles.disabled,
+            ]}
+            onPress={() => handleAcceptBid(bid)}
+            disabled={item?.selectedSupplier !== null && bid.supplier?._id !== bidData?.selectedSupplier}
+          >
+            <Text style={styles.acceptButtonText}>Accept</Text>
+          </TouchableOpacity>
+        )}
       </View>
     );
   };
@@ -151,7 +231,11 @@ const BidToInventory = forwardRef((props, ref) => {
       ref={bottomSheetRef}
       index={1}
       snapPoints={snapPoints}
-      onChange={(index) => {}}
+      onChange={(index) => {
+        if (index === 1) {
+          fetchBidData(true);
+        }
+      }}
       enablePanDownToClose={false}
       backgroundStyle={{
         backgroundColor: COLORS.themew,
@@ -165,15 +249,12 @@ const BidToInventory = forwardRef((props, ref) => {
     >
       <ScrollView>
         <View style={styles.productContainer}>
-          {/* Header */}
           <View style={styles.productHeader}>
             <Text style={styles.productTitle}>Product Details</Text>
           </View>
 
-          {/* Product Image */}
           {item?.imageUrl && <Image source={{ uri: item.imageUrl }} style={styles.productImage} />}
 
-          {/* Product Info */}
           <View style={styles.productInfo}>
             <View style={styles.flexmex}>
               <Text style={styles.productName}>{item?.productName || "Product Name Here"}</Text>
@@ -202,11 +283,11 @@ const BidToInventory = forwardRef((props, ref) => {
           </View>
 
           {/* Supplier Bids List */}
-          {item?.bids?.length > 0 && (
+          {bidData?.bids?.length > 0 && (
             <View style={styles.bidsContainer}>
               <Text style={styles.bidsTitle}>Supplier Bids</Text>
               <FlatList
-                data={item.bids}
+                data={bidData?.bids}
                 keyExtractor={(bid, index) => index.toString()}
                 renderItem={renderBidItem}
                 scrollEnabled={false}
@@ -335,13 +416,22 @@ const styles = StyleSheet.create({
     color: COLORS.gray,
   },
   acceptButton: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: "#337DE7",
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+  disabled: {
+    backgroundColor: COLORS.themeg,
+  },
+  cancelButton: {
+    backgroundColor: COLORS.red,
     paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: 5,
   },
   acceptButtonText: {
-    color: "white",
+    color: COLORS.themew,
     fontWeight: "bold",
   },
   actionButton: {
