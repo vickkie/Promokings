@@ -35,6 +35,7 @@ import PreviewProduct from "./Staff/Inventory/PreviewProduct";
 import InventoryProfile from "./Staff/Inventory/InventoryProfile";
 import MainCenter from "./Staff/Inventory/MainCenter";
 import AddBid from "./Staff/Inventory/AddBid";
+import BidList from "./Staff/Inventory/BidList";
 
 //sales
 
@@ -96,6 +97,7 @@ import ChatListScreen from "./ChatListScreen";
 import SupplierDashboard from "./Staff/Supplier/SupplierDashboard";
 import SupplierProfile from "./Staff/Supplier/SupplierProfile";
 import SupplierSettings from "./Staff/Supplier/SupplierSettings";
+import InventoryRequests from "./Staff/Supplier/InventoryRequests";
 
 export {
   ChatListScreen,
@@ -139,6 +141,7 @@ export {
   PreviewProduct,
   InventoryProfile,
   MainCenter,
+  BidList,
 
   //sales
   SalesDashboard,
@@ -189,4 +192,5 @@ export {
   SupplierDashboard,
   SupplierProfile,
   SupplierSettings,
+  InventoryRequests,
 };

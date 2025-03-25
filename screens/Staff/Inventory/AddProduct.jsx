@@ -37,13 +37,24 @@ const AddProduct = () => {
   const [category, setCategory] = useState("");
   const [quantity, setQuantity] = useState(0);
   const [supplier, setSupplier] = useState("");
-  const [suppliers, setSuppliers] = useState([{ id: "KINGS_COLLECTION", name: "Kings Collection" }]);
   const [description, setDescription] = useState("");
   const [isEditable, setIsEditable] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [suppliers, setSuppliers] = useState([]);
   const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
-  const { data: dataSuppliers, isLoading: isSupplierLoading, error: SupplierError } = useFetch("v2/supplier");
+
+  const { data: supplierData, isLoading: isSuppliersLoading, error: supplierError } = useFetch("v2/supplier");
+
+  useEffect(() => {
+    if (!isSuppliersLoading && !supplierError && supplierData) {
+      setSuppliers(supplierData?.suppliers);
+    }
+
+    return () => {
+      // console.log(supplierData?.suppliers);
+    };
+  }, [supplierData, isSuppliersLoading, supplierError]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -310,7 +321,7 @@ const AddProduct = () => {
                   {suppliers &&
                     suppliers.map((sup) => (
                       <Picker.Item
-                        key={sup.id}
+                        key={sup._id}
                         label={sup.name}
                         value={sup.name}
                         color="black"

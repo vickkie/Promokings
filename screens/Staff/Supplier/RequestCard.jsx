@@ -8,44 +8,26 @@ import { AuthContext } from "../../../components/auth/AuthContext";
 import Toast from "react-native-toast-message";
 import * as FileSystem from "expo-file-system";
 import Icon from "../../../constants/icons";
-import InventoryAdd from "../../../components/bottomsheets/InventoryAdd";
+import SupplierBid from "../../../components/bottomsheets/SupplierBid";
 
 // Function to cache image
 const cacheImage = async (uri) => {
   try {
-    // Create a safe filename
     const fileName = encodeURIComponent(uri.replace(/[^a-zA-Z0-9]/g, "_"));
     const fileUri = FileSystem.documentDirectory + fileName;
     const { exists } = await FileSystem.getInfoAsync(fileUri);
     if (!exists) {
-      // console.log(`Downloading image to ${fileUri}`);
       await FileSystem.downloadAsync(uri, fileUri);
-    } else {
-      // console.log(`Image already cached at ${fileUri}`);
     }
     return fileUri;
   } catch (error) {
-    // console.error(`Failed to cache image from ${uri}`, error);
-    return uri; // Fallback to the original URL if caching fails
+    return uri;
   }
 };
 
-const ProductListCard = ({ item, isGridView }) => {
+const RequestCard = ({ item, isGridView }) => {
   const navigation = useNavigation();
-  const [isWished, setIsWished] = useState(false);
-  const [feedback, setFeedback] = useState(null);
-  const [imageUri, setImageUri] = useState(null);
-
-  const { userData, userLogin } = useContext(AuthContext);
-  const [userId, setUserId] = useState(null);
-
-  useEffect(() => {
-    if (!userLogin) {
-      setUserId(1); // Default user ID for demonstration purposes && test
-    } else if (userData && userData._id) {
-      setUserId(userData._id);
-    }
-  }, [userLogin, userData]);
+  const [imageUri, setImageUri] = useState("");
 
   useEffect(() => {
     const loadImage = async () => {
@@ -57,36 +39,20 @@ const ProductListCard = ({ item, isGridView }) => {
     loadImage();
   }, [item.imageUrl]);
 
-  const showToast = (type, text1, text2) => {
-    Toast.show({
-      type: type,
-      text1: text1,
-      text2: text2 ? text2 : "",
-    });
-  };
-
   const transitionTag = item._id ? `${item._id}` : null;
-
   const BottomSheetRef = useRef(null);
-
-  const openMenu = () => {
-    if (BottomSheetRef.current) {
-      BottomSheetRef.current.present();
-    }
-  };
+  const openMenu = () => BottomSheetRef.current?.present();
 
   return (
     <>
-      <InventoryAdd ref={BottomSheetRef} item={item} />
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("PreviewProduct", {
-            item: item,
-            itemid: item._id,
-          });
-        }}
-      >
-        <View style={!isGridView ? styles.container : styles.gridCard}>
+      <SupplierBid ref={BottomSheetRef} item={item} />
+      <TouchableOpacity onPress={openMenu}>
+        <View
+          style={[
+            !isGridView ? styles.container : styles.gridCard,
+            { backgroundColor: item.status === "Accepted" ? "#a3eed8" : COLORS.themeg },
+          ]}
+        >
           <View style={isGridView ? styles.imageContainer : styles.imageList}>
             <Image
               source={{ uri: imageUri || item.imageUrl }}
@@ -96,27 +62,17 @@ const ProductListCard = ({ item, isGridView }) => {
           </View>
           <View style={styles.details}>
             <Text style={styles.title} numberOfLines={1}>
-              {item.title}
+              {item?.productName}
             </Text>
             <Text style={styles.supplier} numberOfLines={1}>
               {`${item.quantity} units`}
             </Text>
-            <Text style={isGridView ? styles.gridPrice : styles.price}>
-              Kshs {parseInt(item.price.replace("$", ""))}
+
+            <Text style={[styles.price, { color: item.status === "Accepted" ? "#fff" : "red" }]}>
+              Status: {item?.status}
             </Text>
           </View>
-
-          <TouchableOpacity
-            style={isGridView ? styles.addBtn : styles.editPencil}
-            // onPress={() => {
-            //   navigation.navigate("EditProduct", {
-            //     item: item,
-            //     itemid: item._id,
-            //   });
-            // }}
-
-            onPress={openMenu}
-          >
+          <TouchableOpacity style={isGridView ? styles.addBtn : styles.editPencil} onPress={openMenu}>
             <Icon name="pencil" size={27} color={COLORS.primary} />
           </TouchableOpacity>
         </View>
@@ -125,17 +81,15 @@ const ProductListCard = ({ item, isGridView }) => {
   );
 };
 
-export default ProductListCard;
+export default RequestCard;
 
 const styles = StyleSheet.create({
   container: {
     marginEnd: 10,
     borderRadius: SIZES.medium,
     backgroundColor: COLORS.themeg,
-    display: "flex",
     flexDirection: "row",
   },
-
   gridCard: {
     marginEnd: 10,
     borderRadius: SIZES.medium,
@@ -143,7 +97,6 @@ const styles = StyleSheet.create({
     width: 162,
     height: 230,
   },
-
   imageContainer: {
     flex: 1,
     width: 157,
@@ -153,7 +106,6 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.small,
     backgroundColor: COLORS.themew,
   },
-
   imageList: {
     height: 70,
     width: 70,
@@ -175,16 +127,22 @@ const styles = StyleSheet.create({
     fontSize: SIZES.medium,
     marginBottom: 2,
   },
-  price: {
-    fontFamily: "medium",
-  },
-
-  gridPrice: {
-    paddingTop: 10,
-  },
   supplier: {
     fontSize: SIZES.medium,
     paddingVertical: SIZES.small - 7,
+  },
+  price: {
+    fontFamily: "medium",
+  },
+  bidDescription: {
+    fontSize: SIZES.small,
+    color: COLORS.gray,
+    marginBottom: 5,
+  },
+  status: {
+    fontSize: SIZES.small,
+    fontWeight: "bold",
+    color: "orange", // Change color logic if needed
   },
   addBtn: {
     position: "absolute",

@@ -54,7 +54,7 @@ const InventoryAdd = forwardRef((props, ref) => {
       index={1}
       snapPoints={snapPoints}
       onChange={(index) => {}}
-      enablePanDownToClose={true}
+      enablePanDownToClose={false}
       backgroundStyle={{
         backgroundColor: COLORS.themeg,
         borderRadius: SIZES.medium,
@@ -84,6 +84,7 @@ const InventoryAdd = forwardRef((props, ref) => {
                 {`${item?.quantity} units`}
               </Text>
             </View>
+
             <Text style={styles.productSupplier}>{item?.supplier || "Supplier Name"}</Text>
             <Text style={styles.productPrice}>KES {item?.price || "0"}</Text>
             <Text style={styles.productCategory}>{item?.category || "Category"}</Text>

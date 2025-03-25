@@ -91,6 +91,8 @@ import {
   SupplierProfile,
   SupplierDashboard,
   SupplierSettings,
+  BidList,
+  InventoryRequests,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -124,6 +126,7 @@ const screens = [
   { name: "AddCategory", component: AddCategory, options: { headerShown: false } },
   { name: "StaffSettings", component: StaffSettings, options: { headerShown: false } },
   { name: "EditProductsList", component: EditProductList, options: { headerShown: false } },
+  { name: "BidList", component: BidList, options: { headerShown: false } },
   { name: "PreviewProduct", component: PreviewProduct, options: { headerShown: false } },
   { name: "EditProduct", component: EditProduct, options: { headerShown: false } },
   { name: "Add Product", component: AddProduct, options: { headerShown: false } },
@@ -189,6 +192,7 @@ const screens = [
   { name: "SupplierProfile", component: SupplierProfile, options: { headerShown: false } },
   { name: "SupplierDashboard", component: SupplierDashboard, options: { headerShown: false } },
   { name: "SupplierSettings", component: SupplierSettings, options: { headerShown: false } },
+  { name: "InventoryRequests", component: InventoryRequests, options: { headerShown: false } },
 ];
 
 export default function App() {

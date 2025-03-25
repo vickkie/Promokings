@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { SupplierDashboard, SupplierSettings } from "../screens";
+import { InventoryRequests, SupplierDashboard, SupplierSettings } from "../screens";
 
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
@@ -59,16 +59,18 @@ const SupplierTabNavigation = () => {
           tabBarLabel: "Home",
         }}
       />
-      {/* <Tab.Screen
-        name="OrdersSales"
-        component={OrdersSales}
+      <Tab.Screen
+        name="InventoryRequests"
+        component={InventoryRequests}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon name={focused ? "menu2filled" : "menu2"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
           ),
-          tabBarLabel: "Orders",
+          tabBarLabel: "Bids",
         }}
       />
+      {/*
+      
       <Tab.Screen
         name="SalesOverviews"
         component={SalesOverview}

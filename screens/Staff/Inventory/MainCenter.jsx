@@ -101,20 +101,20 @@ const MainCenter = () => {
     {
       id: "4",
       title: "Posted Bids list",
-      detail: "Get informationof your Bids",
-      route: "",
-      icon: "barcode",
-      bgcolor: COLORS.themeg,
-    },
-
-    {
-      id: "5",
-      title: "Proposed Bids",
-      detail: "Get information of available bids from suppliers",
-      route: "",
+      detail: "Get informationof your supplier bids",
+      route: "BidList",
       icon: "contract",
       bgcolor: COLORS.themeg,
     },
+
+    // {
+    //   id: "5",
+    //   title: "Proposed Bids",
+    //   detail: "Get information of available bids from suppliers",
+    //   route: "",
+    //   icon: "contract",
+    //   bgcolor: COLORS.themeg,
+    // },
   ];
 
   return (

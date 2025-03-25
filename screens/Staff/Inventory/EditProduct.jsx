@@ -30,7 +30,15 @@ const EditProduct = () => {
   const route = useRoute();
   const { item } = route.params; // Passed from the previous screen
 
-  const product = item;
+  const productoldme = route.params.productold || "";
+
+  const productold = productoldme[0] || "";
+
+  const product = productold || item;
+
+  console.log(item);
+
+  console.log("old", item?.quantity);
 
   const [title, setTitle] = useState(product?.title || "");
   const [price, setPrice] = useState(product?.price || "");
@@ -40,15 +48,30 @@ const EditProduct = () => {
   const [image, setImage] = useState(null);
   const [loader, setLoader] = useState(false);
   const [category, setCategory] = useState(product?.category || "");
-  const [supplier, setSupplier] = useState(product?.supplier || "");
+  const [supplier, setSupplier] = useState(item?.selectedSupplier || product?.supplier || "");
   const [description, setDescription] = useState(product?.description || "");
   const [isEditable, setIsEditable] = useState(false);
-  const [quantity, setQuantity] = useState(product?.quantity || 0);
+  const [quantity, setQuantity] = useState(
+    item?.quantity && productold?.quantity
+      ? item?.quantity + productold?.quantity
+      : item?.quantity || productold?.quantity || 0
+  );
   const [uploading, setUploading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [suppliers, setSuppliers] = useState([]);
   const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
 
-  const suppliers = [{ id: "KINGS_COLLECTION", name: "Kings Collection" }];
+  const { data: supplierData, isLoading: isSuppliersLoading, error: supplierError } = useFetch("v2/supplier");
+
+  useEffect(() => {
+    if (!isSuppliersLoading && !supplierError && supplierData) {
+      setSuppliers(supplierData?.suppliers);
+    }
+
+    return () => {
+      // console.log(supplierData?.suppliers);
+    };
+  }, [supplierData, isSuppliersLoading, supplierError]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -351,7 +374,7 @@ const EditProduct = () => {
                     <Picker.Item label="Select a supplier" value={""} style={styles.pickerBox} />
                     {suppliers &&
                       suppliers.map((sup) => {
-                        return <Picker.Item key={sup.id} label={sup.name} value={sup.name} />;
+                        return <Picker.Item key={sup._id} label={sup.name} value={sup.name} />;
                       })}
                   </Picker>
                 </View>

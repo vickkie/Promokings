@@ -34,6 +34,7 @@ const AddBid = () => {
 
   // Use product details as initial values if available, or fallback to empty/default values
   const [productName, setProductName] = useState(product?.title || "");
+  const [inventoryId, setInventoryId] = useState(product?._id || null);
   const [expectedPrice, setExpectedPrice] = useState("");
   const [quantity, setQuantity] = useState(0);
   const [bidDescription, setBidDescription] = useState("");
@@ -66,9 +67,7 @@ const AddBid = () => {
     showMode("date");
   };
 
-  const showTimepicker = () => {
-    showMode("time");
-  };
+  console.log(product?._id);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -115,6 +114,11 @@ const AddBid = () => {
         const uploadedImageUrl = await uploadImage(image);
         setImageUrl(uploadedImageUrl);
         newBidRequest.imageUrl = uploadedImageUrl;
+      } else {
+        newBidRequest.imageUrl = imageUrl;
+      }
+      if (inventoryId) {
+        newBidRequest.inventoryId = inventoryId;
       }
 
       // Validate with Yup
