@@ -46,21 +46,24 @@ const MessageCenter = ({ navigation }) => {
                 <Icon name="forward" size={24} color={COLORS.primary} />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                if (userId) {
-                  navigation.navigate("Help");
-                }
-              }}
-            >
-              <View style={[styles.menuItem(0.5)]}>
-                <View style={styles.itswrap}>
-                  <Icon name="customerservice" size={24} color={COLORS.primary} />
-                  <Text style={styles.menuText}>Contact Customer service</Text>
+
+            {!userData?.position && (
+              <TouchableOpacity
+                onPress={() => {
+                  if (userId) {
+                    navigation.navigate("Help");
+                  }
+                }}
+              >
+                <View style={[styles.menuItem(0.5)]}>
+                  <View style={styles.itswrap}>
+                    <Icon name="customerservice" size={24} color={COLORS.primary} />
+                    <Text style={styles.menuText}>Contact Customer service</Text>
+                  </View>
+                  <Icon name="forward" size={24} color={COLORS.primary} />
                 </View>
-                <Icon name="forward" size={24} color={COLORS.primary} />
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            )}
 
             <TouchableOpacity onPress={() => navigation.navigate("SystemMessages")}>
               <View style={styles.menuItem(0.5)}>
@@ -71,24 +74,29 @@ const MessageCenter = ({ navigation }) => {
                 <Icon name="forward" size={24} color={COLORS.primary} />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("Faqs")}>
-              <View style={styles.menuItem(0.5)}>
-                <View style={styles.itswrap}>
-                  <Icon name="faqs" size={26} color={COLORS.primary} />
-                  <Text style={styles.menuText}>Frequently asked Questions</Text>
-                </View>
-                <Icon name="forward" size={24} color={COLORS.primary} />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("Orders")}>
-              <View style={styles.menuItem(0.5)}>
-                <View style={styles.itswrap}>
-                  <Icon name="cartcheck" size={26} color={COLORS.primary} />
-                  <Text style={styles.menuText}>Order Messages & Tracking</Text>
-                </View>
-                <Icon name="forward" size={24} color={COLORS.primary} />
-              </View>
-            </TouchableOpacity>
+            {!userData?.position && (
+              <>
+                <TouchableOpacity onPress={() => navigation.navigate("Faqs")}>
+                  <View style={styles.menuItem(0.5)}>
+                    <View style={styles.itswrap}>
+                      <Icon name="faqs" size={26} color={COLORS.primary} />
+                      <Text style={styles.menuText}>Frequently asked Questions</Text>
+                    </View>
+                    <Icon name="forward" size={24} color={COLORS.primary} />
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => navigation.navigate("Orders")}>
+                  <View style={styles.menuItem(0.5)}>
+                    <View style={styles.itswrap}>
+                      <Icon name="cartcheck" size={26} color={COLORS.primary} />
+                      <Text style={styles.menuText}>Order Messages & Tracking</Text>
+                    </View>
+                    <Icon name="forward" size={24} color={COLORS.primary} />
+                  </View>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
         </View>
       </View>

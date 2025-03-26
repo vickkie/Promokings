@@ -23,10 +23,13 @@ export default function PushNotification() {
   // Store listeners to prevent duplicate subscriptions
   const notificationListenerRef = useRef(null);
   const responseListenerRef = useRef(null);
+  const hideTimeoutRef = useRef(null);
+  const lastNotificationIdRef = useRef(null);
 
   // State for in-app notification banner
   const [notification, setNotification] = useState(null);
-  const slideAnim = useRef(new Animated.Value(-100)).current; // For slide-in animation
+
+  const slideAnim = useRef(new Animated.Value(-100)).current; // Initial position
 
   useEffect(() => {
     if (!userData || !userData._id) return;
@@ -38,25 +41,30 @@ export default function PushNotification() {
       notificationListenerRef.current = Notifications.addNotificationReceivedListener((notification) => {
         console.log("Notification Received:", notification);
 
-        if (notification.request.content.title === notification?.title) {
-          return; // Prevent duplicates
+        // Avoid duplicate notifications
+        if (lastNotificationIdRef.current === notification.request.identifier) {
+          return;
         }
+        lastNotificationIdRef.current = notification.request.identifier;
 
-        setNotification(notification.request.content); // Store notification data
+        setNotification(notification.request.content);
 
-        // Vibration feedback
+        // Haptic & vibration feedback
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         Vibration.vibrate();
 
-        // Slide in animation
+        // Slide-in animation
         Animated.timing(slideAnim, {
           toValue: 0,
           duration: 300,
           useNativeDriver: true,
         }).start();
 
-        // Auto-hide after 3 seconds
-        setTimeout(() => {
+        // Clear previous timeout before setting a new one
+        if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+
+        // Auto-hide after 8 seconds
+        hideTimeoutRef.current = setTimeout(() => {
           Animated.timing(slideAnim, {
             toValue: -100,
             duration: 300,
@@ -72,7 +80,7 @@ export default function PushNotification() {
         console.log("Notification Clicked:", response);
         const data = response.notification.request.content.data;
         if (data?.conversationId) {
-          navigation.navigate("ChatScreen", {
+          navigation?.navigate("ChatScreen", {
             conversationId: data.conversationId,
             chatWith: data?.chatWith,
           });
@@ -89,8 +97,9 @@ export default function PushNotification() {
         Notifications.removeNotificationSubscription(responseListenerRef.current);
         responseListenerRef.current = null;
       }
+      if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
     };
-  }, [userData]);
+  }, [userData?._id]);
 
   return (
     <>

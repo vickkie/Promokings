@@ -243,14 +243,16 @@ const OrderDetails = () => {
             <TouchableOpacity
               style={{
                 backgroundColor:
-                  item.status === "pending"
+                  item.deliveryStatus === "pending"
                     ? "#ffedd2"
-                    : item.status === "delivered"
+                    : item.deliveryStatus === "delivered"
                     ? "#CBFCCD"
-                    : item.status === "delivery"
+                    : item.deliveryStatus === "ready_for_pickup"
                     ? "#C0DAFF"
-                    : item.status === "cancelled"
+                    : item.deliveryStatus === "failed"
                     ? "#F3D0CE"
+                    : item.deliveryStatus === "completed"
+                    ? "#CBFCCD"
                     : COLORS.themey, // Default color
                 paddingVertical: 4,
                 paddingHorizontal: 8,
@@ -268,12 +270,16 @@ const OrderDetails = () => {
                       ? "#337DE7"
                       : item.deliveryStatus === "ready_for_pickup"
                       ? "#337DE7"
-                      : item.deliveryStatus === "cancelled"
+                      : item.deliveryStatus === "failed"
                       ? "#B65454"
                       : COLORS.primary,
                 }}
               >
-                {item.deliveryStatus === "ready_for_pickup" ? "Ready for pickup" : item.deliveryStatus}
+                {item.deliveryStatus === "ready_for_pickup"
+                  ? "Ready for pickup"
+                  : item.deliveryStatus === "failed"
+                  ? "Cancelled"
+                  : item.deliveryStatus}
               </Text>
             </TouchableOpacity>
 

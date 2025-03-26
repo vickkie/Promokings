@@ -10,7 +10,7 @@ import LottieView from "lottie-react-native";
 const Faqs = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
   const { data, isLoading, error } = useFetch("faqs");
-  const [companyData, setCompanyData] = useState([]); // Change to an empty array
+  const [faqData, setFaqs] = useState([]);
 
   const toggleExpand = (index) => {
     setExpandedIndex((prevIndex) => (prevIndex === index ? null : index));
@@ -19,20 +19,10 @@ const Faqs = ({ navigation }) => {
   // Update faqData when data changes
   useEffect(() => {
     if (data) {
-      setCompanyData(data);
+      setFaqs(data);
       console.log(data);
     }
   }, [data]);
-
-  // if (isLoading) {
-  //   return (
-  //     <View style={styles.containLottie}>
-  //       <View style={styles.animationWrapper}>
-  //         <LottieView source={require("../assets/data/loading.json")} autoPlay loop style={styles.animation} />
-  //       </View>
-  //     </View>
-  //   );
-  // }
 
   if (error) {
     return (
@@ -68,18 +58,19 @@ const Faqs = ({ navigation }) => {
           </View>
         ) : (
           <ScrollView>
-            {faqData.map((faq, index) => (
-              <View key={index}>
-                <TouchableOpacity style={styles.header} onPress={() => toggleExpand(index)}>
-                  <Text style={styles.question}>{faq.question}</Text>
-                </TouchableOpacity>
-                <Collapsible collapsed={expandedIndex !== index}>
-                  <View style={styles.body}>
-                    <Text>{faq.answer}</Text>
-                  </View>
-                </Collapsible>
-              </View>
-            ))}
+            {Array.isArray(faqData) &&
+              faqData.map((faq, index) => (
+                <View key={index}>
+                  <TouchableOpacity style={styles.header} onPress={() => toggleExpand(index)}>
+                    <Text style={styles.question}>{faq.question}</Text>
+                  </TouchableOpacity>
+                  <Collapsible collapsed={expandedIndex !== index}>
+                    <View style={styles.body}>
+                      <Text>{faq.answer}</Text>
+                    </View>
+                  </Collapsible>
+                </View>
+              ))}
           </ScrollView>
         )}
       </View>
