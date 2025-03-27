@@ -198,28 +198,32 @@ const BidToInventory = forwardRef((props, ref) => {
 
   // Render each bid item in the FlatList
   const renderBidItem = ({ item: bid }) => {
+    const isCompleted = () => item.status === "Completed";
+    const isSelectedBid = () => bid.supplier?._id === bidData?.selectedSupplier;
+
     return (
       <View style={styles.bidItemContainer}>
         <View style={styles.bidInfo}>
           <Text style={styles.bidSupplier}>Supplier: {bid.supplier?.name || "Unknown"}</Text>
           <Text style={styles.bidPrice}>KES {bid.bidPrice}</Text>
-          <Text style={styles.bidStatus}>Status: {item.status}</Text>
+          <Text style={styles.bidStatus}>Status: {bid.status}</Text>
         </View>
 
-        {bid.supplier?._id === bidData?.selectedSupplier ? (
+        {!isCompleted() && isSelectedBid() ? (
           <TouchableOpacity style={styles.cancelButton} onPress={() => handleCancelBid(bid)}>
             <Text style={styles.acceptButtonText}>Cancel</Text>
           </TouchableOpacity>
-        ) : (
+        ) : !isCompleted() ? (
           <TouchableOpacity
-            style={[
-              styles.acceptButton,
-              item?.selectedSupplier !== null && bid.supplier?._id !== bidData?.selectedSupplier && styles.disabled,
-            ]}
+            style={[styles.acceptButton, isSelectedBid() && styles.disabled]}
             onPress={() => handleAcceptBid(bid)}
-            disabled={item?.selectedSupplier !== null && bid.supplier?._id !== bidData?.selectedSupplier}
+            disabled={isSelectedBid()}
           >
             <Text style={styles.acceptButtonText}>Accept</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.completedButton} disabled>
+            <Text style={styles.acceptButtonText}>Completed</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -434,13 +438,14 @@ const styles = StyleSheet.create({
     color: COLORS.themew,
     fontWeight: "bold",
   },
-  actionButton: {
-    backgroundColor: COLORS.primary,
+  completedButton: {
+    backgroundColor: COLORS.themeg,
     padding: 15,
     borderRadius: SIZES.xxLarge,
     alignItems: "center",
     marginTop: 15,
   },
+  actionButton: {},
   actionButtonText: {
     fontSize: 16,
     fontWeight: "bold",

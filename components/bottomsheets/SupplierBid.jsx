@@ -42,6 +42,7 @@ const SupplierBid = forwardRef((props, ref) => {
   const [haveBid, setHaveBid] = useState(false);
   const [oldBid, setOldBid] = useState(false);
   const [ilostBid, setIlostBid] = useState(false);
+  const [bidClosed, setBidclosed] = useState(false);
 
   useEffect(() => {
     console.log(ilostBid, bidAccepted);
@@ -188,8 +189,21 @@ const SupplierBid = forwardRef((props, ref) => {
   const deadlineDate = new Date(item?.deadline);
   const today = new Date();
   const diffTime = deadlineDate - today;
-  const daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  const deadlineLabel = daysRemaining >= 0 ? `${daysRemaining} days remaining` : "Deadline passed";
+  const daysRemaining = Math.ceil(diffTime / 86400000);
+  const deadlineLabel =
+    daysRemaining > 1
+      ? `${daysRemaining} days remaining`
+      : daysRemaining === 1
+      ? "Due tomorrow"
+      : daysRemaining === 0
+      ? "Due today"
+      : "Deadline passed";
+
+  useEffect(() => {
+    if (daysRemaining < 0) {
+      setBidclosed(true);
+    }
+  });
 
   const filteredBids =
     !loading && bidData && bidData[0]?.bids ? bidData[0].bids.filter((bid) => bid.supplier !== null) : [];
@@ -271,7 +285,7 @@ const SupplierBid = forwardRef((props, ref) => {
             <Text style={styles.productDescription}>{item?.bidDescription || "Product description goes here."}</Text>
           </View>
 
-          {(userLogin && userData !== null && !ilostBid && !haveBid) || isEditing ? (
+          {(userLogin && userData !== null && !bidClosed && !ilostBid && !haveBid) || isEditing ? (
             <Formik
               initialValues={{
                 bidPrice: "",
@@ -329,6 +343,11 @@ const SupplierBid = forwardRef((props, ref) => {
           {ilostBid && (
             <View style={styles.lostbidContainer}>
               <Text>Supply Bid Lost</Text>
+            </View>
+          )}
+          {bidClosed && (
+            <View style={styles.lostbidContainer}>
+              <Text>Supply Bid Closed</Text>
             </View>
           )}
         </View>

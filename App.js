@@ -95,6 +95,7 @@ import {
   SupplierSettings,
   BidList,
   InventoryRequests,
+  FinalBids,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -195,6 +196,7 @@ const screens = [
   { name: "SupplierDashboard", component: SupplierDashboard, options: { headerShown: false } },
   { name: "SupplierSettings", component: SupplierSettings, options: { headerShown: false } },
   { name: "InventoryRequests", component: InventoryRequests, options: { headerShown: false } },
+  { name: "FinalBids", component: FinalBids, options: { headerShown: false } },
 ];
 
 export default function App() {

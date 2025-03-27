@@ -101,6 +101,7 @@ const AddBid = () => {
   });
 
   const handleAddBid = async () => {
+    setLoader(true);
     const newBidRequest = {
       productName,
       quantity,
@@ -147,6 +148,8 @@ const AddBid = () => {
     } catch (error) {
       console.log(error);
       showToast("error", "Failed to add bid", error.message);
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -237,13 +240,14 @@ const AddBid = () => {
                   <Image source={require("../../../assets/images/empty-product.png")} style={styles.imagePreview} />
                 )}
               </TouchableOpacity>
-
+              <Text style={styles.label}>Product title</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Product Title"
                 value={productName}
                 onChangeText={(text) => setProductName(text)}
               />
+              <Text style={styles.label}>Price range</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Expected Price"
@@ -251,7 +255,7 @@ const AddBid = () => {
                 onChangeText={(text) => setExpectedPrice(text)}
                 keyboardType="numeric"
               />
-
+              <Text style={styles.label}>Supply Bid instructions</Text>
               <TextInput
                 style={styles.descriptionInput}
                 placeholder="Bid Product Description"
@@ -260,6 +264,7 @@ const AddBid = () => {
                 multiline
               />
 
+              <Text style={styles.label}>Custom image(not required)</Text>
               <View style={styles.imageurlContainer}>
                 <TextInput
                   style={[styles.input, styles.imageurl, !isEditable ? styles.nonEditable : ""]}
@@ -274,6 +279,7 @@ const AddBid = () => {
               </View>
 
               <View style={{ marginTop: 20 }}>
+                <Text style={styles.label}>Quantity</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Quantity"
@@ -307,7 +313,7 @@ const AddBid = () => {
               </View>
 
               <TouchableOpacity style={styles.submitBtn} onPress={handleAddBid}>
-                {uploading ? (
+                {uploading || loader ? (
                   <ActivityIndicator size={30} color={COLORS.themew} />
                 ) : (
                   <Text style={styles.submitText}>Add New Bid</Text>
@@ -482,6 +488,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
+  },
+  label: {
+    fontFamily: "regular",
+    fontSize: SIZES.small,
+    marginBottom: 5,
+    textAlign: "right",
   },
 });
 

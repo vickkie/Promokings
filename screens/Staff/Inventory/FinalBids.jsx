@@ -23,13 +23,8 @@ import { useFocusEffect } from "@react-navigation/native";
 import { Picker } from "@react-native-picker/picker";
 import BidListCard from "./BIdListCard";
 
-const BidList = () => {
+const FinalBids = () => {
   const route = useRoute();
-
-  const categoryTitle = route.params?.categoryTitle || "";
-  const products = route.params?.products ? route.params.products : "products";
-
-  // console.log(route.params);
 
   const { data, isLoading, error, refetch } = useFetch("inventory-requests");
 
@@ -245,7 +240,7 @@ const BidList = () => {
   );
 };
 
-export default BidList;
+export default FinalBids;
 
 const styles = StyleSheet.create({
   container: {

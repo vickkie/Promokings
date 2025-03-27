@@ -107,14 +107,14 @@ const MainCenter = () => {
       bgcolor: COLORS.themeg,
     },
 
-    // {
-    //   id: "5",
-    //   title: "Proposed Bids",
-    //   detail: "Get information of available bids from suppliers",
-    //   route: "",
-    //   icon: "contract",
-    //   bgcolor: COLORS.themeg,
-    // },
+    {
+      id: "5",
+      title: "Manage Supply",
+      detail: "Manage and receive products from suppliers",
+      route: "FinalBids",
+      icon: "businesscash",
+      bgcolor: COLORS.themeg,
+    },
   ];
 
   return (
@@ -418,7 +418,7 @@ const styles = StyleSheet.create({
     paddingVertical: SIZES.medium,
     paddingHorizontal: 3,
     minHeight: SIZES.height / 2.5,
-    marginBottom: 20,
+    marginBottom: 30,
   },
   latestProductCards: {
     paddingHorizontal: 10,

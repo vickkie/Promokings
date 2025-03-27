@@ -36,6 +36,7 @@ import InventoryProfile from "./Staff/Inventory/InventoryProfile";
 import MainCenter from "./Staff/Inventory/MainCenter";
 import AddBid from "./Staff/Inventory/AddBid";
 import BidList from "./Staff/Inventory/BidList";
+import FinalBids from "./Staff/Inventory/FinalBids";
 
 //sales
 
@@ -127,9 +128,9 @@ export {
   AboutUs,
   Faqs,
   SystemMessages,
+
+  //inventory
   InventoryDashboard,
-  // BottomTabNavigation,
-  // InventoryTabNavigation,
   AddProduct,
   AddBid,
   EditProductList,
@@ -142,6 +143,7 @@ export {
   InventoryProfile,
   MainCenter,
   BidList,
+  FinalBids,
 
   //sales
   SalesDashboard,
