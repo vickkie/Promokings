@@ -124,7 +124,9 @@ const SupplierDashboard = () => {
             <SalesChart salesinData={quantities} />
           </View>
           <View style={styles.latestHeader}>
-            <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>Latest Sales</Text>
+            <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>
+              Accepted Supply Bids
+            </Text>
           </View>
           <View style={styles.latestProducts}>
             <LatestOrders refreshList={refreshList} setRefreshing={setRefreshing} />

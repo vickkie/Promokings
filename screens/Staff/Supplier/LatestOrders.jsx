@@ -1,218 +1,277 @@
 import {
   FlatList,
-  StyleSheet,
   Text,
   View,
   ActivityIndicator,
   TouchableOpacity,
-  Image,
   RefreshControl,
+  StyleSheet,
+  TextInput,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { COLORS, SIZES } from "../../../constants";
+import React, { useRef, useState, useCallback, useEffect, useContext } from "react";
+import { COLORS, SIZES, SHADOWS } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import Icon from "../../../constants/icons";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import InventoryAdd from "../../../components/bottomsheets/InventoryAdd";
 
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 
-const LatestOrders = ({ refreshList, setRefreshing }) => {
-  const navigation = useNavigation();
-  const { data, isLoading, error, refetch } = useFetch("orders?limit=5&offset=0");
+import { Picker } from "@react-native-picker/picker";
+import RequestCard from "./RequestCard";
+import { AuthContext } from "../../../components/auth/AuthContext";
 
-  // Ensure data is an array and sort by creation date
-  const dataArray = Array.isArray(data.orders) ? data.orders : [];
-  const sortedData = dataArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+const LatestOrders = () => {
+  const route = useRoute();
+  const { userData, userLogin } = useContext(AuthContext);
+  const categoryTitle = route.params?.categoryTitle || "";
 
-  const handleRefetch = () => {
-    refetch();
-  };
-
-  // Handle refresh logic
-  useEffect(() => {
-    if (refreshList) {
-      const refetchResult = refetch();
-      if (refetchResult && typeof refetchResult.finally === "function") {
-        refetchResult.finally(() => {
-          setRefreshing(false);
-        });
-      } else {
-        setRefreshing(false);
-      }
-    }
-  }, [refreshList]);
-
-  // Key extractor for FlatList
-  const keyExtractor = (order) => order._id;
-
-  // Render individual order item
-  const renderItem = ({ item: order }) => (
-    <View style={styles.latestProductCards}>
-      <TouchableOpacity
-        style={{
-          borderRadius: 100,
-          backgroundColor: COLORS.gray,
-          width: 36,
-          height: 36,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        onPress={() => {
-          navigation.navigate("OrderSalesDetails", {
-            products: order?.products,
-            orderId: order._id,
-            item: order,
-          });
-        }}
-      >
-        <Image source={require("../../../assets/images/isometric.webp")} style={styles.productImage} />
-      </TouchableOpacity>
-
-      <View style={styles.orderDetails}>
-        <Text style={styles.latestProductTitle}>{order.orderId}</Text>
-        <Text style={styles.latestProductdetail}>Order status: {order.deliveryStatus}</Text>
-      </View>
-
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("OrderSalesDetails", {
-            products: order?.products,
-            orderId: order._id,
-            item: order,
-          });
-        }}
-        style={[styles.flexEnd, styles.buttonView]}
-      >
-        <Text style={styles.productPrice}>+ KSHS {order.totalAmount}</Text>
-      </TouchableOpacity>
-    </View>
+  const { data, isLoading, error, refetch } = useFetch(
+    `inventory-requests/supplier/accepted/${userData?.supplierProfile?._id}`
   );
 
+  console.log(userData?.supplierProfile?._id);
+
+  const [refreshList, setRefreshList] = useState(false);
+
+  const [refreshing, setRefreshing] = useState(false);
+  const [isGridView, setIsGridView] = useState(false);
+  const [statuses, setstatuses] = useState(["Pending", "Accepted", "Rejected"]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [searching, setIsSearching] = useState(false);
+  const [searchText, setSearchText] = useState("");
+
+  const navigation = useNavigation();
+  const scrollRef = useRef(null);
+  const [showScrollTopButton, setShowScrollTopButton] = useState(false);
+  const inputRef = useRef(null);
+
+  //refetch on update
+  useFocusEffect(
+    useCallback(() => {
+      if (route.params?.refreshList && !refreshList) {
+        setRefreshList(true);
+        onRefresh();
+      }
+      setRefreshing(false);
+
+      return () => {
+        //  cleanup logic i will add
+      };
+    }, [route.params, refreshList])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (route.params?.categoryTitle && categoryTitle !== "") {
+        setSelectedCategory(categoryTitle);
+      }
+
+      return () => {
+        //  cleanup logic i will add if i need
+      };
+    }, [route.params, categoryTitle])
+  );
+
+  const BottomSheetRef = React.useRef(null);
+
+  const openMenu = () => {
+    if (BottomSheetRef.current) {
+      BottomSheetRef.current.present();
+    }
+  };
+
+  useEffect(() => {
+    if (data.length > 0) {
+      const uniqueStatus = [...new Set(data.map((item) => item.status))];
+      setstatuses(uniqueStatus);
+    }
+  }, [data]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    try {
+      refetch();
+      navigation.setParams({ refreshList: undefined, products: "products" }); // Clear params
+    } catch (error) {
+      // Handle error
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch]);
+
+  const handleScroll = (event) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    setShowScrollTopButton(offsetY > 100);
+  };
+
+  const scrollTop = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollToOffset({ offset: 0, animated: true });
+    }
+  };
+
+  const toggleViewMode = () => {
+    setIsGridView(!isGridView);
+  };
+
+  const toggleSearching = () => {
+    setIsSearching(!searching);
+  };
+
+  const handleSearch = () => {
+    inputRef.current?.blur(); // Dismiss keyboard on search
+  };
+
+  // Filter products based on selected category, selected and search text
+  const filteredData = data.filter((item) => item.productName.toLowerCase().includes(searchText.toLowerCase()));
+
+  const now = new Date();
+
+  const flatListKey = isGridView ? "grid" : "list"; // Key for FlatList
+
   return (
-    <View style={[styles.container, { marginBottom: 20 }]}>
-      {isLoading ? (
-        <ActivityIndicator size={SIZES.xxLarge} color={COLORS.primary} />
-      ) : error ? (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorMessage}>Looks like you're offline</Text>
-          <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
-            <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
-            <Text style={styles.retryButtonText}>Retry Fetch</Text>
-          </TouchableOpacity>
-        </View>
-      ) : sortedData.length === 0 ? (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorMessage}>No products at the moment</Text>
-          <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
-            <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
-            <Text style={styles.retryButtonText}>Retry</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <FlatList
-          data={sortedData}
-          keyExtractor={keyExtractor}
-          renderItem={renderItem}
-          scrollEnabled={false}
-          contentContainerStyle={{ padding: 4 }}
-          refreshControl={<RefreshControl refreshing={refreshList} onRefresh={handleRefetch} />}
-          ListEmptyComponent={
-            <View style={styles.emptyList}>
-              <Text style={styles.emptyListText}>No orders found</Text>
-            </View>
-          }
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
-        />
-      )}
-    </View>
+    <>
+      <InventoryAdd ref={BottomSheetRef} />
+      <View style={styles.topWelcomeWrapper}>
+        {isLoading && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={COLORS.primary} />
+          </View>
+        )}
+
+        {!isLoading && filteredData.length > 0 && (
+          <FlatList
+            ref={scrollRef}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            key={flatListKey}
+            scrollEnabled={false}
+            keyExtractor={(item) => item._id}
+            contentContainerStyle={[{ columnGap: SIZES.medium }, styles.flatlistContainer]}
+            ItemSeparatorComponent={() => <View style={styles.separator} />}
+            numColumns={isGridView ? 2 : 1}
+            data={filteredData}
+            renderItem={({ item }) => <RequestCard item={item} isGridView={isGridView} />}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          />
+        )}
+
+        {filteredData.length === 0 && !isLoading && (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorMessage}>Sorry, no bids available</Text>
+            <TouchableOpacity onPress={refetch} style={styles.retryButton}>
+              <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
+              <Text style={styles.retryButtonText}>Retry Again</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {error && (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorMessage}>Error loading products</Text>
+            <TouchableOpacity onPress={refetch} style={styles.retryButton}>
+              <Text style={styles.retryButtonText}>Retry Fetch</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    </>
   );
 };
 
 export default LatestOrders;
 
 const styles = StyleSheet.create({
-  container: {
+  loadingContainer: {
     flex: 1,
-  },
-  productImage: {
-    width: 35,
-    height: 35,
-    borderRadius: 100,
-    borderWidth: 2,
-    alignSelf: "center",
-  },
-  productTitle: {
-    fontSize: SIZES.medium,
-    fontWeight: "bold",
-    color: COLORS.primary,
-  },
-  productPrice: {
-    paddingTop: 20,
-    alignSelf: "center",
-    fontSize: SIZES.small,
-    color: COLORS.black,
-    fontFamily: "medium",
+    alignItems: "center",
+    justifyContent: "center",
+    height: SIZES.height,
   },
 
-  productLocation: {
-    fontSize: SIZES.small,
-    color: COLORS.gray,
-    marginTop: SIZES.small,
+  separator: {
+    height: 16,
   },
   errorContainer: {
-    alignorders: "center",
+    // flex: 1,
+    alignItems: "center",
     justifyContent: "center",
+    alignContent: "center",
+    height: SIZES.height,
   },
   errorMessage: {
-    fontSize: SIZES.medium,
-    color: COLORS.error,
-    marginBottom: SIZES.medium,
+    fontFamily: "bold",
   },
+
   retryButton: {
-    flexDirection: "row",
-    alignorders: "center",
     backgroundColor: COLORS.primary,
-    padding: SIZES.small,
-    borderRadius: SIZES.small,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 14,
+    marginTop: 20,
+    justifyContent: "center",
+    alignItems: "center",
   },
   retryButtonText: {
-    color: COLORS.white,
-    marginLeft: SIZES.small,
+    color: "#fff",
+    fontSize: SIZES.medium,
+    textAlign: "center",
   },
-  latestProductCards: {
-    paddingHorizontal: 10,
-    backgroundColor: COLORS.themeg,
-    borderRadius: SIZES.medium,
-    flexDirection: "row",
-    alignorders: "center",
-    gap: 6,
-    paddingVertical: 3,
-    backgroundColor: COLORS.lightWhite,
-    borderRadius: SIZES.medium,
-    minHeight: 40,
-    marginBottom: 10,
-    marginHorizontal: 4,
-  },
-  flexEnd: {
+  toTopButton: {
     position: "absolute",
-    right: 10,
+    bottom: 20,
+    right: 20,
+    backgroundColor: "black",
+    padding: 10,
+    borderRadius: 100,
   },
-  buttonView: {
-    display: "flex",
-    alignItems: "center",
-    // backgroundColor: "red",
-    alignItems: "center",
-    height: "100%",
+  textStyles: {
+    fontFamily: "bold",
+    fontSize: 19,
   },
-  latestProductTitle: {
+
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  text: {
     fontSize: 16,
-    fontWeight: "semibold",
-    marginBottom: 8,
+    color: "#000",
+    marginRight: 5,
   },
-  latestProductdetail: {
-    fontSize: SIZES.small,
-    fontWeight: "regular",
-    color: COLORS.gray,
-    marginBottom: 5,
+  toggleViewMode: {
+    padding: 10,
+    borderRadius: 100,
+    padding: 6,
+    height: 50,
+    width: 50,
+    backgroundColor: COLORS.themeg,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  searchWrapper: {
+    flex: 1,
+    backgroundColor: COLORS.themeg,
+    marginRight: 10,
+    borderRadius: SIZES.medium,
+    justifyContent: "center",
+    paddingLeft: 10,
+  },
+  searchInput: {
+    fontFamily: "regular",
+    width: "100%",
+  },
+  searchBtn: {
+    padding: 10,
+    borderRadius: 100,
+    padding: 6,
+    height: 50,
+    width: 50,
+    backgroundColor: COLORS.themeg,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
