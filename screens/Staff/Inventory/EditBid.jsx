@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   StyleSheet,
   View,
@@ -6,39 +6,83 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  Alert,
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
+import Icon from "../../../constants/icons";
 import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { COLORS, SIZES } from "../../../constants";
 import { ScrollView } from "react-native-gesture-handler";
-import useFetch from "../../../hook/useFetch";
+import { Picker } from "@react-native-picker/picker";
+import DatePicker from "react-native-date-picker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { BACKEND_PORT } from "@env";
-import Icon from "../../../constants/icons";
+import { useRoute } from "@react-navigation/native";
 
-const AddCategory = () => {
+const EditBid = () => {
   const navigation = useNavigation();
-  const [title, setTitle] = useState("");
-  const [imageUrl, setImageUrl] = useState("https://i.postimg.cc/j56q20rB/images.jpg");
+
+  const route = useRoute();
+  // Get product from route params if it exists
+  const product = route.params?.product;
+
+  // Use product details as initial values if available, or fallback to empty/default values
+  const [productName, setProductName] = useState(product?.productName || "");
+  const [inventoryId, setInventoryId] = useState(product?._id || null);
+  const [expectedPrice, setExpectedPrice] = useState(product?.expectedPrice);
+  const [quantity, setQuantity] = useState(product?.quantity || "");
+  const [bidDescription, setBidDescription] = useState(product?.bidDescription || "");
+  const [imageUrl, setImageUrl] = useState(product?.imageUrl || "https://i.postimg.cc/j56q20rB/images.jpg");
+
   const [image, setImage] = useState(null);
-  const [description, setDescription] = useState("");
-  const [uploading, setUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState(product?.imageUrl || "");
+  const [loader, setLoader] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
+  const [deadline, setDeadline] = useState(product?.deadline ? new Date(product.deadline) : new Date());
+
+  const [open, setOpen] = useState(false); // Controls DatePicker modal
+
+  console.log(product?.expectedPrice);
+
+  const [mode, setMode] = useState("date");
+  const [show, setShow] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setShow(false);
+    setDeadline(currentDate);
+  };
+
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode("date");
+  };
+
+  console.log(product?._id);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     try {
-      setTitle("");
+      // Reset form fields
+      setProductName("");
+      setExpectedPrice("");
       setImageUrl("https://i.postimg.cc/j56q20rB/images.jpg");
       setImage(null);
-      setDescription("");
+      setBidDescription("");
+      setQuantity(0);
+      setDeadline(new Date());
     } catch (error) {
       console.log("refresh failed");
     } finally {
@@ -48,47 +92,83 @@ const AddCategory = () => {
     }
   }, []);
 
+  const toggleEditable = () => {
+    setIsEditable(!isEditable);
+  };
+
   const validationSchema = Yup.object().shape({
-    title: Yup.string().required("Category title is required"),
-    description: Yup.string().required("Description is required"),
+    productName: Yup.string().required("Product Name is required"),
+    expectedPrice: Yup.number().required("Price is required").positive("Price must be a positive number"),
+    bidDescription: Yup.string().required("Description is required"),
+    deadline: Yup.date().required("Deadline is required"),
   });
 
-  const handleAddCategory = async () => {
-    const newCategory = {
-      title,
-      imageUrl,
-      description,
+  const handleEditBid = async () => {
+    setLoader(true);
+    const oldBidRequest = {
+      productName,
+      quantity,
+      expectedPrice,
+      bidDescription,
+      deadline,
     };
 
     try {
       if (image) {
         const uploadedImageUrl = await uploadImage(image);
         setImageUrl(uploadedImageUrl);
-        newCategory.imageUrl = uploadedImageUrl;
+        oldBidRequest.imageUrl = uploadedImageUrl;
+      } else {
+        oldBidRequest.imageUrl = imageUrl;
       }
-      await validationSchema.validate(newCategory);
-      const response = await axios.post(`${BACKEND_PORT}/api/category`, newCategory);
+      if (inventoryId) {
+        oldBidRequest.inventoryId = inventoryId;
+      }
 
-      if (response.status === 201) {
-        showToast("success", "Category added successfully!");
-        setTitle("");
+      // Validate with Yup
+      await validationSchema.validate(oldBidRequest);
+
+      const route = `${BACKEND_PORT}/api/inventory-requests/${product?._id}`;
+      console.log(route);
+
+      // Send bid to backend (Make sure you have the correct request ID)
+      const response = await axios.put(route, oldBidRequest);
+
+      if (response.status === 200) {
+        showToast("success", "Bid added successfully!");
+
+        // Reset form fields
+        setProductName("");
+        setExpectedPrice("");
+        setBidDescription("");
+        setQuantity(0);
         setImageUrl("https://i.postimg.cc/j56q20rB/images.jpg");
-        setDescription("");
-        navigation.navigate("EditCategoriesList", { refreshList: true });
+        setDeadline(new Date());
+
+        // Navigate back to inventory dashboard
+        navigation.navigate("Inventory Navigation", {
+          screen: "InventoryDashboard",
+          params: { refreshList: true },
+        });
       }
     } catch (error) {
-      showToast("error", "Category doesn't meet the required standard", error.message);
+      console.log(error);
+      showToast("error", "Failed to add bid", error.message);
+    } finally {
+      setLoader(false);
     }
   };
 
   const uploadImage = async (image) => {
+    setLoader(true);
     setUploading(true);
     try {
       const formData = new FormData();
-      const fileType = image.split(".").pop();
+      const fileType = image.split(".").pop(); // Extract the file extension
+
       formData.append("file", {
         uri: image,
-        name: `categoryImage.${fileType}`,
+        name: `productImage.${fileType}`, // Use the extracted file extension
         type: `image/${fileType}`,
       });
 
@@ -108,7 +188,7 @@ const AddCategory = () => {
       showToast("error", "Image upload failed", "Please try again.");
       throw err;
     } finally {
-      setUploading(false);
+      setLoader(false);
     }
   };
 
@@ -122,7 +202,7 @@ const AddCategory = () => {
     let pickerResult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 2.5],
+      aspect: [1, 1],
       quality: 1,
     });
 
@@ -148,9 +228,9 @@ const AddCategory = () => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
             <Icon name="backbutton" size={26} />
           </TouchableOpacity>
-          <Text style={styles.heading}>ADD CATEGORY</Text>
-          <TouchableOpacity style={styles.buttonWrap} onPress={handleAddCategory}>
-            <Icon name="add" size={26} />
+          <Text style={styles.heading}>EDIT PRODUCT BID</Text>
+          <TouchableOpacity style={styles.buttonWrap} onPress={() => {}}>
+            <Icon name="megaphone" size={26} />
           </TouchableOpacity>
         </View>
 
@@ -160,44 +240,89 @@ const AddCategory = () => {
               <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
                 {image ? (
                   <Image source={{ uri: image }} style={styles.imagePreview} />
+                ) : imagePreview ? (
+                  <Image source={{ uri: imagePreview }} style={styles.imagePreview} />
                 ) : (
                   <Image source={require("../../../assets/images/empty-product.png")} style={styles.imagePreview} />
                 )}
               </TouchableOpacity>
-
+              <Text style={styles.label}>Product title</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Category Title"
-                value={title}
-                onChangeText={(text) => setTitle(text)}
+                placeholder="Product Title"
+                value={productName}
+                onChangeText={(text) => setProductName(text)}
               />
-
+              <Text style={styles.label}>Price range</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Expected Price"
+                value={expectedPrice}
+                onChangeText={(text) => setExpectedPrice(text)}
+                keyboardType="numeric"
+              />
+              <Text style={styles.label}>Supply Bid instructions</Text>
               <TextInput
                 style={styles.descriptionInput}
-                placeholder="Category Description"
-                value={description}
-                onChangeText={(text) => setDescription(text)}
+                placeholder="Bid Product Description"
+                value={bidDescription}
+                onChangeText={(text) => setBidDescription(text)}
                 multiline
               />
 
-              <View style={styles.imageUrlContainer}>
+              <Text style={styles.label}>Custom image(not required)</Text>
+              <View style={styles.imageurlContainer}>
                 <TextInput
-                  style={[styles.input, styles.imageurl, !isEditable && styles.nonEditable]}
+                  style={[styles.input, styles.imageurl, !isEditable ? styles.nonEditable : ""]}
                   placeholder="Image URL"
                   value={imageUrl}
                   onChangeText={(text) => setImageUrl(text)}
                   editable={isEditable}
                 />
-                <TouchableOpacity style={styles.editButton} onPress={() => setIsEditable(!isEditable)}>
+                <TouchableOpacity style={styles.editButton} onPress={toggleEditable}>
                   <Icon name="pencil" size={27} />
                 </TouchableOpacity>
               </View>
 
-              <TouchableOpacity style={styles.submitBtn} onPress={handleAddCategory}>
-                {uploading ? (
+              <View style={{ marginTop: 20 }}>
+                <Text style={styles.label}>Quantity</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Quantity"
+                  value={quantity.toString()}
+                  onChangeText={(text) => setQuantity(text)}
+                  keyboardType="numeric"
+                />
+              </View>
+
+              {/* Deadline Picker */}
+              <View style={{ marginTop: 20 }}>
+                <Text style={{ fontSize: 16, marginBottom: 5, paddingHorizontal: 12 }}>Select Deadline</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    setOpen(true);
+                    showDatepicker();
+                  }}
+                  style={styles.input}
+                >
+                  <Text>{deadline && deadline.toDateString()}</Text>
+                  {show && (
+                    <DateTimePicker
+                      testID="dateTimePicker"
+                      value={deadline}
+                      mode={mode}
+                      is24Hour={true}
+                      onChange={onChange}
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity style={styles.submitBtn} onPress={handleEditBid}>
+                {uploading || loader ? (
                   <ActivityIndicator size={30} color={COLORS.themew} />
                 ) : (
-                  <Text style={styles.submitText}>Add Category</Text>
+                  <Text style={styles.submitText}>Submit Bid Update</Text>
                 )}
               </TouchableOpacity>
             </View>
@@ -301,6 +426,8 @@ const styles = StyleSheet.create({
   submitBtn: {
     backgroundColor: COLORS.primary,
     padding: 15,
+    marginTop: 10,
+    paddingVertical: 20,
     borderRadius: SIZES.medium,
     alignItems: "center",
   },
@@ -329,7 +456,7 @@ const styles = StyleSheet.create({
   heading: {
     fontFamily: "bold",
     textTransform: "uppercase",
-    fontSize: SIZES.large,
+    fontSize: SIZES.medium,
     textAlign: "center",
     color: COLORS.themeb,
   },
@@ -352,6 +479,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 4,
   },
+  imageurlContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   editButton: {
     height: 40,
     width: 40,
@@ -361,13 +495,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
-  imageUrlContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 10,
-    alignItems: "center",
-    justifyContent: "center",
+  label: {
+    fontFamily: "regular",
+    fontSize: SIZES.small,
+    marginBottom: 5,
+    textAlign: "right",
   },
 });
 
-export default AddCategory;
+export default EditBid;

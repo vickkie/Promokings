@@ -126,6 +126,15 @@ const InventoryRequests = () => {
   // Filter products based on selected category, selected and search text
   const filteredData = data.filter((item) => item.productName.toLowerCase().includes(searchText.toLowerCase()));
 
+  const now = new Date();
+
+  const openBids = Array.isArray(filteredData)
+    ? filteredData.filter((bid) => bid.status !== "Completed" && !bid.selectedSupplier && new Date(bid.deadline) > now)
+        .length
+    : 0;
+
+  console.log("open", openBids);
+
   const flatListKey = isGridView ? "grid" : "list"; // Key for FlatList
 
   return (
@@ -150,7 +159,9 @@ const InventoryRequests = () => {
           </View>
         </View>
         <View style={styles.totalWrapper}>
-          <Text style={styles.totalCount}>{filteredData.length} Bids posted</Text>
+          <Text style={styles.totalCount}>
+            {filteredData.length} Bids posted: ({openBids}) open{" "}
+          </Text>
         </View>
       </View>
 

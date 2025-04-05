@@ -37,6 +37,7 @@ import MainCenter from "./Staff/Inventory/MainCenter";
 import AddBid from "./Staff/Inventory/AddBid";
 import BidList from "./Staff/Inventory/BidList";
 import FinalBids from "./Staff/Inventory/FinalBids";
+import EditBid from "./Staff/Inventory/EditBid";
 
 //sales
 
@@ -144,6 +145,7 @@ export {
   MainCenter,
   BidList,
   FinalBids,
+  EditBid,
 
   //sales
   SalesDashboard,

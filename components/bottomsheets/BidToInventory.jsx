@@ -33,7 +33,7 @@ const BidToInventory = forwardRef((props, ref) => {
 
   useEffect(() => {
     if (!loading && bidData) {
-      const foundBid = filteredBids.find((bid) => bid.supplier._id === bid?.selectedSupplier);
+      const foundBid = filteredBids.find((bid) => bid.supplier?._id === bid?.selectedSupplier);
       // setHaveBid(foundBid ? true : false);
     }
   }, [loading, bidData]);
@@ -78,7 +78,7 @@ const BidToInventory = forwardRef((props, ref) => {
         setProduct((prev) => {
           const newData = reset ? [response.data] : [...prev, ...response.data];
 
-          return Array.from(new Map(newData.map((item) => [item._id, item])).values());
+          return Array.from(new Map(newData.map((item) => [item?._id, item])).values());
         });
       }
 

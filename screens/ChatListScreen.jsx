@@ -9,6 +9,7 @@ import { StatusBar } from "expo-status-bar";
 import LottieView from "lottie-react-native";
 import { db } from "../components/auth/firebase";
 import { ref, onValue } from "firebase/database";
+import axios from "axios";
 
 import { BACKEND_PORT } from "@env";
 
@@ -28,17 +29,22 @@ const ChatListScreen = () => {
   const fetchUsers = async () => {
     try {
       const userRole = userData?.position || userData?.role || "customer";
+      const datapoint = `${BACKEND_URL}/api/chat/chat-users`;
+      console.log(datapoint);
 
-      const response = await fetch(
-        `${BACKEND_URL}/api/chat/chat-users?userId=${userData._id}&role=${userRole}&search=${searchQuery}`
-      );
+      const response = await axios.get(datapoint, {
+        params: {
+          userId: userData._id,
+          role: userRole,
+          search: searchQuery,
+        },
+      });
 
-      if (!response.ok) throw new Error("Failed to fetch users");
+      console.log(response.data);
 
-      const data = await response.json();
-      setUsers(data);
+      setUsers(response.data);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching users:", error.response?.data || error.message);
     } finally {
       setLoading(false);
     }

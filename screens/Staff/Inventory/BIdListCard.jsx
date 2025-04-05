@@ -85,7 +85,15 @@ const BidListCard = ({ item, refetch, isGridView }) => {
               Status: {item?.status}
             </Text>
           </View>
-          <TouchableOpacity style={isGridView ? styles.addBtn : styles.editPencil} onPress={openMenu}>
+          <TouchableOpacity
+            style={isGridView ? styles.addBtn : styles.editPencil}
+            onPress={() => {
+              console.log(item);
+              navigation.navigate("EditBid", {
+                product: item,
+              });
+            }}
+          >
             <Icon name="pencil" size={27} color={COLORS.primary} />
           </TouchableOpacity>
         </View>

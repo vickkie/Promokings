@@ -32,11 +32,12 @@ const EditCategory = () => {
 
   const [title, setTitle] = useState(product?.title || "");
   const [availability, setAvailability] = useState(product?.availability || false);
+  const [description, setDescription] = useState(product?.description || "");
+
   const [imageUrl, setImageUrl] = useState(product?.imageUrl || "https://i.postimg.cc/j56q20rB/images.jpg");
   const [image, setImage] = useState(null);
   const [loader, setLoader] = useState(false);
 
-  const [description, setDescription] = useState(product?.description || "");
   const [isEditable, setIsEditable] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -139,9 +140,9 @@ const EditCategory = () => {
       const formData = new FormData();
       const fileType = image.split(".").pop();
 
-      formData.append("profilePicture", {
+      formData.append("file", {
         uri: image,
-        name: `productImage.${fileType}`,
+        name: `category.${fileType}`,
         type: `image/${fileType}`,
       });
 
@@ -277,10 +278,10 @@ const EditCategory = () => {
             <TouchableOpacity
               style={styles.submitBtn}
               onPress={() => {
-                handleUpdateProduct;
+                handleUpdateProduct();
               }}
             >
-              {uploading ? (
+              {uploading || loader ? (
                 <ActivityIndicator size={30} color={COLORS.themew} />
               ) : (
                 <Text style={styles.submitText}>Update Product</Text>

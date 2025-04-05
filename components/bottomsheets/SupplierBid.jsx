@@ -45,8 +45,8 @@ const SupplierBid = forwardRef((props, ref) => {
   const [bidClosed, setBidclosed] = useState(false);
 
   useEffect(() => {
-    console.log(ilostBid, bidAccepted);
-  }, [ilostBid]);
+    // console.log(ilostBid, bidAccepted);
+  }, [ilostBid, bidAccepted]);
 
   const [error, setError] = useState(null);
 
@@ -88,7 +88,7 @@ const SupplierBid = forwardRef((props, ref) => {
     setLoading(true);
 
     try {
-      console.log(item?.inventoryId);
+      // console.log(item?.inventoryId);
 
       const response = await axios.get(`${BACKEND_PORT}/api/products/${item?.inventoryId}`, {
         params: { limit, offset: reset ? 0 : offset },
@@ -98,7 +98,7 @@ const SupplierBid = forwardRef((props, ref) => {
         setProduct((prev) => {
           const newData = reset ? [response.data] : [...prev, ...response.data];
 
-          return Array.from(new Map(newData.map((item) => [item._id, item])).values());
+          return Array.from(new Map(newData.map((item) => [item?._id, item])).values());
         });
       }
 
@@ -146,7 +146,14 @@ const SupplierBid = forwardRef((props, ref) => {
   const handleSubmitBid = async (values) => {
     console.log("is submitting");
     // console.log(userData);
+
     setLoader(true);
+    setIsEditing(false);
+
+    if (bidAccepted) {
+      showToast("error", "Your Bid supply is already approved");
+      return;
+    }
     try {
       const bidData = {
         bidPrice: values.bidPrice || undefined,
@@ -174,10 +181,7 @@ const SupplierBid = forwardRef((props, ref) => {
     } catch (err) {
       console.log(err.message);
       showToast("error", err.message);
-    } finally {
-      setLoader(false);
     }
-
     setLoader(false);
   };
 
@@ -253,27 +257,28 @@ const SupplierBid = forwardRef((props, ref) => {
           {/* Header */}
           <View style={styles.productHeader}>
             <Text style={styles.productTitle}>Bid Product Details</Text>
+            <Text
+              style={{
+                backgroundColor: daysRemaining >= 0 ? "#C0DAFF" : daysRemaining < 0 ? "#F3D0CE" : COLORS.themey,
+                paddingVertical: 4,
+                paddingHorizontal: 8,
+                borderRadius: SIZES.medium,
+                width: 125,
+                marginTop: 10,
+                fontWeight: "bold",
+                color: daysRemaining >= 0 ? "#337DE7" : daysRemaining < 0 ? "#B65454" : COLORS.primary,
+              }}
+            >
+              {deadlineLabel}
+            </Text>
           </View>
+
           {/* Product Image */}
           {item?.imageUrl && <Image source={{ uri: item.imageUrl }} style={styles.productImage} />}
           {/* Product Info */}
           <View style={styles.productInfo}>
             <View style={styles.flexmex}>
               <Text style={styles.productName}>{item?.productName || "Product Name Here"}</Text>
-              <Text
-                style={{
-                  backgroundColor: daysRemaining >= 0 ? "#C0DAFF" : daysRemaining < 0 ? "#F3D0CE" : COLORS.themey,
-                  paddingVertical: 4,
-                  paddingHorizontal: 8,
-                  borderRadius: SIZES.medium,
-                  width: 125,
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  color: daysRemaining >= 0 ? "#337DE7" : daysRemaining < 0 ? "#B65454" : COLORS.primary,
-                }}
-              >
-                {deadlineLabel}
-              </Text>
             </View>
 
             <Text style={styles.supplier} numberOfLines={1}>
@@ -335,9 +340,12 @@ const SupplierBid = forwardRef((props, ref) => {
           {haveBid && (
             <View style={styles.bidContainer}>
               <Text style={styles.productDescription}>You have a bid of: {oldBid}</Text>
-              <TouchableOpacity style={styles.editButton} onPress={handleEditBid}>
-                <Text style={styles.editButtonText}>Edit</Text>
-              </TouchableOpacity>
+
+              {!bidClosed && !ilostBid && (
+                <TouchableOpacity style={styles.editButton} onPress={handleEditBid}>
+                  <Text style={styles.editButtonText}>Edit</Text>
+                </TouchableOpacity>
+              )}
             </View>
           )}
           {ilostBid && (

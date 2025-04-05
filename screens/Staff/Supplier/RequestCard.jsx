@@ -13,15 +13,24 @@ import SupplierBid from "../../../components/bottomsheets/SupplierBid";
 // Function to cache image
 const cacheImage = async (uri) => {
   try {
-    const fileName = encodeURIComponent(uri.replace(/[^a-zA-Z0-9]/g, "_"));
+    const extMatch = uri.match(/\.(jpg|jpeg|png|webp|gif|bmp)(\?.*)?$/i);
+    const ext = extMatch ? extMatch[1] : "jpg";
+
+    const fileName = encodeURIComponent(uri.replace(/[^a-zA-Z0-9]/g, "_")) + "." + ext;
     const fileUri = FileSystem.documentDirectory + fileName;
-    const { exists } = await FileSystem.getInfoAsync(fileUri);
-    if (!exists) {
+
+    const fileInfo = await FileSystem.getInfoAsync(fileUri);
+    // console.log("🗂️ Exists:", fileInfo.exists, fileUri);
+
+    if (!fileInfo.exists) {
+      console.log("⬇️ Downloading image...");
       await FileSystem.downloadAsync(uri, fileUri);
     }
+
     return fileUri;
   } catch (error) {
-    return uri;
+    // console.warn("❌ Failed to cache image:", uri, error.message);
+    return null;
   }
 };
 
@@ -36,6 +45,7 @@ const RequestCard = ({ item, isGridView }) => {
     const loadImage = async () => {
       if (item.imageUrl) {
         const cachedUri = await cacheImage(item.imageUrl);
+
         setImageUri(cachedUri);
       }
     };
@@ -64,12 +74,19 @@ const RequestCard = ({ item, isGridView }) => {
 
   useEffect(() => {
     if (item?.selectedSupplier === userData?.supplierProfile?._id) {
-      console.log("what");
       setBidAccepted(true);
     } else if (item?.selectedSupplier !== null) {
       setLostBid(true);
     }
   }, []);
+
+  // const bidValid =
+
+  const now = new Date();
+
+  const openBid =
+    item && item.status !== "Completed" && !item.selectedSupplier && new Date(item.deadline) > now ? true : false;
+
   return (
     <>
       <SupplierBid ref={BottomSheetRef} bidAccepted={bidAccepted} lostBid={lostBid} item={item} />
@@ -77,16 +94,17 @@ const RequestCard = ({ item, isGridView }) => {
         <View
           style={[
             !isGridView ? styles.container : styles.gridCard,
-            { backgroundColor: bidAccepted ? "#a3eed8" : lostBid ? "#F3D0CE" : COLORS.themeg },
+            { backgroundColor: bidAccepted ? "#a3eed8" : COLORS.themeg },
           ]}
         >
           <View style={isGridView ? styles.imageContainer : styles.imageList}>
             <Image
-              source={{ uri: imageUri || item.imageUrl }}
+              source={{ uri: imageUri || item?.imageUrl }}
               style={styles.image}
               sharedTransitionTag={transitionTag}
             />
           </View>
+
           <View style={styles.details}>
             <Text style={styles.title} numberOfLines={1}>
               {item?.productName}
@@ -95,9 +113,17 @@ const RequestCard = ({ item, isGridView }) => {
               {`${item.quantity} units`}
             </Text>
 
-            <Text style={[styles.price, { color: item.status === "Accepted" ? "#fff" : "red" }]}>
-              Status:{" "}
-              {item?.status === "Pending" ? "Open Bid" : lostBid ? "Bid Lost" : bidAccepted ? "Won Bid" : "Pending"}
+            <Text style={[styles.price, { color: openBid ? "green" : bidAccepted ? COLORS.themeb : "red" }]}>
+              Status :{" "}
+              {openBid
+                ? "Open Bid"
+                : bidAccepted
+                ? "Bid Accepted"
+                : !openBid
+                ? "Bid Closed"
+                : lostBid
+                ? "Bid Lost"
+                : "Pending"}
             </Text>
           </View>
           <TouchableOpacity style={isGridView ? styles.addBtn : styles.editPencil} onPress={openMenu}>
