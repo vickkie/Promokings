@@ -102,8 +102,20 @@ import contract from "../assets/svg/business-contract.svg";
 import megaphone from "../assets/svg/share-megaphone.svg";
 import datafile from "../assets/svg/data-file.svg";
 import barcode from "../assets/svg/shopping-barcode.svg";
+import moneybagfilled from "../assets/svg/money-bag.svg";
+import moneybag from "../assets/svg/moneyblack.svg";
+import adjust from "../assets/svg/adjust.svg";
+import discuss from "../assets/svg/discuss.svg";
+import clipboardfilled from "../assets/svg/clipboard-check.svg";
+import clipboardcheck from "../assets/svg/clipboard-check-light.svg";
 
 const iconMap = {
+  clipboardcheck: clipboardcheck,
+  clipboardfilled: clipboardfilled,
+  discuss: discuss,
+  adjust: adjust,
+  moneybag: moneybag,
+  moneybagfilled: moneybagfilled,
   barcode: barcode,
   datafile: datafile,
   megaphone: megaphone,

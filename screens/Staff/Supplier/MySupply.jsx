@@ -8,7 +8,7 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native";
-import React, { useRef, useState, useCallback, useEffect } from "react";
+import React, { useRef, useState, useCallback, useEffect, useContext } from "react";
 import { COLORS, SIZES, SHADOWS } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,16 +21,21 @@ import { useFocusEffect } from "@react-navigation/native";
 
 import { Picker } from "@react-native-picker/picker";
 import RequestCard from "./RequestCard";
+import { AuthContext } from "../../../components/auth/AuthContext";
+import LottieView from "lottie-react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
-const InventoryRequests = () => {
+const MySupply = () => {
   const route = useRoute();
+  const { userData } = useContext(AuthContext);
 
   const categoryTitle = route.params?.categoryTitle || "";
-  const products = route.params?.products ? route.params.products : "products";
 
   // console.log(route.params);
 
-  const { data, isLoading, error, refetch } = useFetch("inventory-requests");
+  const { data, isLoading, error, refetch } = useFetch(
+    `inventory-requests/supplier/accepted/${userData?.supplierProfile?._id}`
+  );
 
   const [refreshList, setRefreshList] = useState(false);
 
@@ -128,12 +133,11 @@ const InventoryRequests = () => {
 
   const now = new Date();
 
-  const openBids = Array.isArray(filteredData)
-    ? filteredData.filter((bid) => bid.status !== "Completed" && !bid.selectedSupplier && new Date(bid.deadline) > now)
-        .length
+  const pendingSupplies = Array.isArray(filteredData)
+    ? filteredData.filter((bid) => bid.status !== "Completed").length
     : 0;
 
-  console.log("open", openBids);
+  console.log("open", pendingSupplies);
 
   const flatListKey = isGridView ? "grid" : "list"; // Key for FlatList
 
@@ -148,7 +152,7 @@ const InventoryRequests = () => {
             </TouchableOpacity>
 
             <Text style={styles.greetingMessage}>
-              <Text style={styles.username}>Posted Supply Bids</Text>
+              <Text style={styles.username}>My Supply Bids</Text>
             </Text>
 
             <View style={{ flexDirection: "row" }}>
@@ -160,7 +164,7 @@ const InventoryRequests = () => {
         </View>
         <View style={styles.totalWrapper}>
           <Text style={styles.totalCount}>
-            {filteredData.length} Bids posted: ({openBids}) open{" "}
+            {filteredData.length} Bids posted: ({pendingSupplies}) pending{" "}
           </Text>
         </View>
       </View>
@@ -211,8 +215,20 @@ const InventoryRequests = () => {
         </View>
 
         {isLoading && (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color={COLORS.primary} />
+          <View style={styles.containerx}>
+            <View style={styles.containLottie}>
+              <View style={styles.animationWrapper}>
+                <LottieView
+                  source={require("../../../assets/data/loading.json")}
+                  autoPlay
+                  loop={false}
+                  style={styles.animation}
+                />
+              </View>
+              <View style={{ marginTop: 0, paddingBottom: 20 }}>
+                <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Loading!</Text>
+              </View>
+            </View>
           </View>
         )}
 
@@ -239,18 +255,34 @@ const InventoryRequests = () => {
         )}
 
         {filteredData.length === 0 && !isLoading && (
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorMessage}>Sorry, no bids available</Text>
-            <TouchableOpacity onPress={refetch} style={styles.retryButton}>
-              <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
-              <Text style={styles.retryButtonText}>Retry Again</Text>
-            </TouchableOpacity>
-          </View>
+          <ScrollView>
+            <View style={styles.errorContainerx}>
+              <View style={styles.containerx}>
+                <View style={styles.containLottie}>
+                  <View style={styles.animationWrapper}>
+                    <LottieView
+                      source={require("../../../assets/data/working.json")}
+                      autoPlay
+                      loop={false}
+                      style={styles.animation}
+                    />
+                  </View>
+                  <View style={{ marginTop: 0, paddingBottom: 20 }}>
+                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Oops, No Payments here!</Text>
+                    <TouchableOpacity onPress={refetch} style={styles.retryButton}>
+                      <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
+                      <Text style={styles.retryButtonText}>Retry Again</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </ScrollView>
         )}
 
         {error && (
           <View style={styles.errorContainer}>
-            <Text style={styles.errorMessage}>Error loading products</Text>
+            <Text style={styles.errorMessage}>Error loading supplies</Text>
             <TouchableOpacity onPress={refetch} style={styles.retryButton}>
               <Text style={styles.retryButtonText}>Retry Fetch</Text>
             </TouchableOpacity>
@@ -269,7 +301,7 @@ const InventoryRequests = () => {
   );
 };
 
-export default InventoryRequests;
+export default MySupply;
 
 const styles = StyleSheet.create({
   container: {
@@ -366,7 +398,7 @@ const styles = StyleSheet.create({
     marginEnd: 4,
   },
   topWelcomeWrapper: {
-    minHeight: 140,
+    minHeight: 100,
     backgroundColor: COLORS.themew,
     borderRadius: SIZES.medium,
     ...SHADOWS.small,
@@ -393,9 +425,9 @@ const styles = StyleSheet.create({
     color: COLORS.themeb,
   },
   totalWrapper: {
-    flex: 1,
+    // flex: 1,
     justifyContent: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     alignItems: "center",
   },
   totalCount: {
@@ -482,5 +514,30 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themeg,
     justifyContent: "center",
     alignItems: "center",
+  },
+  containLottie: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: SIZES.width - 20,
+    flex: 1,
+  },
+  animationWrapper: {
+    width: 200,
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  animation: {
+    width: "100%",
+    height: "100%",
+  },
+  containerx: {
+    flex: 1,
+    backgroundColor: COLORS.themeg,
+    marginTop: 2,
+    // width: SIZES.width - 20,
+    marginHorizontal: 10,
+    borderRadius: SIZES.medium,
   },
 });

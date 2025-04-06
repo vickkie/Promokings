@@ -100,6 +100,8 @@ import SupplierDashboard from "./Staff/Supplier/SupplierDashboard";
 import SupplierProfile from "./Staff/Supplier/SupplierProfile";
 import SupplierSettings from "./Staff/Supplier/SupplierSettings";
 import InventoryRequests from "./Staff/Supplier/InventoryRequests";
+import MySupply from "./Staff/Supplier/MySupply";
+import SupplyPayments from "./Staff/Supplier/SupplyPayments";
 
 export {
   ChatListScreen,
@@ -197,4 +199,6 @@ export {
   SupplierProfile,
   SupplierSettings,
   InventoryRequests,
+  MySupply,
+  SupplyPayments,
 };

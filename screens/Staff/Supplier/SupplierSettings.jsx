@@ -301,7 +301,7 @@ const SupplierSettings = () => {
 
               <TouchableOpacity onPress={() => navigation.navigate("ChatListScreen")}>
                 <View style={styles.menuItem(0.5)}>
-                  <Icon name="message" size={26} color={COLORS.primary} />
+                  <Icon name="discuss" size={28} color={COLORS.primary} />
                   <Text style={styles.menuText}>Message Center</Text>
                 </View>
               </TouchableOpacity>

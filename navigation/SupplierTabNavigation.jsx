@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { InventoryRequests, SupplierDashboard, SupplierSettings } from "../screens";
+import { InventoryRequests, MySupply, SupplierDashboard, SupplierSettings, SupplyPayments } from "../screens";
 
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
@@ -69,11 +69,10 @@ const SupplierTabNavigation = () => {
           tabBarLabel: "Bids",
         }}
       />
-      {/*
-      
+
       <Tab.Screen
-        name="SalesOverviews"
-        component={SalesOverview}
+        name="MySupply"
+        component={MySupply}
         options={{
           tabBarIcon: ({ focused }) => (
             <TouchableOpacity
@@ -89,7 +88,7 @@ const SupplierTabNavigation = () => {
             >
               <View style={shadowStyle}>
                 <Icon
-                  name={focused ? "invoicefilled" : "invoice"}
+                  name={focused ? "clipboardfilled" : "clipboardcheck"}
                   size={34}
                   color={focused ? COLORS.primary : COLORS.gray2}
                 />
@@ -100,21 +99,25 @@ const SupplierTabNavigation = () => {
         }}
       />
       <Tab.Screen
-        name="SalesShipment"
-        component={SalesShipments}
+        name="SupplyPayments"
+        component={SupplyPayments}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon name={focused ? "truckfilled" : "truck"} size={32} color={focused ? COLORS.primary : COLORS.gray2} />
+            <Icon
+              name={focused ? "moneybagfilled" : "moneybag"}
+              size={27}
+              color={focused ? COLORS.primary : COLORS.gray2}
+            />
           ),
-          tabBarLabel: "Shipments",
+          tabBarLabel: "Payments",
         }}
-      /> */}
+      />
       <Tab.Screen
         name="SupplierSettings"
         component={SupplierSettings}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon name={focused ? "settings" : "settings"} size={26} color={focused ? COLORS.primary : COLORS.gray2} />
+            <Icon name={focused ? "adjust" : "settings"} size={26} color={focused ? COLORS.primary : COLORS.gray2} />
           ),
           tabBarLabel: "Profile",
         }}

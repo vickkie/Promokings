@@ -38,6 +38,7 @@ const RequestCard = ({ item, isGridView }) => {
   const navigation = useNavigation();
   const [imageUri, setImageUri] = useState(false);
   const [bidAccepted, setBidAccepted] = useState(false);
+  const [bidCompleted, setBidCompleted] = useState(false);
   const [lostBid, setLostBid] = useState(false);
   const { userData } = useContext(AuthContext);
 
@@ -78,6 +79,11 @@ const RequestCard = ({ item, isGridView }) => {
     } else if (item?.selectedSupplier !== null) {
       setLostBid(true);
     }
+
+    //bid completed
+    if (item?.selectedSupplier === userData?.supplierProfile?._id && item?.status === "Completed") {
+      setBidCompleted(true);
+    }
   }, []);
 
   // const bidValid =
@@ -94,7 +100,7 @@ const RequestCard = ({ item, isGridView }) => {
         <View
           style={[
             !isGridView ? styles.container : styles.gridCard,
-            { backgroundColor: bidAccepted ? "#a3eed8" : COLORS.themeg },
+            { backgroundColor: bidCompleted ? "#C0DAFF" : bidAccepted ? "#a3eed8" : COLORS.themeg },
           ]}
         >
           <View style={isGridView ? styles.imageContainer : styles.imageList}>
@@ -117,6 +123,8 @@ const RequestCard = ({ item, isGridView }) => {
               Status :{" "}
               {openBid
                 ? "Open Bid"
+                : bidCompleted
+                ? "Supply completed"
                 : bidAccepted
                 ? "Bid Accepted"
                 : !openBid

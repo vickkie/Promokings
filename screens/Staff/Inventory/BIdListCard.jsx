@@ -9,6 +9,7 @@ import Toast from "react-native-toast-message";
 import * as FileSystem from "expo-file-system";
 import Icon from "../../../constants/icons";
 import BidToInventory from "../../../components/bottomsheets/BidToInventory";
+import EditSupply from "../../../components/bottomsheets/EditSupply";
 
 // Function to cache image
 const cacheImage = async (uri) => {
@@ -40,12 +41,17 @@ const BidListCard = ({ item, refetch, isGridView }) => {
   }, [item.imageUrl]);
 
   const transitionTag = item._id ? `${item._id}` : null;
+
   const BottomSheetRef = useRef(null);
+  const EditBottomSheetRef = useRef(null);
+
   const openMenu = () => BottomSheetRef.current?.present();
+  const openEditMenu = () => EditBottomSheetRef.current?.present();
 
   return (
     <>
       <BidToInventory ref={BottomSheetRef} item={item} refetch={refetch} />
+      <EditSupply ref={EditBottomSheetRef} item={item} />
       <TouchableOpacity onPress={openMenu}>
         <View style={!isGridView ? styles.container : styles.gridCard}>
           <View style={isGridView ? styles.imageContainer : styles.imageList}>
@@ -88,10 +94,7 @@ const BidListCard = ({ item, refetch, isGridView }) => {
           <TouchableOpacity
             style={isGridView ? styles.addBtn : styles.editPencil}
             onPress={() => {
-              console.log(item);
-              navigation.navigate("EditBid", {
-                product: item,
-              });
+              openEditMenu();
             }}
           >
             <Icon name="pencil" size={27} color={COLORS.primary} />

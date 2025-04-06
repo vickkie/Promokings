@@ -32,8 +32,6 @@ const LatestOrders = () => {
     `inventory-requests/supplier/accepted/${userData?.supplierProfile?._id}`
   );
 
-  console.log(userData?.supplierProfile?._id);
-
   const [refreshList, setRefreshList] = useState(false);
 
   const [refreshing, setRefreshing] = useState(false);
@@ -88,7 +86,7 @@ const LatestOrders = () => {
       const uniqueStatus = [...new Set(data.map((item) => item.status))];
       setstatuses(uniqueStatus);
     }
-  }, [data]);
+  }, [data, filteredData]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);

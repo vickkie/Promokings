@@ -181,8 +181,9 @@ const SupplierBid = forwardRef((props, ref) => {
     } catch (err) {
       console.log(err.message);
       showToast("error", err.message);
+    } finally {
+      setLoader(false);
     }
-    setLoader(false);
   };
 
   // Initial fetch
@@ -285,7 +286,7 @@ const SupplierBid = forwardRef((props, ref) => {
               Quantity : {`${item?.quantity} units bid`}
             </Text>
             <Text style={styles.supplier}>
-              Price range : [KES {item?.expectedPrice || "0"}] - [KES {(item?.expectedPrice / 100) * 130 || "0"}]
+              Price range : KSHS [ {item?.expectedPrice || "0"}] - [ {(item?.expectedPrice / 100) * 130 || "0"}]
             </Text>
             <Text style={styles.productDescription}>{item?.bidDescription || "Product description goes here."}</Text>
           </View>
@@ -339,9 +340,9 @@ const SupplierBid = forwardRef((props, ref) => {
           )}
           {haveBid && (
             <View style={styles.bidContainer}>
-              <Text style={styles.productDescription}>You have a bid of: {oldBid}</Text>
+              <Text style={styles.productDescription}>You have a bid of : Kshs {oldBid}</Text>
 
-              {!bidClosed && !ilostBid && (
+              {!bidClosed && !ilostBid && !bidAccepted && (
                 <TouchableOpacity style={styles.editButton} onPress={handleEditBid}>
                   <Text style={styles.editButtonText}>Edit</Text>
                 </TouchableOpacity>
