@@ -99,6 +99,7 @@ import {
   EditBid,
   MySupply,
   SupplyPayments,
+  BidDetails,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -203,6 +204,7 @@ const screens = [
   { name: "EditBid", component: EditBid, options: { headerShown: false } },
   { name: "MySupply", component: MySupply, options: { headerShown: false } },
   { name: "SupplyPayments", component: SupplyPayments, options: { headerShown: false } },
+  { name: "BidDetails", component: BidDetails, options: { headerShown: false } },
 ];
 
 export default function App() {

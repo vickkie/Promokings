@@ -38,7 +38,7 @@ import AddBid from "./Staff/Inventory/AddBid";
 import BidList from "./Staff/Inventory/BidList";
 import FinalBids from "./Staff/Inventory/FinalBids";
 import EditBid from "./Staff/Inventory/EditBid";
-
+import BidDetails from "./Staff/Inventory/BidDetails";
 //sales
 
 import InvoiceScreen from "./Staff/Sales/InvoiceScreen";
@@ -148,6 +148,7 @@ export {
   BidList,
   FinalBids,
   EditBid,
+  BidDetails,
 
   //sales
   SalesDashboard,

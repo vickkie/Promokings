@@ -89,7 +89,15 @@ const EditSupply = forwardRef((props, ref) => {
         </View>
 
         <View style={styles.listContainer}>
-          <TouchableOpacity onPress={() => handleNavigation("Profile")}>
+          <TouchableOpacity
+            onPress={() => {
+              console.log(item);
+              handleNavigation("BidDetails", {
+                bidId: item?._id,
+                bid: item,
+              });
+            }}
+          >
             <View style={styles.menuItem(0.5)}>
               <Icon name="userfilled" size={24} color={COLORS.primary} />
               <Text style={styles.menuText}>View Bid</Text>
@@ -108,12 +116,12 @@ const EditSupply = forwardRef((props, ref) => {
                 <Text style={styles.menuText}>Edit Bid</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleNavigation("Favourites")}>
+            {/* <TouchableOpacity onPress={() => handleNavigation("Favourites")}>
               <View style={styles.menuItem(0.5)}>
                 <Icon name="favouritebag" size={24} color={COLORS.primary} />
                 <Text style={styles.menuText}></Text>
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       </View>
