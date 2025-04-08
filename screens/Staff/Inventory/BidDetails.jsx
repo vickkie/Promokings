@@ -104,7 +104,7 @@ const BidDetails = () => {
         onPress: () => setIsLoading2(false),
       },
       {
-        text: "Delete",
+        text: "Confirm",
         style: "destructive",
         onPress: async () => {
           try {
@@ -217,13 +217,11 @@ const BidDetails = () => {
             <TouchableOpacity
               style={{
                 backgroundColor:
-                  bid?.status === "pending"
+                  bid?.status === "Pending"
                     ? "#ffedd2"
-                    : bid?.status === "delivered"
+                    : bid?.status === "Completed"
                     ? "#CBFCCD"
-                    : bid?.status === "delivery"
-                    ? "#C0DAFF"
-                    : bid?.status === "cancelled"
+                    : bid?.status === "Closed"
                     ? "#F3D0CE"
                     : COLORS.themey, // Default color
                 paddingVertical: 4,
@@ -234,18 +232,18 @@ const BidDetails = () => {
               <Text
                 style={{
                   color:
-                    bid?.status === "pending"
+                    bid?.status === "Pending"
                       ? "#D4641B"
-                      : bid?.status === "delivered"
+                      : bid?.status === "Completed"
                       ? "#26A532"
                       : bid?.status === "delivery"
                       ? "#337DE7"
-                      : bid?.status === "cancelled"
+                      : bid?.status === "Closed"
                       ? "#B65454"
                       : COLORS.primary,
                 }}
               >
-                {bid?.deliveryStatus === "transit" ? "in delivery" : bid?.status}
+                {bid?.status === "Completed" ? "Delivered" : bid?.status}
               </Text>
             </TouchableOpacity>
 
@@ -259,7 +257,7 @@ const BidDetails = () => {
               <ScrollView>
                 <View style={styles.stepContainer}>
                   <View style={{ justifyContent: "center", marginVertical: 20 }}>
-                    <Text style={styles.relatedHeader}>Ordered items</Text>
+                    <Text style={styles.relatedHeader}>Supply Bid items</Text>
                   </View>
 
                   <View style={{ width: SIZES.width - 27 }}>

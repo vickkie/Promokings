@@ -1,28 +1,38 @@
-import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
+import React, { useState, useEffect, useContext, useRef } from "react";
+import {
+  View,
+  Text,
+  Button,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  ActivityIndicator,
+  Linking,
+} from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
 
 import { SafeAreaView } from "react-native-safe-area-context";
+import useFetch from "../../../hook/useFetch";
 
 import useDelete from "../../../hook/useDelete2";
 import { BACKEND_PORT } from "@env";
 import axios from "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
+import BidToInventory from "../../../components/bottomsheets/BidToInventory";
+import { Alert } from "react-native";
 
-const OrderSalesDetails = () => {
+const SupplyDetails = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { products, totals, orderId, item } = route.params;
+  const { bid, bidId, item } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
 
-  // console.log(products, orderId, item);
-
   const [isLoading, setIsLoading] = useState(false);
-  const [errorState, setErrorState] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [success, setSuccess] = useState(null);
+  const [isLoading2, setIsLoading2] = useState(false);
 
   useEffect(() => {
     if (!userLogin) {
@@ -34,158 +44,49 @@ const OrderSalesDetails = () => {
     }
   }, [userLogin, userData]);
 
+  const datapath = `v2/supplier/${bid?.selectedSupplier}`;
+
+  const {
+    data,
+    isLoading: supplierLoading,
+    error,
+    errorMessage: supplierError,
+    refetch,
+  } = useFetch(datapath, true, userData?.TOKEN);
+
   const [step, setStep] = useState(1);
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [city, setCity] = useState(userData ? userData.location : "");
   const [email, setEmail] = useState(userData ? userData.email : "");
+  const [supplierData, setSupplierData] = useState("");
 
   const [userId, setUserId] = useState(null);
   const [phoneError, setPhoneError] = useState("");
 
   useEffect(() => {
-    // console.log(item.status);
-  });
-
-  const PaymentMethodComponent = ({ item }) => {
-    const selectedPaymentMethod = item.paymentInfo.selectedPaymentMethod;
-
-    // Define the icon name based on the selected payment method
-    let iconName = "credit-card";
-    let value = "";
-    switch (selectedPaymentMethod) {
-      case "MasterCard":
-        iconName = "mastercard";
-        value = "**** **** **** " + item.paymentInfo.cardNumber.slice(-4);
-        break;
-      case "Visa":
-        iconName = "visa";
-        value = "**** **** **** " + item.paymentInfo.cardNumber.slice(-4);
-        break;
-      case "Paypal":
-        iconName = "paypal";
-        value = item.paymentInfo.email;
-        break;
-      case "Mpesa":
-        iconName = "mpesa";
-        value = item.paymentInfo.phoneNumber;
-        break;
-      default:
-        iconName = "question"; // Fallback icon
-        value = "Enter details";
+    if (!supplierLoading && data?.success) {
+      //   console.log(data?.supplier);
+      setSupplierData(data?.supplier);
     }
+  }, [data, supplierLoading]);
 
-    return (
-      <View>
-        <View style={styles.selectedPayment}>
-          <Text style={styles.selectedText}>Method selected : {`[ ${selectedPaymentMethod} ]`}</Text>
-        </View>
-        <View style={styles.inputWrapper}>
-          <Icon
-            name={iconName} // Dynamically set the icon name
-            size={36}
-            style={styles.iconStyle}
-            color={COLORS.gray}
-          />
-          <TextInput
-            style={{ flex: 1 }}
-            value={value} // Use value to set the text
-            editable={false} // Set the input field to non-editable
-          />
-        </View>
-        <View style={styles.inputWrapper}>
-          <Icon name="email" size={29} style={styles.iconStyle} color={COLORS.gray} />
-          <TextInput placeholder="email" style={{ flex: 1 }} value={item?.paymentInfo?.email} editable={false} />
-        </View>
-      </View>
-    );
+  const BottomSheetRef = useRef(null);
+
+  const openMenu = () => BottomSheetRef.current?.present();
+
+  const handleEmailPress = () => {
+    Linking.openURL("mailto:inventory@promokings.co.ke");
   };
-  const DeliveryMethodComponent = ({ item }) => {
-    const DeliveryMethod = item?.orderType || "shipping";
 
-    return (
-      <View>
-        <View style={styles.selectedPayment}>
-          <Text style={styles.selectedText}>Delivery Method : {`[ ${DeliveryMethod} ]`}</Text>
-        </View>
-
-        {DeliveryMethod === "shipping" ? (
-          <>
-            <View style={styles.inputWrapper}>
-              <Icon name={"truck"} size={30} style={styles.iconStyle} color={COLORS.gray} />
-              <TextInput style={{ flex: 1 }} value={item?.shippingInfo?.address} editable={false} />
-            </View>
-            {item?.shippingInfo && (
-              <View style={styles.inputWrapper}>
-                <Icon name="location" size={29} style={styles.iconStyle} color={COLORS.gray} />
-                <TextInput placeholder="email" style={{ flex: 1 }} value={item?.shippingInfo?.city} editable={false} />
-              </View>
-            )}
-            <View style={styles.inputWrapper}>
-              <Icon name="email" size={29} style={styles.iconStyle} color={COLORS.gray} />
-              <TextInput placeholder="email" style={{ flex: 1 }} value={item.paymentInfo.email} editable={false} />
-            </View>
-            <View style={styles.inputWrapper}>
-              <Icon name="call" size={29} style={styles.iconStyle} color={COLORS.gray} />
-              <TextInput
-                placeholder="phone number"
-                style={{ flex: 1 }}
-                value={item.paymentInfo.phoneNumber}
-                editable={false}
-              />
-            </View>
-          </>
-        ) : (
-          <>
-            <View style={styles.inputWrapper}>
-              <Icon name={"shop"} size={30} style={styles.iconStyle} color={COLORS.gray} />
-              <TextInput style={{ flex: 1 }} value={item?.pickupInfo?.locationId?.name} editable={false} />
-            </View>
-            <View style={styles.inputWrapper}>
-              <Icon name="location" size={29} style={styles.iconStyle} color={COLORS.gray} />
-              <TextInput
-                placeholder="email"
-                style={{ flex: 1 }}
-                value={item?.pickupInfo?.locationId?.city}
-                editable={false}
-              />
-            </View>
-            {/* {console.log(item?.pickupInfo)} */}
-
-            <View style={styles.inputWrapper}>
-              <Icon name="location" size={29} style={styles.iconStyle} color={COLORS.gray} />
-              <TextInput
-                placeholder="location"
-                style={{ flex: 1 }}
-                value={item?.pickupInfo?.locationId?.address}
-                editable={false}
-              />
-            </View>
-            <View style={styles.inputWrapper}>
-              <Icon name="call" size={29} style={styles.iconStyle} color={COLORS.gray} />
-              <TextInput
-                placeholder="phone number"
-                style={{ flex: 1 }}
-                value={item?.pickupInfo?.locationId?.phoneNumber}
-                editable={false}
-              />
-            </View>
-            <View style={styles.inputWrapper}>
-              <Icon name="clock" size={29} style={styles.iconStyle} color={COLORS.gray} />
-              <TextInput
-                placeholder="Open Hours"
-                style={{ flex: 1 }}
-                value={item?.pickupInfo?.locationId?.openHours}
-                editable={false}
-              />
-            </View>
-          </>
-        )}
-      </View>
-    );
+  const handleCallPress = () => {
+    const phoneNumber = "+254706676569";
+    Linking.openURL(`tel:${phoneNumber}`);
   };
+
   return (
     <SafeAreaView style={styles.container}>
+      <BidToInventory ref={BottomSheetRef} item={bid} refetch={refetch} />
       <View style={styles.container}>
         <View style={styles.wrapper}>
           <View style={styles.upperRow}>
@@ -198,36 +99,34 @@ const OrderSalesDetails = () => {
               >
                 <Icon name="backbutton" size={26} />
               </TouchableOpacity>
-              <Text style={styles.topheading}>Order details</Text>
+              <Text style={styles.topheading}>Supply details</Text>
 
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate("EditSalesOrder", {
-                    products: products,
-                    orderId: orderId,
-                    item: item,
-                  });
+                  //   navigation.navigate("EditSalesOrder", {
+                  //     products: products,
+                  //     bidId: bidId,
+                  //     item: item,
+                  //   });
                 }}
                 style={styles.outWrap}
               >
-                <Icon name="pencil" size={28} />
+                <Icon name="receipt" size={28} />
               </TouchableOpacity>
             </View>
 
             <Text style={{ fontFamily: "GtAlpine", color: COLORS.themeb, fontSize: SIZES.medium, marginVertical: 15 }}>
-              Order id : {orderId}
+              Supply id : {bidId}
             </Text>
 
             <TouchableOpacity
               style={{
                 backgroundColor:
-                  item.status === "pending"
+                  bid?.status === "Pending"
                     ? "#ffedd2"
-                    : item.status === "delivered"
+                    : bid?.status === "Completed"
                     ? "#CBFCCD"
-                    : item.status === "delivery"
-                    ? "#C0DAFF"
-                    : item.status === "cancelled"
+                    : bid?.status === "Closed"
                     ? "#F3D0CE"
                     : COLORS.themey, // Default color
                 paddingVertical: 4,
@@ -238,23 +137,23 @@ const OrderSalesDetails = () => {
               <Text
                 style={{
                   color:
-                    item.status === "pending"
+                    bid?.status === "Pending"
                       ? "#D4641B"
-                      : item.status === "delivered"
+                      : bid?.status === "Completed"
                       ? "#26A532"
-                      : item.status === "delivery"
+                      : bid?.status === "delivery"
                       ? "#337DE7"
-                      : item.status === "cancelled"
+                      : bid?.status === "Closed"
                       ? "#B65454"
                       : COLORS.primary,
                 }}
               >
-                {item.deliveryStatus === "transit" ? "in delivery" : item.status}
+                {bid?.status === "Completed" ? "Delivered" : bid?.status}
               </Text>
             </TouchableOpacity>
 
             <View style={styles.stepsheader}>
-              <Text style={styles.stepstext}>You can track your order from here</Text>
+              <Text style={styles.stepstext}>View your supply details from here</Text>
             </View>
           </View>
 
@@ -263,40 +162,35 @@ const OrderSalesDetails = () => {
               <ScrollView>
                 <View style={styles.stepContainer}>
                   <View style={{ justifyContent: "center", marginVertical: 20 }}>
-                    <Text style={styles.relatedHeader}>Ordered items</Text>
+                    <Text style={styles.relatedHeader}>Supply items</Text>
                   </View>
 
                   <View style={{ width: SIZES.width - 27 }}>
-                    {products.map((product) => (
-                      <View style={styles.containerx} key={product._id?._id}>
-                        <TouchableOpacity style={styles.imageContainer}>
-                          {/* {console.log("products", item)} */}
-                          <Image source={{ uri: product._id?.imageUrl }} style={styles.image} />
-                        </TouchableOpacity>
-                        <View style={{ gap: 12 }}>
-                          <View style={styles.details}>
-                            <Text style={styles.title} numberOfLines={1}>
-                              {product._id?.title}
+                    <View style={styles.containerx} key={bid?._id}>
+                      <TouchableOpacity style={styles.imageContainer}>
+                        <Image source={{ uri: bid?.imageUrl }} style={styles.image} />
+                      </TouchableOpacity>
+                      <View style={{ gap: 12 }}>
+                        <View style={styles.details}>
+                          <Text style={styles.title} numberOfLines={1}>
+                            {bid?.productName}
+                          </Text>
+                        </View>
+                        <View style={styles.rowitem}>
+                          <View style={styles.xp}>
+                            <Text style={styles.semititle} numberOfLines={1}>
+                              Bid price : {bid?.expectedPrice ?? 0}
                             </Text>
                           </View>
-                          <View style={styles.rowitem}>
-                            <View style={styles.xp}>
-                              <Text style={styles.semititle} numberOfLines={1}>
-                                {product?._id && typeof product._id === "object" && "price" in product._id
-                                  ? product._id.price
-                                  : 0}
-                              </Text>
-                            </View>
+                        </View>
+                        <View style={styles.rowitem}>
+                          <View>
+                            <Text style={styles.semititle}>Quantity: {bid?.quantity}</Text>
                           </View>
-                          <View style={styles.rowitem}>
-                            <View>
-                              <Text style={styles.semititle}>Quantity: {product?.quantity}</Text>
-                            </View>
-                            <View style={styles.priceadd}></View>
-                          </View>
+                          <View style={styles.priceadd}></View>
                         </View>
                       </View>
-                    ))}
+                    </View>
                   </View>
                 </View>
               </ScrollView>
@@ -308,11 +202,11 @@ const OrderSalesDetails = () => {
                 <Text
                   style={{
                     backgroundColor:
-                      item.paymentStatus === "pending"
+                      item.status === "Pending"
                         ? "#C0DAFF"
-                        : item.paymentStatus === "paid"
+                        : item.status === "Paid"
                         ? "#CBFCCD"
-                        : item.paymentStatus === "partial"
+                        : item.status === "Partial"
                         ? "#F3D0CE"
                         : COLORS.themey, // Default color
                     paddingVertical: 4,
@@ -320,22 +214,15 @@ const OrderSalesDetails = () => {
                     borderRadius: SIZES.medium,
                   }}
                 >
-                  {item?.paymentStatus}
+                  {item?.status}
                 </Text>
               </View>
-              <View style={styles.payFlex}>
-                <Text style={styles.paymentDetails}>Delivery Fees</Text>
-                <Text style={styles.paymentDetails}>
-                  {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
-                    .format(item?.deliveryAmount)
-                    .replace("Ksh", "")}
-                </Text>
-              </View>
+
               <View style={styles.payFlex}>
                 <Text style={styles.paymentDetails}>Additional Fees</Text>
                 <Text style={styles.paymentDetails}>
                   {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
-                    .format(item?.additionalFees)
+                    .format(item?.additionalFees ?? 0)
                     .replace("Ksh", "")}
                 </Text>
               </View>
@@ -343,25 +230,36 @@ const OrderSalesDetails = () => {
                 <Text style={styles.paymentDetails}>Total Amount</Text>
                 <Text style={styles.paymentDetails}>
                   {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
-                    .format(item.subtotal)
+                    .format(item.amount)
                     .replace("Ksh", "")}
                 </Text>
               </View>
             </View>
 
-            <View style={[styles.relatedRow, { marginBottom: 10 }]}>
-              <View>
-                <Text style={styles.relatedHeader}>Payment Information</Text>
+            <View style={[styles.relatedRow, { justifyContent: "center" }]}>
+              <Text style={styles.relatedHeader}>Related information</Text>
+              <View style={styles.wrapperRelated}>
+                <View style={styles.leftRelated}>
+                  <TouchableOpacity style={styles.supplierImage}>
+                    <Image
+                      source={require("../../../assets/images/promoking-logo.png")}
+                      style={{ width: 40, height: 40, borderRadius: 1999 }}
+                    />
+                  </TouchableOpacity>
+                  <View style={{ gap: 5, alignItems: "flex-start", paddingTop: 3, marginStart: 6 }}>
+                    <Text style={styles.supplierHead}>Promokings limited</Text>
+                    <Text style={styles.supplierwho}>Inventory Manager</Text>
+                  </View>
+                </View>
+                <View style={styles.reachIcons}>
+                  <TouchableOpacity style={styles.reachWrapper} onPress={handleEmailPress}>
+                    <Icon name="email" size={20} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.reachWrapper} onPress={handleCallPress}>
+                    <Icon name="call" size={20} />
+                  </TouchableOpacity>
+                </View>
               </View>
-
-              <PaymentMethodComponent item={item} />
-            </View>
-            <View style={[styles.relatedRow, { marginBottom: 10 }]}>
-              <View>
-                <Text style={styles.relatedHeader}>Delivery Information</Text>
-              </View>
-
-              <DeliveryMethodComponent item={item} />
             </View>
           </ScrollView>
         </View>
@@ -370,7 +268,7 @@ const OrderSalesDetails = () => {
   );
 };
 
-export default OrderSalesDetails;
+export default SupplyDetails;
 
 const styles = StyleSheet.create({
   container: {
@@ -400,6 +298,14 @@ const styles = StyleSheet.create({
   },
   lowerRow: {
     marginTop: 180,
+    backgroundColor: COLORS.themew,
+    width: SIZES.width - 20,
+    marginStart: 10,
+    borderRadius: SIZES.medium,
+    paddingHorizontal: 3,
+  },
+  lowerRow2: {
+    marginTop: 7,
     backgroundColor: COLORS.themew,
     width: SIZES.width - 20,
     marginStart: 10,
@@ -623,5 +529,66 @@ const styles = StyleSheet.create({
   },
   smallTop: {
     marginTop: 5,
+  },
+  inputWrapper2: {
+    backgroundColor: COLORS.lightWhite,
+    borderWidth: 1,
+    height: 100,
+    borderRadius: 12,
+    flexDirection: "row",
+    paddingHorizontal: 15,
+    alignItems: "center",
+    borderColor: "#CCC",
+    width: SIZES.width - 50,
+    alignSelf: "center",
+    // marginVertical: 10,
+  },
+  submitBtn: {
+    backgroundColor: COLORS.primary,
+    padding: 6,
+    marginVertical: 10,
+    borderRadius: SIZES.medium,
+    alignItems: "center",
+    height: 60,
+    // marginBottom: -60,
+    justifyContent: "center",
+  },
+  deleteBtn: {
+    backgroundColor: COLORS.red,
+    padding: 6,
+    marginVertical: 10,
+    borderRadius: SIZES.medium,
+    alignItems: "center",
+    height: 60,
+    // marginBottom: -60,
+    justifyContent: "center",
+  },
+  cancelBtn: {
+    backgroundColor: COLORS.gray2,
+    padding: 6,
+    marginVertical: 10,
+    borderRadius: SIZES.medium,
+    alignItems: "center",
+    height: 60,
+    // marginBottom: -60,
+    justifyContent: "center",
+  },
+  completeBtn: {
+    backgroundColor: COLORS.green,
+    padding: 6,
+    marginVertical: 10,
+    borderRadius: SIZES.medium,
+    alignItems: "center",
+    height: 60,
+    // marginBottom: -60,
+    justifyContent: "center",
+  },
+  submitText: {
+    color: COLORS.white,
+    fontWeight: "bold",
+  },
+  actionFlex: {
+    display: "flex",
+    flexDirection: "row",
   },
 });

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useCallback, useMemo, useContext } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   Image,
   RefreshControl,
   TextInput,
+  FlatList,
 } from "react-native";
 import moment from "moment";
 import axios from "axios";
@@ -17,63 +18,65 @@ import { COLORS, SIZES } from "../../../constants";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { BACKEND_PORT } from "@env";
-import { FlatList } from "react-native";
 import LottieView from "lottie-react-native";
-
-// Example tabs
-const TABS = ["All", "pending", "partial", "paid"];
+import { AuthContext } from "../../../components/auth/AuthContext";
+// example tabs (modify if needed to reflect statuses from your API like "Pending", "Paid", "Failed")
+const TABS = ["All", "pending", "paid", "failed"];
 
 const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPending, setRefreshList }) => {
   const navigation = useNavigation();
-
   const [data, setData] = useState([]);
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing2] = useState(false);
+  const [refreshingState, setRefreshingState] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-
-  // For controlling which tab is selected
   const [activeTab, setActiveTab] = useState("All");
+  const { userData } = useContext(AuthContext);
 
-  const limit = 200; // Adjusted limit for performance
+  const limit = 200; // Adjust limit if needed
+  const supplierId = userData?.supplierProfile?._id;
 
-  const fetchData = async (reset = false, paymentStatus = "All", searchQuery = "") => {
+  // fetchData now hits your supplier payments endpoint
+  const fetchData = async (reset = false, statusFilter = "All", searchQuery = "") => {
     if (loading || (!reset && !hasMore)) return;
     setLoading(true);
-
     try {
       const params = {
         limit,
-        offset: reset ? 0 : offset,
-        paymentStatus: paymentStatus !== "All" ? paymentStatus.toLowerCase() : undefined,
+        page: reset ? 1 : Math.floor(offset / limit) + 1,
       };
 
-      if (searchQuery.trim()) {
-        params.search = searchQuery.trim(); // Only add search if it's not empty
+      // if filtering by status, only add if not "All"
+      if (statusFilter && statusFilter !== "All") {
+        params.filterStatus = statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1);
       }
 
-      const response = await axios.get(`${BACKEND_PORT}/api/orders`, { params });
+      if (searchQuery.trim()) {
+        params.search = searchQuery.trim();
+      }
 
-      const newOrders = response.data.orders || [];
-      setData((prev) => (reset ? newOrders : [...prev, ...newOrders]));
+      const response = await axios.get(`${BACKEND_PORT}/api/v3/payments/mine/${supplierId}`, { params });
 
-      setHasMore(newOrders.length === limit);
+      // our endpoint returns: { message, totalCount, totalPages, currentPage, payments }
+      const newPayments = response.data.payments || [];
+      setData((prev) => (reset ? newPayments : [...prev, ...newPayments]));
+      setHasMore(newPayments.length === limit);
       setOffset((prev) => (reset ? limit : prev + limit));
       setError(null);
     } catch (err) {
-      setError("Failed to fetch orders.");
+      setError("Failed to fetch payments.");
     } finally {
       setLoading(false);
-      if (reset) setRefreshing2(false);
+      if (reset) setRefreshingState(false);
     }
   };
 
-  // Initial fetch (or refetch when refreshList changes)
+  // initial & refresh fetches
   useEffect(() => {
-    fetchData(true);
-  }, [refreshList]);
+    fetchData(true, activeTab, searchQuery);
+  }, [refreshList, supplierId]);
 
   useEffect(() => {
     fetchData(true, activeTab, searchQuery);
@@ -81,7 +84,7 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-    fetchData(true, tab);
+    fetchData(true, tab, searchQuery);
   };
 
   const handleSearch = (text) => {
@@ -89,72 +92,49 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
     fetchData(true, activeTab, text);
   };
 
-  // -------------------------------
-  // 2. Pull-to-Refresh
-  // -------------------------------
   const onRefresh = useCallback(() => {
-    setRefreshing2(true);
+    setRefreshingState(true);
     setHasMore(true);
-    fetchData(true);
-  }, []);
+    setOffset(0);
+    fetchData(true, activeTab, searchQuery);
+  }, [activeTab, searchQuery]);
 
-  // -------------------------------
-  // 3. Infinite scroll
-  // -------------------------------
   const handleEndReached = () => {
     if (!loading && hasMore) {
-      fetchData(false);
+      fetchData(false, activeTab, searchQuery);
     }
   };
 
-  // -------------------------------
-  // 4. Sort + Filter Data
-  // -------------------------------
-  // Sort data by creation date (latest first)
+  // sort data (latest first)
   const sortedData = useMemo(() => {
     return [...data].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }, [data]);
 
-  // Example: filter by “Sent”, “Request”, “Transfer”, etc.
-  // (You need to adapt this to how your data tracks each transaction type.)
+  // filter based on status if needed (status is now in item?.status)
   const filteredData = useMemo(() => {
     if (activeTab === "All") return sortedData;
-    return sortedData.filter((item) => {
-      // Example: if item.transactionType === "sent", "transfer", etc.
-      // Adjust this field name based on your actual data
-      const type = item?.paymentStatus?.toLowerCase() || "";
-      return type === activeTab.toLowerCase();
-    });
+    return sortedData.filter((item) => item?.status.toLowerCase() === activeTab.toLowerCase());
   }, [sortedData, activeTab]);
 
-  // -------------------------------
-  // 5. Group by Date for SectionList
-  // -------------------------------
+  // group by date for SectionList
   const groupByDate = (list) => {
     const grouped = {};
-
     list.forEach((item) => {
-      // Start of day as key => "2025-09-19T00:00:00Z"
-      const dateKey = moment(item.createdAt).startOf("day").format();
+      // group by start of day
+      const dateKey = moment(item?.createdAt).startOf("day").format();
       if (!grouped[dateKey]) grouped[dateKey] = [];
       grouped[dateKey].push(item);
     });
-
-    // Convert grouped object to an array of sections
-    // Sort by date descending
     const sections = Object.keys(grouped)
       .sort((a, b) => new Date(b) - new Date(a))
-      .map((dateKey) => {
-        return {
-          title: formatSectionHeader(dateKey),
-          data: grouped[dateKey],
-        };
-      });
-
+      .map((dateKey) => ({
+        title: formatSectionHeader(dateKey),
+        data: grouped[dateKey],
+      }));
     return sections;
   };
 
-  // Utility: Show “Today” / “Yesterday” / “MMM DD, YYYY”
+  // header formatting: "Today", "Yesterday", or date string
   const formatSectionHeader = (dateStr) => {
     const date = moment(dateStr);
     if (date.isSame(moment(), "day")) return "Today";
@@ -162,97 +142,78 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
     return date.format("MMM DD, YYYY");
   };
 
-  // Prepare final sections
   const sections = useMemo(() => groupByDate(filteredData), [filteredData]);
 
-  // -------------------------------
-  // 6. Pending Orders
-  // -------------------------------
+  // Track pending orders if needed
   const pendingOrders = useMemo(() => {
-    return sortedData.filter((order) => ["pending", "partial"].includes(order.paymentStatus));
+    return sortedData.filter((order) => order.status.toLowerCase() === "pending");
   }, [sortedData]);
 
-  // Let parent know about pending orders
   useEffect(() => {
     setPending && setPending(pendingOrders);
   }, [pendingOrders, setPending]);
 
-  // Refresh when screen is focused
   useFocusEffect(
     useCallback(() => {
       onRefresh();
     }, [onRefresh])
   );
 
-  // -------------------------------
-  // 7. Render Items
-  // -------------------------------
+  // payment logos mapping
   const paymentLogos = {
-    visa: require("../../../assets/images/logos/visa.png"),
+    visacash: require("../../../assets/images/logos/visa.png"),
     mastercard: require("../../../assets/images/logos/mastercard.png"),
     paypal: require("../../../assets/images/logos/paypal.png"),
   };
 
+  // render each payment item
   const renderItem = ({ item }) => {
-    const paymentMethod = item?.paymentInfo?.selectedPaymentMethod?.toLowerCase();
+    // assuming you want to display productName from inventoryRequest
+    const productName = item?.inventoryRequest?.productName || "No product";
+    const paymentMethod = item?.method?.toLowerCase();
     const paymentLogo = paymentLogos[paymentMethod] || require("../../../assets/images/logos/paysafecard.png");
 
-    // Example: decide color based on +/- amount
-    const isPositive = item.totalAmount >= 0;
+    // example: positive check (adjust if you have an amount that can be negative)
+    const isPositive = item?.amount >= 0;
 
     return (
-      <View style={styles.latestProductCards}>
-        {/* Logo / Icon */}
+      <View style={styles.paymentCard}>
         <TouchableOpacity
-          style={{
-            borderRadius: 100,
-            backgroundColor: COLORS.gray,
-            width: 60,
-            height: 36,
-            padding: 10,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+          style={styles.logoContainer}
           onPress={() => {
             navigation.navigate("OrderPaymentDetails", {
-              products: item?.products,
-              orderId: item._id,
               item,
+              supplierId,
             });
           }}
         >
           <Image source={paymentLogo} style={styles.productImage} />
         </TouchableOpacity>
-
-        {/* Middle Info */}
-        <View style={{ flex: 1 }}>
-          {/* Maybe the user’s name or merchant name */}
-          <Text style={styles.itemTitle}>{item?.userId?.fullname || item?.userId?.username || "Unknown User"}</Text>
-
-          {/* Show time or transaction type, etc. */}
+        <View style={styles.infoContainer}>
+          <Text style={styles.itemTitle}>{productName}</Text>
           <Text style={styles.itemSubtitle}>
-            {moment(item.createdAt).format("hh:mm A")} {item.transactionType ? `• ${item.transactionType}` : ""}
+            {moment(item?.createdAt).format("hh:mm A")} • {item?.method}
           </Text>
         </View>
-
-        {/* Right-side Amount & Status */}
-        <View style={{ alignItems: "flex-end" }}>
+        {/* {console.log(item)} */}
+        <View style={styles.amountContainer}>
           <Text style={[styles.amountText, { color: isPositive ? COLORS.success : COLORS.error }]}>
-            {isPositive ? `+KSH ${item.totalAmount}` : `-KSH ${Math.abs(item.totalAmount)}`}
+            <Text style={[styles.amountText, { color: isPositive ? COLORS.success : COLORS.error }]}>
+              {isPositive
+                ? `+KSH ${Number(item?.amount).toLocaleString()}`
+                : `-KSH ${Math.abs(item?.amount).toLocaleString()}`}
+            </Text>
           </Text>
-
-          <Text style={[styles.statusText, getStatusStyle(item.paymentStatus)]}>{item.paymentStatus}</Text>
+          <Text style={[styles.statusText, getStatusStyle(item?.status)]}>{item?.status}</Text>
         </View>
-
-        {/* Edit Icon */}
         <TouchableOpacity
-          style={{ marginLeft: 8 }}
+          style={styles.editIcon}
           onPress={() => {
-            navigation.navigate("OrderPaymentDetails", {
-              products: item?.products,
-              orderId: item._id,
-              item,
+            console.log("meeee", item?.inventoryRequest);
+            navigation.navigate("SupplyDetails", {
+              item: item,
+              bid: item?.inventoryRequest,
+              bidId: item?.inventoryRequest?._id,
             });
           }}
         >
@@ -262,7 +223,7 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
     );
   };
 
-  // Section Header (Today, Yesterday, etc.)
+  // render section header
   const renderSectionHeader = ({ section: { title } }) => {
     return (
       <View style={styles.sectionHeaderContainer}>
@@ -271,9 +232,7 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
     );
   };
 
-  // -------------------------------
-  // 8. Tab Rendering
-  // -------------------------------
+  // render tabs
   const renderTabs = () => {
     return (
       <FlatList
@@ -294,14 +253,9 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
     );
   };
 
-  // -------------------------------
-  // 9. Render Component
-  // -------------------------------
   return (
     <View style={[styles.container, { marginBottom: 0 }]}>
-      {/* Render the top tabs */}
       {renderTabs()}
-
       <View style={styles.searchBarContainer}>
         <TextInput
           style={styles.searchInput}
@@ -313,7 +267,6 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
           <Icon name="search" size={26} />
         </TouchableOpacity>
       </View>
-
       {error ? (
         <View style={styles.errorContainer}>
           <Text style={styles.errorMessage}>Looks like you're offline</Text>
@@ -325,46 +278,34 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
       ) : (
         <SectionList
           sections={sections}
-          keyExtractor={(item) => item._id}
+          keyExtractor={(item) => item?._id}
           renderItem={renderItem}
           renderSectionHeader={renderSectionHeader}
           contentContainerStyle={{ padding: 4 }}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          refreshControl={<RefreshControl refreshing={refreshingState} onRefresh={onRefresh} />}
           onEndReached={handleEndReached}
           onEndReachedThreshold={0.1}
           ListFooterComponent={loading && hasMore ? <ActivityIndicator size="large" color={COLORS.primary} /> : null}
           ListEmptyComponent={
             loading ? (
-              <View style={styles.containerx}>
-                <View style={styles.containLottie}>
-                  <View style={styles.animationWrapper}>
-                    <LottieView
-                      source={require("../../../assets/data/loading.json")}
-                      autoPlay
-                      loop={false}
-                      style={styles.animation}
-                    />
-                  </View>
-                  <View style={{ marginTop: 0, paddingBottom: 20 }}>
-                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Loading!</Text>
-                  </View>
-                </View>
+              <View style={styles.loaderContainer}>
+                <LottieView
+                  source={require("../../../assets/data/loading.json")}
+                  autoPlay
+                  loop={false}
+                  style={styles.animation}
+                />
+                <Text style={styles.loadingText}>Loading!</Text>
               </View>
             ) : (
-              <View style={styles.containerx}>
-                <View style={styles.containLottie}>
-                  <View style={styles.animationWrapper}>
-                    <LottieView
-                      source={require("../../../assets/data/card-payment.json")}
-                      autoPlay
-                      loop={false}
-                      style={styles.animation}
-                    />
-                  </View>
-                  <View style={{ marginTop: 0, paddingBottom: 20 }}>
-                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Oops, No Payments here!</Text>
-                  </View>
-                </View>
+              <View style={styles.emptyContainer}>
+                <LottieView
+                  source={require("../../../assets/data/card-payment.json")}
+                  autoPlay
+                  loop={false}
+                  style={styles.animation}
+                />
+                <Text style={styles.emptyText}>Oops, No Payments here!</Text>
               </View>
             )
           }
@@ -373,6 +314,14 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
       )}
     </View>
   );
+};
+
+const getStatusStyle = (status) => {
+  // modify these styles based on your design
+  if (status.toLowerCase() === "pending") return { color: "#FFA500" };
+  if (status.toLowerCase() === "paid") return { color: "#008000" };
+  if (status.toLowerCase() === "failed") return { color: "#FF0000" };
+  return {};
 };
 
 export default PaymentList;
@@ -573,18 +522,120 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     borderRadius: SIZES.medium,
   },
-});
+  filterContainer: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  // filterButton: {
+  //   padding: 10,
+  //   borderRadius: 20,
+  //   marginHorizontal: 5,
+  //   backgroundColor: "#f0f0f0",
+  // },
+  selectedFilter: {
+    backgroundColor: COLORS.primary,
+  },
+  tabText: {
+    fontSize: 14,
+    color: "#333",
+  },
+  activeTabText: {
+    color: "#fff",
+  },
 
-// Helper to color-code status
-function getStatusStyle(paymentStatus) {
-  switch (paymentStatus) {
-    case "pending":
-      return { backgroundColor: "#C0DAFF" };
-    case "paid":
-      return { backgroundColor: "#CBFCCD" };
-    case "partial":
-      return { backgroundColor: "#F3D0CE" };
-    default:
-      return { backgroundColor: "#ccc" };
-  }
-}
+  errorContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: 16,
+  },
+  retryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  retryButtonText: {
+    marginLeft: 5,
+    color: "#fff",
+  },
+  paymentCard: {
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 10,
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  logoContainer: {
+    borderRadius: 100,
+    backgroundColor: COLORS.lightWhite,
+    width: 60,
+    height: 36,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  productImage: {
+    width: 40,
+    height: 40,
+    resizeMode: "contain",
+  },
+  infoContainer: {
+    flex: 1,
+    paddingHorizontal: 10,
+  },
+  itemTitle: {
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  itemSubtitle: {
+    fontSize: 14,
+    color: "#666",
+  },
+  amountContainer: {
+    alignItems: "flex-end",
+  },
+  amountText: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  statusText: {
+    fontSize: 14,
+    marginTop: 4,
+  },
+  editIcon: {
+    marginLeft: 8,
+  },
+  sectionHeaderContainer: {
+    paddingVertical: 5,
+    backgroundColor: "#f5f5f5",
+    paddingHorizontal: 10,
+  },
+  sectionHeaderText: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  separator: {
+    height: 10,
+  },
+  loaderContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: SIZES.medium,
+  },
+  emptyContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+  },
+  emptyText: {
+    marginTop: 10,
+    fontSize: SIZES.medium,
+  },
+});

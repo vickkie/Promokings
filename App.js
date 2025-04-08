@@ -100,6 +100,7 @@ import {
   MySupply,
   SupplyPayments,
   BidDetails,
+  SupplyDetails,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -205,6 +206,7 @@ const screens = [
   { name: "MySupply", component: MySupply, options: { headerShown: false } },
   { name: "SupplyPayments", component: SupplyPayments, options: { headerShown: false } },
   { name: "BidDetails", component: BidDetails, options: { headerShown: false } },
+  { name: "SupplyDetails", component: SupplyDetails, options: { headerShown: false } },
 ];
 
 export default function App() {
