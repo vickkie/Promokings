@@ -161,7 +161,6 @@ const SupplierBid = forwardRef((props, ref) => {
       };
 
       const endpoint = `${BACKEND_PORT}/api/inventory-requests/${item?._id}`;
-      // console.log(endpoint);
 
       const response = await axios.patch(endpoint, bidData, {
         headers: {
@@ -169,18 +168,12 @@ const SupplierBid = forwardRef((props, ref) => {
         },
       });
 
-      // console.log("response", response.data);
-
       if (response.status === 200) {
         bottomSheetRef.current?.dismiss();
         showToast("success", "successfully Bid supply", "Please await reply in due time");
-      } else {
-        // console.log(response);
-        throw new Error(response?.error);
       }
     } catch (err) {
-      console.log(err.message);
-      showToast("error", err.message);
+      showToast("error", "Update error", err?.response?.data?.error || err.message);
     } finally {
       setLoader(false);
     }
@@ -265,6 +258,7 @@ const SupplierBid = forwardRef((props, ref) => {
                 paddingHorizontal: 8,
                 borderRadius: SIZES.medium,
                 width: 125,
+                textAlign: "center",
                 marginTop: 10,
                 fontWeight: "bold",
                 color: daysRemaining >= 0 ? "#337DE7" : daysRemaining < 0 ? "#B65454" : COLORS.primary,

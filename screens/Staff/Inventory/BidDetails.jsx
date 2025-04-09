@@ -124,9 +124,15 @@ const BidDetails = () => {
 
             Alert.alert("Order completed");
 
-            navigation.replace("BidList", { refresh: true, refreshin: true });
             setTimeout(() => {
-              navigation.navigate("Inventory Navigation");
+              navigation.navigate("Inventory Navigation", {
+                screen: "EditProductList",
+                params: {
+                  refresh: true,
+                  refreshin: true,
+                  refreshList: true,
+                },
+              });
             }, 500);
           } catch (error) {
             console.warn("Error completting Order:", error);
@@ -343,7 +349,20 @@ const BidDetails = () => {
             <View style={[styles.relatedRow, { marginBottom: 1 }]}>
               <View style={styles.stepContainer}>
                 <View style={{ justifyContent: "space-between", marginTop: 10, display: "flex", flexDirection: "row" }}>
-                  <Text style={styles.relatedHeader}>Edit / View Action</Text>
+                  <Text style={styles.relatedHeader}>View / Assign Bid Action</Text>
+                  <View style={styles.actionFlex}>
+                    <TouchableOpacity
+                      style={styles.buttonWrap}
+                      onPress={() => {
+                        openMenu();
+                      }}
+                    >
+                      <Icon name="list" size={26} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View style={{ justifyContent: "space-between", marginTop: 10, display: "flex", flexDirection: "row" }}>
+                  <Text style={styles.relatedHeader}>Edit Bid Action</Text>
                   <View style={styles.actionFlex}>
                     <TouchableOpacity
                       style={styles.buttonWrap}
@@ -354,14 +373,6 @@ const BidDetails = () => {
                       }
                     >
                       <Icon name="pencil" size={26} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.buttonWrap}
-                      onPress={() => {
-                        openMenu();
-                      }}
-                    >
-                      <Icon name="tracker" size={26} />
                     </TouchableOpacity>
                   </View>
                 </View>

@@ -147,7 +147,7 @@ const EditBid = () => {
 
         // Navigate back to inventory dashboard
         navigation.navigate("Inventory Navigation", {
-          screen: "InventoryDashboard",
+          screen: "BidList",
           params: { refreshList: true },
         });
       }

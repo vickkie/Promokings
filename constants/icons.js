@@ -108,8 +108,10 @@ import adjust from "../assets/svg/adjust.svg";
 import discuss from "../assets/svg/discuss.svg";
 import clipboardfilled from "../assets/svg/clipboard-check.svg";
 import clipboardcheck from "../assets/svg/clipboard-check-light.svg";
+import list from "../assets/svg/list.svg";
 
 const iconMap = {
+  list: list,
   clipboardcheck: clipboardcheck,
   clipboardfilled: clipboardfilled,
   discuss: discuss,

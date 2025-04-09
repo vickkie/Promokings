@@ -46,7 +46,12 @@ const AddBid = () => {
   const [isEditable, setIsEditable] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [deadline, setDeadline] = useState(new Date());
+  const [deadline, setDeadline] = useState(() => {
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999); // 11:59:59.999 PM
+    return endOfDay;
+  });
+
   const [open, setOpen] = useState(false); // Controls DatePicker modal
 
   const [mode, setMode] = useState("date");
@@ -88,6 +93,11 @@ const AddBid = () => {
       }, 2000);
     }
   }, []);
+
+  useEffect(() => {
+    console.log("productid", inventoryId);
+    console.log("deadline", deadline);
+  }, [deadline]);
 
   const toggleEditable = () => {
     setIsEditable(!isEditable);
@@ -141,7 +151,7 @@ const AddBid = () => {
 
         // Navigate back to inventory dashboard
         navigation.navigate("Inventory Navigation", {
-          screen: "InventoryDashboard",
+          screen: "BidList",
           params: { refreshList: true },
         });
       }

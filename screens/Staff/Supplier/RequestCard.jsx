@@ -71,8 +71,6 @@ const RequestCard = ({ item, isGridView }) => {
   //      : null;
   //  }, [loading, bidData]);
 
-  console.log(item?.selectedSupplier);
-
   useEffect(() => {
     if (item?.selectedSupplier === userData?.supplierProfile?._id) {
       setBidAccepted(true);
@@ -91,7 +89,11 @@ const RequestCard = ({ item, isGridView }) => {
   const now = new Date();
 
   const openBid =
-    item && item.status !== "Completed" && !item.selectedSupplier && new Date(item.deadline) > now ? true : false;
+    item &&
+    item.status !== "Completed" &&
+    item.status !== "Accepted" &&
+    !item.selectedSupplier &&
+    new Date(item.deadline) > now;
 
   return (
     <>
