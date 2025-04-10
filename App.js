@@ -103,6 +103,7 @@ import {
   SupplyDetails,
   SupplierPayments,
   SupplierPaymentsDetails,
+  EditSupplierPaymentDetails,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -211,6 +212,7 @@ const screens = [
   { name: "SupplyDetails", component: SupplyDetails, options: { headerShown: false } },
   { name: "SupplierPayments", component: SupplierPayments, options: { headerShown: false } },
   { name: "SupplierPaymentsDetails", component: SupplierPaymentsDetails, options: { headerShown: false } },
+  { name: "EditSupplierPaymentDetails", component: EditSupplierPaymentDetails, options: { headerShown: false } },
 ];
 
 export default function App() {

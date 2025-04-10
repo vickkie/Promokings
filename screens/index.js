@@ -72,6 +72,7 @@ import PaymentList from "./Staff/Finance/PaymentsList";
 import FinanceDashboard from "./Staff/Finance/FinanceDashboard";
 import OrderPaymentDetails from "./Staff/Finance/OrderPaymentDetails";
 import EditPaymentDetails from "./Staff/Finance/EditPaymentDetails";
+import EditSupplierPaymentDetails from "./Staff/Finance/EditSupplierPaymentDetails";
 import Payments from "./Staff/Finance/Payments";
 import PaymentsHistory from "./Staff/Finance/PaymentsHistory";
 import FinanceSettings from "./Staff/Finance/FinanceSettings";
@@ -189,6 +190,7 @@ export {
   FinanceSettings,
   SupplierPayments,
   SupplierPaymentsDetails,
+  EditSupplierPaymentDetails,
 
   //dispatcher
   DispatchDashboard,

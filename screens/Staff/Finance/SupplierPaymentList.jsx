@@ -219,7 +219,7 @@ const SupplierPaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh
             navigation.navigate("SupplierPaymentsDetails", {
               item: item,
               bid: item?.inventoryRequest,
-              bidId: item?.inventoryRequest?._id,
+              bidId: item?._id,
             });
           }}
         >

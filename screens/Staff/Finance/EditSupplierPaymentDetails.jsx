@@ -1,5 +1,16 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Alert,
+  Modal,
+} from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
@@ -13,26 +24,14 @@ import axios from "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import useFetch from "../../../hook/useFetch";
 
-const EditPaymentDetails = () => {
+const EditSupplierPaymentDetails = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { products, totals, orderId, item: order } = route.params;
+  const { bidId, item: order } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
 
-  const {
-    data: alldrivers,
-    isLoading: driverLoading,
-    error,
-    refetch,
-    errorMessage: driverError,
-  } = useFetch("staff/drivers");
-  const {
-    data: delivery,
-    isLoading: deliveryLoading,
-    error: deliveryError,
-    refetch: deliveryRefetch,
-    errorMessage: deliveryErrorMessage,
-  } = useFetch(`orders/delivery/${orderId}`);
+  const [partialAmount, setPartialAmount] = useState("");
+  const [showPartialModal, setShowPartialModal] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [drivers, setDrivers] = useState(null);
@@ -44,25 +43,14 @@ const EditPaymentDetails = () => {
   const [uploading, setUploading] = useState(false);
   const [uploading2, setUploading2] = useState(false);
 
-  useEffect(() => {
-    if (!driverLoading && alldrivers && !driverError) {
-      setDrivers(alldrivers);
-      //   console.log(alldrivers);
-    }
-  }, [driverLoading, alldrivers]);
+  console.log(bidId);
 
-  useEffect(() => {
-    if (!deliveryLoading && delivery && !deliveryErrorMessage) {
-      setDeliveryData(Array.isArray(delivery) ? delivery[0] : delivery);
-    }
-  }, [deliveryLoading, delivery]);
-
-  const handleCancelOrder = async () => {
+  const handleCancelPayment = async () => {
     setUploading(true);
-    const paymentStatus = "pending";
+    const status = "Pending";
 
-    if (!orderId) {
-      Alert.alert("Error", "Order ID is required!");
+    if (!bidId) {
+      Alert.alert("Error", "Payment ID is required!");
       setUploading(false);
       return;
     }
@@ -78,12 +66,12 @@ const EditPaymentDetails = () => {
         style: "destructive",
         onPress: async () => {
           try {
-            const response = await fetch(`${BACKEND_PORT}/api/order/paymentStatus/${orderId}`, {
+            const response = await fetch(`${BACKEND_PORT}/api/v3/payments/${bidId}`, {
               method: "PATCH",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ paymentStatus }),
+              body: JSON.stringify({ status }),
             });
 
             const data = await response.json();
@@ -119,10 +107,10 @@ const EditPaymentDetails = () => {
     ]);
   };
 
-  const handleApproveOrder = async () => {
-    const paymentStatus = "paid";
+  const handleApprovePayment = async () => {
+    const status = "Paid";
 
-    if (!orderId) {
+    if (!bidId) {
       Alert.alert("Error", "Order ID is required!");
       setUploading(false);
       return;
@@ -139,12 +127,12 @@ const EditPaymentDetails = () => {
         style: "destructive",
         onPress: async () => {
           try {
-            const response = await fetch(`${BACKEND_PORT}/api/order/paymentStatus/${orderId}`, {
+            const response = await fetch(`${BACKEND_PORT}/api/v3/payments/${bidId}`, {
               method: "PATCH",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ paymentStatus }),
+              body: JSON.stringify({ status }),
             });
 
             const data = await response.json();
@@ -176,61 +164,76 @@ const EditPaymentDetails = () => {
       },
     ]);
   };
-  const handlePartialPayment = async () => {
-    const paymentStatus = "partial";
 
-    if (!orderId) {
+  const handlePartialPayment = () => {
+    if (!bidId) {
       Alert.alert("Error", "Order ID is required!");
-      setUploading(false);
       return;
     }
 
-    Alert.alert("Confirm Partial Payment", "Are you sure you want to approve this payment?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-        onPress: () => setUploading(false),
-      },
-      {
-        text: "Approve Partial",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            const response = await fetch(`${BACKEND_PORT}/api/order/paymentStatus/${orderId}`, {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ paymentStatus }),
-            });
-
-            const data = await response.json();
-
-            if (!data.success) {
-              throw new Error(data.message || "Failed to approve order");
+    // First ask for amount
+    Alert.prompt?.(
+      // iOS only
+      "Enter Partial Amount",
+      "Input the amount to approve for this partial payment",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Approve",
+          onPress: (amount) => {
+            if (!amount || isNaN(amount)) {
+              Alert.alert("Invalid Input", "Please enter a valid number");
+              return;
             }
 
-            Toast.show({
-              type: "success",
-              text1: "Partial Approval Completed",
-              text2: "Partial Approval has been completed successfully",
-            });
-            // navigation.replace("OrdersSales", { refresh: true, refreshin: true });
-            setTimeout(() => {
-              navigation.navigate("Finance Navigation", {
-                screen: "FinanceDashboard", // 👈 Specify the screen inside the navigator
-                params: { refreshList: true }, // 👈 Pass params properly
-              });
-            }, 500);
-          } catch (error) {
-            console.warn("Error approving Order:", error);
-            alert(error);
-          } finally {
-            setTimeout(() => {}, 2000);
-          }
+            approvePartial(amount);
+          },
         },
-      },
-    ]);
+      ],
+      "plain-text",
+      ""
+    ) || setShowPartialModal(true);
+  };
+
+  const approvePartial = async (amount) => {
+    try {
+      const response = await fetch(`${BACKEND_PORT}/api/v3/payments/${bidId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: "Partial",
+          amountPaid: Number(amount),
+        }),
+      });
+      console.log(response);
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message || "Failed to approve order");
+      }
+
+      Toast.show({
+        type: "success",
+        text1: "Partial Approval Completed",
+        text2: "Partial payment of " + amount + " approved successfully",
+      });
+
+      setTimeout(() => {
+        navigation.navigate("Finance Navigation", {
+          screen: "FinanceDashboard",
+          params: { refreshList: true },
+        });
+      }, 500);
+    } catch (error) {
+      console.warn("Error approving Order:", error);
+      Alert.alert("Error", error.message);
+    }
   };
 
   return (
@@ -262,19 +265,19 @@ const EditPaymentDetails = () => {
             </View>
 
             <Text style={{ fontFamily: "GtAlpine", color: COLORS.themeb, fontSize: SIZES.medium, marginVertical: 15 }}>
-              Order id : {orderId}
+              Payment id : {item?.TransactionId ?? bidId}
             </Text>
 
             <TouchableOpacity
               style={{
                 backgroundColor:
-                  item?.paymentStatus === "pending"
+                  item?.status === "Pending"
                     ? "#ffedd2"
-                    : item?.paymentStatus === "paid"
+                    : item?.status === "Paid"
                     ? "#CBFCCD"
-                    : item?.paymentStatus === "partial"
+                    : item?.status === "Partial"
                     ? "#C0DAFF"
-                    : item?.paymentStatus === "cancelled"
+                    : item?.status === "Failed"
                     ? "#F3D0CE"
                     : COLORS.themey, // Default color
                 paddingVertical: 4,
@@ -285,18 +288,18 @@ const EditPaymentDetails = () => {
               <Text
                 style={{
                   color:
-                    item?.paymentStatus === "pending"
+                    item?.status === "Pending"
                       ? "#D4641B"
-                      : item?.paymentStatus === "paid"
+                      : item?.status === "Paid"
                       ? "#26A532"
-                      : item?.paymentStatus === "partial"
+                      : item?.status === "Partial"
                       ? "#337DE7"
-                      : item?.paymentStatus === "cancelled"
+                      : item?.status === "Failed"
                       ? "#B65454"
                       : COLORS.primary,
                 }}
               >
-                {item?.paymentStatus}
+                {item?.status}
               </Text>
             </TouchableOpacity>
 
@@ -324,52 +327,88 @@ const EditPaymentDetails = () => {
                 <Text style={styles.paymentDetails}>Payment status</Text>
                 <Text
                   style={{
-                    backgroundColor:
-                      item.paymentStatus === "pending"
-                        ? "#C0DAFF"
-                        : item.paymentStatus === "paid"
-                        ? "#CBFCCD"
-                        : item.paymentStatus === "partial"
-                        ? "#F3D0CE"
-                        : COLORS.themey, // Default color
-                    paddingVertical: 4,
+                    paddingVertical: 2,
                     paddingHorizontal: 8,
                     borderRadius: SIZES.medium,
                   }}
                 >
-                  {item?.paymentStatus}
+                  {item?.status}
                 </Text>
               </View>
               <View style={styles.payFlex}>
-                <Text style={styles.paymentDetails}>Delivery Fees</Text>
+                <Text style={styles.paymentDetails}>Supply Amount</Text>
                 <Text style={styles.paymentDetails}>
                   {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
-                    .format(item?.deliveryAmount)
+                    .format(item?.amount)
                     .replace("Ksh", "")}
                 </Text>
               </View>
               <View style={styles.payFlex}>
-                <Text style={styles.paymentDetails}>Additional Fees</Text>
+                <Text style={styles.paymentDetails}>Additional Payments</Text>
                 <Text style={styles.paymentDetails}>
                   {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
                     .format(item?.additionalFees)
                     .replace("Ksh", "")}
                 </Text>
               </View>
+              <View style={styles.divider}></View>
               <View style={styles.payFlex}>
-                <Text style={styles.paymentDetails}>Total Amount</Text>
+                <Text style={styles.paymentDetails}>Payout Amount</Text>
                 <Text style={styles.paymentDetails}>
                   {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
-                    .format(item.subtotal)
+                    .format(item?.amount + item?.additionalFees)
+                    .replace("Ksh", "")}
+                </Text>
+              </View>
+              <View style={styles.payFlex}>
+                <Text style={styles.paymentDetails}>Balance Amount</Text>
+                <Text style={styles.paymentDetails}>
+                  {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
+                    .format(item?.amount - item?.amountPaid)
                     .replace("Ksh", "")}
                 </Text>
               </View>
             </View>
+            <Modal visible={showPartialModal} transparent animationType="slide">
+              <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#00000099" }}>
+                <View style={{ backgroundColor: "#fff", padding: 20, borderRadius: 10, width: "80%" }}>
+                  <Text style={{ fontSize: 18, marginBottom: 10 }}>Enter Partial Payment Amount</Text>
+                  <TextInput
+                    placeholder="Amount"
+                    keyboardType="numeric"
+                    value={partialAmount}
+                    onChangeText={setPartialAmount}
+                    style={{
+                      borderWidth: 1,
+                      borderColor: "#ccc",
+                      padding: 10,
+                      marginBottom: 10,
+                      borderRadius: 5,
+                    }}
+                  />
+                  <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+                    <Button title="Cancel" onPress={() => setShowPartialModal(false)} />
+                    <View style={{ width: 10 }} />
+                    <Button
+                      title="Approve"
+                      onPress={() => {
+                        if (!partialAmount || isNaN(partialAmount)) {
+                          Alert.alert("Invalid amount");
+                          return;
+                        }
+                        approvePartial(partialAmount);
+                        setShowPartialModal(false);
+                      }}
+                    />
+                  </View>
+                </View>
+              </View>
+            </Modal>
 
             <View style={[styles.relatedRow, { marginBottom: 10 }]}>
               <View>
                 <Text style={styles.relatedHeader}>Payment Actions</Text>
-                <TouchableOpacity style={styles.completeBtn} onPress={handleApproveOrder}>
+                <TouchableOpacity style={styles.completeBtn} onPress={handleApprovePayment}>
                   {uploading2 ? (
                     <ActivityIndicator size={30} color={COLORS.themew} />
                   ) : (
@@ -380,10 +419,10 @@ const EditPaymentDetails = () => {
                   {uploading ? (
                     <ActivityIndicator size={30} color={COLORS.themew} />
                   ) : (
-                    <Text style={styles.submitText}>Mark Payment Partial</Text>
+                    <Text style={[styles.submitText]}>Mark Partial Payment</Text>
                   )}
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.deleteBtn} onPress={handleCancelOrder}>
+                <TouchableOpacity style={styles.deleteBtn} onPress={handleCancelPayment}>
                   {isLoading ? (
                     <ActivityIndicator size={30} color={COLORS.themew} />
                   ) : (
@@ -399,7 +438,7 @@ const EditPaymentDetails = () => {
   );
 };
 
-export default EditPaymentDetails;
+export default EditSupplierPaymentDetails;
 
 const styles = StyleSheet.create({
   container: {
@@ -720,7 +759,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   partialBtn: {
-    backgroundColor: COLORS.themey,
+    backgroundColor: COLORS.info,
     padding: 6,
     marginVertical: 10,
     borderRadius: SIZES.medium,
@@ -746,5 +785,11 @@ const styles = StyleSheet.create({
   actionFlex: {
     display: "flex",
     flexDirection: "row",
+  },
+  divider: {
+    backgroundColor: COLORS.themey,
+    height: 4,
+    marginHorizontal: 5,
+    borderRadius: 10,
   },
 });

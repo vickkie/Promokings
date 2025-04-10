@@ -5,6 +5,7 @@ import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
 import * as Yup from "yup";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import SupplierPaymentTracker from "./SupplierPaymentTracker";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -69,18 +70,11 @@ const OrderPaymentDetails = () => {
   const PaymentMethodComponent = ({ item }) => {
     // if (!item?.paymentInfo?.bankDetails) return null;
 
-    const mockdata = {
-      accountName: "Kings Collection Ltd",
-      accountNumber: "0123456789",
-      bankName: "Equity Bank",
-      branch: "Kilimani",
-      bankCode: "068",
-      swiftCode: "EQBLKENA",
-      currency: "KES",
-      phone: "0722000000",
-    };
+    // console.log(item?.supplier);
+
+    const mockdata = {};
     const { accountName, accountNumber, bankName, branch, bankCode, swiftCode, currency, phone } =
-      item?.paymentInfo?.bankDetails || mockdata;
+      item?.supplier?.bankDetails || mockdata;
 
     return (
       <View>
@@ -154,8 +148,7 @@ const OrderPaymentDetails = () => {
 
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate("EditPaymentDetails", {
-                    products: products,
+                  navigation.navigate("EditSupplierPaymentDetails", {
                     bidId: bidId,
                     item: item,
                   });
@@ -194,7 +187,7 @@ const OrderPaymentDetails = () => {
                       ? "#26A532"
                       : item?.status === "Partial"
                       ? "#337DE7"
-                      : item?.status === "Cancelled"
+                      : item?.status === "Failed"
                       ? "#B65454"
                       : COLORS.primary,
                 }}
@@ -269,11 +262,20 @@ const OrderPaymentDetails = () => {
                     .replace("Ksh", "")}
                 </Text>
               </View>
+              <View style={styles.divider}></View>
               <View style={styles.payFlex}>
-                <Text style={styles.paymentDetails}>Total Amount</Text>
+                <Text style={styles.paymentDetails}>Payout Amount</Text>
                 <Text style={styles.paymentDetails}>
                   {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
                     .format(item?.amount + item?.additionalFees)
+                    .replace("Ksh", "")}
+                </Text>
+              </View>
+              <View style={styles.payFlex}>
+                <Text style={styles.paymentDetails}>Balance Amount</Text>
+                <Text style={styles.paymentDetails}>
+                  {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
+                    .format(item?.amount - item?.amountPaid)
                     .replace("Ksh", "")}
                 </Text>
               </View>
@@ -327,6 +329,12 @@ const OrderPaymentDetails = () => {
                     <Icon name="call" size={20} />
                   </TouchableOpacity>
                 </View>
+              </View>
+            </View>
+            <View style={[styles.relatedRow, { justifyContent: "center" }]}>
+              <Text style={styles.relatedHeader}>Payment Tracker </Text>
+              <View style={styles.wrapperRelated}>
+                <SupplierPaymentTracker userData={userData} paymentId={bidId} />
               </View>
             </View>
           </ScrollView>
@@ -589,5 +597,11 @@ const styles = StyleSheet.create({
   },
   smallTop: {
     marginTop: 5,
+  },
+  divider: {
+    backgroundColor: COLORS.themey,
+    height: 4,
+    marginHorizontal: 5,
+    borderRadius: 10,
   },
 });
