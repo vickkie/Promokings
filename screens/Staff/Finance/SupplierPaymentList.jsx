@@ -67,6 +67,7 @@ const SupplierPaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh
       });
 
       const newPayments = response.data.payments || [];
+
       setData((prev) => (reset ? newPayments : [...prev, ...newPayments]));
       setHasMore(newPayments.length === limit);
       setOffset((prev) => (reset ? limit : prev + limit));
@@ -196,7 +197,7 @@ const SupplierPaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh
           <Image source={paymentLogo} style={styles.productImage} />
         </TouchableOpacity>
         <View style={styles.infoContainer}>
-          <Text style={styles.itemTitle}>{productName}</Text>
+          <Text style={styles.itemTitle}>{item?.supplier?.name}</Text>
           <Text style={styles.itemSubtitle}>
             {moment(item?.createdAt).format("hh:mm A")} • {item?.method}
           </Text>
@@ -215,8 +216,7 @@ const SupplierPaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh
         <TouchableOpacity
           style={styles.editIcon}
           onPress={() => {
-            console.log("meeee", item?.inventoryRequest);
-            navigation.navigate("SupplyDetails", {
+            navigation.navigate("SupplierPaymentsDetails", {
               item: item,
               bid: item?.inventoryRequest,
               bidId: item?.inventoryRequest?._id,

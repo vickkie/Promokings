@@ -77,6 +77,7 @@ import PaymentsHistory from "./Staff/Finance/PaymentsHistory";
 import FinanceSettings from "./Staff/Finance/FinanceSettings";
 import FinanceProfile from "./Staff/Finance/FinanceProfile";
 import SupplierPayments from "./Staff/Finance/SupplierPayments";
+import SupplierPaymentsDetails from "./Staff/Finance/SupplierPaymentDetails";
 
 //disp[atcher]
 
@@ -187,6 +188,7 @@ export {
   FinanceProfile,
   FinanceSettings,
   SupplierPayments,
+  SupplierPaymentsDetails,
 
   //dispatcher
   DispatchDashboard,
