@@ -65,7 +65,7 @@ const FinanceTabNavigation = () => {
           tabBarIcon: ({ focused }) => (
             <Icon name={focused ? "cardfilled" : "card"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
           ),
-          tabBarLabel: "Payments",
+          tabBarLabel: "Incoming",
         }}
       />
       <Tab.Screen
@@ -73,9 +73,13 @@ const FinanceTabNavigation = () => {
         component={SupplierPayments}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon name={focused ? "cardfilled" : "card"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
+            <Icon
+              name={focused ? "moneybagfilled" : "moneybag"}
+              size={24}
+              color={focused ? COLORS.primary : COLORS.gray2}
+            />
           ),
-          tabBarLabel: "Payments",
+          tabBarLabel: "Payouts",
         }}
       />
 
@@ -86,7 +90,7 @@ const FinanceTabNavigation = () => {
           tabBarIcon: ({ focused }) => (
             <Icon
               name={!focused ? "cardsearch" : "cardsearchfilled"}
-              size={32}
+              size={25}
               color={focused ? COLORS.primary : COLORS.gray2}
             />
           ),

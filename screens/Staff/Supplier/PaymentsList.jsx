@@ -269,7 +269,7 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
       </View>
       {error ? (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorMessage}>Looks like you're offline</Text>
+          <Text style={styles.errorMessage}>{error}</Text>
           <TouchableOpacity onPress={onRefresh} style={styles.retryButton}>
             <Ionicons size={24} name="reload-circle" color={COLORS.white} />
             <Text style={styles.retryButtonText}>Retry Fetch</Text>
@@ -298,14 +298,16 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
                 <Text style={styles.loadingText}>Loading!</Text>
               </View>
             ) : (
-              <View style={styles.emptyContainer}>
-                <LottieView
-                  source={require("../../../assets/data/card-payment.json")}
-                  autoPlay
-                  loop={false}
-                  style={styles.animation}
-                />
-                <Text style={styles.emptyText}>Oops, No Payments here!</Text>
+              <View style={styles.containerx}>
+                <View style={styles.animationWrapper}>
+                  <LottieView
+                    source={require("../../../assets/data/card-payment.json")}
+                    autoPlay
+                    loop={false}
+                    style={styles.animation}
+                  />
+                  <Text style={styles.emptyText}>Oops, No Payments here!</Text>
+                </View>
               </View>
             )
           }
@@ -320,7 +322,8 @@ const getStatusStyle = (status) => {
   // modify these styles based on your design
   if (status.toLowerCase() === "pending") return { color: "#FFA500" };
   if (status.toLowerCase() === "paid") return { color: "#008000" };
-  if (status.toLowerCase() === "failed") return { color: "#FF0000" };
+  if (status.toLowerCase() === "partial") return { color: "#D4641B" };
+  if (status.toLowerCase() === "Failed") return { color: "#FF0000" };
   return {};
 };
 
@@ -331,7 +334,6 @@ export default PaymentList;
 // -------------------------------
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     marginTop: 90,
   },
   productImage: {
@@ -428,6 +430,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: SIZES.medium,
     width: 80,
+    fontWeight: "bold",
     textAlign: "center",
   },
   // Added missing styles:
@@ -498,13 +501,11 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   containLottie: {
-    justifyContent: "center",
-    alignItems: "center",
     width: SIZES.width - 20,
     flex: 1,
   },
   animationWrapper: {
-    width: 200,
+    // width: 200,
     height: 200,
     justifyContent: "center",
     alignItems: "center",
@@ -604,6 +605,7 @@ const styles = StyleSheet.create({
   statusText: {
     fontSize: 14,
     marginTop: 4,
+    fontWeight: "bold",
   },
   editIcon: {
     marginLeft: 8,

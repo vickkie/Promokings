@@ -1,28 +1,29 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
+
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import SupplierPaymentTracker from "./SupplierPaymentTracker";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-import useFetch from "../../../hook/useFetch";
 
-import useDelete from "../../../hook/useDelete2";
-import { BACKEND_PORT } from "@env";
-import axios from "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
-import BidToInventory from "../../../components/bottomsheets/BidToInventory";
-import { Alert } from "react-native";
 
-const SupplyDetails = () => {
+const SupplyPaymentDetails = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { bid, bidId, item } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
 
+  // console.log(products, bidId, item);
+
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoading2, setIsLoading2] = useState(false);
+  const [errorState, setErrorState] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const [supplierDetails, setsupplierDetails] = useState(item?.supplier);
 
   useEffect(() => {
     if (!userLogin) {
@@ -34,44 +35,31 @@ const SupplyDetails = () => {
     }
   }, [userLogin, userData]);
 
-  const datapath = `v2/supplier/${bid?.selectedSupplier}`;
-
-  const {
-    data,
-    isLoading: supplierLoading,
-    error,
-    errorMessage: supplierError,
-    refetch,
-  } = useFetch(datapath, true, userData?.TOKEN);
-
   const [step, setStep] = useState(1);
   const [address, setAddress] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [city, setCity] = useState(userData ? userData.location : "");
   const [email, setEmail] = useState(userData ? userData.email : "");
-  const [supplierData, setSupplierData] = useState("");
 
   const [userId, setUserId] = useState(null);
   const [phoneError, setPhoneError] = useState("");
 
   useEffect(() => {
-    if (!supplierLoading && data?.success) {
-      //   console.log(data?.supplier);
-      setSupplierData(data?.supplier);
-    }
-  }, [data, supplierLoading]);
+    // console.log(item?.status);
+  });
 
-  const BottomSheetRef = useRef(null);
-
-  const openMenu = () => BottomSheetRef.current?.present();
-
-  const handleEmailPress = () => {
-    Linking.openURL("mailto:inventory@promokings.co.ke");
+  const handleEmailPress = (email) => {
+    Linking.openURL(`mailto:${email}`);
   };
 
-  const handleCallPress = () => {
-    const phoneNumber = "+254706676569";
+  const handleCallPress = (phoneNumber) => {
+    // console.log(phoneNumber);
+
     Linking.openURL(`tel:${phoneNumber}`);
+  };
+
+  const formatCardNumber = (cardNumber) => {
+    return cardNumber.replace(/\d{4}(?=\d)/g, "$& "); // Adds space every 4 digits
   };
   const formatDate = (dateString) => {
     if (!dateString) return "";
@@ -110,6 +98,31 @@ const SupplyDetails = () => {
         </View>
 
         <View style={styles.inputWrapper}>
+          <MaterialCommunityIcons name="source-branch" size={28} style={styles.iconStyle} color={COLORS.gray} />
+          <TextInput style={{ flex: 1 }} value={branch} editable={false} placeholder="Branch" />
+        </View>
+
+        <View style={styles.inputWrapper}>
+          <MaterialCommunityIcons name="numeric-1-box" size={28} style={styles.iconStyle} color={COLORS.gray} />
+          <TextInput style={{ flex: 1 }} value={bankCode} editable={false} placeholder="Bank Code" />
+        </View>
+
+        <View style={styles.inputWrapper}>
+          <MaterialCommunityIcons name="codepen" size={28} style={styles.iconStyle} color={COLORS.gray} />
+          <TextInput style={{ flex: 1 }} value={swiftCode} editable={false} placeholder="SWIFT Code" />
+        </View>
+
+        <View style={styles.inputWrapper}>
+          <MaterialCommunityIcons name="cash" size={28} style={styles.iconStyle} color={COLORS.gray} />
+          <TextInput style={{ flex: 1 }} value={currency} editable={false} placeholder="Currency" />
+        </View>
+
+        <View style={styles.inputWrapper}>
+          <MaterialCommunityIcons name="card-account-phone" size={28} style={styles.iconStyle} color={COLORS.gray} />
+          <TextInput style={{ flex: 1 }} value={phone} editable={false} placeholder="Phone" />
+        </View>
+
+        <View style={styles.inputWrapper}>
           <MaterialCommunityIcons name="calendar" size={28} style={styles.iconStyle} color={COLORS.gray} />
           <TextInput style={{ flex: 1 }} value={formatDate(item?.paidAt)} editable={false} placeholder="Date Paid" />
         </View>
@@ -119,7 +132,6 @@ const SupplyDetails = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <BidToInventory ref={BottomSheetRef} item={bid} refetch={refetch} />
       <View style={styles.container}>
         <View style={styles.wrapper}>
           <View style={styles.upperRow}>
@@ -132,34 +144,33 @@ const SupplyDetails = () => {
               >
                 <Icon name="backbutton" size={26} />
               </TouchableOpacity>
-              <Text style={styles.topheading}>Supply details</Text>
+              <Text style={styles.topheading}>Payment details</Text>
 
               <TouchableOpacity
                 onPress={() => {
-                  //   navigation.navigate("EditSalesOrder", {
-                  //     products: products,
-                  //     bidId: bidId,
-                  //     item: item,
-                  //   });
+                  navigation.navigate("EditSupplierPaymentDetails", {
+                    bidId: bidId,
+                    item: item,
+                  });
                 }}
                 style={styles.outWrap}
               >
-                <Icon name="receipt" size={28} />
+                <Icon name="pencil" size={28} />
               </TouchableOpacity>
             </View>
 
             <Text style={{ fontFamily: "GtAlpine", color: COLORS.themeb, fontSize: SIZES.medium, marginVertical: 15 }}>
-              Supply id : {bidId}
+              Transaction id : {item?.TransactionId ?? bidId}
             </Text>
 
             <TouchableOpacity
               style={{
                 backgroundColor:
-                  bid?.status === "Pending"
+                  item?.status === "Pending"
                     ? "#ffedd2"
-                    : bid?.status === "Completed"
+                    : item?.status === "Paid"
                     ? "#CBFCCD"
-                    : bid?.status === "Closed"
+                    : item?.status === "Partial"
                     ? "#F3D0CE"
                     : COLORS.themey, // Default color
                 paddingVertical: 4,
@@ -170,23 +181,23 @@ const SupplyDetails = () => {
               <Text
                 style={{
                   color:
-                    bid?.status === "Pending"
+                    item?.status === "Pending"
                       ? "#D4641B"
-                      : bid?.status === "Completed"
+                      : item?.status === "Paid"
                       ? "#26A532"
-                      : bid?.status === "delivery"
+                      : item?.status === "Partial"
                       ? "#337DE7"
-                      : bid?.status === "Closed"
+                      : item?.status === "Failed"
                       ? "#B65454"
                       : COLORS.primary,
                 }}
               >
-                {bid?.status === "Completed" ? "Delivered" : bid?.status}
+                {item?.status}
               </Text>
             </TouchableOpacity>
 
             <View style={styles.stepsheader}>
-              <Text style={styles.stepstext}>View your supply details from here</Text>
+              <Text style={styles.stepstext}>You can track order payment from here</Text>
             </View>
           </View>
 
@@ -194,15 +205,12 @@ const SupplyDetails = () => {
             <View style={styles.lowerRow}>
               <ScrollView>
                 <View style={styles.stepContainer}>
-                  <View style={{ justifyContent: "center", marginVertical: 20 }}>
+                  <View style={{ justifyContent: "center", marginVertical: 5 }}>
                     <Text style={styles.relatedHeader}>Supply items</Text>
                   </View>
 
                   <View style={{ width: SIZES.width - 27 }}>
                     <View style={styles.containerx} key={bid?._id}>
-                      <TouchableOpacity style={styles.imageContainer}>
-                        <Image source={{ uri: bid?.imageUrl }} style={styles.image} />
-                      </TouchableOpacity>
                       <View style={{ gap: 12 }}>
                         <View style={styles.details}>
                           <Text style={styles.title} numberOfLines={1}>
@@ -212,15 +220,11 @@ const SupplyDetails = () => {
                         <View style={styles.rowitem}>
                           <View style={styles.xp}>
                             <Text style={styles.semititle} numberOfLines={1}>
-                              Bid price : {bid?.expectedPrice ?? 0}
+                              Final price : {bid?.expectedPrice ?? 0}
+                              {" / "}
+                              <Text style={styles.semititle}>Quantity: {bid?.quantity}</Text>
                             </Text>
                           </View>
-                        </View>
-                        <View style={styles.rowitem}>
-                          <View>
-                            <Text style={styles.semititle}>Quantity: {bid?.quantity}</Text>
-                          </View>
-                          <View style={styles.priceadd}></View>
                         </View>
                       </View>
                     </View>
@@ -286,28 +290,51 @@ const SupplyDetails = () => {
             </View>
 
             <View style={[styles.relatedRow, { justifyContent: "center" }]}>
-              <Text style={styles.relatedHeader}>Related information</Text>
+              <Text style={styles.relatedHeader}>Supplier information</Text>
               <View style={styles.wrapperRelated}>
                 <View style={styles.leftRelated}>
                   <TouchableOpacity style={styles.supplierImage}>
                     <Image
-                      source={require("../../../assets/images/promoking-logo.png")}
+                      source={
+                        supplierDetails?.profilePicture
+                          ? { uri: supplierDetails.profilePicture }
+                          : require("../../../assets/images/userDefault.webp")
+                      }
                       style={{ width: 40, height: 40, borderRadius: 1999 }}
                     />
                   </TouchableOpacity>
                   <View style={{ gap: 5, alignItems: "flex-start", paddingTop: 3, marginStart: 6 }}>
-                    <Text style={styles.supplierHead}>Promokings limited</Text>
-                    <Text style={styles.supplierwho}> Manager</Text>
+                    <Text style={styles.supplierHead}>{supplierDetails?.name}</Text>
+                    <Text style={styles.supplierwho}>{supplierDetails?.address}</Text>
                   </View>
                 </View>
                 <View style={styles.reachIcons}>
-                  <TouchableOpacity style={styles.reachWrapper} onPress={handleEmailPress}>
+                  <TouchableOpacity
+                    style={styles.reachWrapper}
+                    onPress={() => {
+                      supplierDetails ? handleEmailPress(supplierDetails?.email) : "";
+                    }}
+                  >
                     <Icon name="email" size={20} />
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.reachWrapper} onPress={handleCallPress}>
+                  <TouchableOpacity
+                    style={styles.reachWrapper}
+                    onPress={() => {
+                      const phoneNumber = supplierDetails?.phoneNumber;
+                      if (phoneNumber) {
+                        handleCallPress(phoneNumber);
+                      }
+                    }}
+                  >
                     <Icon name="call" size={20} />
                   </TouchableOpacity>
                 </View>
+              </View>
+            </View>
+            <View style={[styles.relatedRow, { justifyContent: "center" }]}>
+              <Text style={styles.relatedHeader}>Payment Tracker </Text>
+              <View style={styles.wrapperRelated}>
+                <SupplierPaymentTracker userData={userData} paymentId={bidId} />
               </View>
             </View>
           </ScrollView>
@@ -317,7 +344,7 @@ const SupplyDetails = () => {
   );
 };
 
-export default SupplyDetails;
+export default SupplyPaymentDetails;
 
 const styles = StyleSheet.create({
   container: {
@@ -347,14 +374,6 @@ const styles = StyleSheet.create({
   },
   lowerRow: {
     marginTop: 180,
-    backgroundColor: COLORS.themew,
-    width: SIZES.width - 20,
-    marginStart: 10,
-    borderRadius: SIZES.medium,
-    paddingHorizontal: 3,
-  },
-  lowerRow2: {
-    marginTop: 7,
     backgroundColor: COLORS.themew,
     width: SIZES.width - 20,
     marginStart: 10,
@@ -578,67 +597,6 @@ const styles = StyleSheet.create({
   },
   smallTop: {
     marginTop: 5,
-  },
-  inputWrapper2: {
-    backgroundColor: COLORS.lightWhite,
-    borderWidth: 1,
-    height: 100,
-    borderRadius: 12,
-    flexDirection: "row",
-    paddingHorizontal: 15,
-    alignItems: "center",
-    borderColor: "#CCC",
-    width: SIZES.width - 50,
-    alignSelf: "center",
-    // marginVertical: 10,
-  },
-  submitBtn: {
-    backgroundColor: COLORS.primary,
-    padding: 6,
-    marginVertical: 10,
-    borderRadius: SIZES.medium,
-    alignItems: "center",
-    height: 60,
-    // marginBottom: -60,
-    justifyContent: "center",
-  },
-  deleteBtn: {
-    backgroundColor: COLORS.red,
-    padding: 6,
-    marginVertical: 10,
-    borderRadius: SIZES.medium,
-    alignItems: "center",
-    height: 60,
-    // marginBottom: -60,
-    justifyContent: "center",
-  },
-  cancelBtn: {
-    backgroundColor: COLORS.gray2,
-    padding: 6,
-    marginVertical: 10,
-    borderRadius: SIZES.medium,
-    alignItems: "center",
-    height: 60,
-    // marginBottom: -60,
-    justifyContent: "center",
-  },
-  completeBtn: {
-    backgroundColor: COLORS.green,
-    padding: 6,
-    marginVertical: 10,
-    borderRadius: SIZES.medium,
-    alignItems: "center",
-    height: 60,
-    // marginBottom: -60,
-    justifyContent: "center",
-  },
-  submitText: {
-    color: COLORS.white,
-    fontWeight: "bold",
-  },
-  actionFlex: {
-    display: "flex",
-    flexDirection: "row",
   },
   divider: {
     backgroundColor: COLORS.themey,

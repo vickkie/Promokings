@@ -26,7 +26,7 @@ const SupplyPayments = () => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
             <Icon name="backbutton" size={26} />
           </TouchableOpacity>
-          <Text style={styles.heading}>All payments</Text>
+          <Text style={styles.heading}>Supply payments</Text>
           <TouchableOpacity
             style={styles.buttonWrap}
             onPress={() => {
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   heading: {
     fontFamily: "bold",
     textTransform: "uppercase",
-    fontSize: SIZES.large,
+    fontSize: SIZES.medium,
     textAlign: "center",
     color: COLORS.themeb,
   },

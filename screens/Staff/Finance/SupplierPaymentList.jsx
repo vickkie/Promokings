@@ -305,14 +305,16 @@ const SupplierPaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh
                 <Text style={styles.loadingText}>Loading!</Text>
               </View>
             ) : (
-              <View style={styles.emptyContainer}>
-                <LottieView
-                  source={require("../../../assets/data/card-payment.json")}
-                  autoPlay
-                  loop={false}
-                  style={styles.animation}
-                />
-                <Text style={styles.emptyText}>Oops, No Payments here!</Text>
+              <View style={styles.containerx}>
+                <View style={styles.animationWrapper}>
+                  <LottieView
+                    source={require("../../../assets/data/card-payment.json")}
+                    autoPlay
+                    loop={false}
+                    style={styles.animation}
+                  />
+                  <Text style={styles.emptyText}>Oops, No Payments here!</Text>
+                </View>
               </View>
             )
           }
@@ -505,13 +507,11 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   containLottie: {
-    justifyContent: "center",
-    alignItems: "center",
     width: SIZES.width - 20,
     flex: 1,
   },
   animationWrapper: {
-    width: 200,
+    // width: 200,
     height: 200,
     justifyContent: "center",
     alignItems: "center",
@@ -522,10 +522,9 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   containerx: {
-    flex: 1,
     backgroundColor: COLORS.themeg,
     marginTop: 2,
-    // width: SIZES.width - 20,
+
     marginHorizontal: 10,
     borderRadius: SIZES.medium,
   },

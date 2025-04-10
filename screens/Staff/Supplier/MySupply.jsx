@@ -268,7 +268,7 @@ const MySupply = () => {
                     />
                   </View>
                   <View style={{ marginTop: 0, paddingBottom: 20 }}>
-                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Oops, No Payments here!</Text>
+                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Oops, Nothing here!</Text>
                     <TouchableOpacity onPress={refetch} style={styles.retryButton}>
                       <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
                       <Text style={styles.retryButtonText}>Retry Again</Text>
