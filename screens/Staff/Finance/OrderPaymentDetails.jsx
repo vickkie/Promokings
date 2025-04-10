@@ -6,9 +6,6 @@ import { SIZES, COLORS } from "../../../constants";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import useDelete from "../../../hook/useDelete2";
-import { BACKEND_PORT } from "@env";
-import axios from "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
 
 const OrderPaymentDetails = () => {

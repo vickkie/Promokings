@@ -6,9 +6,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
-import PaymentList from "./PaymentsList";
+import SupplierPaymentList from "./SupplierPaymentList.jsx";
 
-const Payments = () => {
+const SupplierPayments = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { refresh } = route.params || false;
@@ -26,7 +26,7 @@ const Payments = () => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
             <Icon name="backbutton" size={26} />
           </TouchableOpacity>
-          <Text style={styles.heading}>Customer payments</Text>
+          <Text style={styles.heading}>Supplier payments</Text>
           <TouchableOpacity
             style={styles.buttonWrap}
             onPress={() => {
@@ -40,7 +40,7 @@ const Payments = () => {
           </TouchableOpacity>
         </View>
 
-        <PaymentList
+        <SupplierPaymentList
           irefresh={irefresh}
           setiRefresh={setiRefresh}
           setPending={setPending}
@@ -52,7 +52,7 @@ const Payments = () => {
   );
 };
 
-export default Payments;
+export default SupplierPayments;
 
 const styles = StyleSheet.create({
   textStyles: {

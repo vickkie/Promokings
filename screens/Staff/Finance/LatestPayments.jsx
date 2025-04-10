@@ -15,9 +15,10 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { useNavigation } from "@react-navigation/native";
 
-const LatestPayments = ({ refreshList, setRefreshing, setRefreshList }) => {
+const LatestPayments = ({ refreshList, setRefreshing, setRefreshList, userData }) => {
   const navigation = useNavigation();
-  const { data, isLoading, error, refetch } = useFetch("orders?limit=5&offset=0");
+  let token = userData?.TOKEN;
+  const { data, isLoading, error, refetch } = useFetch("orders?limit=5&offset=0", true, token);
 
   // Ensure data is an array and sort by creation date
   const dataArray = Array.isArray(data.orders) ? data.orders : [];

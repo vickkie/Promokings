@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { FinanceDashboard, Payments, PaymentsHistory, FinanceSettings } from "../screens";
+import { FinanceDashboard, Payments, PaymentsHistory, FinanceSettings, SupplierPayments } from "../screens";
 
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
@@ -61,6 +61,16 @@ const FinanceTabNavigation = () => {
       <Tab.Screen
         name="Payments"
         component={Payments}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Icon name={focused ? "cardfilled" : "card"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
+          ),
+          tabBarLabel: "Payments",
+        }}
+      />
+      <Tab.Screen
+        name="SupplierPayments"
+        component={SupplierPayments}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon name={focused ? "cardfilled" : "card"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />

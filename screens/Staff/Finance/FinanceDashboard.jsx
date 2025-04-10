@@ -134,7 +134,12 @@ const FinanceDashboard = () => {
             </Text>
           </View>
           <View style={styles.latestProducts}>
-            <LatestPayments refreshList={refreshList} setRefreshList={setRefreshList} setRefreshing={setRefreshing} />
+            <LatestPayments
+              refreshList={refreshList}
+              setRefreshList={setRefreshList}
+              setRefreshing={setRefreshing}
+              userData={userData}
+            />
           </View>
         </View>
       </ScrollView>

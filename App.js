@@ -101,6 +101,7 @@ import {
   SupplyPayments,
   BidDetails,
   SupplyDetails,
+  SupplierPayments,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -207,6 +208,7 @@ const screens = [
   { name: "SupplyPayments", component: SupplyPayments, options: { headerShown: false } },
   { name: "BidDetails", component: BidDetails, options: { headerShown: false } },
   { name: "SupplyDetails", component: SupplyDetails, options: { headerShown: false } },
+  { name: "SupplierPayments", component: SupplierPayments, options: { headerShown: false } },
 ];
 
 export default function App() {

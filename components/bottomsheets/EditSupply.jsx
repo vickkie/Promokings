@@ -99,7 +99,7 @@ const EditSupply = forwardRef((props, ref) => {
             }}
           >
             <View style={styles.menuItem(0.5)}>
-              <Icon name="userfilled" size={24} color={COLORS.primary} />
+              <Icon name="list" size={24} color={COLORS.primary} />
               <Text style={styles.menuText}>View Bid</Text>
             </View>
           </TouchableOpacity>
@@ -112,7 +112,7 @@ const EditSupply = forwardRef((props, ref) => {
               }
             >
               <View style={styles.menuCombinelist}>
-                <Icon name="basket" size={26} color={COLORS.primary} />
+                <Icon name="pencil" size={26} color={COLORS.primary} />
                 <Text style={styles.menuText}>Edit Bid</Text>
               </View>
             </TouchableOpacity>
