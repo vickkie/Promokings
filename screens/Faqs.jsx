@@ -6,6 +6,8 @@ import { SIZES, COLORS } from "../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import useFetch from "../hook/useFetch";
 import LottieView from "lottie-react-native";
+import NetInfo from "@react-native-community/netinfo";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Faqs = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -16,12 +18,29 @@ const Faqs = ({ navigation }) => {
     setExpandedIndex((prevIndex) => (prevIndex === index ? null : index));
   };
 
-  // Update faqData when data changes
+  // Check network and use either cache or fresh data
   useEffect(() => {
-    if (data) {
-      setFaqs(data);
-      console.log(data);
-    }
+    const checkAndLoadFaqs = async () => {
+      const net = await NetInfo.fetch();
+
+      if (net.isConnected) {
+        // We're online, use fresh data + save to cache
+        if (data && Array.isArray(data)) {
+          setFaqs(data);
+          await AsyncStorage.setItem("cachedFaqs", JSON.stringify(data));
+          console.log("✅ Online: FAQs fetched and cached.");
+        }
+      } else {
+        // Offline? Load from cache
+        const cached = await AsyncStorage.getItem("cachedFaqs");
+        if (cached) {
+          setFaqs(JSON.parse(cached));
+          console.log("📴 Offline: FAQs loaded from cache.");
+        }
+      }
+    };
+
+    checkAndLoadFaqs();
   }, [data]);
 
   if (error) {
