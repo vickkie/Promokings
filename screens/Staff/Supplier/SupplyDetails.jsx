@@ -14,6 +14,7 @@ import axios from "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import BidToInventory from "../../../components/bottomsheets/BidToInventory";
 import { Alert } from "react-native";
+import SupplierPaymentTracker from "./SupplierPaymentTracker";
 
 const SupplyDetails = () => {
   const route = useRoute();
@@ -283,6 +284,13 @@ const SupplyDetails = () => {
               </View>
 
               <PaymentMethodComponent item={item} />
+            </View>
+
+            <View style={[styles.relatedRow, { justifyContent: "center" }]}>
+              <Text style={styles.relatedHeader}>Payment Tracker </Text>
+              <View style={styles.wrapperRelated}>
+                <SupplierPaymentTracker userData={userData} paymentId={item?._id} />
+              </View>
             </View>
 
             <View style={[styles.relatedRow, { justifyContent: "center" }]}>

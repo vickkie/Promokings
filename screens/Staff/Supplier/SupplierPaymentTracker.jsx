@@ -181,20 +181,21 @@ const styles = StyleSheet.create({
     marginTop: SIZES.small,
   },
   errorContainer: {
-    alignSelf: "center",
+    alignorders: "center",
     justifyContent: "center",
   },
   errorMessage: {
     fontSize: SIZES.medium,
     color: COLORS.error,
-    textAlign: "center",
     marginBottom: SIZES.medium,
+    textAlign: "center",
   },
   retryButton: {
     flexDirection: "row",
-    alignorders: "center",
+    alignSelf: "center",
     backgroundColor: COLORS.primary,
     padding: SIZES.small,
+
     borderRadius: SIZES.small,
   },
   retryButtonText: {
