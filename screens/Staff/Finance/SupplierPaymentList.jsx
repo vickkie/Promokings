@@ -610,6 +610,7 @@ const styles = StyleSheet.create({
   statusText: {
     fontSize: 14,
     marginTop: 4,
+    fontWeight: "bold",
   },
   editIcon: {
     marginLeft: 8,

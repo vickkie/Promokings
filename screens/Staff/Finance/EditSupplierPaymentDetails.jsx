@@ -31,7 +31,9 @@ const EditSupplierPaymentDetails = () => {
   const { userData, userLogin } = useContext(AuthContext);
 
   const [partialAmount, setPartialAmount] = useState("");
+  const [AdditionalAmount, setAdditionalAmount] = useState("");
   const [showPartialModal, setShowPartialModal] = useState(false);
+  const [showAdditionalModal, setShowAdditionalModal] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [drivers, setDrivers] = useState(null);
@@ -197,6 +199,38 @@ const EditSupplierPaymentDetails = () => {
       ""
     ) || setShowPartialModal(true);
   };
+  const handleAdditionalPayment = () => {
+    if (!bidId) {
+      Alert.alert("Error", "Order ID is required!");
+      return;
+    }
+
+    // First ask for amount
+    Alert.prompt?.(
+      // iOS only
+      "Enter additional Fees Amount",
+      "Input the amount to approve for this additional payment",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Approve",
+          onPress: (amount) => {
+            if (!amount || isNaN(amount)) {
+              Alert.alert("Invalid Input", "Please enter a valid number");
+              return;
+            }
+
+            approveAdditional(amount);
+          },
+        },
+      ],
+      "plain-text",
+      ""
+    ) || setShowAdditionalModal(true);
+  };
 
   const approvePartial = async (amount) => {
     try {
@@ -226,7 +260,43 @@ const EditSupplierPaymentDetails = () => {
 
       setTimeout(() => {
         navigation.navigate("Finance Navigation", {
-          screen: "FinanceDashboard",
+          screen: "SupplierPayments",
+          params: { refreshList: true },
+        });
+      }, 500);
+    } catch (error) {
+      console.warn("Error approving Order:", error);
+      Alert.alert("Error", error.message);
+    }
+  };
+  const approveAdditional = async (amount) => {
+    try {
+      const response = await fetch(`${BACKEND_PORT}/api/v3/payments/additional/${bidId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          additionalFees: Number(amount),
+        }),
+      });
+      console.log(response);
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.message || "Failed to approve order");
+      }
+
+      Toast.show({
+        type: "success",
+        text1: "Additional Amount Completed",
+        text2: "Additional payment of " + amount + " approved successfully",
+      });
+
+      setTimeout(() => {
+        navigation.navigate("Finance Navigation", {
+          screen: "SupplierPayments",
           params: { refreshList: true },
         });
       }, 500);
@@ -265,7 +335,7 @@ const EditSupplierPaymentDetails = () => {
             </View>
 
             <Text style={{ fontFamily: "GtAlpine", color: COLORS.themeb, fontSize: SIZES.medium, marginVertical: 15 }}>
-              Payment id : {item?.TransactionId ?? bidId}
+              Transaction id : {item?.TransactionId ?? bidId}
             </Text>
 
             <TouchableOpacity
@@ -404,6 +474,41 @@ const EditSupplierPaymentDetails = () => {
                 </View>
               </View>
             </Modal>
+            <Modal visible={showAdditionalModal} transparent animationType="slide">
+              <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#00000099" }}>
+                <View style={{ backgroundColor: "#fff", padding: 20, borderRadius: 10, width: "80%" }}>
+                  <Text style={{ fontSize: 18, marginBottom: 10 }}>Enter Additional Payment Amount</Text>
+                  <TextInput
+                    placeholder="Amount"
+                    keyboardType="numeric"
+                    value={AdditionalAmount}
+                    onChangeText={setAdditionalAmount}
+                    style={{
+                      borderWidth: 1,
+                      borderColor: "#ccc",
+                      padding: 10,
+                      marginBottom: 10,
+                      borderRadius: 5,
+                    }}
+                  />
+                  <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+                    <Button title="Cancel" onPress={() => setShowAdditionalModal(false)} />
+                    <View style={{ width: 10 }} />
+                    <Button
+                      title="Approve"
+                      onPress={() => {
+                        if (!AdditionalAmount || isNaN(AdditionalAmount)) {
+                          Alert.alert("Invalid amount");
+                          return;
+                        }
+                        approveAdditional(AdditionalAmount);
+                        setShowAdditionalModal(false);
+                      }}
+                    />
+                  </View>
+                </View>
+              </View>
+            </Modal>
 
             <View style={[styles.relatedRow, { marginBottom: 10 }]}>
               <View>
@@ -420,6 +525,13 @@ const EditSupplierPaymentDetails = () => {
                     <ActivityIndicator size={30} color={COLORS.themew} />
                   ) : (
                     <Text style={[styles.submitText]}>Mark Partial Payment</Text>
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.additionalFeesBtn} onPress={handleAdditionalPayment}>
+                  {isLoading ? (
+                    <ActivityIndicator size={30} color={COLORS.themew} />
+                  ) : (
+                    <Text style={styles.submitText}>Add Additional Payment</Text>
                   )}
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.deleteBtn} onPress={handleCancelPayment}>
@@ -760,6 +872,16 @@ const styles = StyleSheet.create({
   },
   partialBtn: {
     backgroundColor: COLORS.info,
+    padding: 6,
+    marginVertical: 10,
+    borderRadius: SIZES.medium,
+    alignItems: "center",
+    height: 60,
+    // marginBottom: -60,
+    justifyContent: "center",
+  },
+  additionalFeesBtn: {
+    backgroundColor: "blue",
     padding: 6,
     marginVertical: 10,
     borderRadius: SIZES.medium,
