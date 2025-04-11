@@ -16,8 +16,6 @@ const TransactionReceiptScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
-  console.log(transaction.inventoryRequest.bids[0].bidPrice);
-
   if (!transaction) {
     navigation.goBack();
     return null;
@@ -26,8 +24,6 @@ const TransactionReceiptScreen = () => {
   const currentSupply = transaction.inventoryRequest.bids.find(
     (bid) => bid.supplier.toString() === transaction.inventoryRequest.selectedSupplier.toString()
   );
-
-  console.log("Transaction:", transaction);
 
   // Function to generate the HTML receipt using transaction data
   const generateHTMLInvoice = (showWatermark = true) => {
@@ -207,9 +203,9 @@ const TransactionReceiptScreen = () => {
   const pickDirectory = async () => {
     try {
       const permission = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+
       if (permission.granted) {
-        const folderUri = await FileSystem.StorageAccessFramework.browseForFolderAsync();
-        return folderUri;
+        return permission.directoryUri;
       } else {
         console.log("Permission not granted for directory access.");
       }
@@ -230,7 +226,7 @@ const TransactionReceiptScreen = () => {
         Alert.alert("Cancelled", "No folder selected");
         return;
       }
-      const fileName = `saved_${transaction.TransactionId}.pdf`;
+      const fileName = `Receipt_${transaction.TransactionId}.pdf`;
       const newFileUri = await FileSystem.StorageAccessFramework.createFileAsync(
         folderUri,
         fileName,

@@ -16,8 +16,6 @@ const SupplyReceiptScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
-  console.log(transaction.inventoryRequest.bids[0].bidPrice);
-
   if (!transaction) {
     navigation.goBack();
     return null;
@@ -207,9 +205,9 @@ const SupplyReceiptScreen = () => {
   const pickDirectory = async () => {
     try {
       const permission = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+
       if (permission.granted) {
-        const folderUri = await FileSystem.StorageAccessFramework.browseForFolderAsync();
-        return folderUri;
+        return permission.directoryUri;
       } else {
         console.log("Permission not granted for directory access.");
       }
@@ -230,7 +228,7 @@ const SupplyReceiptScreen = () => {
         Alert.alert("Cancelled", "No folder selected");
         return;
       }
-      const fileName = `saved_${transaction.TransactionId}.pdf`;
+      const fileName = `Billing_${transaction.TransactionId}.pdf`;
       const newFileUri = await FileSystem.StorageAccessFramework.createFileAsync(
         folderUri,
         fileName,

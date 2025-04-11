@@ -21,7 +21,6 @@ const InvoiceScreen = () => {
   if (!order) {
     navigation.goBack();
   }
-  console.log(order);
 
   const generateHTMLInvoice = (showWatermark = true) => {
     return `
@@ -227,9 +226,7 @@ const InvoiceScreen = () => {
     try {
       const permission = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
       if (permission.granted) {
-        const folderUri = await FileSystem.StorageAccessFramework.browseForFolderAsync();
-        console.log("Selected folder URI:", folderUri);
-        return folderUri;
+        return permission.directoryUri;
       } else {
         console.log("Permission not granted for directory access.");
       }
@@ -251,16 +248,14 @@ const InvoiceScreen = () => {
         Alert.alert("Cancelled", "No folder selected");
         return;
       }
-      console.log("Folder URI to save file:", folderUri);
 
-      const fileName = `saved_${order?.orderId}.pdf`;
+      const fileName = `Order_${order?.orderId}.pdf`;
       // Create a file in the selected folder
       const newFileUri = await FileSystem.StorageAccessFramework.createFileAsync(
         folderUri,
         fileName,
         "application/pdf"
       );
-      console.log("New file URI:", newFileUri);
 
       // Write data to the file
       if (Platform.OS === "android" && pdfUri.startsWith("data:")) {
