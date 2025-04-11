@@ -6,8 +6,9 @@ import { WebView } from "react-native-webview";
 import { shareAsync } from "expo-sharing";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Icon from "../../../constants/icons"; // adjust import if needed
-import { SIZES, COLORS } from "../../../constants"; // adjust if needed
+import Icon from "../../../constants/icons";
+import { SIZES, COLORS } from "../../../constants";
+import Toast from "react-native-toast-message";
 
 const TransactionReceiptScreen = () => {
   const route = useRoute();
@@ -20,6 +21,15 @@ const TransactionReceiptScreen = () => {
     navigation.goBack();
     return null;
   }
+
+  const showToast = (type, text1, text2) => {
+    Toast.show({
+      type: type,
+      text1: text1,
+      text2: text2 ? text2 : "",
+      visibilityTime: 3000,
+    });
+  };
 
   const currentSupply = transaction.inventoryRequest.bids.find(
     (bid) => bid.supplier.toString() === transaction.inventoryRequest.selectedSupplier.toString()
@@ -238,7 +248,8 @@ const TransactionReceiptScreen = () => {
       } else {
         await FileSystem.copyAsync({ from: pdfUri, to: newFileUri });
       }
-      Alert.alert("Saved!", `Receipt saved at: ${newFileUri}`);
+
+      showToast("success", "    Saved Successfully!");
     } catch (error) {
       Alert.alert("Error", "Could not save file");
       console.error(error);

@@ -28,7 +28,6 @@ const Faqs = ({ navigation }) => {
         if (data && Array.isArray(data)) {
           setFaqs(data);
           await AsyncStorage.setItem("cachedFaqs", JSON.stringify(data));
-          console.log("✅ Online: FAQs fetched and cached.");
         }
       } else {
         // Offline? Load from cache

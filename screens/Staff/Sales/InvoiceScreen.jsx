@@ -10,6 +10,7 @@ import { TouchableOpacity, ScrollView } from "react-native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 const InvoiceScreen = () => {
   const route = useRoute();
@@ -21,6 +22,15 @@ const InvoiceScreen = () => {
   if (!order) {
     navigation.goBack();
   }
+
+  const showToast = (type, text1, text2) => {
+    Toast.show({
+      type: type,
+      text1: text1,
+      text2: text2 ? text2 : "",
+      visibilityTime: 3000,
+    });
+  };
 
   const generateHTMLInvoice = (showWatermark = true) => {
     return `
@@ -266,7 +276,8 @@ const InvoiceScreen = () => {
       } else {
         await FileSystem.copyAsync({ from: pdfUri, to: newFileUri });
       }
-      Alert.alert("Saved!", `Invoice saved at: ${newFileUri}`);
+
+      showToast("success", "    Saved Successfully!");
     } catch (error) {
       Alert.alert("Error", "Could not save file");
       console.error(error);
