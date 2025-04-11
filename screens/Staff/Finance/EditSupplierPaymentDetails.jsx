@@ -324,8 +324,8 @@ const EditSupplierPaymentDetails = () => {
 
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate("InvoiceScreen", {
-                    order: item,
+                  navigation.navigate("TransactionReceiptScreen", {
+                    transaction: item,
                   });
                 }}
                 style={styles.outWrap}
@@ -434,7 +434,7 @@ const EditSupplierPaymentDetails = () => {
                 <Text style={styles.paymentDetails}>Balance Amount</Text>
                 <Text style={styles.paymentDetails}>
                   {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
-                    .format(item?.amount - item?.amountPaid)
+                    .format(item?.amount + item?.additionalFees - item?.amountPaid)
                     .replace("Ksh", "")}
                 </Text>
               </View>

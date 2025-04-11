@@ -79,6 +79,7 @@ import FinanceSettings from "./Staff/Finance/FinanceSettings";
 import FinanceProfile from "./Staff/Finance/FinanceProfile";
 import SupplierPayments from "./Staff/Finance/SupplierPayments";
 import SupplierPaymentsDetails from "./Staff/Finance/SupplierPaymentDetails";
+import TransactionReceiptScreen from "./Staff/Finance/SupplierInvoiceScreen";
 
 //disp[atcher]
 
@@ -106,7 +107,7 @@ import InventoryRequests from "./Staff/Supplier/InventoryRequests";
 import MySupply from "./Staff/Supplier/MySupply";
 import SupplyPayments from "./Staff/Supplier/SupplyPayments";
 import SupplyDetails from "./Staff/Supplier/SupplyDetails";
-
+import SupplyReceiptScreen from "./Staff/Supplier/SupplyReceiptScreen";
 export {
   ChatListScreen,
   ChatScreen,
@@ -191,6 +192,7 @@ export {
   SupplierPayments,
   SupplierPaymentsDetails,
   EditSupplierPaymentDetails,
+  TransactionReceiptScreen,
 
   //dispatcher
   DispatchDashboard,
@@ -210,4 +212,5 @@ export {
   MySupply,
   SupplyPayments,
   SupplyDetails,
+  SupplyReceiptScreen,
 };

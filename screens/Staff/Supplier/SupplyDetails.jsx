@@ -137,11 +137,9 @@ const SupplyDetails = () => {
 
               <TouchableOpacity
                 onPress={() => {
-                  //   navigation.navigate("EditSalesOrder", {
-                  //     products: products,
-                  //     bidId: bidId,
-                  //     item: item,
-                  //   });
+                  navigation.navigate("SupplyReceiptScreen", {
+                    transaction: item,
+                  });
                 }}
                 style={styles.outWrap}
               >

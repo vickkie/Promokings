@@ -17,7 +17,7 @@ const OrderPaymentDetails = () => {
   const { bid, bidId, item } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
 
-  // console.log(products, bidId, item);
+  console.log("item", item);
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorState, setErrorState] = useState(false);

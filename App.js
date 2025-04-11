@@ -104,6 +104,8 @@ import {
   SupplierPayments,
   SupplierPaymentsDetails,
   EditSupplierPaymentDetails,
+  TransactionReceiptScreen,
+  SupplyReceiptScreen,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -213,6 +215,8 @@ const screens = [
   { name: "SupplierPayments", component: SupplierPayments, options: { headerShown: false } },
   { name: "SupplierPaymentsDetails", component: SupplierPaymentsDetails, options: { headerShown: false } },
   { name: "EditSupplierPaymentDetails", component: EditSupplierPaymentDetails, options: { headerShown: false } },
+  { name: "TransactionReceiptScreen", component: TransactionReceiptScreen, options: { headerShown: false } },
+  { name: "SupplyReceiptScreen", component: SupplyReceiptScreen, options: { headerShown: false } },
 ];
 
 export default function App() {
