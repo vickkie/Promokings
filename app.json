@@ -2,7 +2,7 @@
   "expo": {
     "name": "Promokings",
     "slug": "promokings",
-    "version": "1.4.2",
+    "version": "1.4.3",
     "orientation": "portrait",
     "icon": "./assets/icon-home.png",
     "userInterfaceStyle": "light",
@@ -22,7 +22,7 @@
       "bundleIdentifier": "com.uzitrake.promokings"
     },
     "android": {
-      "versionCode": 4,
+      "versionCode": 5,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon-home.png",
         "backgroundColor": "#ffffff"

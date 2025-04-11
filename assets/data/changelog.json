@@ -120,6 +120,15 @@
       "version": "1.4.2",
       "whatsNew": ["Dispatch management","Global Ui improvement","New messages notification"],
       "fixed": ["Forced navigation to login page"]
+    },
+    {
+      "releaseDate": "2025-04-11",
+      "version": "1.4.3",
+      "whatsNew": ["Receipt/Invoice saving & sharing",
+      "Payments tracking",
+      "Phone Number SignUp",
+      "Global UI/UX improvement"],
+      "fixed": ["Frequently asked questions not available offline"]
     }
   ]
 }
