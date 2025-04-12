@@ -23,6 +23,7 @@ import SystemMessages from "./SystemMessages";
 import OrderSuccess from "./OrderSuccess";
 import OrderDetails from "./OrderDetails";
 import AboutUs from "./AboutUs";
+import SupplierRegister from "./SupplierRegister";
 
 import EditProduct from "./Staff/Inventory/EditProduct";
 import AddProduct from "./Staff/Inventory/AddProduct";
@@ -136,6 +137,7 @@ export {
   AboutUs,
   Faqs,
   SystemMessages,
+  SupplierRegister,
 
   //inventory
   InventoryDashboard,

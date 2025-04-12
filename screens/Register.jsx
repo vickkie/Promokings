@@ -31,6 +31,7 @@ const validationSchema = Yup.object().shape({
 
 const Register = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
+  const [allowSupplierRegister, setAllowSupplierRegister] = useState(true);
   const [obsecureText, setObsecureText] = useState(true);
 
   const [finalPhoneNumber, setfinalPhoneNumber] = useState("");
@@ -354,6 +355,13 @@ const Register = ({ navigation }) => {
                   isValid={isValid}
                   loader={loader}
                 />
+
+                {allowSupplierRegister && (
+                  <Text style={styles.registration} onPress={() => navigation.navigate("SupplierRegister")}>
+                    <Text>or </Text>
+                    <Text style={styles.registration2}>Supplier Registration</Text>
+                  </Text>
+                )}
               </View>
             )}
           </Formik>
@@ -420,6 +428,14 @@ const styles = StyleSheet.create({
     marginTop: 2,
     textAlign: "center",
     marginBottom: 20,
+  },
+  registration2: {
+    marginTop: 2,
+    textAlign: "center",
+    marginBottom: 20,
+    textDecorationColor: COLORS.themeb,
+    textDecorationStyle: "solid",
+    textDecorationLine: "underline",
   },
   modalContainer: {
     flex: 1,

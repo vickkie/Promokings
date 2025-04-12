@@ -25,6 +25,7 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) =
       cvv: "",
       selectedPaymentMethod: selectedPaymentMethod,
     },
+
     validationSchema: Yup.object().shape({
       email: Yup.string().email("Invalid email").required("Required"),
       nameOnCard: Yup.string().when("selectedPaymentMethod", (selectedPaymentMethod, schema) =>
