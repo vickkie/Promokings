@@ -56,63 +56,43 @@ const SupplierRegister = ({ navigation }) => {
   });
 
   const paymentDetailsSchema = Yup.object().shape({
-    preferredMethod: Yup.string().required("Select a payment method"),
-
+    preferredMethod: Yup.string()
+      .required("Select a payment method")
+      .test("hasValidPaymentDetails", "Please fill all required fields for selected payment method", function (value) {
+        const { parent } = this;
+        switch (value) {
+          case "mobileMoney":
+            return parent.mobileMoney.mpesaName && parent.mobileMoney.mpesaNumber && parent.mobileMoney.idNumber;
+          case "bank":
+            return (
+              parent.bank.bankName &&
+              parent.bank.bankBranch &&
+              parent.bank.accountName &&
+              parent.bank.accountNumber &&
+              parent.bank.swiftCode &&
+              parent.bank.bankCode
+            );
+          case "paypal":
+            return parent.paypal.email;
+          default:
+            return false;
+        }
+      }),
     mobileMoney: Yup.object().shape({
-      mpesaName: Yup.string().when("preferredMethod", {
-        is: "mobileMoney",
-        then: Yup.string().required("Mpesa Name is required"),
-      }),
-      mpesaNumber: Yup.string()
-        .matches(/^[0-9]{10}$/, "Mpesa Number must be 10 digits")
-        .when("preferredMethod", {
-          is: "mobileMoney",
-          then: Yup.string().required("Mpesa Number is required"),
-        }),
-      idNumber: Yup.string()
-        .min(6, "ID must be at least 6 digits")
-        .when("preferredMethod", {
-          is: "mobileMoney",
-          then: Yup.string().required("ID Number is required"),
-        }),
+      mpesaName: Yup.string(),
+      mpesaNumber: Yup.string().matches(/^[0-9]{10}$/, "Mpesa Number must be 10 digits"),
+      idNumber: Yup.string().min(6, "ID must be at least 6 digits"),
     }),
-
     bank: Yup.object().shape({
-      bankName: Yup.string().when("preferredMethod", {
-        is: "bank",
-        then: Yup.string().required("Bank Name is required"),
-      }),
-      bankBranch: Yup.string().when("preferredMethod", {
-        is: "bank",
-        then: Yup.string().required("Bank Branch is required"),
-      }),
-      accountName: Yup.string().when("preferredMethod", {
-        is: "bank",
-        then: Yup.string().required("Account Name is required"),
-      }),
-      accountNumber: Yup.string()
-        .matches(/^[0-9]+$/, "Account Number must be digits only")
-        .when("preferredMethod", {
-          is: "bank",
-          then: Yup.string().required("Account Number is required"),
-        }),
-      swiftCode: Yup.string().when("preferredMethod", {
-        is: "bank",
-        then: Yup.string().required("SWIFT Code is required"),
-      }),
-      bankCode: Yup.string().when("preferredMethod", {
-        is: "bank",
-        then: Yup.string().required("Bank Code is required"),
-      }),
+      bankName: Yup.string(),
+      bankBranch: Yup.string(),
+      accountName: Yup.string(),
+      accountNumber: Yup.string().matches(/^[0-9]+$/, "Account Number must be digits only"),
+      swiftCode: Yup.string(),
+      bankCode: Yup.string(),
     }),
-
     paypal: Yup.object().shape({
-      email: Yup.string()
-        .email("Enter a valid email")
-        .when("preferredMethod", {
-          is: "paypalEmail",
-          then: Yup.string().required("PayPal Email is required"),
-        }),
+      email: Yup.string().email("Enter a valid email"),
     }),
   });
 
@@ -136,17 +116,29 @@ const SupplierRegister = ({ navigation }) => {
     ]);
   };
 
-  const handleNext = async (validateForm, errors, setStep, step, setFieldTouched) => {
+  const touchAllFields = (errors, setFieldTouched, path = "") => {
+    Object.keys(errors).forEach((key) => {
+      const fieldPath = path ? `${path}.${key}` : key;
+      if (typeof errors[key] === "string") {
+        setFieldTouched(fieldPath, true, false);
+      } else if (typeof errors[key] === "object" && errors[key] !== null) {
+        touchAllFields(errors[key], setFieldTouched, fieldPath);
+      }
+    });
+  };
+
+  const handleNext = async (validateForm, values, errors, setStep, step, setFieldTouched) => {
     const formErrors = await validateForm();
 
-    console.log("🔍 Validation errors at step", step, formErrors);
+    // console.log("🔍 Validation errors at step", step, formErrors);
+
+    // console.log("selected method:", values?.paymentDetails?.preferredMethod);
+    // console.log("valuesd:", values);
 
     if (Object.keys(formErrors).length === 0) {
       setStep((prev) => prev + 1);
     } else {
-      Object.keys(formErrors).forEach((field) => {
-        setFieldTouched(field, true, false);
-      });
+      touchAllFields(formErrors, setFieldTouched);
     }
   };
 
@@ -290,8 +282,14 @@ const SupplierRegister = ({ navigation }) => {
     companyName: "",
     companyEmail: "",
     businessId: "",
-    selectedPaymentMethod: selectedPaymentMethod || "BankTransfer",
+    selectedPaymentMethod: "",
     paymentDetails: {
+      preferredMethod: "",
+      mobileMoney: {
+        mpesaName: "",
+        mpesaNumber: "",
+        idNumber: "",
+      },
       bank: {
         bankName: "",
         bankBranch: "",
@@ -300,13 +298,9 @@ const SupplierRegister = ({ navigation }) => {
         swiftCode: "",
         bankCode: "",
       },
-      mobileMoney: {
-        mpesaName: "",
-        mpesaNumber: "",
-        idNumber: "",
+      paypal: {
+        email: "",
       },
-      paypalEmail: "",
-      preferredMethod: "BankTransfer",
     },
   };
 
@@ -482,7 +476,7 @@ const SupplierRegister = ({ navigation }) => {
 
                   <Button
                     title={"N E X T  S T E P"}
-                    onPress={() => handleNext(validateForm, errors, setStep, step, setFieldTouched)}
+                    onPress={() => handleNext(validateForm, values, errors, setStep, step, setFieldTouched)}
                     isValid={isValid}
                     loader={loader}
                   />
@@ -536,6 +530,7 @@ const SupplierRegister = ({ navigation }) => {
                         style={{ flex: 1 }}
                         value={values.companyEmail}
                         onChangeText={handleChange("companyEmail")}
+                        keyboardType="email-address"
                       />
                     </View>
                     {touched.companyEmail && errors.companyEmail && (
@@ -546,12 +541,7 @@ const SupplierRegister = ({ navigation }) => {
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>Company Address</Text>
                     <View style={styles.inputWrapper(touched.username ? COLORS.secondary : COLORS.offwhite)}>
-                      <MaterialCommunityIcons
-                        name="location-enter"
-                        size={20}
-                        style={styles.iconStyle}
-                        color={COLORS.gray}
-                      />
+                      <MaterialCommunityIcons name="city" size={20} style={styles.iconStyle} color={COLORS.gray} />
                       <TextInput
                         placeholder=" Address"
                         onFocus={() => setFieldTouched("address")}
@@ -590,7 +580,7 @@ const SupplierRegister = ({ navigation }) => {
 
                   <Button
                     title={"N E X T   S T E P"}
-                    onPress={() => handleNext(validateForm, errors, setStep, step, setFieldTouched)}
+                    onPress={() => handleNext(validateForm, errors, values, setStep, step, setFieldTouched)}
                     isValid={isValid}
                     loader={loader}
                   />
@@ -605,10 +595,9 @@ const SupplierRegister = ({ navigation }) => {
 
                 const handlePaymentMethodChange = (method) => {
                   setSelectedPaymentMethod(method);
-                  console.log(method);
 
                   const preferredMethod =
-                    method === "Mpesa" ? "mobileMoney" : method === "BankTransfer" ? "bank" : "paypalEmail";
+                    method === "Mpesa" ? "mobileMoney" : method === "BankTransfer" ? "bank" : "paypal";
 
                   // Reset and set at once with preferredMethod baked in
                   const resetPaymentDetails = {
@@ -648,6 +637,12 @@ const SupplierRegister = ({ navigation }) => {
                       ))}
                     </View>
 
+                    <View>
+                      {touched.paymentDetails?.preferredMethod && errors.paymentDetails?.preferredMethod && (
+                        <Text style={styles.errorMessage}>{errors.paymentDetails?.preferredMethod}</Text>
+                      )}
+                    </View>
+
                     {/* Mpesa Fields */}
                     {selectedPaymentMethod === "Mpesa" && (
                       <>
@@ -663,6 +658,11 @@ const SupplierRegister = ({ navigation }) => {
                             value={values.paymentDetails.mobileMoney.mpesaName || ""}
                             onChangeText={(text) => setFieldValue("paymentDetails.mobileMoney.mpesaName", text)}
                           />
+
+                          {touched.paymentDetails?.mobileMoney?.mpesaName &&
+                            errors.paymentDetails?.mobileMoney?.mpesaName && (
+                              <Text style={styles.errorMessage}>{errors.paymentDetails?.mobileMoney?.mpesaName}</Text>
+                            )}
                         </View>
                         <View style={styles.wrapper}>
                           <Text style={styles.label}>Mpesa Number</Text>
@@ -677,6 +677,10 @@ const SupplierRegister = ({ navigation }) => {
                             onFocus={() => setFieldTouched("paymentDetails.mobileMoney.mpesaNumber")}
                             onBlur={() => setFieldTouched("paymentDetails.mobileMoney.mpesaNumber", "")}
                           />
+                          {touched.paymentDetails?.mobileMoney?.mpesaNumber &&
+                            errors.paymentDetails?.mobileMoney?.mpesaNumber && (
+                              <Text style={styles.errorMessage}>{errors.paymentDetails?.mobileMoney?.mpesaNumber}</Text>
+                            )}
                         </View>
 
                         <View style={styles.wrapper}>
@@ -790,14 +794,14 @@ const SupplierRegister = ({ navigation }) => {
                           <Text style={styles.label}>PayPal Email</Text>
                           <TextInput
                             style={styles.inputWrapper(
-                              touched.paymentDetails?.paypalEmail ? COLORS.secondary : COLORS.offwhite
+                              touched.paymentDetails?.paypal?.email ? COLORS.secondary : COLORS.offwhite
                             )}
                             placeholder="PayPal Email"
                             keyboardType="email-address"
-                            value={values.paymentDetails.paypalEmail}
-                            onChangeText={(text) => setFieldValue("paymentDetails.paypalEmail", text)}
-                            onFocus={() => setFieldTouched("paymentDetails.paypalEmail")}
-                            onBlur={() => setFieldTouched("paymentDetails.paypalEmail", "")}
+                            value={values.paymentDetails.paypal.email}
+                            onChangeText={(text) => setFieldValue("paymentDetails.paypal.email", text)}
+                            onFocus={() => setFieldTouched("paymentDetails.paypal.email")}
+                            onBlur={() => setFieldTouched("paymentDetails.paypal.email", "")}
                           />
                         </View>
                       </>
@@ -807,7 +811,7 @@ const SupplierRegister = ({ navigation }) => {
                       title={"S I G N U P"}
                       //   onPress={isValid ? handleSubmit : inValidForm}
                       onPress={() => {
-                        handleNext(validateForm, errors, setStep, step, setFieldTouched);
+                        handleNext(validateForm, values, errors, setStep, step, setFieldTouched);
                         console.log("submitting", isValid);
 
                         submitMe(values);
