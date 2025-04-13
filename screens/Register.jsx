@@ -31,7 +31,7 @@ const validationSchema = Yup.object().shape({
 
 const Register = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
-  const [allowSupplierRegister, setAllowSupplierRegister] = useState(true);
+  const [allowSupplierRegister, setAllowSupplierRegister] = useState(false);
   const [obsecureText, setObsecureText] = useState(true);
 
   const [finalPhoneNumber, setfinalPhoneNumber] = useState("");
@@ -42,8 +42,23 @@ const Register = ({ navigation }) => {
     usePost2("auth/register");
 
   useEffect(() => {
-    // console.log(responseData);
-  }, [responseData]);
+    const fetchSupplierRegistrationStatus = async () => {
+      try {
+        const res = await axios.get(`${BACKEND_PORT}/api/sitestatus/site-status/supplierRegistration`);
+
+        if (res.data?.type === "supplierRegistration" && res.data.status === "online") {
+          setAllowSupplierRegister(true);
+        } else {
+          setAllowSupplierRegister(false);
+        }
+      } catch (error) {
+        console.error("Error fetching supplier registration status:", error.message);
+        setAllowSupplierRegister(false);
+      }
+    };
+
+    fetchSupplierRegistrationStatus();
+  }, []);
 
   const inValidForm = () => {
     Alert.alert("Invalid Form", "Please provide required fields", [

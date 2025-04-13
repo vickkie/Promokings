@@ -29,12 +29,6 @@ const SupplierRegister = ({ navigation }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("BankTransfer");
 
   const [filteredCountries, setFilteredCountries] = useState(allcountries);
-  const { responseData, setUpdateStatus, updateStatus, isLoading, error, errorMessage, postData } =
-    usePost2("auth/register");
-
-  useEffect(() => {
-    // console.log(responseData);
-  }, [responseData]);
 
   const validationSchema1 = Yup.object().shape({
     password: Yup.string().min(8, "Password must be at least 8 characters").required("Required"),
@@ -102,20 +96,6 @@ const SupplierRegister = ({ navigation }) => {
 
   const validationSchemas = [validationSchema1, validationSchema2, validationSchema3];
 
-  const inValidForm = () => {
-    Alert.alert("Invalid Form", "Please provide required fields", [
-      {
-        text: "Cancel",
-        onPress: () => {},
-      },
-      {
-        text: "Continue",
-        onPress: () => {},
-      },
-      { defaultIndex: 1 },
-    ]);
-  };
-
   const touchAllFields = (errors, setFieldTouched, path = "") => {
     Object.keys(errors).forEach((key) => {
       const fieldPath = path ? `${path}.${key}` : key;
@@ -166,46 +146,26 @@ const SupplierRegister = ({ navigation }) => {
     );
   };
 
-  const registerUser = async (value) => {
+  const handleSignUp = async (values) => {
     setLoader(true);
-
     try {
-      const { email, password, username, phoneNumber } = value;
-      const newdata = { email, password, username, phoneNumber };
+      const endpoint = `${BACKEND_PORT}/api/v2/supplier/v2/new`;
+      const data = { ...values };
 
-      // console.log(finalPhoneNumber);
+      const response = await axios.post(endpoint, data);
 
-      // return;
-
-      const response = await axios.post(`${BACKEND_PORT}/auth/register`, newdata);
-
-      if (response.status === 201) {
-        // console.log(response);
-        successRegister();
-        navigation.navigate("Login");
-      } else {
-        throw new Error("Registration failed");
+      // Check response status and token first
+      if (response.status !== 201 || !response.data.success) {
+        Alert.alert("Error Logging", "Unexpected response. Please try again.");
+        return;
       }
-    } catch (err) {
-      Alert.alert(
-        "Sorry. An error occurred",
-        err.response?.data?.message || "Try again later",
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              setUpdateStatus(null);
-            },
-          },
-        ],
-        { cancelable: false }
-      );
+    } catch (error) {
+      // Pull the error message from the response
+      const errorMsg = error.response?.data?.message || "Oops! Error logging in. Please try again.";
+      Alert.alert("SignUp Failure", errorMsg);
     } finally {
       setLoader(false);
     }
-  };
-  const submitMe = (values) => {
-    console.warn("Form Data:", values, "called");
   };
 
   const handleSearch = (query) => {
@@ -814,7 +774,7 @@ const SupplierRegister = ({ navigation }) => {
                         handleNext(validateForm, values, errors, setStep, step, setFieldTouched);
                         console.log("submitting", isValid);
 
-                        submitMe(values);
+                        handleSignUp(values);
                       }}
                       isValid={isValid}
                       loader={loader}
