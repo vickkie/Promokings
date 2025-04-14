@@ -17,10 +17,16 @@ import { Modal } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import Icon from "../constants/icons";
 
+import LottieView from "lottie-react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import { BackHandler } from "react-native";
+import { useCallback } from "react";
+
 const SupplierRegister = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
   const [obsecureText, setObsecureText] = useState(true);
   const [step, setStep] = useState(1);
+  const [Rsuccess, setRsuccess] = useState(false);
 
   const [finalPhoneNumber, setfinalPhoneNumber] = useState("");
   const [phoneError, setPhoneError] = useState("");
@@ -110,40 +116,40 @@ const SupplierRegister = ({ navigation }) => {
   const handleNext = async (validateForm, values, errors, setStep, step, setFieldTouched) => {
     const formErrors = await validateForm();
 
-    // console.log("🔍 Validation errors at step", step, formErrors);
+    // Guard clause for Step 4 access
+    if (step === 3) {
+      if (Rsuccess && !loader) {
+        setStep((prev) => prev + 1);
+        console.log("Processed, success");
+      } else {
+        console.log("Hold up, still processing registration...");
+        return;
+      }
+    }
 
-    // console.log("selected method:", values?.paymentDetails?.preferredMethod);
-    // console.log("valuesd:", values);
-
-    if (Object.keys(formErrors).length === 0) {
-      setStep((prev) => prev + 1);
-    } else {
-      touchAllFields(formErrors, setFieldTouched);
+    // Normal validation for steps 1-2
+    if (step < 3) {
+      if (Object.keys(formErrors).length === 0) {
+        setStep((prev) => prev + 1);
+      } else {
+        touchAllFields(formErrors, setFieldTouched);
+      }
     }
   };
 
+  useEffect(() => {
+    if (step === 3 && Rsuccess && !loader) {
+      setStep(4);
+      console.log("Auto-advanced to step 4 after success");
+    }
+  }, [Rsuccess, loader, step]);
   const handlePrevious = () => {
-    if (step > 1) {
+    if (step > 1 && step !== 4) {
       setStep(step - 1);
-    } else if (step > 4) {
-      setStep(step);
+    } else if (step === 4) {
+      setStep(4);
+      navigation.navigate("Login");
     }
-  };
-
-  const successRegister = () => {
-    Alert.alert(
-      "Registration Successful",
-      "You have successfully registered!",
-      [
-        {
-          text: "OK",
-          onPress: () => {
-            // console.log("OK Pressed")
-          },
-        },
-      ],
-      { cancelable: false }
-    );
   };
 
   const handleSignUp = async (values) => {
@@ -158,6 +164,8 @@ const SupplierRegister = ({ navigation }) => {
       if (response.status !== 201 || !response.data.success) {
         Alert.alert("Error Logging", "Unexpected response. Please try again.");
         return;
+      } else if (response.status === 201 && response.data.success) {
+        setRsuccess(true);
       }
     } catch (error) {
       // Pull the error message from the response
@@ -176,7 +184,6 @@ const SupplierRegister = ({ navigation }) => {
   };
 
   const renderCustomModal = (modalVisible, countries, onCountryChange) => {
-    // console.log(countries);
     setallCountries(countries);
 
     return (
@@ -184,7 +191,7 @@ const SupplierRegister = ({ navigation }) => {
         <SafeAreaView style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
           <View style={styles.modalContainer}>
             <View style={styles.searchContainer}>
-              <TextInput style={styles.searchInput} placeholder="Search Country" onChangeText={handleSearch} />
+              <TextInput style={styles.searchInput} placeholder="Search Country here" onChangeText={handleSearch} />
               <Text style={styles.searchIcon}>🔍</Text>
             </View>
 
@@ -263,6 +270,33 @@ const SupplierRegister = ({ navigation }) => {
       },
     },
   };
+  const stepText = {
+    1: "Let’s begin your registration",
+    2: "We just need a bit more info",
+    3: "Almost there, final details",
+    4: "Registration complete. You're all set!",
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        if (step > 1 && step !== 4) {
+          handlePrevious();
+        } else if (step === 4) {
+          navigation.navigate("Login");
+        } else {
+          navigation.goBack();
+        }
+        return true;
+      };
+
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+      };
+    }, [step, handlePrevious, navigation])
+  );
 
   return (
     <ScrollView>
@@ -274,6 +308,8 @@ const SupplierRegister = ({ navigation }) => {
                 onPress={() => {
                   if (step > 1) {
                     handlePrevious();
+                  } else if (step === 4) {
+                    navigation.navigate("Login");
                   } else {
                     navigation.goBack();
                   }
@@ -291,7 +327,7 @@ const SupplierRegister = ({ navigation }) => {
               <View style={styles.dot(step === 4 ? COLORS.themey : COLORS.themeg)} />
             </View>
             <View style={styles.stepsheader}>
-              <Text style={styles.stepstext}>Just a couple of steps and you good to go</Text>
+              <Text style={styles.stepstext}>{stepText[step]}</Text>
             </View>
           </View>
 
@@ -308,6 +344,28 @@ const SupplierRegister = ({ navigation }) => {
               setFieldValue,
               validateForm,
             }) => {
+              const renderStepFour = () => (
+                <View style={styles.content}>
+                  <SafeAreaView style={styles.contentContainer}>
+                    <View style={styles.headerWrapper}>
+                      <Text style={styles.header}>Registration Success</Text>
+                    </View>
+
+                    <View style={styles.animationWrapper}>
+                      <LottieView
+                        source={require("../assets/data/success2.json")}
+                        autoPlay
+                        loop={true}
+                        style={styles.animation}
+                      />
+                    </View>
+
+                    <View style={styles.detailsWrapper}>
+                      <Text style={styles.successText}>Welcome, Please wait approval.</Text>
+                    </View>
+                  </SafeAreaView>
+                </View>
+              );
               const renderStepOne = () => (
                 <View>
                   <Text style={[styles.topheading, { textAlign: "center" }]}>Account Details</Text>
@@ -435,11 +493,12 @@ const SupplierRegister = ({ navigation }) => {
                   </View>
 
                   <Button
-                    title={"N E X T  S T E P"}
+                    title={"CONTINUE"}
                     onPress={() => handleNext(validateForm, values, errors, setStep, step, setFieldTouched)}
                     isValid={isValid}
                     loader={loader}
                   />
+                  <Text style={styles.helperText}>Step {step} of 3</Text>
                 </View>
               );
 
@@ -544,12 +603,13 @@ const SupplierRegister = ({ navigation }) => {
                     isValid={isValid}
                     loader={loader}
                   />
+                  <Text style={styles.helperText}>Step {step} of 3</Text>
                 </View>
               );
               const renderStepThree = () => {
                 const paymentMethods = {
                   Mpesa: { label: "Mpesa", imagePath: require("../assets/images/logos/Mpesa.png") },
-                  BankTransfer: { label: "BankTransfer", imagePath: require("../assets/images/logos/visa.png") },
+                  BankTransfer: { label: "BankTransfer", imagePath: require("../assets/images/logos/bank.png") },
                   PayPal: { label: "PayPal", imagePath: require("../assets/images/logos/paypal.png") },
                 };
 
@@ -772,7 +832,6 @@ const SupplierRegister = ({ navigation }) => {
                       //   onPress={isValid ? handleSubmit : inValidForm}
                       onPress={() => {
                         handleNext(validateForm, values, errors, setStep, step, setFieldTouched);
-                        console.log("submitting", isValid);
 
                         handleSignUp(values);
                       }}
@@ -788,6 +847,7 @@ const SupplierRegister = ({ navigation }) => {
                   {step === 1 && renderStepOne()}
                   {step === 2 && renderStepTwo()}
                   {step === 3 && renderStepThree()}
+                  {step === 4 && renderStepFour()}
                 </View>
               );
             }}
@@ -987,7 +1047,7 @@ const styles = StyleSheet.create({
   },
   stepstext: {
     fontFamily: "regular",
-    color: COLORS.gray2,
+    color: COLORS.gray,
   },
   paymentMethods: {
     flexDirection: "row",
@@ -1002,5 +1062,52 @@ const styles = StyleSheet.create({
   },
   selectedPaymentMethod: {
     borderColor: "#000",
+  },
+  content: {
+    // ...StyleSheet.absoluteFillObject,
+    minHeight: SIZES.height - 220,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 0,
+  },
+  contentContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+
+    borderRadius: SIZES.medium,
+    padding: 20,
+    width: "90%",
+  },
+  headerWrapper: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  header: {
+    fontSize: SIZES.xLarge,
+    fontWeight: "bold",
+    color: COLORS.themeb,
+  },
+  animationWrapper: {
+    width: 200,
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  animation: {
+    width: "100%",
+    height: "100%",
+  },
+  detailsWrapper: {
+    alignItems: "center",
+  },
+  successText: {
+    fontSize: SIZES.medium,
+    fontWeight: "600",
+    color: COLORS.themeb,
+    marginBottom: 10,
+  },
+  helperText: {
+    textAlign: "center",
   },
 });

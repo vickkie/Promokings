@@ -305,12 +305,20 @@ const SupplierSettings = () => {
                   <Text style={styles.menuText}>Message Center</Text>
                 </View>
               </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => navigation.navigate("SupplierPaymentProfile")}>
+                <View style={styles.menuItem(0.5)}>
+                  <MaterialCommunityIcons name="bank" size={24} color={COLORS.primary} />
+                  <Text style={styles.menuText}>Payment Details</Text>
+                </View>
+              </TouchableOpacity>
               <TouchableOpacity onPress={() => navigation.navigate("About")}>
                 <View style={styles.menuItem(0.5)}>
                   <Icon name="about" size={24} color={COLORS.primary} />
-                  <Text style={styles.menuText}>About</Text>
+                  <Text style={styles.menuText}>About Us</Text>
                 </View>
               </TouchableOpacity>
+
               <TouchableOpacity onPress={handleClearCache}>
                 <View style={styles.menuItem(0.5)}>
                   <MaterialCommunityIcons name="reload" size={24} color={COLORS.primary} />

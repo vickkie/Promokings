@@ -167,7 +167,7 @@ const LoginPage = ({ navigation }) => {
                     }}
                   >
                     <View>
-                      <Text style={styles.choiceText}>Staff</Text>
+                      <Text style={styles.choiceText}>Other</Text>
                     </View>
                     <Icon name={userType === "staff" ? "check" : "checkempty"} size={18} />
                   </TouchableOpacity>

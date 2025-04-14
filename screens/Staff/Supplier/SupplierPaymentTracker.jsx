@@ -21,8 +21,6 @@ const SupplierPaymentTracker = ({ refreshList, setRefreshing, setRefreshList, us
 
   const { data, isLoading, error, refetch } = useFetch(`v3/payments/payout/${paymentId}`, true, token);
 
-  console.log(data);
-
   // Ensure data is an array and sort by creation date
   const dataArray = Array.isArray(data.payouts) ? data.payouts : [];
   const sortedData = dataArray.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));

@@ -6,6 +6,7 @@ import { SIZES, COLORS } from "../../../constants";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import SupplierPaymentTracker from "./SupplierPaymentTracker";
+import { BACKEND_PORT } from "@env";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -67,68 +68,137 @@ const SupplyPaymentDetails = () => {
     return date.toLocaleDateString("en-GB"); // Formats as DD/MM/YYYY
   };
 
+  // let routes = `${BACKEND_PORT}/api/V2/supplier/V4/accountpay/${item?.supplier?._id}/payment-details`;
+
   const PaymentMethodComponent = ({ item }) => {
-    // if (!item?.paymentInfo?.bankDetails) return null;
+    const [paymentDetails, setPaymentDetails] = useState(item?.supplier?.paymentDetails || {});
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // console.log(item?.supplier);
+    useEffect(() => {
+      const fetchPaymentDetails = async () => {
+        let routeport = `${BACKEND_PORT}/api/V2/supplier/V4/accountpay/${item?.supplier?._id}`;
 
-    const mockdata = {};
-    const { accountName, accountNumber, bankName, branch, bankCode, swiftCode, currency, phone } =
-      item?.supplier?.bankDetails || mockdata;
+        console.log("port ", routeport);
+        try {
+          const response = await axios.get(routeport, {
+            headers: {
+              Authorization: `Bearer ${userData.token}`,
+            },
+          });
+          setPaymentDetails(response.data.paymentDetails || {});
+        } catch (err) {
+          setError(err.response?.data?.message || "Failed to fetch payment details");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      if (item?.supplier?._id && userData?.token) {
+        fetchPaymentDetails();
+      } else {
+        setLoading(false);
+      }
+    }, [item?.supplier?._id, userData?.token]);
+
+    const payment = paymentDetails;
+    const preferred = payment?.preferredMethod;
+
+    const isEmpty = (obj) => obj && Object.values(obj).every((val) => !val);
+
+    const renderBank = () => {
+      const { accountName, accountNumber, bankName, bankBranch, bankCode, swiftCode } = payment.bank || {};
+      const isBankEmpty = isEmpty(payment.bank);
+
+      return (
+        <View>
+          <View style={styles.selectedPayment}>
+            <Text style={styles.selectedText}>Payment Method: [ Bank Transfer ]</Text>
+          </View>
+          {isBankEmpty ? (
+            <Text style={{ textAlign: "center", padding: 10, color: COLORS.gray }}>No bank details provided.</Text>
+          ) : (
+            <>
+              <InputField icon="account" value={accountName} placeholder="Account Name" />
+              <InputField icon="bank" value={bankName} placeholder="Bank Name" />
+              <InputField icon="credit-card" value={accountNumber} placeholder="Account Number" />
+              <InputField icon="source-branch" value={bankBranch} placeholder="Branch" />
+              <InputField icon="numeric-1-box" value={bankCode} placeholder="Bank Code" />
+              <InputField icon="codepen" value={swiftCode} placeholder="SWIFT Code" />
+            </>
+          )}
+        </View>
+      );
+    };
+
+    const renderMpesa = () => {
+      const { mpesaName, mpesaNumber, idNumber } = payment.mobileMoney || {};
+      const isMpesaEmpty = isEmpty(payment.mobileMoney);
+
+      return (
+        <View>
+          <View style={styles.selectedPayment}>
+            <Text style={styles.selectedText}>Payment Method: [ M-Pesa ]</Text>
+          </View>
+          {isMpesaEmpty ? (
+            <Text style={{ textAlign: "center", padding: 10, color: COLORS.gray }}>No M-Pesa details provided.</Text>
+          ) : (
+            <>
+              <InputField icon="account" value={mpesaName} placeholder="Mpesa Name" />
+              <InputField icon="cellphone" value={mpesaNumber} placeholder="Mpesa Number" />
+              <InputField icon="card-account-details" value={idNumber} placeholder="ID Number" />
+            </>
+          )}
+        </View>
+      );
+    };
+
+    const renderPaypal = () => {
+      const { email } = payment.paypal || {};
+      const isPaypalEmpty = isEmpty(payment.paypal);
+
+      return (
+        <View>
+          <View style={styles.selectedPayment}>
+            <Text style={styles.selectedText}>Payment Method: [ PayPal ]</Text>
+          </View>
+          {isPaypalEmpty ? (
+            <Text style={{ textAlign: "center", padding: 10, color: COLORS.gray }}>No PayPal email provided.</Text>
+          ) : (
+            <InputField icon="email" value={email} placeholder="PayPal Email" />
+          )}
+        </View>
+      );
+    };
+
+    const renderFallback = () => (
+      <Text style={{ textAlign: "center", color: COLORS.gray, padding: 10 }}>
+        No payment method selected or details provided.
+      </Text>
+    );
+
+    if (loading) return <Text style={{ textAlign: "center", color: COLORS.gray }}>Loading payment info...</Text>;
+    if (error) return <Text style={{ textAlign: "center", color: COLORS.red }}>{error}</Text>;
 
     return (
       <View>
-        <View style={styles.selectedPayment}>
-          <Text style={styles.selectedText}>Payment Method: [ Bank Transfer ]</Text>
-        </View>
+        {preferred === "BankTransfer" && renderBank()}
+        {preferred === "MobileMoney" && renderMpesa()}
+        {preferred === "Paypal" && renderPaypal()}
+        {!preferred && renderFallback()}
 
-        <View style={styles.inputWrapper}>
-          <MaterialCommunityIcons name="account" size={28} style={styles.iconStyle} color={COLORS.gray} />
-          <TextInput style={{ flex: 1 }} value={accountName} editable={false} placeholder="Account Name" />
-        </View>
-
-        <View style={styles.inputWrapper}>
-          <MaterialCommunityIcons name="bank" size={28} style={styles.iconStyle} color={COLORS.gray} />
-          <TextInput style={{ flex: 1 }} value={bankName} editable={false} placeholder="Bank Name" />
-        </View>
-
-        <View style={styles.inputWrapper}>
-          <MaterialCommunityIcons name="credit-card" size={28} style={styles.iconStyle} color={COLORS.gray} />
-          <TextInput style={{ flex: 1 }} value={accountNumber} editable={false} placeholder="Account Number" />
-        </View>
-
-        <View style={styles.inputWrapper}>
-          <MaterialCommunityIcons name="source-branch" size={28} style={styles.iconStyle} color={COLORS.gray} />
-          <TextInput style={{ flex: 1 }} value={branch} editable={false} placeholder="Branch" />
-        </View>
-
-        <View style={styles.inputWrapper}>
-          <MaterialCommunityIcons name="numeric-1-box" size={28} style={styles.iconStyle} color={COLORS.gray} />
-          <TextInput style={{ flex: 1 }} value={bankCode} editable={false} placeholder="Bank Code" />
-        </View>
-
-        <View style={styles.inputWrapper}>
-          <MaterialCommunityIcons name="codepen" size={28} style={styles.iconStyle} color={COLORS.gray} />
-          <TextInput style={{ flex: 1 }} value={swiftCode} editable={false} placeholder="SWIFT Code" />
-        </View>
-
-        <View style={styles.inputWrapper}>
-          <MaterialCommunityIcons name="cash" size={28} style={styles.iconStyle} color={COLORS.gray} />
-          <TextInput style={{ flex: 1 }} value={currency} editable={false} placeholder="Currency" />
-        </View>
-
-        <View style={styles.inputWrapper}>
-          <MaterialCommunityIcons name="card-account-phone" size={28} style={styles.iconStyle} color={COLORS.gray} />
-          <TextInput style={{ flex: 1 }} value={phone} editable={false} placeholder="Phone" />
-        </View>
-
-        <View style={styles.inputWrapper}>
-          <MaterialCommunityIcons name="calendar" size={28} style={styles.iconStyle} color={COLORS.gray} />
-          <TextInput style={{ flex: 1 }} value={formatDate(item?.paidAt)} editable={false} placeholder="Date Paid" />
-        </View>
+        {item?.paidAt && <InputField icon="calendar" value={formatDate(item?.paidAt)} placeholder="Date Paid" />}
       </View>
     );
   };
+
+  // helper input component
+  const InputField = ({ icon, value, placeholder }) => (
+    <View style={styles.inputWrapper}>
+      <MaterialCommunityIcons name={icon} size={28} style={styles.iconStyle} color={COLORS.gray} />
+      <TextInput style={{ flex: 1 }} value={value} editable={false} placeholder={placeholder} />
+    </View>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
