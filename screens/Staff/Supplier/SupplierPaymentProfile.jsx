@@ -1,10 +1,10 @@
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackBtn from "../../../components/BackBtn";
 import { Image } from "react-native";
 import Button from "../../../components/Button";
-import { Formik, useFormik, validateYupSchema } from "formik";
+import { Formik } from "formik";
 import * as Yup from "yup";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../../../constants";
@@ -18,96 +18,131 @@ import { FlatList } from "react-native-gesture-handler";
 import Icon from "../../../constants/icons";
 
 import LottieView from "lottie-react-native";
-import { useFocusEffect } from "@react-navigation/native";
-import { BackHandler } from "react-native";
-import { useCallback } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { AuthContext } from "../../../components/auth/AuthContext";
+import { parsePhoneNumberFromString } from "libphonenumber-js/min";
 
-const SupplierPaymentProfile = ({ navigation }) => {
+const SupplierPaymentProfile = () => {
   const [loader, setLoader] = useState(false);
+  const [Rsuccess, setRsuccess] = useState(false);
   const [obsecureText, setObsecureText] = useState(true);
   const [step, setStep] = useState(1);
-  const [Rsuccess, setRsuccess] = useState(false);
+
+  const navigation = useNavigation();
+  const { userData } = useContext(AuthContext);
 
   const [finalPhoneNumber, setfinalPhoneNumber] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [allcountries, setallCountries] = useState([]);
-
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("BankTransfer");
+  // Mode states: view vs. edit
+  const [isEditing, setIsEditing] = useState(false);
 
   const [filteredCountries, setFilteredCountries] = useState(allcountries);
 
+  const getPhoneMeta = (number, defaultDialCode = "+254") => {
+    // console.log(number);
+    // If number doesn't start with +, clean + inject dial code
+    const formattedNumber = number.startsWith("+") ? number : `${defaultDialCode}${number.replace(/^0/, "")}`;
+
+    const parsed = parsePhoneNumberFromString(formattedNumber);
+
+    if (!parsed) return null;
+
+    return {
+      dialCode: `+${parsed.countryCallingCode}`,
+      country: parsed.country,
+      nationalNumber: parsed.nationalNumber,
+      isValid: parsed.isValid(),
+    };
+  };
+
   const validationSchema = Yup.object().shape({
-    preferredMethod: Yup.string()
-      .required("Select a payment method")
-      .test("hasValidPaymentDetails", "Please fill all required fields for selected payment method", function (value) {
-        const { parent } = this;
-        switch (value) {
-          case "mobileMoney":
-            return parent.mobileMoney.mpesaName && parent.mobileMoney.mpesaNumber && parent.mobileMoney.idNumber;
-          case "bank":
-            return (
-              parent.bank.bankName &&
-              parent.bank.bankBranch &&
-              parent.bank.accountName &&
-              parent.bank.accountNumber &&
-              parent.bank.swiftCode &&
-              parent.bank.bankCode
-            );
-          case "paypal":
-            return parent.paypal.email;
-          default:
-            return false;
-        }
-      }),
-    mobileMoney: Yup.object().shape({
-      mpesaName: Yup.string(),
-      mpesaNumber: Yup.string().matches(/^[0-9]{10}$/, "Mpesa Number must be 10 digits"),
-      idNumber: Yup.string().min(6, "ID must be at least 6 digits"),
+    preferredMethod: Yup.string().required("Select a payment method"),
+
+    mobileMoney: Yup.object().when("preferredMethod", {
+      is: "mobileMoney",
+      then: () =>
+        Yup.object().shape({
+          mpesaName: Yup.string().required("Mpesa Name is required"),
+          mpesaNumber: Yup.string()
+            .min(4)
+            .required("Phone number is required")
+            .matches(/^\+?[0-9]+$/, "Phone number must contain only digits"),
+          idNumber: Yup.string().min(6, "ID must be at least 6 digits").required("ID Number is required"),
+        }),
+      otherwise: () => Yup.object().notRequired(),
     }),
-    bank: Yup.object().shape({
-      bankName: Yup.string(),
-      bankBranch: Yup.string(),
-      accountName: Yup.string(),
-      accountNumber: Yup.string().matches(/^[0-9]+$/, "Account Number must be digits only"),
-      swiftCode: Yup.string(),
-      bankCode: Yup.string(),
+
+    bank: Yup.object().when("preferredMethod", {
+      is: "bank",
+      then: () =>
+        Yup.object().shape({
+          bankName: Yup.string().required("Bank Name is required"),
+          bankBranch: Yup.string().required("Bank Branch is required"),
+          accountName: Yup.string().required("Account Name is required"),
+          accountNumber: Yup.string()
+            .matches(/^[0-9]+$/, "Account Number must be digits only")
+            .required("Account Number is required"),
+          swiftCode: Yup.string().required("SWIFT Code is required"),
+          bankCode: Yup.string().required("Bank Code is required"),
+        }),
+      otherwise: () => Yup.object().notRequired(),
     }),
-    paypal: Yup.object().shape({
-      email: Yup.string().email("Enter a valid email"),
+
+    paypal: Yup.object().when("preferredMethod", {
+      is: "paypal",
+      then: () =>
+        Yup.object().shape({
+          email: Yup.string().email("Enter a valid email").required("PayPal Email is required"),
+        }),
+      otherwise: () => Yup.object().notRequired(),
     }),
   });
 
-  const touchAllFields = (errors, setFieldTouched, path = "") => {
-    Object.keys(errors).forEach((key) => {
-      const fieldPath = path ? `${path}.${key}` : key;
-      if (typeof errors[key] === "string") {
-        setFieldTouched(fieldPath, true, false);
-      } else if (typeof errors[key] === "object" && errors[key] !== null) {
-        touchAllFields(errors[key], setFieldTouched, fieldPath);
-      }
-    });
-  };
+  const handleUpdatePayment = async (values) => {
+    // console.log("submitting", values);
 
-  const handleSignUp = async (values) => {
     setLoader(true);
     try {
-      const endpoint = `${BACKEND_PORT}/api/v2/supplier/v2/new`;
-      const data = { ...values };
+      const endpoint = `${BACKEND_PORT}/api/v2/supplier/v4/accountpay/${userData?.supplierProfile?._id}`;
 
-      const response = await axios.post(endpoint, data);
+      const methodMap = {
+        paypal: "PayPal",
+        mobileMoney: "MobileMoney",
+        bank: "BankTransfer",
+      };
+
+      const data = {
+        paymentDetails: {
+          ...values,
+          preferredMethod: methodMap[values.preferredMethod] || values.preferredMethod,
+        },
+      };
+
+      const response = await axios.patch(endpoint, data);
+      // console.log(response.data.paymentDetails);
 
       // Check response status and token first
-      if (response.status !== 201 || !response.data.success) {
-        Alert.alert("Error Logging", "Unexpected response. Please try again.");
+      if (response.status !== 200 || !response.data.success) {
+        Alert.alert("Error Updating", "Unexpected response. Please try again.");
         return;
-      } else if (response.status === 201 && response.data.success) {
+      } else if (response.status === 200 && response.data.success) {
+        Toast.show({
+          type: "success",
+          text1: "Success!",
+          text2: "Your payment method was saved 🎉",
+          position: "top",
+          visibilityTime: 5000,
+        });
+
         setRsuccess(true);
       }
     } catch (error) {
       // Pull the error message from the response
-      const errorMsg = error.response?.data?.message || "Oops! Error logging in. Please try again.";
-      Alert.alert("SignUp Failure", errorMsg);
+      const errorMsg = error.response?.data?.message || "Oops! Error Updating details. Please try again.";
+      Alert.alert("Update Failure", errorMsg);
     } finally {
+      setIsEditing(false);
       setLoader(false);
     }
   };
@@ -176,27 +211,7 @@ const SupplierPaymentProfile = ({ navigation }) => {
     }
   }, [finalPhoneNumber]);
 
-  const initialValues = {
-    preferredMethod: "",
-    mobileMoney: {
-      mpesaName: "",
-      mpesaNumber: "",
-      idNumber: "",
-    },
-    bank: {
-      bankName: "",
-      bankBranch: "",
-      accountName: "",
-      accountNumber: "",
-      swiftCode: "",
-      bankCode: "",
-    },
-    paypal: {
-      email: "",
-    },
-  };
-
-  const PaymentDetailsScreen = ({ navigation, userData }) => {
+  const PaymentDetailsScreen = () => {
     const defaultInitialValues = {
       preferredMethod: "",
       mobileMoney: {
@@ -217,12 +232,9 @@ const SupplierPaymentProfile = ({ navigation }) => {
       },
     };
 
-    // Mode states: view vs. edit
-    const [isEditing, setIsEditing] = useState(false);
-    const [paymentDetails, setPaymentDetails] = useState({});
+    const [paymentDetails, setPaymentDetails] = useState(userData?.supplierProfile?.paymentDetails || {});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    // For handling current payment method (e.g., "Mpesa", "BankTransfer", "PayPal")
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
 
     // Fetching payment details from API
@@ -231,12 +243,12 @@ const SupplierPaymentProfile = ({ navigation }) => {
         let routeport = `${BACKEND_PORT}/api/V2/supplier/V4/accountpay/${userData?.supplierProfile?._id}`;
         try {
           const response = await axios.get(routeport, {
-            headers: { Authorization: `Bearer ${userData.token}` },
+            headers: { Authorization: `Bearer ${userData.TOKEN}` },
           });
-          // Use fetched details or default object
+
           const fetchedData = response.data.paymentDetails || {};
           setPaymentDetails(fetchedData);
-          // If there's no data, we already want to show the form
+
           if (!fetchedData || Object.keys(fetchedData).length === 0) {
             setIsEditing(true);
           }
@@ -247,12 +259,12 @@ const SupplierPaymentProfile = ({ navigation }) => {
         }
       };
 
-      if (userData && userData.token) {
+      if (userData && userData.TOKEN) {
         fetchPaymentDetails();
       } else {
         setLoading(false);
       }
-    }, [userData?.supplierProfile?._id, userData?.token]);
+    }, [userData?.supplierProfile?._id, userData?.TOKEN, Rsuccess]);
 
     // Merge fetched data with defaults (fetched values take precedence)
     const mergedInitialValues = {
@@ -264,29 +276,16 @@ const SupplierPaymentProfile = ({ navigation }) => {
     const renderForm = () => {
       // Payment methods options
       const paymentMethods = {
-        Mpesa: { label: "Mpesa", imagePath: require("../../../assets/images/logos/Mpesa.png") },
-        BankTransfer: { label: "BankTransfer", imagePath: require("../../../assets/images/logos/bank.png") },
-        PayPal: { label: "PayPal", imagePath: require("../../../assets/images/logos/paypal.png") },
+        mobileMoney: { label: "Mpesa", imagePath: require("../../../assets/images/logos/Mpesa.png") },
+        bank: { label: "BankTransfer", imagePath: require("../../../assets/images/logos/bank.png") },
+        paypal: { label: "PayPal", imagePath: require("../../../assets/images/logos/paypal.png") },
       };
 
       const handlePaymentMethodChange = (method, setFieldValue) => {
         setSelectedPaymentMethod(method);
-        const preferredMethod = method === "Mpesa" ? "mobileMoney" : method === "BankTransfer" ? "bank" : "paypal";
-        // Reset payment details based on preferred method. This lets you clear the other sections.
-        const resetPaymentDetails = {
-          preferredMethod,
-          mobileMoney: { mpesaName: "", mpesaNumber: "", idNumber: "" },
-          bank: {
-            bankName: "",
-            bankBranch: "",
-            accountName: "",
-            accountNumber: "",
-            swiftCode: "",
-            bankCode: "",
-          },
-          paypal: { email: "" },
-        };
-        setFieldValue("paymentDetails", resetPaymentDetails);
+        const preferredMethod = method;
+
+        setFieldValue("preferredMethod", preferredMethod);
       };
 
       return (
@@ -295,11 +294,22 @@ const SupplierPaymentProfile = ({ navigation }) => {
           initialValues={mergedInitialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            // handleSignUp or update logic here
-            console.log("Submitted values:", values);
+            // console.log("Submitted values:", values);
+            handleUpdatePayment(values);
           }}
         >
-          {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldTouched, setFieldValue }) => (
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            values,
+            errors,
+            isValid,
+            setFieldTouched,
+            setFieldValue,
+            touched,
+            validateForm,
+          }) => (
             <View>
               <Text style={[styles.topheading, { textAlign: "center" }]}>Payment Details</Text>
 
@@ -320,80 +330,204 @@ const SupplierPaymentProfile = ({ navigation }) => {
                 ))}
               </View>
               {/* Field rendering for specific payment methods */}
-              {selectedPaymentMethod === "Mpesa" && (
+              {selectedPaymentMethod === "mobileMoney" && (
                 <>
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>Mpesa Name</Text>
                     <TextInput
-                      style={styles.inputWrapper(errors?.mobileMoney?.mpesaName ? COLORS.secondary : COLORS.offwhite)}
+                      style={styles.inputWrapper(touched.mobileMoney?.mpesaName ? COLORS.secondary : COLORS.offwhite)}
                       onFocus={() => setFieldTouched("mobileMoney.mpesaName")}
                       onBlur={() => setFieldTouched("mobileMoney.mpesaName", "")}
                       placeholder="Mpesa Name"
                       value={values.mobileMoney.mpesaName}
                       onChangeText={(text) => setFieldValue("mobileMoney.mpesaName", text)}
                     />
+
+                    {touched.mobileMoney?.mpesaName && errors.mobileMoney?.mpesaName && (
+                      <Text style={styles.errorMessage}>{errors.mobileMoney?.mpesaName}</Text>
+                    )}
                   </View>
+
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>Mpesa Number</Text>
-                    <TextInput
-                      style={styles.inputWrapper(errors?.mobileMoney?.mpesaNumber ? COLORS.secondary : COLORS.offwhite)}
-                      placeholder="Mpesa Number"
-                      keyboardType="numeric"
+                    <IntlPhoneInput
+                      placeholder={getPhoneMeta(values?.mobileMoney?.mpesaNumber).nationalNumber}
+                      ref={(ref) => (phoneInput = ref)}
+                      customModal={renderCustomModal}
+                      defaultCountry={getPhoneMeta(values?.mobileMoney.mpesaNumber).country}
+                      lang="EN"
                       value={values.mobileMoney.mpesaNumber}
-                      onChangeText={(text) => setFieldValue("mobileMoney.mpesaNumber", text)}
+                      onChangeText={({ dialCode, unmaskedPhoneNumber }) => {
+                        setFieldValue("mpesaNumber", `${dialCode}${unmaskedPhoneNumber}`);
+                        setfinalPhoneNumber(unmaskedPhoneNumber);
+                      }}
+                      flagStyle={styles.flagWidth}
+                      containerStyle={styles.input22}
                     />
+
+                    {touched.mobileMoney?.mpesaNumber && errors.mobileMoney?.mpesaNumber && (
+                      <Text style={styles.errorMessage}>{errors.mobileMoney?.mpesaNumber}</Text>
+                    )}
                   </View>
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>ID Number</Text>
                     <TextInput
-                      style={styles.inputWrapper(errors?.mobileMoney?.idNumber ? COLORS.secondary : COLORS.offwhite)}
+                      style={styles.inputWrapper(touched.mobileMoney?.idNumber ? COLORS.secondary : COLORS.offwhite)}
                       placeholder="ID Number"
                       keyboardType="numeric"
                       value={values.mobileMoney.idNumber}
                       onChangeText={(text) => setFieldValue("mobileMoney.idNumber", text)}
                     />
+                    {touched.mobileMoney?.idNumber && errors.mobileMoney?.idNumber && (
+                      <Text style={styles.errorMessage}>{errors.mobileMoney?.idNumber}</Text>
+                    )}
                   </View>
                 </>
               )}
-              {selectedPaymentMethod === "BankTransfer" && (
+              {selectedPaymentMethod === "bank" && (
                 <>
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>Bank Name</Text>
                     <TextInput
-                      style={styles.inputWrapper(errors?.bank?.bankName ? COLORS.secondary : COLORS.offwhite)}
+                      style={styles.inputWrapper(touched?.bank?.bankName ? COLORS.secondary : COLORS.offwhite)}
                       placeholder="Bank Name"
                       value={values.bank.bankName}
                       onChangeText={(text) => setFieldValue("bank.bankName", text)}
                     />
+
+                    {touched.bank?.bankName && errors.bank?.bankName && (
+                      <Text style={styles.errorMessage}>{errors.bank?.bankName}</Text>
+                    )}
                   </View>
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>Branch</Text>
                     <TextInput
-                      style={styles.inputWrapper(errors?.bank?.bankBranch ? COLORS.secondary : COLORS.offwhite)}
+                      style={styles.inputWrapper(touched?.bank?.bankBranch ? COLORS.secondary : COLORS.offwhite)}
                       placeholder="Bank Branch"
                       value={values.bank.bankBranch}
                       onChangeText={(text) => setFieldValue("bank.bankBranch", text)}
                     />
+
+                    {touched.bank?.bankBranch && errors.bank?.bankBranch && (
+                      <Text style={styles.errorMessage}>{errors.bank?.bankBranch}</Text>
+                    )}
                   </View>
-                  {/* Continue with remaining bank fields */}
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Account Name</Text>
+                    <TextInput
+                      style={styles.inputWrapper(touched.bank?.accountName ? COLORS.secondary : COLORS.offwhite)}
+                      placeholder="Account Name"
+                      value={values?.bank?.accountName}
+                      onChangeText={(text) => setFieldValue("bank.accountName", text)}
+                      onFocus={() => setFieldTouched("bank.accountName")}
+                      onBlur={() => setFieldTouched("bank.accountName", "")}
+                    />
+                    {touched.bank?.accountName && errors.bank?.accountName && (
+                      <Text style={styles.errorMessage}>{errors.bank?.accountName}</Text>
+                    )}
+                  </View>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Account Number</Text>
+                    <TextInput
+                      style={styles.inputWrapper(touched.bank?.accountNumber ? COLORS.secondary : COLORS.offwhite)}
+                      placeholder="Account Number"
+                      keyboardType="numeric"
+                      value={values.bank.accountNumber}
+                      onChangeText={(text) => setFieldValue("bank.accountNumber", text)}
+                      onFocus={() => setFieldTouched("bank.accountNumber")}
+                      onBlur={() => setFieldTouched("bank.accountNumber", "")}
+                    />
+                    {touched.bank?.accountNumber && errors.bank?.accountNumber && (
+                      <Text style={styles.errorMessage}>{errors.bank?.accountNumber}</Text>
+                    )}
+                  </View>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Swift Code</Text>
+                    <TextInput
+                      style={styles.inputWrapper(touched.bank?.swiftCode ? COLORS.secondary : COLORS.offwhite)}
+                      placeholder="Swift Code"
+                      value={values.bank.swiftCode}
+                      onChangeText={(text) => setFieldValue("bank.swiftCode", text)}
+                      onFocus={() => setFieldTouched("bank.swiftCode")}
+                      onBlur={() => setFieldTouched("bank.swiftCode", "")}
+                    />
+                    {touched.bank?.swiftCode && errors.bank?.swiftCode && (
+                      <Text style={styles.errorMessage}>{errors.bank?.swiftCode}</Text>
+                    )}
+                  </View>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Bank Code</Text>
+                    <TextInput
+                      style={styles.inputWrapper(touched.bank?.bankCode ? COLORS.secondary : COLORS.offwhite)}
+                      placeholder="Bank Code"
+                      value={values.bank.bankCode}
+                      onChangeText={(text) => setFieldValue("bank.bankCode", text)}
+                      onFocus={() => setFieldTouched("bank.bankCode")}
+                      onBlur={() => setFieldTouched("bank.bankCode", "")}
+                    />
+                    {touched.bank?.bankCode && errors.bank?.bankCode && (
+                      <Text style={styles.errorMessage}>{errors.bank?.bankCode}</Text>
+                    )}
+                  </View>
                 </>
               )}
-              {selectedPaymentMethod === "PayPal" && (
+              {selectedPaymentMethod === "paypal" && (
                 <>
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>PayPal Email</Text>
                     <TextInput
-                      style={styles.inputWrapper(errors?.paypal?.email ? COLORS.secondary : COLORS.offwhite)}
+                      style={styles.inputWrapper(touched?.paypal?.email ? COLORS.secondary : COLORS.offwhite)}
                       placeholder="PayPal Email"
                       keyboardType="email-address"
                       value={values.paypal.email}
                       onChangeText={(text) => setFieldValue("paypal.email", text)}
                     />
+
+                    {touched.paypal?.email && errors.paypal?.email && (
+                      <Text style={styles.errorMessage}>{errors.paypal?.email}</Text>
+                    )}
                   </View>
                 </>
               )}
 
-              <Button title="SUBMIT" onPress={handleSubmit} isValid={isValid} loader={false} />
+              <Button
+                title="SUBMIT"
+                onPress={async () => {
+                  // console.log("submit values", values);
+                  // console.log("initial values", mergedInitialValues);
+
+                  const mergedValues = {
+                    ...mergedInitialValues,
+                    [values.preferredMethod]: values[values.preferredMethod],
+                    preferredMethod: values.preferredMethod,
+                  };
+
+                  // console.log("Merged values:", mergedValues);
+
+                  try {
+                    // Validate merged values
+                    await validationSchema.validate(mergedValues, { abortEarly: false });
+
+                    // If valid, submit
+                    handleSubmit(mergedValues);
+
+                    // console.log("passed");
+                  } catch (validationError) {
+                    // Show form-level errors (can be shown using Formik's setErrors too if you're using Formik)
+                    console.log("Validation failed:", validationError);
+
+                    if (validationError.inner) {
+                      validationError.inner.forEach((err) => {
+                        console.log(`Field: ${err.path}, Error: ${err.message}`);
+
+                        setFieldTouched(err.path);
+                      });
+                    }
+                  }
+                }}
+                isValid={isValid}
+                loader={false}
+              />
             </View>
           )}
         </Formik>
@@ -402,53 +536,181 @@ const SupplierPaymentProfile = ({ navigation }) => {
 
     // Render a read-only summary view when not editing
     const renderViewMode = () => {
+      const paymentMethods = {
+        MobileMoney: { label: "Mpesa", imagePath: require("../../../assets/images/logos/Mpesa.png") },
+        BankTransfer: { label: "BankTransfer", imagePath: require("../../../assets/images/logos/bank.png") },
+        PayPal: { label: "PayPal", imagePath: require("../../../assets/images/logos/paypal.png") },
+      };
       return (
         <View style={styles.viewContainer}>
           <Text style={styles.topheading}>Payment Details Summary</Text>
           {paymentDetails?.preferredMethod ? (
             <>
-              <Text style={styles.detailText}>Preferred Method: {paymentDetails.preferredMethod}</Text>
-              {/* Customize and display based on the selected method */}
-              {paymentDetails.preferredMethod === "mobileMoney" && (
+              <View style={styles.paymentMethods}>
+                {(() => {
+                  const selected = Object.entries(paymentMethods).find(
+                    ([method]) => method.toLowerCase() === paymentDetails.preferredMethod.toLowerCase()
+                  );
+
+                  if (!selected) return null;
+
+                  const [method, { label, imagePath }] = selected;
+
+                  return (
+                    <TouchableOpacity style={[styles.paymentMethodButton, styles.selectedPaymentMethod]}>
+                      <Image source={imagePath} style={{ height: 24, width: 48 }} />
+                    </TouchableOpacity>
+                  );
+                })()}
+              </View>
+              {paymentDetails.preferredMethod === "MobileMoney" && (
                 <>
-                  <Text style={styles.detailText}>Mpesa Name: {paymentDetails.mobileMoney?.mpesaName}</Text>
-                  <Text style={styles.detailText}>Mpesa Number: {paymentDetails.mobileMoney?.mpesaNumber}</Text>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Mpesa Name</Text>
+                    <TextInput
+                      style={styles.inputWrapper(COLORS.offwhite)}
+                      placeholder="Mpesa Name"
+                      value={paymentDetails?.mobileMoney?.mpesaName || ""}
+                      editable={false}
+                    />
+                  </View>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Mpesa Number</Text>
+                    <TextInput
+                      style={styles.inputWrapper(COLORS.offwhite)}
+                      placeholder="Mpesa Number"
+                      keyboardType="numeric"
+                      value={paymentDetails?.mobileMoney?.mpesaNumber || ""}
+                      editable={false}
+                    />
+                  </View>
+
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>ID Number</Text>
+                    <TextInput
+                      style={styles.inputWrapper(COLORS.offwhite)}
+                      placeholder="ID Number"
+                      keyboardType="numeric"
+                      value={paymentDetails?.mobileMoney?.idNumber}
+                      editable={false}
+                    />
+                  </View>
                 </>
               )}
-              {paymentDetails.preferredMethod === "bank" && (
+              {paymentDetails.preferredMethod === "BankTransfer" && (
                 <>
-                  <Text style={styles.detailText}>Bank Name: {paymentDetails.bank?.bankName}</Text>
-                  <Text style={styles.detailText}>Account Number: {paymentDetails.bank?.accountNumber}</Text>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Bank Name</Text>
+                    <TextInput
+                      style={styles.inputWrapper(COLORS.offwhite)}
+                      placeholder="Bank Name"
+                      value={paymentDetails.bank.bankName}
+                      editable={false}
+                    />
+                  </View>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Branch</Text>
+                    <TextInput
+                      style={styles.inputWrapper(COLORS.offwhite)}
+                      placeholder="Bank Branch"
+                      value={paymentDetails?.bank?.bankBranch}
+                      editable={false}
+                    />
+                  </View>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Account Name</Text>
+                    <TextInput
+                      style={styles.inputWrapper(COLORS.offwhite)}
+                      placeholder="Account Name"
+                      value={paymentDetails?.bank?.accountName}
+                      editable={false}
+                    />
+                  </View>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Account Number</Text>
+                    <TextInput
+                      style={styles.inputWrapper(COLORS.offwhite)}
+                      placeholder="Account Number"
+                      keyboardType="numeric"
+                      value={paymentDetails?.bank?.accountNumber}
+                      editable={false}
+                    />
+                  </View>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Swift Code</Text>
+                    <TextInput
+                      style={styles.inputWrapper(COLORS.offwhite)}
+                      placeholder="Swift Code"
+                      value={paymentDetails?.bank?.swiftCode}
+                      editable={false}
+                    />
+                  </View>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Bank Code</Text>
+                    <TextInput
+                      style={styles.inputWrapper(COLORS.offwhite)}
+                      placeholder="Bank Code"
+                      value={paymentDetails?.bank?.bankCode}
+                      editable={false}
+                    />
+                  </View>
                 </>
               )}
-              {paymentDetails.preferredMethod === "paypal" && (
-                <Text style={styles.detailText}>PayPal Email: {paymentDetails.paypal?.email}</Text>
+              {paymentDetails.preferredMethod === "PayPal" && (
+                <>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>PayPal Email</Text>
+                    <TextInput
+                      style={styles.inputWrapper(COLORS.offwhite)}
+                      placeholder="PayPal Email"
+                      keyboardType="email-address"
+                      value={paymentDetails?.paypal?.email}
+                      editable={false}
+                    />
+                  </View>
+                </>
               )}
             </>
           ) : (
             <Text>No payment details provided.</Text>
           )}
-
-          <TouchableOpacity onPress={() => setIsEditing(true)} style={styles.editButton}>
-            <Text style={styles.editButtonText}>Edit</Text>
-          </TouchableOpacity>
         </View>
       );
     };
 
-    if (loading) return <Text>Loading...</Text>;
-    if (error) return <Text>{error}</Text>;
+    if (loading)
+      return (
+        <View style={styles.containLottie}>
+          <View style={styles.animationWrapper}>
+            <LottieView source={require("../../../assets/data/loading.json")} autoPlay loop style={styles.animation} />
+          </View>
+          <View style={{ marginTop: -20, paddingBottom: 10 }}>
+            <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}> Nothing to see here</Text>
+          </View>
+        </View>
+      );
+    if (error)
+      return (
+        <View style={styles.containLottie}>
+          <View style={styles.animationWrapper}>
+            <LottieView
+              source={require("../../../assets/data/failed.json")}
+              autoPlay
+              loop={false}
+              style={styles.animation}
+            />
+          </View>
+          <View style={{ marginTop: -20, paddingBottom: 10 }}>
+            <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>{error}</Text>
+          </View>
+        </View>
+      );
 
     // If there is data and user is not editing, show summary; otherwise, show form
     return (
       <ScrollView>
         <SafeAreaView>
-          <View style={styles.container}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
-              <Icon name="backbutton" size={26} />
-            </TouchableOpacity>
-            {isEditing ? renderForm() : renderViewMode()}
-          </View>
+          <View style={styles.container}>{isEditing ? renderForm() : renderViewMode()}</View>
         </SafeAreaView>
       </ScrollView>
     );
@@ -475,245 +737,15 @@ const SupplierPaymentProfile = ({ navigation }) => {
               <Text style={styles.stepstext}>Manage payment details below</Text>
             </View>
           </View>
-
-          <Formik initialValues={initialValues} validationSchema={validationSchema}>
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              errors,
-              isValid,
-              setFieldTouched,
-              touched,
-              setFieldValue,
-              validateForm,
-            }) => {
-              const renderStepThree = () => {
-                const paymentMethods = {
-                  Mpesa: { label: "Mpesa", imagePath: require("../../../assets/images/logos/Mpesa.png") },
-                  BankTransfer: { label: "BankTransfer", imagePath: require("../../../assets/images/logos/bank.png") },
-                  PayPal: { label: "PayPal", imagePath: require("../../../assets/images/logos/paypal.png") },
-                };
-
-                const handlePaymentMethodChange = (method) => {
-                  setSelectedPaymentMethod(method);
-
-                  const preferredMethod =
-                    method === "Mpesa" ? "mobileMoney" : method === "BankTransfer" ? "bank" : "paypal";
-
-                  // Reset and set at once with preferredMethod baked in
-                  const resetPaymentDetails = {
-                    preferredMethod,
-                    mobileMoney: { mpesaName: "", mpesaNumber: "", idNumber: "" },
-                    bank: {
-                      bankName: "",
-                      bankBranch: "",
-                      accountName: "",
-                      accountNumber: "",
-                      swiftCode: "",
-                      bankCode: "",
-                    },
-                    paypal: { email: "" },
-                  };
-
-                  setFieldValue("paymentDetails", resetPaymentDetails);
-                };
-
-                return (
-                  <View>
-                    <Text style={[styles.topheading, { textAlign: "center" }]}>Payment Details</Text>
-
-                    <Text style={styles.label}>Payment Method</Text>
-                    <View style={styles.paymentMethods}>
-                      {Object.entries(paymentMethods).map(([method, { label, imagePath }]) => (
-                        <TouchableOpacity
-                          key={method}
-                          style={[
-                            styles.paymentMethodButton,
-                            selectedPaymentMethod === method && styles.selectedPaymentMethod,
-                          ]}
-                          onPress={() => handlePaymentMethodChange(method)}
-                        >
-                          <Image source={imagePath} style={{ height: 24, width: 48 }} />
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-
-                    <View>
-                      {touched.preferredMethod && errors.preferredMethod && (
-                        <Text style={styles.errorMessage}>{errors.preferredMethod}</Text>
-                      )}
-                    </View>
-
-                    {/* Mpesa Fields */}
-                    {selectedPaymentMethod === "Mpesa" && (
-                      <>
-                        <View style={styles.wrapper}>
-                          <Text style={styles.label}>Mpesa Name</Text>
-                          <TextInput
-                            style={styles.inputWrapper(
-                              touched.mobileMoney?.mpesaName ? COLORS.secondary : COLORS.offwhite
-                            )}
-                            onFocus={() => setFieldTouched("mobileMoney.mpesaName")}
-                            onBlur={() => setFieldTouched("mobileMoney.mpesaName", "")}
-                            placeholder="Mpesa Name"
-                            value={values.mobileMoney.mpesaName || ""}
-                            onChangeText={(text) => setFieldValue("mobileMoney.mpesaName", text)}
-                          />
-
-                          {touched.mobileMoney?.mpesaName && errors.mobileMoney?.mpesaName && (
-                            <Text style={styles.errorMessage}>{errors.mobileMoney?.mpesaName}</Text>
-                          )}
-                        </View>
-                        <View style={styles.wrapper}>
-                          <Text style={styles.label}>Mpesa Number</Text>
-                          <TextInput
-                            style={styles.inputWrapper(
-                              touched.mobileMoney?.mpesaNumber ? COLORS.secondary : COLORS.offwhite
-                            )}
-                            placeholder="Mpesa Number"
-                            keyboardType="numeric"
-                            value={values.mobileMoney.mpesaNumber || ""}
-                            onChangeText={(text) => setFieldValue("mobileMoney.mpesaNumber", text)}
-                            onFocus={() => setFieldTouched("mobileMoney.mpesaNumber")}
-                            onBlur={() => setFieldTouched("mobileMoney.mpesaNumber", "")}
-                          />
-                          {touched.mobileMoney?.mpesaNumber && errors.mobileMoney?.mpesaNumber && (
-                            <Text style={styles.errorMessage}>{errors.mobileMoney?.mpesaNumber}</Text>
-                          )}
-                        </View>
-
-                        <View style={styles.wrapper}>
-                          <Text style={styles.label}>ID Number</Text>
-                          <TextInput
-                            style={styles.inputWrapper(
-                              touched.mobileMoney?.idNumber ? COLORS.secondary : COLORS.offwhite
-                            )}
-                            placeholder="ID Number"
-                            keyboardType="numeric"
-                            value={values.mobileMoney.idNumber}
-                            onChangeText={(text) => {
-                              setFieldValue("mobileMoney.idNumber", text);
-                            }}
-                            onFocus={() => setFieldTouched("mobileMoney.idNumber")}
-                            onBlur={() => setFieldTouched("mobileMoney.idNumber", "")}
-                          />
-                        </View>
-                      </>
-                    )}
-
-                    {/* Bank Fields */}
-                    {selectedPaymentMethod === "BankTransfer" && (
-                      <>
-                        <View style={styles.wrapper}>
-                          <Text style={styles.label}>Bank Name</Text>
-                          <TextInput
-                            style={styles.inputWrapper(touched.bank?.bankName ? COLORS.secondary : COLORS.offwhite)}
-                            placeholder="Bank Name"
-                            value={values.bank.bankName}
-                            onChangeText={(text) => setFieldValue("bank.bankName", text)}
-                            onFocus={() => setFieldTouched("bank.bankName")}
-                            onBlur={() => setFieldTouched("bank.bankName", "")}
-                          />
-                        </View>
-                        <View style={styles.wrapper}>
-                          <Text style={styles.label}>Branch</Text>
-                          <TextInput
-                            style={styles.inputWrapper(touched.bank?.bankBranch ? COLORS.secondary : COLORS.offwhite)}
-                            placeholder="Bank Branch"
-                            value={values.bank.bankBranch}
-                            onChangeText={(text) => setFieldValue("bank.bankBranch", text)}
-                            onFocus={() => setFieldTouched("bank.bankBranch")}
-                            onBlur={() => setFieldTouched("bank.bankBranch", "")}
-                          />
-                        </View>
-                        <View style={styles.wrapper}>
-                          <Text style={styles.label}>Account Name</Text>
-                          <TextInput
-                            style={styles.inputWrapper(touched.bank?.accountName ? COLORS.secondary : COLORS.offwhite)}
-                            placeholder="Account Name"
-                            value={values.bank.accountName}
-                            onChangeText={(text) => setFieldValue("bank.accountName", text)}
-                            onFocus={() => setFieldTouched("bank.accountName")}
-                            onBlur={() => setFieldTouched("bank.accountName", "")}
-                          />
-                        </View>
-                        <View style={styles.wrapper}>
-                          <Text style={styles.label}>Account Number</Text>
-                          <TextInput
-                            style={styles.inputWrapper(
-                              touched.bank?.accountNumber ? COLORS.secondary : COLORS.offwhite
-                            )}
-                            placeholder="Account Number"
-                            keyboardType="numeric"
-                            value={values.bank.accountNumber}
-                            onChangeText={(text) => setFieldValue("bank.accountNumber", text)}
-                            onFocus={() => setFieldTouched("bank.accountNumber")}
-                            onBlur={() => setFieldTouched("bank.accountNumber", "")}
-                          />
-                        </View>
-                        <View style={styles.wrapper}>
-                          <Text style={styles.label}>Swift Code</Text>
-                          <TextInput
-                            style={styles.inputWrapper(touched.bank?.swiftCode ? COLORS.secondary : COLORS.offwhite)}
-                            placeholder="Swift Code"
-                            value={values.bank.swiftCode}
-                            onChangeText={(text) => setFieldValue("bank.swiftCode", text)}
-                            onFocus={() => setFieldTouched("bank.swiftCode")}
-                            onBlur={() => setFieldTouched("bank.swiftCode", "")}
-                          />
-                        </View>
-                        <View style={styles.wrapper}>
-                          <Text style={styles.label}>Bank Code</Text>
-                          <TextInput
-                            style={styles.inputWrapper(touched.bank?.bankCode ? COLORS.secondary : COLORS.offwhite)}
-                            placeholder="Bank Code"
-                            value={values.bank.bankCode}
-                            onChangeText={(text) => setFieldValue("bank.bankCode", text)}
-                            onFocus={() => setFieldTouched("bank.bankCode")}
-                            onBlur={() => setFieldTouched("bank.bankCode", "")}
-                          />
-                        </View>
-                      </>
-                    )}
-
-                    {/* PayPal Fields */}
-                    {selectedPaymentMethod === "PayPal" && (
-                      <>
-                        <View style={styles.wrapper}>
-                          <Text style={styles.label}>PayPal Email</Text>
-                          <TextInput
-                            style={styles.inputWrapper(touched.paypal?.email ? COLORS.secondary : COLORS.offwhite)}
-                            placeholder="PayPal Email"
-                            keyboardType="email-address"
-                            value={values.paypal.email}
-                            onChangeText={(text) => setFieldValue("paypal.email", text)}
-                            onFocus={() => setFieldTouched("paypal.email")}
-                            onBlur={() => setFieldTouched("paypal.email", "")}
-                          />
-                        </View>
-                      </>
-                    )}
-
-                    <Button
-                      title={"S U B M I T"}
-                      //   onPress={isValid ? handleSubmit : inValidForm}
-                      onPress={() => {
-                        handleNext(validateForm, values, errors, setStep, step, setFieldTouched);
-
-                        handleSignUp(values);
-                      }}
-                      isValid={isValid}
-                      loader={loader}
-                    />
-                  </View>
-                );
-              };
-
-              return <View style={styles.lowerRow}>{renderStepThree()}</View>;
-            }}
-          </Formik>
+          <View style={styles.lowerRow}>
+            <TouchableOpacity
+              onPress={() => setIsEditing(!isEditing)}
+              style={[styles.backBtn2, styles.buttonWrap, styles.editButton2]}
+            >
+              <Icon name="pencil" size={27} />
+            </TouchableOpacity>
+            {PaymentDetailsScreen()}
+          </View>
         </View>
       </SafeAreaView>
     </ScrollView>
@@ -894,6 +926,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 3,
   },
+  backBtn2: {
+    // left: 10,
+    // position: "absolute",
+    // top: 3,
+  },
   buttonWrap: {
     backgroundColor: COLORS.themeg,
     padding: 15,
@@ -971,5 +1008,30 @@ const styles = StyleSheet.create({
   },
   helperText: {
     textAlign: "center",
+  },
+  editButton2: {
+    width: 60,
+    left: SIZES.width - 100,
+  },
+  containLottie: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: SIZES.width - 20,
+    flex: 1,
+  },
+  animationWrapper: {
+    width: 200,
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  animation: {
+    width: "100%",
+    height: "100%",
+  },
+  containerx: {
+    flex: 1,
+    paddingTop: 26,
   },
 });

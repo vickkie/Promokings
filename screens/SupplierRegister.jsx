@@ -29,12 +29,21 @@ const SupplierRegister = ({ navigation }) => {
   const [Rsuccess, setRsuccess] = useState(false);
 
   const [finalPhoneNumber, setfinalPhoneNumber] = useState("");
+  const [finalMpesaNumber, setfinalMpesaNumber] = useState("");
   const [phoneError, setPhoneError] = useState("");
+  const [phoneError2, setPhoneError2] = useState("");
   const [allcountries, setallCountries] = useState([]);
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("BankTransfer");
 
   const [filteredCountries, setFilteredCountries] = useState(allcountries);
+
+  const phoneNumbervalidation = Yup.object().shape({
+    finalMpesaNumber: Yup.string()
+      .min(8, "Payment phone number must be atleast 6 digits")
+      .required("Phone number is required")
+      .matches(/^\+?[0-9]+$/, "Phone number must contain only digits"),
+  });
 
   const validationSchema1 = Yup.object().shape({
     password: Yup.string().min(8, "Password must be at least 8 characters").required("Required"),
@@ -44,7 +53,7 @@ const SupplierRegister = ({ navigation }) => {
     email: Yup.string().email("Provide a valid email address").required("Required"),
     username: Yup.string().min(3, "Provide a valid username").required("Required"),
     phoneNumber: Yup.string()
-      .min(4)
+      .min(7)
       .required("Phone number is required")
       .matches(/^\+?[0-9]+$/, "Phone number must contain only digits"),
   });
@@ -80,7 +89,10 @@ const SupplierRegister = ({ navigation }) => {
       }),
     mobileMoney: Yup.object().shape({
       mpesaName: Yup.string(),
-      mpesaNumber: Yup.string().matches(/^[0-9]{10}$/, "Mpesa Number must be 10 digits"),
+      mpesaNumber: Yup.string()
+        .min(4)
+        .required("Phone number is required")
+        .matches(/^\+?[0-9]+$/, "Phone number must contain only digits"),
       idNumber: Yup.string().min(6, "ID must be at least 6 digits"),
     }),
     bank: Yup.object().shape({
@@ -154,6 +166,13 @@ const SupplierRegister = ({ navigation }) => {
 
   const handleSignUp = async (values) => {
     setLoader(true);
+    // console.log(values);
+
+    if (phoneError2) {
+      setLoader(false);
+      return;
+    }
+
     try {
       const endpoint = `${BACKEND_PORT}/api/v2/supplier/v2/new`;
       const data = { ...values };
@@ -239,6 +258,20 @@ const SupplierRegister = ({ navigation }) => {
         .catch((err) => setPhoneError(err.errors[0]));
     }
   }, [finalPhoneNumber]);
+
+  useEffect(() => {
+    if (finalMpesaNumber) {
+      phoneNumbervalidation
+        .validate({ finalMpesaNumber })
+        .then(() => {
+          setPhoneError2("");
+        })
+        .catch((err) => {
+          setPhoneError2(err.errors[0]);
+          console.log(err);
+        });
+    }
+  }, [finalMpesaNumber]);
 
   const initialValues = {
     email: "",
@@ -686,21 +719,28 @@ const SupplierRegister = ({ navigation }) => {
                         </View>
                         <View style={styles.wrapper}>
                           <Text style={styles.label}>Mpesa Number</Text>
-                          <TextInput
-                            style={styles.inputWrapper(
-                              touched.paymentDetails?.mobileMoney?.mpesaNumber ? COLORS.secondary : COLORS.offwhite
-                            )}
-                            placeholder="Mpesa Number"
-                            keyboardType="numeric"
-                            value={values.paymentDetails.mobileMoney.mpesaNumber || ""}
-                            onChangeText={(text) => setFieldValue("paymentDetails.mobileMoney.mpesaNumber", text)}
-                            onFocus={() => setFieldTouched("paymentDetails.mobileMoney.mpesaNumber")}
-                            onBlur={() => setFieldTouched("paymentDetails.mobileMoney.mpesaNumber", "")}
+
+                          <IntlPhoneInput
+                            ref={(ref) => (phoneInput = ref)}
+                            customModal={renderCustomModal}
+                            defaultCountry="KE"
+                            lang="EN"
+                            onChangeText={({ dialCode, unmaskedPhoneNumber, isVerified, phoneNumber }) => {
+                              setFieldValue(
+                                "paymentDetails.mobileMoney.mpesaNumber",
+                                `${dialCode}${unmaskedPhoneNumber}`
+                              );
+                              setfinalMpesaNumber(unmaskedPhoneNumber);
+
+                              console.log(isVerified);
+                              console.log(phoneNumber);
+                              console.log(unmaskedPhoneNumber);
+                            }}
+                            placeholder={finalMpesaNumber}
+                            flagStyle={styles.flagWidth}
+                            containerStyle={styles.input22}
                           />
-                          {touched.paymentDetails?.mobileMoney?.mpesaNumber &&
-                            errors.paymentDetails?.mobileMoney?.mpesaNumber && (
-                              <Text style={styles.errorMessage}>{errors.paymentDetails?.mobileMoney?.mpesaNumber}</Text>
-                            )}
+                          {phoneError2 && <Text style={styles.errorMessage}>{phoneError2}</Text>}
                         </View>
 
                         <View style={styles.wrapper}>
