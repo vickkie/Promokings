@@ -136,7 +136,11 @@ const AddBid = () => {
       await validationSchema.validate(newBidRequest);
 
       // Send bid to backend (Make sure you have the correct request ID)
-      const response = await axios.post(`${BACKEND_PORT}/api/inventory-requests`, newBidRequest);
+      const response = await axios.post(`${BACKEND_PORT}/api/inventory-requests`, newBidRequest, {
+        headers: {
+          Authorization: `Bearer ${userData?.TOKEN}`,
+        },
+      });
 
       if (response.status === 200 || response.status === 201) {
         showToast("success", "Bid added successfully!");

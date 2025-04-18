@@ -54,7 +54,10 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
         params.search = searchQuery.trim(); // Only add search if it's not empty
       }
 
-      const response = await axios.get(`${BACKEND_PORT}/api/orders`, { params });
+      const response = await axios.get(`${BACKEND_PORT}/api/orders`, {
+        params,
+        Authorization: `Bearer ${userData?.TOKEN}`,
+      });
 
       const newOrders = response.data.orders || [];
       setData((prev) => (reset ? newOrders : [...prev, ...newOrders]));

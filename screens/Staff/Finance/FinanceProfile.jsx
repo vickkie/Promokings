@@ -110,6 +110,7 @@ const FinanceProfile = () => {
       const response = await axios.put(endpoint, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${userData?.TOKEN}`,
         },
       });
       //   console.log("response", response.data);

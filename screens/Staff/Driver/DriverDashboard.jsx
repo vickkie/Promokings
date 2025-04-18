@@ -17,7 +17,9 @@ const DriverDashboard = () => {
   const route = useRoute();
 
   const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch(
-    `shipment/myDeliveries/${userData?._id}/status/pending`
+    `shipment/myDeliveries/${userData?._id}/status/pending`,
+    true,
+    userData?.TOKEN
   );
 
   const [userId, setUserId] = useState(null);

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 import { Buffer } from "buffer";
@@ -35,6 +35,8 @@ const AuthProvider = ({ children }) => {
           const parsedData = JSON.parse(currentUser);
           setUserData(parsedData);
           setUserLogin(true);
+
+          axios.defaults.headers.common["Authorization"] = `Bearer ${parsedData?.TOKEN}`;
         } else {
           console.log("User data not available");
         }
@@ -50,6 +52,8 @@ const AuthProvider = ({ children }) => {
     setUserData(data);
     setUserLogin(true);
 
+    axios.defaults.headers.common["Authorization"] = `Bearer ${data?.TOKEN}`;
+
     await AsyncStorage.setItem("id", JSON.stringify(data?._id));
 
     await AsyncStorage.setItem(`user${data?._id}`, JSON.stringify(data));
@@ -57,6 +61,8 @@ const AuthProvider = ({ children }) => {
   const logout = async () => {
     setUserData(null);
     setUserLogin(false);
+
+    delete axios.defaults.headers.common["Authorization"];
 
     await AsyncStorage.removeItem("id");
     await AsyncStorage.removeItem(`user${userData?._id}`);

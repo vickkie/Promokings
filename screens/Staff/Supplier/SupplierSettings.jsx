@@ -174,38 +174,6 @@ const SupplierSettings = () => {
     );
   };
 
-  const handleDeleteAccount = () => {
-    Alert.alert(
-      "Delete account",
-      "Are you sure you want to delete your account?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => {
-            // console.log("Cancelled delete")
-          },
-          style: "cancel",
-        },
-        {
-          text: "Continue",
-          onPress: async () => {
-            await redelete(userId, async () => {
-              await clearCache();
-              userLogout();
-              navigation.navigate("Home");
-              Toast.show({
-                type: "success",
-                text1: "Account deleted",
-                text2: "Your account has been successfully deleted.",
-              });
-            });
-          },
-        },
-      ],
-      { cancelable: true }
-    );
-  };
-
   const logout = () => {
     Alert.alert(
       "Logout",
@@ -295,7 +263,13 @@ const SupplierSettings = () => {
               <TouchableOpacity onPress={() => navigation.navigate("SupplierProfile")}>
                 <View style={styles.menuItem(0.5)}>
                   <Icon name="userhandup" size={24} color={COLORS.primary} />
-                  <Text style={styles.menuText}>My profile</Text>
+                  <Text style={styles.menuText}>Account profile</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate("CompanyProfile")}>
+                <View style={styles.menuItem(0.5)}>
+                  <MaterialCommunityIcons name="office-building" size={24} color={COLORS.primary} />
+                  <Text style={styles.menuText}>Company profile</Text>
                 </View>
               </TouchableOpacity>
 
@@ -325,12 +299,7 @@ const SupplierSettings = () => {
                   <Text style={styles.menuText}>Clear cache</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleDeleteAccount}>
-                <View style={styles.menuItem(0.5)}>
-                  <Ionicons name="person-remove-outline" size={24} color={COLORS.primary} />
-                  <Text style={styles.menuText}>Delete Account</Text>
-                </View>
-              </TouchableOpacity>
+
               <TouchableOpacity onPress={logout}>
                 <View style={styles.menuItem(0.5)}>
                   <MaterialCommunityIcons name="logout" size={24} color={COLORS.primary} />

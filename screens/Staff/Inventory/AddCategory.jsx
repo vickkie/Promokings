@@ -67,7 +67,11 @@ const AddCategory = () => {
         newCategory.imageUrl = uploadedImageUrl;
       }
       await validationSchema.validate(newCategory);
-      const response = await axios.post(`${BACKEND_PORT}/api/category`, newCategory);
+      const response = await axios.post(`${BACKEND_PORT}/api/category`, newCategory, {
+        headers: {
+          Authorization: `Bearer ${userData?.TOKEN}`,
+        },
+      });
 
       if (response.status === 201) {
         showToast("success", "Category added successfully!");

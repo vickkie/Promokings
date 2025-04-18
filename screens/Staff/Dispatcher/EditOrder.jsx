@@ -121,6 +121,7 @@ const EditDispatchOrder = () => {
                 headers: {
                   "Content-Type": "application/json",
                 },
+                Authorization: `Bearer ${userData?.TOKEN}`,
               }
             );
 

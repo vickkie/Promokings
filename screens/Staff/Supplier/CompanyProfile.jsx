@@ -20,7 +20,7 @@ import { ProfileCompletionContext } from "../../../components/auth/ProfileComple
 // Global axios-retry
 axiosRetry(axios, { retries: 3 });
 
-const DispatcherProfile = () => {
+const CompanyProfile = () => {
   const { userData, userLogin, updateUserData, userLogout, hasRole } = useContext(AuthContext);
   const {
     completionPercentage,
@@ -33,6 +33,7 @@ const DispatcherProfile = () => {
 
   const navigation = useNavigation();
   const [loader, setLoader] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [profilePicture, setProfilePicture] = useState(userData?.profilePicture || null);
   const [localProfilePicture, setLocalProfilePicture] = useState(null); // New state variable for local image URI
   const [userId, setUserId] = useState(null);
@@ -45,7 +46,7 @@ const DispatcherProfile = () => {
         routes: [{ name: "Login" }],
       });
       // console.log(userData);
-    } else if (hasRole("dispatcher")) {
+    } else if (hasRole("supplier")) {
       setUserId(userData._id);
     } else {
       userLogout();
@@ -79,61 +80,21 @@ const DispatcherProfile = () => {
     );
   };
 
-  const uploadImage = async (uri) => {
-    const formData = new FormData();
-    formData.append("file", {
-      uri,
-      name: "profilePicture.jpg",
-      type: "image/jpeg",
-    });
-
-    try {
-      const response = await axios.post(`${BACKEND_PORT}/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        Authorization: `Bearer ${userData?.TOKEN}`,
-      });
-
-      console.log("Uploaded file URL:", response.data.fileUrl);
-      return response.data.fileUrl;
-    } catch (error) {
-      console.log("Error occurred, but extracting file URL anyway...");
-
-      //  Extract fileUrl even if error happens
-      if (error.response?.data?.fileUrl) {
-        return error.response.data.fileUrl;
-      }
-      // console.log(error.response?.data?.fileUrl);
-
-      return null; // If no fileUrl, return null
-    }
-  };
-
-  const updateUserProfile = async (values) => {
+  const updateCompanyProfile = async (values) => {
     setLoader(true);
     try {
       let profilePictureUrl = null;
 
-      // Upload profile picture first if it's new
-      if (localProfilePicture) {
-        profilePictureUrl = await uploadImage(localProfilePicture);
-        if (!profilePictureUrl) throw new Error("Image upload failed");
-      }
-
       const userUpdateData = {
         name: values.name || undefined,
-        email: values.email || userData?.email,
-        location: values.location,
-        username: values.username,
+        email: values.email || userData?.supplierProfile?.email,
+        address: values.address || values.supplierProfile?.address || "",
         staffId: userData?.staffId,
-        profilePictureUrl: profilePictureUrl || undefined,
-        ...(showPasswordFields && {
-          currentPassword: values.currentPassword,
-          newPassword: values.newPassword,
-        }),
+        phoneNumber: values.phoneNumber || userData.supplierProfile?.phoneNumber,
       };
       // console.log(userUpdateData);
 
-      const endpoint = `${BACKEND_PORT}/api/staff/updateDetails/${userData?._id}`;
+      const endpoint = `${BACKEND_PORT}/api/v2/supplier/${userData?.supplierProfile?._id}`;
 
       const response = await axios.put(endpoint, userUpdateData, {
         headers: {
@@ -146,10 +107,14 @@ const DispatcherProfile = () => {
 
       if (response.status === 200) {
         const updatedUserData = {
-          ...userData, // Keep original data
-          ...response.data, // Overwrite only updated fields
+          ...userData,
+          ...response.data?.supplier,
           TOKEN: userData.TOKEN,
         };
+
+        console.log(updatedUserData);
+        console.log(response.data);
+
         await updateUserData(updatedUserData);
         successUpdate();
         setLocalProfilePicture(null);
@@ -187,19 +152,8 @@ const DispatcherProfile = () => {
   const getValidationSchema = (showPasswordFields) => {
     return Yup.object().shape({
       email: Yup.string().email("Provide a valid email address").required("Required"),
-      location: Yup.string().min(3, "Provide your location").required("Required"),
-      username: Yup.string().min(3, "Provide a valid username").required("Required"),
-      currentPassword: showPasswordFields
-        ? Yup.string().min(6, "Password must be at least 6 characters").required("Required")
-        : Yup.string(),
-      newPassword: showPasswordFields
-        ? Yup.string().min(6, "Password must be at least 6 characters").required("Required")
-        : Yup.string(),
-      confirmPassword: showPasswordFields
-        ? Yup.string()
-            .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
-            .required("Required")
-        : Yup.string(),
+      address: Yup.string().min(3, "Provide your address").required("Required"),
+      phoneNumber: Yup.string().min(3, "Provide your phoneNumber").required("Required"),
     });
   };
 
@@ -251,9 +205,6 @@ const DispatcherProfile = () => {
           <Icon name="backbutton" size={26} />
         </TouchableOpacity>
         <View style={styles.upperRow}>
-          <View style={styles.upperButtons}>
-            <Text style={styles.topprofileheading}>Profile settings</Text>
-          </View>
           {userLogin ? (
             <TouchableOpacity onPress={logout} style={styles.outWrap}>
               <Icon name="logout" size={26} />
@@ -269,7 +220,7 @@ const DispatcherProfile = () => {
             </TouchableOpacity>
           )}
           <View style={styles.lowerheader}>
-            <Text style={[styles.heading, { alignSelf: "center" }]}>Profile settings</Text>
+            <Text style={[styles.heading, { alignSelf: "center", paddingBottom: 7 }]}>Profile settings</Text>
 
             <View>
               {isComplete && completionPercentage === 100 && (
@@ -293,8 +244,8 @@ const DispatcherProfile = () => {
                 </TouchableOpacity>
               )}
             </View>
-            <Text style={[styles.statement, { alignItems: "center", textAlign: "center" }]}>
-              You can edit your profile from here
+            <Text style={[styles.statement, { alignItems: "center", textAlign: "center", paddingTop: 15 }]}>
+              You can view your company profile from here
             </Text>
           </View>
         </View>
@@ -302,50 +253,38 @@ const DispatcherProfile = () => {
       <ProfileCompletion />
       <ScrollView>
         <View style={styles.detailsWrapper}>
-          <View style={styles.imageWrapper}>
-            {localProfilePicture ? (
-              <Image source={{ uri: localProfilePicture }} style={styles.profileImage} />
-            ) : profilePicture ? (
-              <Image source={{ uri: `${profilePicture}` }} style={styles.profileImage} />
-            ) : (
-              <Image source={require("../../../assets/images/userDefault.webp")} style={styles.profileImage} />
-            )}
-            <TouchableOpacity style={styles.editpencil} onPress={pickImage}>
-              <View styles={styles.pencilWrapper}>
-                <Icon name="pencil" size={25} />
-              </View>
-            </TouchableOpacity>
-          </View>
           {userLogin && userData !== null ? (
             <Formik
               initialValues={{
-                email: userData.email || "",
-                location: userData.location || "",
-                username: userData.username || "",
-                currentPassword: "",
-                newPassword: "",
-                confirmPassword: "",
+                name: userData?.supplierProfile?.name || "",
+                email: userData?.supplierProfile?.email || "",
+                address: userData.supplierProfile?.address || "",
+                phoneNumber: userData.supplierProfile?.phoneNumber || "",
+                dateCreated: userData.supplierProfile?.createdAt || "",
               }}
               validationSchema={getValidationSchema(showPasswordFields)}
-              onSubmit={(values) => updateUserProfile(values)}
+              onSubmit={(values) => {
+                console.log(values);
+                updateCompanyProfile(values);
+              }}
             >
               {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldTouched, touched }) => (
                 <View style={styles.profileData}>
                   <View style={styles.wrapper}>
-                    <Text style={styles.label}>UserName</Text>
-                    <View style={[styles.inputWrapper, touched.username && { borderColor: COLORS.secondary }]}>
+                    <View style={[styles.upperButtons, { marginBottom: 30 }]}>
+                      <Text style={styles.topprofileheading}>Supplier Company</Text>
+                    </View>
+                    <Text style={styles.label}>Company Name</Text>
+                    <View style={[styles.inputWrapper, touched.name && { borderColor: COLORS.secondary }]}>
                       <TextInput
-                        placeholder="Username"
-                        onFocus={() => setFieldTouched("username")}
-                        onBlur={() => setFieldTouched("username", "")}
+                        placeholder="name"
+                        editable={false}
                         autoCapitalize="none"
                         autoCorrect={false}
                         style={{ flex: 1 }}
-                        value={values.username}
-                        onChangeText={handleChange("username")}
+                        value={values.name}
                       />
                     </View>
-                    {touched.username && errors.username && <Text style={styles.errorMessage}>{errors.username}</Text>}
                   </View>
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>Email</Text>
@@ -364,97 +303,64 @@ const DispatcherProfile = () => {
                     {touched.email && errors.email && <Text style={styles.errorMessage}>{errors.email}</Text>}
                   </View>
                   <View style={styles.wrapper}>
-                    <Text style={styles.label}>Location</Text>
-                    <View style={[styles.inputWrapper, touched.location && { borderColor: COLORS.secondary }]}>
+                    <Text style={styles.label}>address</Text>
+                    <View style={[styles.inputWrapper, touched.address && { borderColor: COLORS.secondary }]}>
                       <TextInput
-                        placeholder="Enter location"
-                        onFocus={() => setFieldTouched("location")}
-                        onBlur={() => setFieldTouched("location", "")}
+                        placeholder="Enter address"
+                        onFocus={() => setFieldTouched("address")}
+                        onBlur={() => setFieldTouched("address", "")}
                         autoCapitalize="none"
                         autoCorrect={false}
                         style={{ flex: 1 }}
-                        value={values.location}
-                        onChangeText={handleChange("location")}
+                        value={values.address}
+                        onChangeText={handleChange("address")}
                       />
                     </View>
-                    {touched.location && errors.location && <Text style={styles.errorMessage}>{errors.location}</Text>}
+                    {touched.address && errors.address && <Text style={styles.errorMessage}>{errors.address}</Text>}
                   </View>
-                  <TouchableOpacity
-                    style={styles.changePasswordButton}
-                    onPress={() => setShowPasswordFields(!showPasswordFields)}
-                  >
-                    <Text style={styles.changePasswordButtonText}>
-                      {showPasswordFields ? "Cancel Change Password" : "Change Password ?"}
-                    </Text>
-                  </TouchableOpacity>
-                  {showPasswordFields && (
-                    <>
-                      <View style={styles.wrapper}>
-                        <Text style={styles.label}>Current Password</Text>
-                        <View
-                          style={[styles.inputWrapper, touched.currentPassword && { borderColor: COLORS.secondary }]}
-                        >
-                          <TextInput
-                            placeholder="Enter current password"
-                            onFocus={() => setFieldTouched("currentPassword")}
-                            onBlur={() => setFieldTouched("currentPassword", "")}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            secureTextEntry
-                            style={{ flex: 1 }}
-                            value={values.currentPassword}
-                            onChangeText={handleChange("currentPassword")}
-                          />
-                        </View>
-                        {touched.currentPassword && errors.currentPassword && (
-                          <Text style={styles.errorMessage}>{errors.currentPassword}</Text>
-                        )}
-                      </View>
-                      <View style={styles.wrapper}>
-                        <Text style={styles.label}>New Password</Text>
-                        <View style={[styles.inputWrapper, touched.newPassword && { borderColor: COLORS.secondary }]}>
-                          <TextInput
-                            placeholder="Enter new password"
-                            onFocus={() => setFieldTouched("newPassword")}
-                            onBlur={() => setFieldTouched("newPassword", "")}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            secureTextEntry
-                            style={{ flex: 1 }}
-                            value={values.newPassword}
-                            onChangeText={handleChange("newPassword")}
-                          />
-                        </View>
-                        {touched.newPassword && errors.newPassword && (
-                          <Text style={styles.errorMessage}>{errors.newPassword}</Text>
-                        )}
-                      </View>
-                      <View style={styles.wrapper}>
-                        <Text style={styles.label}>Confirm New Password</Text>
-                        <View
-                          style={[styles.inputWrapper, touched.confirmPassword && { borderColor: COLORS.secondary }]}
-                        >
-                          <TextInput
-                            placeholder="Confirm new password"
-                            onFocus={() => setFieldTouched("confirmPassword")}
-                            onBlur={() => setFieldTouched("confirmPassword", "")}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            secureTextEntry
-                            style={{ flex: 1 }}
-                            value={values.confirmPassword}
-                            onChangeText={handleChange("confirmPassword")}
-                          />
-                        </View>
-                        {touched.confirmPassword && errors.confirmPassword && (
-                          <Text style={styles.errorMessage}>{errors.confirmPassword}</Text>
-                        )}
-                      </View>
-                    </>
-                  )}
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Phone Number</Text>
+                    <View style={[styles.inputWrapper, touched.phoneNumber && { borderColor: COLORS.secondary }]}>
+                      <TextInput
+                        placeholder=" phone Number eg: +2547..."
+                        onFocus={() => setFieldTouched("phoneNumber")}
+                        onBlur={() => setFieldTouched("phoneNumber", "")}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        style={{ flex: 1 }}
+                        value={values.phoneNumber}
+                        onChangeText={handleChange("phoneNumber")}
+                      />
+                    </View>
+                    {touched.phoneNumber && errors.phoneNumber && (
+                      <Text style={styles.errorMessage}>{errors.phoneNumber}</Text>
+                    )}
+                  </View>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Date Registered</Text>
+                    <View style={[styles.inputWrapper, touched.address && { borderColor: COLORS.secondary }]}>
+                      <TextInput
+                        placeholder="Date registered"
+                        editable={false}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        style={{ flex: 1 }}
+                        value={values.dateCreated}
+                      />
+                    </View>
+                  </View>
+
                   <ButtonMain
-                    title={"Update Profile"}
-                    onPress={isValid ? handleSubmit : inValidForm}
+                    title={isEditing ? "Update Profile" : "Edit Profile"}
+                    onPress={() => {
+                      if (!isEditing) {
+                        setIsEditing(true);
+                      }
+                      if (isEditing) {
+                        console.log(isValid);
+                        isValid ? handleSubmit() : inValidForm();
+                      }
+                    }}
                     isValid={isValid}
                     loader={loader}
                   />
@@ -470,7 +376,7 @@ const DispatcherProfile = () => {
   );
 };
 
-export default DispatcherProfile;
+export default CompanyProfile;
 
 const styles = StyleSheet.create({
   textStyles: {
@@ -557,7 +463,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     color: COLORS.gray2,
   },
-  location: {
+  address: {
     paddingVertical: 15,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -566,7 +472,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themew,
     width: SIZES.width - 40,
   },
-  toggleLocation: {
+  toggleaddress: {
     right: 10,
     padding: 7,
     backgroundColor: COLORS.white,
@@ -580,13 +486,13 @@ const styles = StyleSheet.create({
     color: COLORS.themeb,
     marginStart: 10,
   },
-  rightLocation: {
+  rightaddress: {
     flexDirection: "row",
     gap: 10,
     justifyContent: "space-between",
     alignItems: "center",
   },
-  locationName: {
+  addressName: {
     paddingLeft: 10,
     flexDirection: "row",
     alignItems: "center",

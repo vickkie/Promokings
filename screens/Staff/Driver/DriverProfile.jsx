@@ -90,6 +90,7 @@ const DriverProfile = () => {
     try {
       const response = await axios.post(`${BACKEND_PORT}/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
+        Authorization: `Bearer ${userData?.TOKEN}`,
       });
 
       console.log("Uploaded file URL:", response.data.fileUrl);
@@ -139,6 +140,7 @@ const DriverProfile = () => {
       const response = await axios.put(endpoint, userUpdateData, {
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${userData?.TOKEN}`,
         },
       });
 

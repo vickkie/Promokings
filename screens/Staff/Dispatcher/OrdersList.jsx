@@ -8,15 +8,17 @@ import {
   Image,
   RefreshControl,
 } from "react-native";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import { COLORS, SIZES } from "../../../constants";
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
+import { AuthContext } from "../../../components/auth/AuthContext";
 
 const OrdersDispatchList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPending }) => {
+  const { userData } = useContext(AuthContext);
   const navigation = useNavigation();
 
   const [data, setData] = useState([]);
@@ -35,6 +37,7 @@ const OrdersDispatchList = ({ refreshList, setRefreshing, setiRefresh, irefresh,
     try {
       const response = await axios.get(`${BACKEND_PORT}/api/orders`, {
         params: { limit, offset: reset ? 0 : offset, status: "approved" },
+        Authorization: `Bearer ${userData?.TOKEN}`,
       });
 
       // Ensure unique products
