@@ -54,11 +54,12 @@ const DriverCard = ({ driver, isPressed, onPress, onPressOut }) => {
         ])
       ).start();
     };
+    {}
 
-    if (driver?.status === "available" || driver?.status === "transit") {
+    if (driver?.driverStatus === "available" || driver?.driverStatus === "transit") {
       animateDot();
     }
-  }, [driver?.status]);
+  }, [driver?.driverStatus]);
   return (
     <TouchableOpacity
       style={[styles.driverCard, isPressed ? styles.pressed : styles.nopress]}
@@ -83,14 +84,14 @@ const DriverCard = ({ driver, isPressed, onPress, onPressOut }) => {
                 style={[
                   styles.statusDot,
                   {
-                    backgroundColor: driver?.status === "available" ? "green" : "red",
+                    backgroundColor: driver?.driverStatus === "available" ? "green" : "red",
                     opacity: opacity,
                   },
                 ]}
               />
               <Text>
-                {driver?.status
-                  ? driver.status.charAt(0).toUpperCase() + driver.status.slice(1).toLowerCase()
+                {driver?.driverStatus
+                  ? driver.driverStatus.charAt(0).toUpperCase() + driver.driverStatus.slice(1).toLowerCase()
                   : "Unknown"}
               </Text>
             </View>
