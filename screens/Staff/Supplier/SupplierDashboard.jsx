@@ -22,7 +22,10 @@ const SupplierDashboard = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("orders/salesData");
+  // const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("orders/salesData");
+
+  const gateway = `v2/supplier/paymentData/${userData?.supplierProfile?._id}`;
+  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch(gateway, true, userData?.TOKEN);
 
   const [userId, setUserId] = useState(null);
   const [quantities, setQuanties] = useState(null);

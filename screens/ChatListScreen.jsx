@@ -148,9 +148,16 @@ const ChatListScreen = () => {
             </View>
 
             {loading ? (
-              <View style={styles.containLottie}>
-                <View style={styles.animationWrapper}>
-                  <LottieView source={require("../assets/data/loading.json")} autoPlay loop style={styles.animation} />
+              <View style={styles.mtop}>
+                <View style={styles.containLottie}>
+                  <View style={styles.animationWrapper}>
+                    <LottieView
+                      source={require("../assets/data/loading.json")}
+                      autoPlay
+                      loop
+                      style={styles.animation}
+                    />
+                  </View>
                 </View>
               </View>
             ) : (
@@ -535,5 +542,8 @@ const styles = StyleSheet.create({
   unreadText: {
     color: "white",
     fontSize: 12,
+  },
+  mtop: {
+    marginTop: 100,
   },
 });
