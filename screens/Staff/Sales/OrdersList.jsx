@@ -211,7 +211,7 @@ const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPend
         </View>
       ) : sortedData.length === 0 ? (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorMessage}>No orders at the moment</Text>
+          <Text style={styles.errorMessage}>No Sales at the moment</Text>
           <TouchableOpacity onPress={onRefresh} style={styles.retryButton}>
             <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
             <Text style={styles.retryButtonText}>Retry</Text>
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     marginTop: SIZES.small,
   },
   errorContainer: {
-    alignorders: "center",
+    alignItems: "center",
     justifyContent: "center",
   },
   errorMessage: {
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
   },
   retryButton: {
     flexDirection: "row",
-    alignorders: "center",
+    alignItems: "center",
     backgroundColor: COLORS.primary,
     padding: SIZES.small,
     borderRadius: SIZES.small,
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themeg,
     borderRadius: SIZES.medium,
     flexDirection: "row",
-    alignorders: "center",
+    alignItems: "center",
     gap: 6,
     paddingVertical: 3,
     backgroundColor: COLORS.lightWhite,

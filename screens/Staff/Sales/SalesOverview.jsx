@@ -79,22 +79,15 @@ const SalesOverview = () => {
       id: "1",
       title: "Sales Report",
       detail: "Get detailed sales information",
-      route: "DriverList",
+      route: "SalesData",
       image: require("../../../assets/images/isometric.webp"),
     },
     {
       id: "2",
       title: "Sales Interactions",
       detail: "Track your stock interactions",
-      route: "DriverList",
+      route: "SalesData",
       image: require("../../../assets/images/baggift.webp"),
-    },
-    {
-      id: "3",
-      title: "Drivers",
-      detail: "Get information of available carriers",
-      route: "DriverList",
-      image: require("../../../assets/images/userDefault.webp"),
     },
   ];
 
