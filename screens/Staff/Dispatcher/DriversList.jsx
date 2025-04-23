@@ -27,7 +27,7 @@ const zeroData = {
   availableStock: 0,
 };
 
-const DriverCard = ({ driver, isPressed, onPress, onPressOut }) => {
+const DriverCard = ({ driver, isPressed, onPress, onPressOut, navigation }) => {
   const renderProfilePicture = () => {
     if (driver && driver.profilePicture) {
       return <Image source={{ uri: `${driver?.profilePicture}` }} style={styles.profilePicture} />;
@@ -97,7 +97,14 @@ const DriverCard = ({ driver, isPressed, onPress, onPressOut }) => {
               </Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.roundview}>
+          <TouchableOpacity
+            style={styles.roundview}
+            onPress={() => {
+              navigation.navigate("DriverDetails", {
+                driver,
+              });
+            }}
+          >
             <Image source={require("../../../assets/new-arrow.png")} style={styles.arrow} />
           </TouchableOpacity>
         </View>
@@ -241,6 +248,7 @@ const DriverList = () => {
                 onPressOut={() => {
                   handlePressOut;
                 }}
+                navigation={navigation}
               />
             )}
           />
