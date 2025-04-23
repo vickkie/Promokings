@@ -198,7 +198,7 @@ const DriverList = () => {
             </View>
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity
-                onPress={() => navigation.navigate("SalesShipments")}
+                onPress={() => navigation.navigate("DispatchShipments")}
                 style={[styles.backBtn, styles.buttonWrap]}
               >
                 <Icon name="truckfilled" size={26} />
