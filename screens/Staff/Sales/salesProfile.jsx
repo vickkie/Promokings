@@ -277,7 +277,7 @@ const SalesProfile = () => {
                     paddingVertical: 4,
                     paddingHorizontal: 8,
                     borderRadius: SIZES.medium,
-                    width: 120,
+                    width: 140,
                     alignSelf: "center",
                   }}
                 >

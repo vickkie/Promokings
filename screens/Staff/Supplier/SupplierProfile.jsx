@@ -268,7 +268,6 @@ const SupplierProfile = () => {
           )}
           <View style={styles.lowerheader}>
             <Text style={[styles.heading, { alignSelf: "center" }]}>Profile settings</Text>
-
             <View>
               {isComplete && completionPercentage === 100 && (
                 <TouchableOpacity
@@ -277,7 +276,7 @@ const SupplierProfile = () => {
                     paddingVertical: 4,
                     paddingHorizontal: 8,
                     borderRadius: SIZES.medium,
-                    width: 120,
+                    width: 150,
                     alignSelf: "center",
                   }}
                 >

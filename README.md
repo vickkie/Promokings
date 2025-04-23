@@ -4,9 +4,9 @@
 
 ### Overview
 
-The **PromoKings App** is a React Native application designed to deliver a seamless experience in product purchasing. This project uses Expo for development and includes multiple dependencies to enhance functionality and user experience.
+The **PromoKings App** is a React Native application designed to deliver a seamless experience in product purchasing.
 
-### Getting Started
+### Getting Started for developers
 
 To get started with the PromoKings App, follow these steps:
 
@@ -41,7 +41,7 @@ npm run android
 or
 
 ```
-expo start --android
+npx expo start --android
 
 ```
 
@@ -77,6 +77,9 @@ npm start
 5. building to apk or aab file
 
 preview version apk
+
+- create an eas account
+- login in to eas in terminal
 
 ```
   eas build -p android --profile preview

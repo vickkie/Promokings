@@ -16,6 +16,7 @@ import Icon from "../../../constants/icons";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
 import { AuthContext } from "../../../components/auth/AuthContext";
+import LottieView from "lottie-react-native";
 
 const OrdersDispatchList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPending }) => {
   const { userData } = useContext(AuthContext);
@@ -207,14 +208,6 @@ const OrdersDispatchList = ({ refreshList, setRefreshing, setiRefresh, irefresh,
             <Text style={styles.retryButtonText}>Retry Fetch</Text>
           </TouchableOpacity>
         </View>
-      ) : sortedData.length === 0 ? (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorMessage}>No orders at the moment</Text>
-          <TouchableOpacity onPress={onRefresh} style={styles.retryButton}>
-            <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
-            <Text style={styles.retryButtonText}>Retry</Text>
-          </TouchableOpacity>
-        </View>
       ) : (
         <FlatList
           data={sortedData}
@@ -226,8 +219,20 @@ const OrdersDispatchList = ({ refreshList, setRefreshing, setiRefresh, irefresh,
           onEndReachedThreshold={0.5}
           // refreshControl={<RefreshControl refreshing={refreshList} onRefresh={handleRefetch} />}
           ListEmptyComponent={
-            <View style={styles.emptyList}>
-              <Text style={styles.emptyListText}>No orders found</Text>
+            <View style={styles.containerx}>
+              <View style={styles.containLottie}>
+                <View style={styles.animationWrapper}>
+                  <LottieView
+                    source={require("../../../assets/data/delivery.json")}
+                    autoPlay
+                    loop={false}
+                    style={styles.animation}
+                  />
+                </View>
+                <View style={{ marginTop: 0, paddingBottom: 10 }}>
+                  <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Oops, No shipments here!</Text>
+                </View>
+              </View>
             </View>
           }
           ItemSeparatorComponent={() => <View style={styles.separator} />}
@@ -329,5 +334,30 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 6,
     paddingVertical: 5,
+  },
+  containLottie: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: SIZES.width - 20,
+    flex: 1,
+  },
+  animationWrapper: {
+    width: 200,
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  animation: {
+    width: "100%",
+    height: "100%",
+  },
+  containerx: {
+    flex: 1,
+    backgroundColor: COLORS.themeg,
+    marginTop: 2,
+    // width: SIZES.width - 20,
+    marginHorizontal: 10,
+    borderRadius: SIZES.medium,
   },
 });

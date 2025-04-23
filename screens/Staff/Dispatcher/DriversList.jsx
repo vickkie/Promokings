@@ -54,7 +54,8 @@ const DriverCard = ({ driver, isPressed, onPress, onPressOut }) => {
         ])
       ).start();
     };
-    {}
+    {
+    }
 
     if (driver?.driverStatus === "available" || driver?.driverStatus === "transit") {
       animateDot();
@@ -84,7 +85,7 @@ const DriverCard = ({ driver, isPressed, onPress, onPressOut }) => {
                 style={[
                   styles.statusDot,
                   {
-                    backgroundColor: driver?.driverStatus === "available" ? "green" : "red",
+                    backgroundColor: driver?.driverStatus !== "transit" ? "green" : "red",
                     opacity: opacity,
                   },
                 ]}
@@ -92,7 +93,7 @@ const DriverCard = ({ driver, isPressed, onPress, onPressOut }) => {
               <Text>
                 {driver?.driverStatus
                   ? driver.driverStatus.charAt(0).toUpperCase() + driver.driverStatus.slice(1).toLowerCase()
-                  : "Unknown"}
+                  : "Available"}
               </Text>
             </View>
           </TouchableOpacity>
@@ -118,8 +119,11 @@ const DriverList = () => {
   const [drivers, setDrivers] = useState([]);
   const [pressedId, setPressedId] = useState(null);
 
-  const handlePress = (driverId) => {
+  const handlePress = (driverId, driver) => {
     setPressedId((prevId) => (prevId === driverId ? null : driverId));
+    navigation.navigate("DriverDetails", {
+      driver,
+    });
   };
 
   const handlePressOut = () => {
@@ -129,7 +133,7 @@ const DriverList = () => {
   useEffect(() => {
     if (!userLogin) {
       navigation.replace("Login");
-    } else if (hasRole("sales")) {
+    } else if (hasRole("dispatcher")) {
       setUserId(userData._id);
     } else {
       userLogout();
@@ -233,7 +237,7 @@ const DriverList = () => {
               <DriverCard
                 driver={item}
                 isPressed={pressedId === item._id}
-                onPress={() => handlePress(item._id)}
+                onPress={() => handlePress(item._id, item)}
                 onPressOut={() => {
                   handlePressOut;
                 }}

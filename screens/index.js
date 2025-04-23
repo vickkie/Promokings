@@ -54,8 +54,6 @@ import SalesProfile from "./Staff/Sales/salesProfile";
 import SalesSettings from "./Staff/Sales/SalesSettings";
 import InventoryDashboard from "./Staff/Inventory/InventoryDashboard";
 import OrdersSales from "./Staff/Sales/Orders";
-import DriverDetails from "./Staff/Sales/DriverDetails";
-import DriverList from "./Staff/Sales/DriversList";
 
 //Driver
 import DriverDashboard from "./Staff/Driver/DriverDashboard";
@@ -84,6 +82,7 @@ import TransactionReceiptScreen from "./Staff/Finance/SupplierInvoiceScreen";
 
 //disp[atcher]
 
+import DriverList from "./Staff/Dispatcher/DriversList";
 import DispatchDashboard from "./Staff/Dispatcher/DispatchDashboard";
 import EditDispatchOrder from "./Staff/Dispatcher/EditOrder";
 import ChatScreen from "./ChatScreen";
@@ -93,9 +92,9 @@ import DispatchShipments from "./Staff/Dispatcher/DispatchShipment";
 import DispatcherProfile from "./Staff/Dispatcher/DispatchProfile";
 import DispatcherSettings from "./Staff/Dispatcher/DispatchSettings";
 import DeliveryDispatchDetails from "./Staff/Dispatcher/DeliveryDetails";
+import DriverDetails from "./Staff/Dispatcher/DriverDetails";
 
 // import DriverList as D from "./Staff/Dispatcher/DriversList";
-// import DriverDetails from "./Staff/Dispatcher/DriverDetails";
 
 import ChatListScreen from "./ChatListScreen";
 
@@ -172,7 +171,6 @@ export {
   SalesProfile,
   SalesSettings,
   DriverDetails,
-  DriverList,
   InvoiceScreen,
 
   //Drivers
@@ -208,6 +206,7 @@ export {
   DispatcherProfile,
   DispatcherSettings,
   DeliveryDispatchDetails,
+  DriverList,
 
   //supplier
   SupplierDashboard,

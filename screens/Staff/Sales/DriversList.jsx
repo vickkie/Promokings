@@ -198,7 +198,7 @@ const DriverList = () => {
         </View>
 
         <View style={styles.sloganWrapper}>
-          <Text style={styles.slogan}>{`All courriers available `}</Text>
+          <Text style={styles.slogan}>{`All courriersx available `}</Text>
         </View>
       </View>
 
