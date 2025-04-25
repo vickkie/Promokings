@@ -55,6 +55,8 @@ import SalesSettings from "./Staff/Sales/SalesSettings";
 import InventoryDashboard from "./Staff/Inventory/InventoryDashboard";
 import OrdersSales from "./Staff/Sales/Orders";
 
+import BestProductList from "./Staff/Sales/SalesBest";
+
 //Driver
 import DriverDashboard from "./Staff/Driver/DriverDashboard";
 import DriverSettings from "./Staff/Driver/DriverSettings";
@@ -172,6 +174,7 @@ export {
   SalesSettings,
   DriverDetails,
   InvoiceScreen,
+  BestProductList,
 
   //Drivers
   DriverDashboard,

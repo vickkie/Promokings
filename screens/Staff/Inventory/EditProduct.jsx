@@ -124,16 +124,26 @@ const EditProduct = () => {
   };
 
   const handleDelete = async () => {
+    setLoader(true);
     try {
       const response = await axios.delete(`${BACKEND_PORT}/api/products/${product._id}`);
+
+      console.log(response.status);
 
       if (response.status === 200 || response.status === 204) {
         showToast("success", "Product deleted successfully!");
 
-        navigation.replace("Inventory Dashboard", { refreshList: true });
+        navigation.navigate("Inventory Navigation", {
+          screen: {
+            name: "InventoryDashboard",
+            refreshList: true,
+          },
+        });
       }
     } catch (error) {
       showToast("error", "Product deletion failed!", `${error}`);
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -248,7 +258,7 @@ const EditProduct = () => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
             <Icon name="backbutton" size={26} />
           </TouchableOpacity>
-          <Text style={styles.heading}>UPDATE PRODUCT</Text>
+          <Text style={styles.heading}>{loader ? "DELETING ..." : "UPDATE PRODUCT"}</Text>
           <TouchableOpacity
             style={styles.buttonWrap}
             onPress={() => {

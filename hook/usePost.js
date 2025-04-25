@@ -17,7 +17,7 @@ const usePost = (endpoint) => {
 
     try {
       const response = await axios.post(`${BACKEND_PORT}/api/${endpoint}`, data);
-      // console.log(`${BACKEND_PORT}/api/${endpoint}`);
+      console.log(`${BACKEND_PORT}/api/${endpoint}`);
       setUpdateStatus(response.status);
     } catch (error) {
       console.log(error);

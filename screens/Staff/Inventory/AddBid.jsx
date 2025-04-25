@@ -201,6 +201,8 @@ const AddBid = () => {
   };
 
   const pickImage = async () => {
+    console.log("requesting");
+
     let result = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (result.granted === false) {
       alert("Permission to access gallery is required!");
@@ -245,7 +247,12 @@ const AddBid = () => {
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={styles.lowerRow}>
             <View style={styles.form}>
-              <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
+              <TouchableOpacity
+                onPress={() => {
+                  pickImage();
+                }}
+                style={styles.imagePicker}
+              >
                 {image ? (
                   <Image source={{ uri: image }} style={styles.imagePreview} />
                 ) : imagePreview ? (

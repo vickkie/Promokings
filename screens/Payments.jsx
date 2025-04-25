@@ -15,6 +15,47 @@ const paymentMethods = {
 const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("MasterCard");
 
+  const paymentValidationSchema = Yup.object().shape({
+    selectedPaymentMethod: Yup.string()
+      .required("Select a payment method")
+      .test("hasValidPaymentDetails", "Please fill all required fields for selected payment method", function (value) {
+        const { parent } = this;
+        console.log("parent", parent.selectedPaymentMethod);
+
+        switch (value) {
+          case "MasterCard":
+            return parent.cardNumber && parent.email && parent.cvv && parent.cardNumber && parent.expiryDate;
+          case "Visa":
+            return parent.cardNumber && parent.email && parent.cvv && parent.cardNumber && parent.expiryDate;
+          case "PayPal":
+            return parent.email;
+          case "Mpesa":
+            return parent.email && parent.phoneNumber;
+          default:
+            return false;
+        }
+      }),
+    email: Yup.string().email("Invalid email").required("Required"),
+    nameOnCard: Yup.string().when("selectedPaymentMethod", (selectedPaymentMethod, schema) =>
+      ["Visa", "MasterCard"].includes(selectedPaymentMethod) ? schema.required("Required") : schema.notRequired()
+    ),
+    cardNumber: Yup.string().when("selectedPaymentMethod", (selectedPaymentMethod, schema) =>
+      ["Visa", "MasterCard"].includes(selectedPaymentMethod)
+        ? schema.matches(/^\d{10,16}$/, "Card number must be 16 digits").required("Required")
+        : schema.notRequired()
+    ),
+    expiryDate: Yup.string().when("selectedPaymentMethod", (selectedPaymentMethod, schema) =>
+      ["Visa", "MasterCard"].includes(selectedPaymentMethod)
+        ? schema.matches(/^(0[1-9]|1[0-2])\/\d{2}$/, "Invalid expiry date").required("Required")
+        : schema.notRequired()
+    ),
+    cvv: Yup.string().when("selectedPaymentMethod", (selectedPaymentMethod, schema) =>
+      ["Visa", "MasterCard"].includes(selectedPaymentMethod)
+        ? schema.matches(/^\d{3,4}$/, "Invalid CVV").required("Required")
+        : schema.notRequired()
+    ),
+  });
+
   const formik = useFormik({
     initialValues: {
       phoneNumber: phoneNumber,
@@ -25,34 +66,28 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) =
       cvv: "",
       selectedPaymentMethod: selectedPaymentMethod,
     },
-
-    validationSchema: Yup.object().shape({
-      email: Yup.string().email("Invalid email").required("Required"),
-      nameOnCard: Yup.string().when("selectedPaymentMethod", (selectedPaymentMethod, schema) =>
-        ["Visa", "MasterCard"].includes(selectedPaymentMethod) ? schema.required("Required") : schema.notRequired()
-      ),
-      cardNumber: Yup.string().when("selectedPaymentMethod", (selectedPaymentMethod, schema) =>
-        ["Visa", "MasterCard"].includes(selectedPaymentMethod)
-          ? schema.matches(/^\d{10,16}$/, "Card number must be 16 digits").required("Required")
-          : schema.notRequired()
-      ),
-      expiryDate: Yup.string().when("selectedPaymentMethod", (selectedPaymentMethod, schema) =>
-        ["Visa", "MasterCard"].includes(selectedPaymentMethod)
-          ? schema.matches(/^(0[1-9]|1[0-2])\/\d{2}$/, "Invalid expiry date").required("Required")
-          : schema.notRequired()
-      ),
-      cvv: Yup.string().when("selectedPaymentMethod", (selectedPaymentMethod, schema) =>
-        ["Visa", "MasterCard"].includes(selectedPaymentMethod)
-          ? schema.matches(/^\d{3,4}$/, "Invalid CVV").required("Required")
-          : schema.notRequired()
-      ),
-    }),
+    validationSchema: paymentValidationSchema,
 
     onSubmit: (values) => {
-      handleSubmitOrder(values);
-      // console.log(values);
+      // handleSubmitOrder(values);
+      // console.log("sub", values);
+      validateme(values);
     },
+    validateOnMount: true,
   });
+
+  // const validateMe => {
+
+  // }
+  const validateme = async (values) => {
+    let formErrors = await formik.validateForm();
+
+    console.log("errors", formErrors);
+    console.log("form valid", formik.isValid);
+    if (formik.isValid) {
+      handleSubmitOrder(values);
+    }
+  };
 
   function convertToLowerCase(str) {
     return str.toLowerCase();
@@ -60,6 +95,9 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) =
   const handlePaymentMethodChange = (method) => {
     setSelectedPaymentMethod(method);
     formik.setFieldValue("selectedPaymentMethod", method);
+    setTimeout(() => {
+      console.log(formik.isValid);
+    }, 2000);
   };
 
   const formatCardNumber = (value) => {

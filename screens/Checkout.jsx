@@ -79,9 +79,9 @@ const Checkout = () => {
       checkoutSchema
         .validate({ phoneNumber })
         .then(() => setPhoneError(""))
-        .catch((err) => setPhoneError(err.errors[0]));
+        .catch((err) => setPhoneError("Please fill phone Number field"));
     }
-  }, [phoneNumber]);
+  }, [phoneNumber, address]);
 
   //fetch stock availability
 
@@ -93,7 +93,7 @@ const Checkout = () => {
         const response = await axios.post(`${BACKEND_PORT}/api/products/stock`, {
           productIds,
         });
-        // console.log(response.data.stock);
+        console.log(response.data.stock);
         setStockData(response.data.stock);
       } catch (err) {
         console.error("Error fetching stock:", err);
@@ -123,6 +123,7 @@ const Checkout = () => {
     fetchStores();
   }, []);
 
+  console.log(step);
   const handleNext = () => {
     console.log(step);
     console.log(deliveryMethod);
@@ -131,8 +132,8 @@ const Checkout = () => {
       case 3:
         if (deliveryMethod === "shipping" && phoneError) {
           // Do nothing or handle error
-        } else if (deliveryMethod === "shipping" && phoneNumber === "") {
-          setPhoneError("Please fill this field");
+        } else if (deliveryMethod === "shipping" && !phoneNumber) {
+          setPhoneError("Please fill phone Number field");
         } else if (deliveryMethod === "shipping" && address === "") {
           setPhoneError("Please fill shipping address field");
         } else {
@@ -152,10 +153,10 @@ const Checkout = () => {
   };
 
   const handlePrevious = () => {
-    if (step > 1) {
-      setStep(step - 1);
-    } else if (step > 4) {
+    if (step > 6) {
       setStep(step);
+    } else if (step > 1) {
+      setStep(step - 1);
     }
   };
 
@@ -187,7 +188,7 @@ const Checkout = () => {
       subtotal: estimatedAmount + additionalFees,
     };
 
-    // console.log(orderData);
+    console.log("orderDATA", orderData);
 
     handleNext(); // This moves to the next step in the UI
 
@@ -488,6 +489,7 @@ const Checkout = () => {
 
               {step === 3 && (
                 <View style={styles.stepContainer}>
+                  {phoneError && <Text style={styles.error}>{phoneError}</Text>}
                   {/* Shipping Form */}
                   {deliveryMethod === "shipping" && (
                     <>
@@ -608,7 +610,7 @@ const Checkout = () => {
                 </>
               )}
 
-              {step === 4 && isLoading && (
+              {step === 5 && isLoading && (
                 <View style={styles.containLottie}>
                   <View style={styles.animationWrapper}>
                     <LottieView
@@ -621,7 +623,7 @@ const Checkout = () => {
                 </View>
               )}
 
-              {step === 4 && errorState && (
+              {step === 5 && !isLoading && errorState && (
                 <View style={styles.containLottie}>
                   <View style={styles.animationWrapper}>
                     <LottieView
@@ -631,10 +633,24 @@ const Checkout = () => {
                       style={styles.animation}
                     />
                     <Text style={styles.errorMessage}>{"Sorry request failed \n Please try again later"}</Text>
+                    {console.log(errorMessage)}
                   </View>
                   <TouchableOpacity style={styles.buttonHome} onPress={() => navigation.navigate("Home")}>
                     <Text style={styles.buttonText}>Back to home</Text>
                   </TouchableOpacity>
+                </View>
+              )}
+              {step === 4 && !errorState && (
+                <View style={styles.containLottie}>
+                  <View style={styles.animationWrapper}>
+                    <LottieView
+                      source={require("../assets/data/loading.json")}
+                      autoPlay
+                      loop={true}
+                      style={styles.animation}
+                    />
+                    <Text style={styles.errorMessage}>{"Submitting your order"}</Text>
+                  </View>
                 </View>
               )}
             </ScrollView>
@@ -1032,6 +1048,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 10,
+    marginStart: 10,
   },
   storeList: {
     gap: 10,

@@ -20,6 +20,7 @@ import { BACKEND_PORT } from "@env";
 import Icon from "../constants/icons";
 import { StatusBar } from "react-native";
 import Toast from "react-native-toast-message";
+import axiosRetry from "axios-retry";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
@@ -64,8 +65,11 @@ const LoginPage = ({ navigation }) => {
       const endpoint = `${BACKEND_PORT}/auth/login`;
       const data = { ...values, userType };
 
+      // console.log(endpoint);
+
       const response = await axios.post(endpoint, data);
 
+      // console.log(response);
       // Check response status and token first
       if (response.status !== 200 || !response.data || !response.data.TOKEN) {
         Alert.alert("Error Logging", "Unexpected response. Please try again.");

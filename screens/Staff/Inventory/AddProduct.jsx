@@ -111,6 +111,8 @@ const AddProduct = () => {
     try {
       if (image) {
         const uploadedImageUrl = await uploadImage(image);
+
+        console.log(image, uploadedImageUrl);
         setImageUrl(uploadedImageUrl);
         newProduct.imageUrl = uploadedImageUrl;
       }

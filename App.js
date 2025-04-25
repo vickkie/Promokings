@@ -109,6 +109,7 @@ import {
   SupplierRegister,
   SupplierPaymentProfile,
   CompanyProfile,
+  BestProductList,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -172,6 +173,7 @@ const screens = [
   { name: "EditSalesOrder", component: EditSalesOrder, options: { headerShown: false } },
   { name: "SalesOverview", component: SalesOverview, options: { headerShown: false } },
   { name: "OrdersSales", component: OrdersSales, options: { headerShown: false } },
+  { name: "BestProductList", component: BestProductList, options: { headerShown: false } },
   { name: "InvoiceScreen", component: InvoiceScreen, options: { headerShown: false } },
   { name: "SalesData", component: SalesData, options: { headerShown: false } },
   { name: "SalesShipments", component: SalesShipments, options: { headerShown: false } },
