@@ -16,7 +16,11 @@ const OrderSuccess = () => {
 
   useEffect(() => {
     const handleBackPress = () => {
-      navigation.navigate("Home");
+      navigation.navigate("Bottom Navigation", {
+        screen: "Home",
+        params: { refreshList: true },
+      });
+
       // Return true to prevent default back navigation
       return true;
     };
@@ -83,9 +87,12 @@ const OrderSuccess = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.button}
-                onPress={() => {
-                  navigation.navigate("Home");
-                }}
+                onPress={() =>
+                  navigation.navigate("Bottom Navigation", {
+                    screen: "Home",
+                    params: { refreshList: true },
+                  })
+                }
               >
                 <Text style={styles.buttonText}>Back to Home</Text>
               </TouchableOpacity>

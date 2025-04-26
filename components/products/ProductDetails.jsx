@@ -189,6 +189,8 @@ const ProductDetails = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
             </View>
+            {/* {console.log(item)} */}
+
             <View style={styles.sizeWrapper}>
               <View style={styles.sizeInnerWrapper}>
                 <Text style={styles.sizeHeader}>Select Size:</Text>
@@ -196,6 +198,7 @@ const ProductDetails = ({ navigation }) => {
               <View style={styles.sizeButtons}>
                 {sizes.map((size, index) => (
                   <TouchableOpacity
+                    disabled={item?.sizeApplicable ? false : true}
                     key={index}
                     style={[styles.sizeButton, selectedSize === size && styles.selectedSizeButton]}
                     onPress={() => setSelectedSize(size)}
@@ -207,6 +210,7 @@ const ProductDetails = ({ navigation }) => {
                 ))}
               </View>
             </View>
+
             {!isExpanded ? (
               <View style={styles.shortDescription}>
                 <Text style={styles.description}>{shortDescription}.</Text>

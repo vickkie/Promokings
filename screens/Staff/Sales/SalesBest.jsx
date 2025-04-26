@@ -28,7 +28,7 @@ const BestProductList = () => {
   const { userData } = useContext(AuthContext);
 
   const categoryTitle = route.params?.categoryTitle || "";
-  const products = route.params?.products ? route.params.products : "stats/getStats/best-selling?length=6";
+  const products = route.params?.products ? route.params.products : "stats/getStats/best-sellingc/6";
 
   // console.log(route.params);
 
@@ -37,7 +37,7 @@ const BestProductList = () => {
   const [refreshList, setRefreshList] = useState(false);
 
   const [refreshing, setRefreshing] = useState(false);
-  const [isGridView, setIsGridView] = useState(true);
+  const [isGridView, setIsGridView] = useState(false);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searching, setIsSearching] = useState(false);
@@ -101,7 +101,7 @@ const BestProductList = () => {
     setRefreshing(true);
     try {
       refetch();
-      navigation.setParams({ refreshList: undefined, products: "stats/getStats/best-selling?length=7" }); // Clear params
+      navigation.setParams({ refreshList: undefined, products: "stats/getStats/best-sellingc/7" }); // Clear params
     } catch (error) {
       // Handle error
     } finally {
@@ -132,10 +132,15 @@ const BestProductList = () => {
     inputRef.current?.blur(); // Dismiss keyboard on search
   };
 
+  console.log(data);
+
   // Filter products based on selected category, selected and search text
-  const filteredData = data
-    .filter((item) => (selectedCategory ? item.category === selectedCategory : true))
-    .filter((item) => item.title.toLowerCase().includes(searchText.toLowerCase()));
+  const filteredData =
+    Array.isArray(data) &&
+    data.length > 0 &&
+    data
+      .filter((item) => (selectedCategory ? item.category === selectedCategory : true))
+      .filter((item) => item?.title.toLowerCase().includes(searchText.toLowerCase()));
 
   const flatListKey = isGridView ? "grid" : "list"; // Key for FlatList
 
@@ -159,9 +164,6 @@ const BestProductList = () => {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
-        <View style={styles.totalWrapper}>
-          <Text style={styles.totalCount}>{filteredData.length} Products in inventory</Text>
         </View>
       </View>
 
@@ -200,7 +202,7 @@ const BestProductList = () => {
           {searching ? (
             <View style={styles.searchBtn}>
               <TouchableOpacity onPress={handleSearch}>
-                <Ionicons name="ios-search-circle" size={SIZES.xxLarge - 6} color={COLORS.white} />
+                <Icon name="search" size={SIZES.xLarge - 6} color={COLORS.white} />
               </TouchableOpacity>
             </View>
           ) : (
@@ -360,7 +362,7 @@ const styles = StyleSheet.create({
     marginEnd: 4,
   },
   topWelcomeWrapper: {
-    minHeight: 140,
+    minHeight: 90,
     backgroundColor: COLORS.themew,
     borderRadius: SIZES.medium,
     ...SHADOWS.small,

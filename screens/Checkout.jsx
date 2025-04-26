@@ -622,7 +622,15 @@ const Checkout = () => {
                     <Text style={styles.errorMessage}>{"Sorry request failed \n Please try again later"}</Text>
                     {console.log(errorMessage)}
                   </View>
-                  <TouchableOpacity style={styles.buttonHome} onPress={() => navigation.navigate("Home")}>
+                  <TouchableOpacity
+                    style={styles.buttonHome}
+                    onPress={() =>
+                      navigation.navigate("Bottom Navigation", {
+                        screen: "Home",
+                        params: { refreshList: true },
+                      })
+                    }
+                  >
                     <Text style={styles.buttonText}>Back to home</Text>
                   </TouchableOpacity>
                 </View>

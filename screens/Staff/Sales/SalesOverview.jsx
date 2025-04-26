@@ -84,7 +84,7 @@ const SalesOverview = () => {
     },
     {
       id: "2",
-      title: "Sales Interactions",
+      title: "Best Selling Interactions",
       detail: "Track your stock interactions",
       route: "BestProductList",
       image: require("../../../assets/images/baggift.webp"),
