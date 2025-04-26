@@ -56,7 +56,6 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
 
       const response = await axios.get(`${BACKEND_PORT}/api/orders`, {
         params,
-        Authorization: `Bearer ${userData?.TOKEN}`,
       });
 
       const newOrders = response.data.orders || [];
@@ -194,6 +193,7 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
     visa: require("../../../assets/images/logos/visa.png"),
     mastercard: require("../../../assets/images/logos/mastercard.png"),
     paypal: require("../../../assets/images/logos/paypal.png"),
+    mpesa: require("../../../assets/images/logos/Mpesa2.png"),
   };
 
   const renderItem = ({ item }) => {

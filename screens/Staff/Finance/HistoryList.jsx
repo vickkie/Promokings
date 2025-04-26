@@ -56,7 +56,6 @@ const HistoryList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
 
       const response = await axios.get(`${BACKEND_PORT}/api/orders`, {
         params,
-        Authorization: `Bearer ${userData?.TOKEN}`,
       });
 
       const newOrders = response.data.orders || [];

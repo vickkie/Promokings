@@ -48,6 +48,7 @@ const LatestPayments = ({ refreshList, setRefreshing, setRefreshList, userData }
     visa: require("../../../assets/images/logos/visa.png"),
     mastercard: require("../../../assets/images/logos/mastercard.png"),
     paypal: require("../../../assets/images/logos/paypal.png"),
+    mpesa: require("../../../assets/images/logos/Mpesa2.png"),
   };
 
   // Key extractor for FlatList

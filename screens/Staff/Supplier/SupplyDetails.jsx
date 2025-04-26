@@ -21,9 +21,6 @@ const SupplyDetails = () => {
   const { bid, bidId, item } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoading2, setIsLoading2] = useState(false);
-
   useEffect(() => {
     if (!userLogin) {
       setUserId(1);

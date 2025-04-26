@@ -20,7 +20,7 @@ import Icon from "../../../constants/icons";
 import LottieView from "lottie-react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../../components/auth/AuthContext";
-import { parsePhoneNumberFromString } from "libphonenumber-js/min";
+import { parsePhoneNumberFromString, PhoneNumber } from "libphonenumber-js/min";
 
 const SupplierPaymentProfile = () => {
   const [loader, setLoader] = useState(false);
@@ -40,7 +40,15 @@ const SupplierPaymentProfile = () => {
   const [filteredCountries, setFilteredCountries] = useState(allcountries);
 
   const getPhoneMeta = (number, defaultDialCode = "+254") => {
-    // console.log(number);
+    if (!number) {
+      return {
+        dialCode: `+254`,
+        country: "KE",
+        nationalNumber: "712345678",
+        isValid: true,
+      };
+    }
+
     // If number doesn't start with +, clean + inject dial code
     const formattedNumber = number.startsWith("+") ? number : `${defaultDialCode}${number.replace(/^0/, "")}`;
 
@@ -56,6 +64,13 @@ const SupplierPaymentProfile = () => {
     };
   };
 
+  const phonevalidationSchema = Yup.object().shape({
+    finalPhoneNumber: Yup.string()
+      .min(7)
+      .required("Phone number is required")
+      .matches(/^\+?[0-9]+$/, "Phone number must contain only digits"),
+  });
+
   const validationSchema = Yup.object().shape({
     preferredMethod: Yup.string().required("Select a payment method"),
 
@@ -64,10 +79,6 @@ const SupplierPaymentProfile = () => {
       then: () =>
         Yup.object().shape({
           mpesaName: Yup.string().required("Mpesa Name is required"),
-          mpesaNumber: Yup.string()
-            .min(4)
-            .required("Phone number is required")
-            .matches(/^\+?[0-9]+$/, "Phone number must contain only digits"),
           idNumber: Yup.string().min(6, "ID must be at least 6 digits").required("ID Number is required"),
         }),
       otherwise: () => Yup.object().notRequired(),
@@ -112,6 +123,8 @@ const SupplierPaymentProfile = () => {
         bank: "BankTransfer",
       };
 
+      // console.log("values", values);
+
       const data = {
         paymentDetails: {
           ...values,
@@ -119,6 +132,7 @@ const SupplierPaymentProfile = () => {
         },
       };
 
+      // console.log("values2", data);
       const response = await axios.patch(endpoint, data);
       // console.log(response.data.paymentDetails);
 
@@ -204,10 +218,14 @@ const SupplierPaymentProfile = () => {
 
   useEffect(() => {
     if (finalPhoneNumber) {
-      validationSchema
+      phonevalidationSchema
         .validate({ finalPhoneNumber })
         .then(() => setPhoneError(""))
-        .catch((err) => setPhoneError(err.errors[0]));
+        .catch((err) => {
+          // console.log("fn", finalPhoneNumber);
+          // console.log("f", err.errors[0]);
+          setPhoneError(err.errors[0]);
+        });
     }
   }, [finalPhoneNumber]);
 
@@ -241,6 +259,7 @@ const SupplierPaymentProfile = () => {
     useEffect(() => {
       const fetchPaymentDetails = async () => {
         let routeport = `${BACKEND_PORT}/api/V2/supplier/V4/accountpay/${userData?.supplierProfile?._id}`;
+
         try {
           const response = await axios.get(routeport, {
             headers: { Authorization: `Bearer ${userData.TOKEN}` },
@@ -248,7 +267,6 @@ const SupplierPaymentProfile = () => {
 
           const fetchedData = response.data.paymentDetails || {};
           setPaymentDetails(fetchedData);
-
           if (!fetchedData || Object.keys(fetchedData).length === 0) {
             setIsEditing(true);
           }
@@ -295,6 +313,7 @@ const SupplierPaymentProfile = () => {
           validationSchema={validationSchema}
           onSubmit={(values) => {
             // console.log("Submitted values:", values);
+
             handleUpdatePayment(values);
           }}
         >
@@ -350,20 +369,30 @@ const SupplierPaymentProfile = () => {
 
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>Mpesa Number</Text>
-                    <IntlPhoneInput
-                      placeholder={getPhoneMeta(values?.mobileMoney?.mpesaNumber).nationalNumber}
-                      ref={(ref) => (phoneInput = ref)}
-                      customModal={renderCustomModal}
-                      defaultCountry={getPhoneMeta(values?.mobileMoney.mpesaNumber).country}
-                      lang="EN"
-                      value={values.mobileMoney.mpesaNumber}
-                      onChangeText={({ dialCode, unmaskedPhoneNumber }) => {
-                        setFieldValue("mpesaNumber", `${dialCode}${unmaskedPhoneNumber}`);
-                        setfinalPhoneNumber(unmaskedPhoneNumber);
-                      }}
-                      flagStyle={styles.flagWidth}
-                      containerStyle={styles.input22}
-                    />
+
+                    {phoneError && <Text style={styles.errorMessage}>{phoneError}</Text>}
+
+                    <View style={!phoneError ? styles.noError : styles.focused}>
+                      <IntlPhoneInput
+                        placeholder={getPhoneMeta(values?.mobileMoney?.mpesaNumber)?.nationalNumber || ""}
+                        ref={(ref) => (phoneInput = ref)}
+                        customModal={renderCustomModal}
+                        defaultCountry={getPhoneMeta(values?.mobileMoney.mpesaNumber)?.country || ""}
+                        lang="EN"
+                        value={values.mobileMoney.mpesaNumber}
+                        onChangeText={({ dialCode, unmaskedPhoneNumber }) => {
+                          setFieldValue("mobileMoney.mpesaNumber", `${dialCode}${unmaskedPhoneNumber}`);
+
+                          setfinalPhoneNumber(`${dialCode}${unmaskedPhoneNumber}`);
+
+                          if (phoneError) {
+                            setFieldTouched("mobileMoney.mpesaNumber");
+                          }
+                        }}
+                        flagStyle={styles.flagWidth}
+                        containerStyle={styles.input22}
+                      />
+                    </View>
 
                     {touched.mobileMoney?.mpesaNumber && errors.mobileMoney?.mpesaNumber && (
                       <Text style={styles.errorMessage}>{errors.mobileMoney?.mpesaNumber}</Text>
@@ -391,7 +420,7 @@ const SupplierPaymentProfile = () => {
                     <TextInput
                       style={styles.inputWrapper(touched?.bank?.bankName ? COLORS.secondary : COLORS.offwhite)}
                       placeholder="Bank Name"
-                      value={values.bank.bankName}
+                      value={values.bank?.bankName}
                       onChangeText={(text) => setFieldValue("bank.bankName", text)}
                     />
 
@@ -508,8 +537,12 @@ const SupplierPaymentProfile = () => {
                     // Validate merged values
                     await validationSchema.validate(mergedValues, { abortEarly: false });
 
+                    if (values.preferredMethod === "mobileMoney" && phoneError) {
+                    } else {
+                      handleSubmit(mergedValues);
+                    }
+
                     // If valid, submit
-                    handleSubmit(mergedValues);
 
                     // console.log("passed");
                   } catch (validationError) {
@@ -536,6 +569,7 @@ const SupplierPaymentProfile = () => {
 
     // Render a read-only summary view when not editing
     const renderViewMode = () => {
+      // console.log(paymentDetails);
       const paymentMethods = {
         MobileMoney: { label: "Mpesa", imagePath: require("../../../assets/images/logos/Mpesa.png") },
         BankTransfer: { label: "BankTransfer", imagePath: require("../../../assets/images/logos/bank.png") },
@@ -574,6 +608,7 @@ const SupplierPaymentProfile = () => {
                       editable={false}
                     />
                   </View>
+
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>Mpesa Number</Text>
                     <TextInput
@@ -604,7 +639,7 @@ const SupplierPaymentProfile = () => {
                     <TextInput
                       style={styles.inputWrapper(COLORS.offwhite)}
                       placeholder="Bank Name"
-                      value={paymentDetails.bank.bankName}
+                      value={paymentDetails?.bank?.bankName}
                       editable={false}
                     />
                   </View>
@@ -1033,5 +1068,15 @@ const styles = StyleSheet.create({
   containerx: {
     flex: 1,
     paddingTop: 26,
+  },
+  focused: {
+    borderWidth: 1,
+    borderColor: COLORS.red,
+    borderRadius: 10,
+  },
+  noError: {
+    borderWidth: 1,
+    borderColor: COLORS.green,
+    borderRadius: 10,
   },
 });

@@ -25,6 +25,8 @@ const AuthProvider = ({ children }) => {
     }
   }, [userData]);
 
+  // console.log("data", AsyncStorage.getItem("id"));
+
   const checkExistingUser = async () => {
     try {
       const id = await AsyncStorage.getItem("id");
@@ -46,6 +48,7 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  // AsyncStorage.clear();
   const login = async (data) => {
     await AsyncStorage.removeItem("id");
 
@@ -63,7 +66,6 @@ const AuthProvider = ({ children }) => {
     setUserLogin(false);
 
     delete axios.defaults.headers.common["Authorization"];
-
     await AsyncStorage.removeItem("id");
     await AsyncStorage.removeItem(`user${userData?._id}`);
   };

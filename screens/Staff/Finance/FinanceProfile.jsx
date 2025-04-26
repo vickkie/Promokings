@@ -44,7 +44,7 @@ const FinanceProfile = () => {
         index: 0,
         routes: [{ name: "Login" }],
       });
-      console.log(userData);
+      // console.log(userData);
     } else if (hasRole("finance")) {
       setUserId(userData._id);
     } else {
@@ -79,51 +79,84 @@ const FinanceProfile = () => {
     );
   };
 
+  const uploadImage = async (uri) => {
+    const formData = new FormData();
+    formData.append("file", {
+      uri,
+      name: "profilePicture.jpg",
+      type: "image/jpeg",
+    });
+
+    try {
+      const response = await axios.post(`${BACKEND_PORT}/upload`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      console.log("Uploaded file URL:", response.data.fileUrl);
+      return response.data.fileUrl;
+    } catch (error) {
+      console.log("Error occurred, but extracting file URL anyway...");
+
+      //  Extract fileUrl even if error happens
+      if (error.response?.data?.fileUrl) {
+        return error.response.data.fileUrl;
+      }
+      // console.log(error.response?.data?.fileUrl);
+
+      return null; // If no fileUrl, return null
+    }
+  };
+
   const updateUserProfile = async (values) => {
     setLoader(true);
     try {
-      const formData = new FormData();
-      if (values.name) formData.append("name", values.name);
-      formData.append("email", values.email);
-      formData.append("location", values.location);
-      formData.append("username", values.username);
-      formData.append("staffId", userId);
+      let profilePictureUrl = null;
 
-      // If a profile picture is selected, append it to formData
+      // Upload profile picture first if it's new
       if (localProfilePicture) {
-        const fileType = localProfilePicture.split(".").pop();
-        formData.append("profilePicture", {
-          uri: localProfilePicture,
-          name: `profilePicture.${fileType}`,
-          type: `image/${fileType}`,
-        });
+        profilePictureUrl = await uploadImage(localProfilePicture);
+        if (!profilePictureUrl) throw new Error("Image upload failed");
       }
 
-      // Append password fields if provided
-      if (showPasswordFields) {
-        formData.append("currentPassword", values.currentPassword);
-        formData.append("newPassword", values.newPassword);
-      }
+      const userUpdateData = {
+        name: values.name || undefined,
+        email: values.email || userData?.email,
+        location: values.location,
+        username: values.username,
+        staffId: userData?.staffId,
+        profilePictureUrl: profilePictureUrl || undefined,
+        ...(showPasswordFields && {
+          currentPassword: values.currentPassword,
+          newPassword: values.newPassword,
+        }),
+      };
+      // console.log(userUpdateData);
 
-      const endpoint = `${BACKEND_PORT}/api/staff/updateProfile`;
+      const endpoint = `${BACKEND_PORT}/api/staff/updateDetails/${userData?._id}`;
 
-      const response = await axios.put(endpoint, formData, {
+      const response = await axios.put(endpoint, userUpdateData, {
         headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${userData?.TOKEN}`,
+          "Content-Type": "application/json",
         },
       });
-      //   console.log("response", response.data);
+
+      // console.log("response", response.data);
 
       if (response.status === 200) {
-        // console.log(response.data);
-        await updateUserData(response.data); // Update user data in context with response data
+        const updatedUserData = {
+          ...userData, // Keep original data
+          ...response.data, // Overwrite only updated fields
+          TOKEN: userData.TOKEN,
+        };
+        await updateUserData(updatedUserData);
         successUpdate();
-        setLocalProfilePicture(null); // Clear the local URI
+        setLocalProfilePicture(null);
+        setProfilePicture(userData?.profilePicture);
       }
     } catch (err) {
       console.log(err);
     }
+
     setLoader(false);
   };
 

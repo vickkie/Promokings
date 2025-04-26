@@ -189,6 +189,7 @@ const LoginPage = ({ navigation }) => {
                       placeholder="Enter email"
                       onFocus={() => setFieldTouched("email")}
                       onBlur={() => setFieldTouched("email", "")}
+                      keyboardType="email-address"
                       autoCapitalize="none"
                       autoCorrect={false}
                       style={{ flex: 1 }}
@@ -243,6 +244,7 @@ const LoginPage = ({ navigation }) => {
                       style={{ flex: 1 }}
                       value={values.password}
                       onChangeText={handleChange("password")}
+                      keyboardType={!obsecureText ? "visible-password" : "name-phone-pad"}
                     />
                     <TouchableOpacity
                       onPress={() => {

@@ -33,9 +33,7 @@ const MySupply = () => {
 
   // console.log(route.params);
 
-  const { data, isLoading, error, refetch } = useFetch(
-    `inventory-requests/supplier/accepted/${userData?.supplierProfile?._id}`
-  );
+  const { data, isLoading, error, refetch } = useFetch(`inventory-requests/supplier/${userData?.supplierProfile?._id}`);
 
   const [refreshList, setRefreshList] = useState(false);
 
