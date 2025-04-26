@@ -12,7 +12,7 @@ const SalesChart = ({ salesinData }) => {
     "2025-01": { due: 0, paid: 0 },
     "2025-02": { due: 0, paid: 0 },
     "2025-03": { due: 0, paid: 0 },
-    "2025-04": { due: 500000, paid: 150000 },
+    "2025-04": { due: 0, paid: 0 },
   };
 
   const salesData = salesinData?.paymentByMonth || dummyData;
@@ -27,7 +27,8 @@ const SalesChart = ({ salesinData }) => {
     backgroundGradientFrom: "#ffffff",
     backgroundGradientTo: "#ffffff",
     decimalPlaces: 0,
-    color: (opacity) => `rgba(135, 206, 250, ${opacity})`,
+    color: (opacity) => `rgba(255, 69, 0, ${opacity})`,
+    scrollableInfoTextStyle: { fontSize: 6 },
     labelColor: (opacity) => `rgba(128, 128, 128, ${opacity})`,
     style: { borderRadius: 16 },
     propsForBackgroundLines: { strokeDasharray: "2 3", strokeWidth: 1 },
