@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -24,10 +24,11 @@ import DatePicker from "react-native-date-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { BACKEND_PORT } from "@env";
 import { useRoute } from "@react-navigation/native";
+import { AuthContext } from "../../../components/auth/AuthContext";
 
 const AddBid = () => {
   const navigation = useNavigation();
-
+  const { userData } = useContext(AuthContext);
   const route = useRoute();
   // Get product from route params if it exists
   const product = route.params?.product;

@@ -6,9 +6,18 @@ import ProductsCardView from "./ProductsCardView";
 import useFetch from "../../hook/useFetch";
 import { Ionicons } from "@expo/vector-icons";
 
-const ProductsRow = () => {
+const ProductsRow = ({ refreshList, setRefreshList }) => {
   const { data, isLoading, error, refetch } = useFetch("products?limit=10&offset=0");
   const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    if (refreshList) {
+      refetch();
+      // console.log("refreshing", refreshList);
+    }
+
+    return setRefreshList(false);
+  }, [refreshList]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);

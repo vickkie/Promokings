@@ -71,15 +71,15 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) =
     onSubmit: (values) => {
       // handleSubmitOrder(values);
       // console.log("sub", values);
-      validateme(values);
+      validatePayment(values);
     },
     validateOnMount: true,
   });
 
-  // const validateMe => {
+  // const validatePayment => {
 
   // }
-  const validateme = async (values) => {
+  const validatePayment = async (values) => {
     let formErrors = await formik.validateForm();
 
     console.log("errors", formErrors);

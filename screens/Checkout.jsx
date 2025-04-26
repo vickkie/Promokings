@@ -610,19 +610,6 @@ const Checkout = () => {
                 </>
               )}
 
-              {step === 5 && isLoading && (
-                <View style={styles.containLottie}>
-                  <View style={styles.animationWrapper}>
-                    <LottieView
-                      source={require("../assets/data/loading.json")}
-                      autoPlay
-                      loop
-                      style={styles.animation}
-                    />
-                  </View>
-                </View>
-              )}
-
               {step === 5 && !isLoading && errorState && (
                 <View style={styles.containLottie}>
                   <View style={styles.animationWrapper}>
@@ -640,7 +627,7 @@ const Checkout = () => {
                   </TouchableOpacity>
                 </View>
               )}
-              {step === 4 && !errorState && (
+              {step === 5 && !errorState && isLoading && (
                 <View style={styles.containLottie}>
                   <View style={styles.animationWrapper}>
                     <LottieView

@@ -129,10 +129,10 @@ const MainCenter = () => {
             </TouchableOpacity>
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity
-                onPress={() => navigation.navigate("SalesShipments")}
+                onPress={() => navigation.navigate("BidList")}
                 style={[styles.backBtn, styles.buttonWrap]}
               >
-                <Icon name="truckfilled" size={26} />
+                <Icon name="contract" size={26} />
               </TouchableOpacity>
             </View>
           </View>

@@ -13,11 +13,13 @@ import { useCart } from "../contexts/CartContext";
 import HomeMenu from "../components/bottomsheets/HomeMenu";
 
 import { COLORS, SIZES } from "../constants";
+import { RefreshControl } from "react-native-gesture-handler";
 
 const Home = () => {
   const { userData, userLogin, hasRole } = useContext(AuthContext);
   const navigation = useNavigation();
   const { cart } = useCart();
+  const [refreshList, setRefreshList] = useState(false);
 
   useEffect(() => {
     if (userLogin) {
@@ -108,15 +110,25 @@ const Home = () => {
       </View>
 
       <View style={{ flex: 1, borderRadius: 45 }}>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              onRefresh={() => {
+                // console.log("dragged");
+                setRefreshList(true);
+              }}
+              refreshing={refreshList}
+            />
+          }
+        >
           <View style={styles.lowerWelcomeWrapper}>
             <Welcome />
             <View style={styles.lowerWelcome}>
               <Carousel />
               <Headings heading={"Top products"} />
-              <ProductsRow />
+              <ProductsRow refreshList={refreshList} setRefreshList={setRefreshList} />
               <Headings heading={"Latest Products"} />
-              <LatestProducts />
+              <LatestProducts refreshList={refreshList} setRefreshList={setRefreshList} />
             </View>
           </View>
         </ScrollView>
