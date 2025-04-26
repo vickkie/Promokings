@@ -37,6 +37,7 @@ const AddProduct = () => {
   const [category, setCategory] = useState("");
   const [quantity, setQuantity] = useState(0);
   const [supplier, setSupplier] = useState("");
+  const [sizeApplicable, setSizeApplicable] = useState(true);
   const [description, setDescription] = useState("");
   const [isEditable, setIsEditable] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -63,6 +64,7 @@ const AddProduct = () => {
       setTitle("");
       setPrice("");
       setAvailability(false);
+      sizeApplicable(true);
       setImageUrl("https://i.postimg.cc/j56q20rB/images.jpg");
       setProductId(generateProductId());
       setImage(null);
@@ -121,9 +123,12 @@ const AddProduct = () => {
       await validationSchema.validate(newProduct);
       // Now that the image is uploaded, proceed to add the product
       //   console.log("New Product:", newProduct);
+
+      newProduct.sizeApplicable = sizeApplicable;
+
       const response = await axios.post(`${BACKEND_PORT}/api/products`, newProduct);
 
-      if (response.status === 200 || response.status === 201) {
+      if (response.status === 201) {
         showToast("success", "Product added successfully!");
         // Reset form fields
         setTitle("");
@@ -136,6 +141,7 @@ const AddProduct = () => {
         setSupplier("");
         setDescription("");
         setQuantity(0);
+        setSizeApplicable(true);
 
         // Navigate to dashboard
         navigation.navigate("Inventory Navigation", {
@@ -337,6 +343,10 @@ const AddProduct = () => {
               <View style={styles.availabilityRow}>
                 <Text>Available:</Text>
                 <Switch value={availability} onValueChange={(value) => setAvailability(value)} />
+              </View>
+              <View style={styles.availabilityRow}>
+                <Text>Size Applicable:</Text>
+                <Switch value={sizeApplicable} onValueChange={(value) => setSizeApplicable(value)} />
               </View>
 
               <TouchableOpacity style={styles.submitBtn} onPress={handleAddProduct}>
