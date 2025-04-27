@@ -49,8 +49,9 @@ const SupplierPaymentTracker = ({ refreshList, setRefreshing, setRefreshList, us
 
   const paymentLogos = {
     visa: require("../../../assets/images/logos/visa.png"),
-    mastercard: require("../../../assets/images/logos/mastercard.png"),
+    banktransfer: require("../../../assets/images/logos/bank.png"),
     paypal: require("../../../assets/images/logos/paypal.png"),
+    mobilemoney: require("../../../assets/images/logos/Mpesa.png"),
   };
 
   // Key extractor for FlatList
@@ -60,7 +61,8 @@ const SupplierPaymentTracker = ({ refreshList, setRefreshing, setRefreshList, us
   const renderItem = ({ item: payout }) => {
     // Get the payment method from order object
     const paymentMethod = payout?.method?.toLowerCase();
-    // console.log(order);
+    console.log(paymentMethod);
+    console.log(payout);
 
     // Use mapped image or fallback
     const paymentLogo = paymentLogos[paymentMethod] || require("../../../assets/images/logos/paysafecard.png");

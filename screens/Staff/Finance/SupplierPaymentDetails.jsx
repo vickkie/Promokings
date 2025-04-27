@@ -1,20 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import {
-  View,
-  Text,
-  Button,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-  Linking,
-  InputField,
-} from "react-native";
+import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
+
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
-
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import SupplierPaymentTracker from "./SupplierPaymentTracker";
 import { BACKEND_PORT } from "@env";
 
@@ -85,14 +75,17 @@ const OrderPaymentDetails = () => {
     useEffect(() => {
       const fetchPaymentDetails = async () => {
         let routeport = `${BACKEND_PORT}/api/V2/supplier/V4/accountpay/${item?.inventoryRequest?.selectedSupplier}`;
-        console.log("port ", routeport);
+        // console.log("port ", routeport);
 
         try {
           const response = await axios.get(routeport);
 
-          setPaymentDetails(response.data.paymentDetails || {});
-          console.log("response", response.data.paymentDetails);
+          if (response.data.success) {
+            setPaymentDetails(response.data.paymentDetails || {});
+            // console.log("response", response.data.paymentDetails);
+          }
         } catch (err) {
+          console.log(err);
           setError(err.response?.data?.message || "Failed to fetch payment details");
           setLoading(false);
         } finally {
@@ -101,7 +94,6 @@ const OrderPaymentDetails = () => {
       };
 
       if (item?.inventoryRequest?.selectedSupplier && userData?.TOKEN) {
-        console.log("fetching");
         fetchPaymentDetails();
       } else {
         setLoading(false);
@@ -111,11 +103,14 @@ const OrderPaymentDetails = () => {
     const payment = paymentDetails;
     const preferred = payment?.preferredMethod;
 
+    // console.log(payment.bank, preferred);
+
     const isEmpty = (obj) => obj && Object.values(obj).every((val) => !val);
 
     const renderBank = () => {
-      const { accountName, accountNumber, bankName, bankBranch, bankCode, swiftCode } = payment.bank || {};
+      const { accountName, accountNumber, bankName, bankBranch, bankCode, swiftCode } = payment?.bank || {};
       const isBankEmpty = isEmpty(payment.bank);
+      // return;
 
       return (
         <View>
@@ -141,6 +136,7 @@ const OrderPaymentDetails = () => {
     const renderMpesa = () => {
       const { mpesaName, mpesaNumber, idNumber } = payment.mobileMoney || {};
       const isMpesaEmpty = isEmpty(payment.mobileMoney);
+      console.log(isMpesaEmpty);
 
       return (
         <View>
@@ -191,13 +187,21 @@ const OrderPaymentDetails = () => {
       <View>
         {preferred === "BankTransfer" && renderBank()}
         {preferred === "MobileMoney" && renderMpesa()}
-        {preferred === "Paypal" && renderPaypal()}
+        {preferred === "PayPal" && renderPaypal()}
         {!preferred && renderFallback()}
 
         {item?.paidAt && <InputField icon="calendar" value={formatDate(item?.paidAt)} placeholder="Date Paid" />}
       </View>
     );
   };
+
+  // helper input component
+  const InputField = ({ icon, value, placeholder }) => (
+    <View style={styles.inputWrapper}>
+      <MaterialCommunityIcons name={icon} size={28} style={styles.iconStyle} color={COLORS.gray} />
+      <TextInput style={{ flex: 1, color: "black" }} value={value} editable={false} placeholder={placeholder} />
+    </View>
+  );
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>

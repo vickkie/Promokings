@@ -12,6 +12,7 @@ import axiosRetry from "axios-retry";
 
 import { BACKEND_PORT } from "@env";
 import * as ImagePicker from "expo-image-picker";
+import { Picker } from "@react-native-picker/picker";
 import ButtonMain from "../../../components/ButtonMain";
 import Toast from "react-native-toast-message";
 import ProfileCompletion from "../ProfileCompletion";
@@ -35,6 +36,7 @@ const DriverProfile = () => {
   const navigation = useNavigation();
   const [loader, setLoader] = useState(false);
   const [profilePicture, setProfilePicture] = useState(userData?.profilePicture || null);
+  const [vehicle, setVehicle] = useState("");
   const [localProfilePicture, setLocalProfilePicture] = useState(null); // New state variable for local image URI
   const [userId, setUserId] = useState(null);
   const [showPasswordFields, setShowPasswordFields] = useState(false); // State for toggling password fields
@@ -61,6 +63,21 @@ const DriverProfile = () => {
       { text: "Continue", onPress: () => {} },
     ]);
   };
+
+  const vehicles = [
+    {
+      _id: "332",
+      title: "small",
+    },
+    {
+      _id: "3233",
+      title: "medium",
+    },
+    {
+      _id: "3223334",
+      title: "large",
+    },
+  ];
 
   const successUpdate = () => {
     Alert.alert(
@@ -125,7 +142,7 @@ const DriverProfile = () => {
         location: values.location,
         username: values.username,
         numberPlate: values.numberPlate,
-        vehicle: values.vehicle,
+        vehicle: vehicle || values.vehicle,
         staffId: userData?.staffId,
         profilePictureUrl: profilePictureUrl || undefined,
         ...(showPasswordFields && {
@@ -135,6 +152,7 @@ const DriverProfile = () => {
       };
       // console.log(userUpdateData);
 
+      // return;
       const endpoint = `${BACKEND_PORT}/api/staff/updateDetails/${userData?._id}`;
 
       const response = await axios.put(endpoint, userUpdateData, {
@@ -182,7 +200,7 @@ const DriverProfile = () => {
       setLocalProfilePicture(pickedUri);
       console.log(pickedUri);
     } else {
-      console.log("wtf");
+      // console.log("wtf");
     }
   };
 
@@ -341,7 +359,17 @@ const DriverProfile = () => {
               validationSchema={getValidationSchema(showPasswordFields)}
               onSubmit={(values) => updateUserProfile(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldTouched, touched }) => (
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+                errors,
+                isValid,
+                setFieldTouched,
+                touched,
+                setFieldValue,
+              }) => (
                 <View style={styles.profileData}>
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>UserName</Text>
@@ -392,19 +420,22 @@ const DriverProfile = () => {
                     {touched.location && errors.location && <Text style={styles.errorMessage}>{errors.location}</Text>}
                   </View>
                   <View style={styles.wrapper}>
-                    <Text style={styles.label}>Vehicle Type</Text>
-                    <View style={[styles.inputWrapper, touched.location && { borderColor: COLORS.secondary }]}>
-                      <TextInput
-                        placeholder="Enter Vehicle type"
-                        onFocus={() => setFieldTouched("vehicle")}
-                        onBlur={() => setFieldTouched("vehicle", "")}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        style={{ flex: 1 }}
-                        value={values.vehicle}
-                        onChangeText={handleChange("vehicle")}
-                      />
-                    </View>
+                    <Text style={styles.label}>Vehicle size (Type)</Text>
+                    <Picker
+                      selectedValue={vehicle || values.vehicle}
+                      onValueChange={(itemValue, itemIndex) => {
+                        setVehicle(itemValue);
+                        setFieldValue("vehicle", vehicle);
+                      }}
+                      style={styles.picker}
+                    >
+                      <Picker.Item label="Select Vehicle" value={values.vehicle} />
+                      {vehicles &&
+                        vehicles.map((veh) => {
+                          //
+                          return <Picker.Item key={veh._id} label={veh.title} value={veh.title} />;
+                        })}
+                    </Picker>
                     {touched.vehicle && errors.vehicle && <Text style={styles.errorMessage}>{errors.vehicle}</Text>}
                   </View>
                   <View style={styles.wrapper}>
