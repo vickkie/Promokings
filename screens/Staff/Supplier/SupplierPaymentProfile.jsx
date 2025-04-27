@@ -20,7 +20,7 @@ import Icon from "../../../constants/icons";
 import LottieView from "lottie-react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../../components/auth/AuthContext";
-import { parsePhoneNumberFromString, PhoneNumber } from "libphonenumber-js/min";
+import { parsePhoneNumberFromString } from "libphonenumber-js/min";
 
 const SupplierPaymentProfile = () => {
   const [loader, setLoader] = useState(false);

@@ -19,6 +19,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../components/auth/AuthContext";
 import * as Yup from "yup";
 import IntlPhoneInput from "react-native-intl-phone-input";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { parsePhoneNumberFromString } from "libphonenumber-js/min";
 
 import CheckoutStep3 from "./Payments";
 import LottieView from "lottie-react-native";
@@ -93,7 +95,7 @@ const Checkout = () => {
         const response = await axios.post(`${BACKEND_PORT}/api/products/stock`, {
           productIds,
         });
-        console.log(response.data.stock);
+        // console.log(response.data.stock);
         setStockData(response.data.stock);
       } catch (err) {
         console.error("Error fetching stock:", err);
@@ -123,11 +125,7 @@ const Checkout = () => {
     fetchStores();
   }, []);
 
-  console.log(step);
   const handleNext = () => {
-    console.log(step);
-    console.log(deliveryMethod);
-
     switch (step) {
       case 3:
         if (deliveryMethod === "shipping" && phoneError) {
@@ -137,7 +135,13 @@ const Checkout = () => {
         } else if (deliveryMethod === "shipping" && address === "") {
           setPhoneError("Please fill shipping address field");
         } else {
-          setStep(step + 1);
+          try {
+            const data = { city, address, phoneNumber, finalPhoneNumber };
+            saveShipping(data);
+          } catch (error) {
+          } finally {
+            setStep(step + 1);
+          }
         }
         break;
       case 5:
@@ -151,6 +155,57 @@ const Checkout = () => {
         }
     }
   };
+
+  const getPhoneMeta = (number, defaultDialCode = "+254") => {
+    if (!number) {
+      return {
+        dialCode: `+254`,
+        country: "KE",
+        nationalNumber: "",
+        isValid: true,
+      };
+    }
+
+    // If number doesn't start with +, clean + inject dial code
+    const formattedNumber = number.startsWith("+") ? number : `${defaultDialCode}${number.replace(/^0/, "")}`;
+
+    const parsed = parsePhoneNumberFromString(formattedNumber);
+
+    if (!parsed) return null;
+
+    return {
+      dialCode: `+${parsed.countryCallingCode}`,
+      country: parsed.country,
+      nationalNumber: parsed.nationalNumber,
+      isValid: parsed.isValid(),
+    };
+  };
+
+  const saveShipping = async (data) => {
+    await AsyncStorage.setItem("shippingdata", JSON.stringify(data));
+  };
+
+  //try geting stored saved data
+  async function getShipping() {
+    let shipping = {};
+
+    shipping = await AsyncStorage.getItem("shippingdata");
+
+    if (shipping) {
+      const addressing = JSON.parse(shipping);
+      // console.log(addressing, "shipping");
+      let { address, finalPhoneNumber, city, phoneNumber } = addressing;
+
+      setAddress(address || "");
+      setfinalPhoneNumber(finalPhoneNumber || "");
+      setPhoneNumber(phoneNumber || "");
+      setCity(city || "");
+    }
+  }
+
+  useEffect(() => {
+    getShipping();
+  }, [step === 3]);
 
   const handlePrevious = () => {
     if (step > 6) {
@@ -188,11 +243,11 @@ const Checkout = () => {
       subtotal: estimatedAmount + additionalFees,
     };
 
-    console.log("orderDATA", orderData);
+    // console.log("orderDATA", orderData);
 
     handleNext(); // This moves to the next step in the UI
 
-    console.log(orderData);
+    // console.log(orderData);
     // return;
 
     try {
@@ -516,9 +571,10 @@ const Checkout = () => {
                         <Text style={styles.label}>Phone Number</Text>
                         <View style={[styles.input2, phoneError ? styles.errorb : styles.successb]}>
                           <IntlPhoneInput
+                            placeholder={getPhoneMeta(finalPhoneNumber)?.nationalNumber || ""}
                             ref={(ref) => (phoneInput = ref)}
                             customModal={renderCustomModal}
-                            defaultCountry="KE"
+                            defaultCountry={getPhoneMeta(finalPhoneNumber)?.country || ""}
                             lang="EN"
                             onChangeText={onChangeText}
                             flagStyle={styles.flagWidth}
