@@ -49,13 +49,15 @@ const EditShipmentDriver = () => {
 
   const handleCancelOrder = async () => {
     setUploading(true);
-    const status = "cancelled";
+    const status = "failed";
 
     if (!shipmentId || !driverNotes) {
       Alert.alert("Error", "shipment ID and driver notes is required!");
       setUploading(false);
       return;
     }
+
+    routeport = `${BACKEND_PORT}/api/shipment/myDeliveries/${shipmentId}/status`;
 
     Alert.alert("Confirm cancelling", "Are you sure you want to cancel this delivery?", [
       {
@@ -68,7 +70,7 @@ const EditShipmentDriver = () => {
         style: "destructive",
         onPress: async () => {
           try {
-            const response = await fetch(`${BACKEND_PORT}/api/shipment/${shipmentId}`, {
+            const response = await fetch(routeport, {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
@@ -112,6 +114,9 @@ const EditShipmentDriver = () => {
       setUploading2(false);
       return;
     }
+    // routeport = `${BACKEND_PORT}/api/shipment/${shipmentId}`;
+    routeport = `${BACKEND_PORT}/api/shipment/myDeliveries/${shipmentId}/status`;
+    console.log(routeport);
 
     Alert.alert("Confirm completing", "Are you sure you want to complete this delivery?", [
       {
@@ -124,7 +129,7 @@ const EditShipmentDriver = () => {
         style: "destructive",
         onPress: async () => {
           try {
-            const response = await fetch(`${BACKEND_PORT}/api/shipment/${shipmentId}`, {
+            const response = await fetch(routeport, {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
@@ -253,7 +258,7 @@ const EditShipmentDriver = () => {
                           setIsEditing(!isEditing);
                         }}
                       >
-                        <Icon name="pencil" size={26} />
+                        <Icon name={isEditing ? "tick" : "pencil"} size={26} />
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -279,7 +284,7 @@ const EditShipmentDriver = () => {
                   {uploading2 ? (
                     <ActivityIndicator size={30} color={COLORS.themew} />
                   ) : (
-                    <Text style={styles.submitText}>Mark Order Complete</Text>
+                    <Text style={styles.submitText}>Mark Order Delivered</Text>
                   )}
                 </TouchableOpacity>
 
@@ -287,7 +292,7 @@ const EditShipmentDriver = () => {
                   {uploading ? (
                     <ActivityIndicator size={30} color={COLORS.themew} />
                   ) : (
-                    <Text style={styles.submitText}>Cancel Order</Text>
+                    <Text style={styles.submitText}>Cancel Delivery</Text>
                   )}
                 </TouchableOpacity>
               </View>

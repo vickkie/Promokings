@@ -12,6 +12,10 @@ import { SIZES, COLORS } from "../../../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
+let localLogo = FileSystem.getContentUriAsync("../../../assets/svg/promoking.png");
+
+console.log(filelogo);
+
 const InvoiceScreen = () => {
   const route = useRoute();
   const { order } = route.params;
@@ -111,7 +115,7 @@ const InvoiceScreen = () => {
       <body>
         ${showWatermark ? `<div class="watermark">CONFIDENTIAL</div>` : ""}
         <div class="logo">
-          <img src="https://res.cloudinary.com/drsuclnkw/image/upload/v1741609689/Promokings/promoking-logo_h3hu4v.png" width="81" height="69" />
+          <img src=${localLogo} width="81" height="69" />
         </div>
         <div class="header">Promokings Limited Kenya</div>
         <div class="section">

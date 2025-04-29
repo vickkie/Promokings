@@ -69,7 +69,7 @@ const MessageCenter = ({ navigation }) => {
               <View style={styles.menuItem(0.5)}>
                 <View style={styles.itswrap}>
                   <Icon name="bellfilled" size={24} color={COLORS.primary} />
-                  <Text style={styles.menuText}>Notifications</Text>
+                  <Text style={styles.menuText}>My Notifications</Text>
                 </View>
                 <Icon name="forward" size={24} color={COLORS.primary} />
               </View>
@@ -90,7 +90,7 @@ const MessageCenter = ({ navigation }) => {
                   <View style={styles.menuItem(0.5)}>
                     <View style={styles.itswrap}>
                       <Icon name="cartcheck" size={26} color={COLORS.primary} />
-                      <Text style={styles.menuText}>Order Messages & Tracking</Text>
+                      <Text style={styles.menuText}>Order Tracking</Text>
                     </View>
                     <Icon name="forward" size={24} color={COLORS.primary} />
                   </View>

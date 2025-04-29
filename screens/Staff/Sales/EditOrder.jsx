@@ -105,7 +105,7 @@ const EditSalesOrder = () => {
         onPress: () => setUploading(false),
       },
       {
-        text: "Delete",
+        text: "Confirm",
         style: "destructive",
         onPress: async () => {
           try {
@@ -162,7 +162,7 @@ const EditSalesOrder = () => {
         onPress: () => setUploading2(false),
       },
       {
-        text: "Delete",
+        text: "Confirm",
         style: "destructive",
         onPress: async () => {
           try {
@@ -215,7 +215,7 @@ const EditSalesOrder = () => {
         onPress: () => setUploading(false),
       },
       {
-        text: "Delete",
+        text: "Confirm",
         style: "destructive",
         onPress: async () => {
           try {
@@ -248,6 +248,55 @@ const EditSalesOrder = () => {
       },
     ]);
   };
+  const handleOrderPending = async () => {
+    const status = "pending";
+
+    if (!orderId) {
+      Alert.alert("Error", "Order ID is required!");
+      setUploading(false);
+      return;
+    }
+
+    Alert.alert("Confirm Pending", "Are you sure you want to change order to pending?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+        onPress: () => setUploading(false),
+      },
+      {
+        text: "Confirm",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            const response = await fetch(`${BACKEND_PORT}/api/order/${orderId}`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ status }),
+            });
+
+            const data = await response.json();
+
+            if (!data.success) {
+              throw new Error(data.message || "Failed to approve order");
+            }
+
+            alert("Order changed to pending");
+            navigation.replace("OrdersSales", { refresh: true, refreshin: true });
+            setTimeout(() => {
+              navigation.navigate("Sales Navigation");
+            }, 500);
+          } catch (error) {
+            console.warn("Error updating Order:", error);
+            alert(error);
+          } finally {
+            setTimeout(() => {}, 2000);
+          }
+        },
+      },
+    ]);
+  };
 
   const handleDeleteOrder = async () => {
     setIsLoading(true);
@@ -262,10 +311,10 @@ const EditSalesOrder = () => {
       {
         text: "Cancel",
         style: "cancel",
-        onPress: () => setUploading(false),
+        onPress: () => setIsLoading(false),
       },
       {
-        text: "Delete",
+        text: "Confirm",
         style: "destructive",
         onPress: async () => {
           try {
@@ -530,6 +579,13 @@ const EditSalesOrder = () => {
                     <ActivityIndicator size={30} color={COLORS.themew} />
                   ) : (
                     <Text style={styles.submitText}>Mark Order Complete</Text>
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.cancelBtn} onPress={handleOrderPending}>
+                  {uploading ? (
+                    <ActivityIndicator size={30} color={COLORS.themew} />
+                  ) : (
+                    <Text style={styles.submitText}>Pending Order</Text>
                   )}
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.cancelBtn} onPress={handleCancelOrder}>

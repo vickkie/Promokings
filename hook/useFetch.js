@@ -22,7 +22,7 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
 
       const url = `${BACKEND_PORT}/api/${endpoint}`;
 
-      console.log(url);
+      // console.log(url);
 
       const headers = {};
 

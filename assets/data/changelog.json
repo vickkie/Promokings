@@ -139,6 +139,12 @@
       "whatsNew": ["Major release rollout","Now targets android 13","Refined Transaction tracking","Revamped checkout process","Added payment & delivery methods",
       "Home items pull down refresh"],
       "fixed": ["Size applicable to all products bug","Double navigation fix"]
+    },{
+      "releaseDate": "2025-04-30",
+      "version": "1.4.6",
+      "whatsNew": ["Order status notifications added","New ",
+      "Home items pull down refresh"],
+      "fixed": [""]
     }
   ]
 }

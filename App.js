@@ -18,7 +18,7 @@ import { ProfileCompletionProvider } from "./components/auth/ProfileCompletionCo
 import { WishProvider } from "./contexts/WishContext";
 import { chatScreenOptions, systemScreenOptions } from "./screens_options/AppHeaderOptions";
 
-import { navigationRef } from "./Helpers/NavigationService";
+// import { navigationRef } from "./Helpers/NavigationService";
 
 // Screens from ./screens
 import {
@@ -123,7 +123,7 @@ import SupplierTabNavigation from "./navigation/SupplierTabNavigation";
 import DispatcherTabNavigation from "./navigation/DispatcherTabNavigation ";
 
 import PushNotification from "./components/auth/pushNotification";
-import { RouteProvider } from "./components/auth/RouteContext";
+// import { RouteProvider } from "./components/auth/RouteContext";
 
 enableScreens();
 

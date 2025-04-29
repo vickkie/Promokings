@@ -74,7 +74,7 @@ const SystemMessages = () => {
         : currentMessage.type === "warning"
         ? COLORS.warning
         : currentMessage.type === "error"
-        ? COLORS.error
+        ? COLORS.tertiary
         : currentMessage.type === "success"
         ? COLORS.success
         : COLORS.themeg;
