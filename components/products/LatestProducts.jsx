@@ -34,7 +34,7 @@ const LatestProducts = ({ refreshList, setRefreshList }) => {
           <Text style={styles.errorMessage}>Looks like you're offline</Text>
           <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
             <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
-            <Text style={styles.retryButtonText}>Retry Fetch</Text>
+            <Text style={styles.retryButtonText}>Retry Loading</Text>
           </TouchableOpacity>
         </View>
       ) : dataArray.length === 0 ? (

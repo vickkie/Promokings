@@ -1,11 +1,12 @@
 import { FlatList, Text, View, ActivityIndicator, TouchableOpacity, RefreshControl } from "react-native";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { COLORS, SIZES } from "../../constants";
 import useFetch from "../../hook/useFetch";
 import styles from "./categorieslist.style";
 import CategoryCardView from "./CategoryCardView";
 import { Ionicons } from "@expo/vector-icons";
 import LottieView from "lottie-react-native";
+import NetInfo from "@react-native-community/netinfo";
 
 const CategoriesList = () => {
   const { data, isLoading, error, refetch } = useFetch("category");
@@ -21,6 +22,25 @@ const CategoriesList = () => {
     }
   }, [refetch]);
 
+  const checkNetInfo = async () => {
+    try {
+      const { isConnected } = await NetInfo.fetch();
+
+      if (!isConnected) {
+        console.log("No internet connection.");
+        return;
+      }
+    } catch (error) {
+      console.log(error, "net");
+    }
+  };
+
+  useEffect(() => {
+    checkNetInfo();
+  }, []);
+
+  let isOffline = !NetInfo.useNetInfo().isConnected;
+
   if (isLoading) {
     return (
       <View style={styles.containerx}>
@@ -31,9 +51,6 @@ const CategoriesList = () => {
         </View>
       </View>
     );
-  }
-  if (data) {
-    // console.log(data);
   }
 
   if (data.length === 0) {
@@ -51,7 +68,7 @@ const CategoriesList = () => {
   if (error) {
     return (
       <View style={styles.errorContainer}>
-        <Text style={styles.errorMessage}>Error loading categories</Text>
+        <Text style={styles.errorMessage}>Looks like you are offline</Text>
         <TouchableOpacity onPress={refetch} style={styles.retryButton}>
           <Text style={styles.retryButtonText}>Retry Fetch</Text>
         </TouchableOpacity>

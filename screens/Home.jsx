@@ -15,6 +15,8 @@ import HomeMenu from "../components/bottomsheets/HomeMenu";
 import { COLORS, SIZES } from "../constants";
 import { RefreshControl } from "react-native-gesture-handler";
 
+import companyInfo from "../assets/data/companyData.json";
+
 const Home = () => {
   const { userData, userLogin, hasRole } = useContext(AuthContext);
   const navigation = useNavigation();
@@ -131,7 +133,7 @@ const Home = () => {
           </Text>
         </View>
         <View style={styles.sloganWrapper}>
-          <Text style={styles.slogan}>PromoKings, your one-stop shop</Text>
+          <Text style={styles.slogan}> {companyInfo?.smallName}, your one-stop shop</Text>
         </View>
       </View>
 

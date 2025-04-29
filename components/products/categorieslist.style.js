@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   },
 
   retryButton: {
-    backgroundColor: COLORS.themey,
+    backgroundColor: COLORS.primary,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 14,

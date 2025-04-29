@@ -30,7 +30,7 @@ const ChatListScreen = () => {
     try {
       const userRole = userData?.position || userData?.role || "customer";
       const datapoint = `${BACKEND_URL}/api/chat/chat-users`;
-      console.log(datapoint);
+      // console.log(datapoint);
 
       const response = await axios.get(datapoint, {
         params: {
@@ -40,7 +40,7 @@ const ChatListScreen = () => {
         },
       });
 
-      console.log(response.data);
+      // console.log(response.data);
 
       setUsers(response.data);
     } catch (error) {

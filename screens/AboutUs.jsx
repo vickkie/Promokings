@@ -56,9 +56,9 @@ const AboutUs = () => {
 
               <View>
                 <Text style={{ fontFamily: "regular", fontSize: SIZES.medium + 2, textAlign: "center", marginTop: 4 }}>
-                  Promokings
+                  {companyInfo.name}
                 </Text>
-                <Text>Company</Text>
+                {/* <Text>Company</Text> */}
               </View>
             </View>
           </View>

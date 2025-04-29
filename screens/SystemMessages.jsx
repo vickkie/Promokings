@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useContext } from "react";
 import { View, StyleSheet, ActivityIndicator, ImageBackground, Text, Image } from "react-native";
-import { GiftedChat, Bubble } from "react-native-gifted-chat";
+import { GiftedChat, Bubble, InputToolbar } from "react-native-gifted-chat";
 import { COLORS, SIZES } from "../constants";
 import { AuthContext } from "../components/auth/AuthContext";
 import useFetch from "../hook/useFetch";
 import LottieView from "lottie-react-native";
+import { RefreshControl } from "react-native-gesture-handler";
 
 const SystemMessages = () => {
   const [messages, setMessages] = useState([]);
   const { userData, userLogin } = useContext(AuthContext);
   const [userId, setUserId] = useState(null);
+
+  // console.log(userId);
 
   useEffect(() => {
     if (userData && userData._id) {
@@ -23,7 +26,7 @@ const SystemMessages = () => {
     data: userNotifications,
     isLoading: isLoadingUser,
     refetch: refetchUser,
-  } = useFetch(`notification/user/${userId}`);
+  } = useFetch(`notification/user/${userData?._id}`);
   const {
     data: systemNotifications,
     isLoading: isLoadingSystem,
@@ -121,29 +124,18 @@ const SystemMessages = () => {
           />
         )}
 
-        {isLoadingUser || isLoadingSystem ? (
-          <View style={styles.containLottie}>
-            <View style={styles.animationWrapper}>
-              <LottieView source={require("../assets/data/loading.json")} autoPlay loop style={styles.animation} />
-            </View>
-            <View style={{ marginTop: -20, paddingBottom: 10 }}>
-              <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}> Nothing to see here</Text>
-            </View>
-          </View>
-        ) : (
-          <GiftedChat
-            messages={messages}
-            user={{
-              _id: 1,
-            }}
-            renderBubble={renderCustomBubble}
-            renderInputToolbar={() => null}
-            isTyping={true}
-            alignTop={true}
-            renderAvatarOnTop={true}
-            renderChatFooter={renderFooter}
-          />
-        )}
+        <GiftedChat
+          messages={messages}
+          user={{
+            _id: 1,
+          }}
+          renderBubble={renderCustomBubble}
+          renderInputToolbar={() => null}
+          isTyping={isLoadingSystem || isLoadingSystem}
+          alignTop={true}
+          renderAvatarOnTop={true}
+          renderChatFooter={renderFooter}
+        />
       </ImageBackground>
     </View>
   );
@@ -169,12 +161,12 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: "center",
     position: "absolute",
-    bottom: -40,
+    bottom: 10,
     textAlign: "center",
     width: SIZES.width,
   },
   footerText: {
-    color: COLORS.themey,
+    color: COLORS.primary,
     fontSize: 14,
   },
   containLottie: {
@@ -193,6 +185,20 @@ const styles = StyleSheet.create({
   animation: {
     width: "100%",
     height: "100%",
+  },
+  actionsContainer: {
+    position: "absolute",
+    right: 50,
+    top: 5,
+    zIndex: 9999,
+  },
+  inputBox: {
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 2,
+    borderRadius: 20,
+    paddingTop: 5,
+    top: 5,
   },
 });
 

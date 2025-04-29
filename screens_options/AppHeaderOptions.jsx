@@ -35,7 +35,7 @@ const successScreenOptions = {
   // Additional options...
 };
 const systemScreenOptions = {
-  headerTitle: () => <Text style={{ color: "#fff", fontSize: SIZES.large }}>System Notifications</Text>,
+  headerTitle: () => <Text style={{ color: "#fff", fontSize: SIZES.large }}> Notifications</Text>,
   headerStyle: {
     backgroundColor: COLORS.themey,
   },

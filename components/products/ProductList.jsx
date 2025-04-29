@@ -38,6 +38,7 @@ const ProductList = ({ sendDataToParent, routeParams }) => {
       const response = await axios.get(`${BACKEND_PORT}/api/${routeParam}`, {
         params: { limit, offset: reset ? 0 : offset },
       });
+      // console.log(response.data.length);
 
       // Ensure unique products
       setProducts((prev) => {
@@ -46,9 +47,10 @@ const ProductList = ({ sendDataToParent, routeParams }) => {
       });
 
       setOffset((prev) => (reset ? limit : prev + limit));
+
       setError(null);
     } catch (err) {
-      setError("Failed to fetch products.");
+      setError("Sorry try again.");
     } finally {
       setLoading(false);
       if (reset) setRefreshing(false);

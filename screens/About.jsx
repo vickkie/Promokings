@@ -6,6 +6,9 @@ import { ScrollView } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import ChangeLogMenu from "../components/bottomsheets/ChangeLog";
 import { VERSION_SHORT } from "@env";
+// import companyInfo from
+
+import companyInfo from "../assets/data/companyData.json";
 
 const About = () => {
   const navigation = useNavigation();
@@ -59,9 +62,9 @@ const About = () => {
 
               <View>
                 <Text style={{ fontFamily: "regular", fontSize: SIZES.medium + 2, textAlign: "center", marginTop: 4 }}>
-                  Promokings
+                  {companyInfo?.name}
                 </Text>
-                <Text>Company</Text>
+                {/* <Text>Company</Text> */}
               </View>
             </View>
           </View>
