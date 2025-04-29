@@ -77,9 +77,12 @@ const SupplyPaymentDetails = () => {
 
     useEffect(() => {
       const fetchPaymentDetails = async () => {
-        let routeport = `${BACKEND_PORT}/api/V2/supplier/V4/accountpay/${item?.supplier?._id}`;
+        const supplierProf = item?.supplier?._id || userData?.supplierProfile?._id || userData?.supplierProfile;
 
-        console.log("port ", routeport);
+        let routeport = `${BACKEND_PORT}/api/V2/supplier/V4/accountpay/${supplierProf}`;
+
+        // console.log("port ", routeport);
+        console.log("userdata ", userData);
         try {
           const response = await axios.get(routeport, {
             headers: {
@@ -93,8 +96,7 @@ const SupplyPaymentDetails = () => {
           setLoading(false);
         }
       };
-
-      if (item?.supplier?._id && userData?.token) {
+      if (userData) {
         fetchPaymentDetails();
       } else {
         setLoading(false);
@@ -154,6 +156,7 @@ const SupplyPaymentDetails = () => {
     };
 
     const renderPaypal = () => {
+      console.log(payment);
       const { email } = payment.paypal || {};
       const isPaypalEmpty = isEmpty(payment.paypal);
 
@@ -184,7 +187,7 @@ const SupplyPaymentDetails = () => {
       <View>
         {preferred === "BankTransfer" && renderBank()}
         {preferred === "MobileMoney" && renderMpesa()}
-        {preferred === "Paypal" && renderPaypal()}
+        {preferred === "PayPal" && renderPaypal()}
         {!preferred && renderFallback()}
 
         {item?.paidAt && <InputField icon="calendar" value={formatDate(item?.paidAt)} placeholder="Date Paid" />}

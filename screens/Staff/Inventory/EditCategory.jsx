@@ -115,13 +115,16 @@ const EditCategory = () => {
     try {
       if (image) {
         const uploadedImageUrl = await uploadImage(image);
+
+        console.log(uploadedImageUrl);
         setImageUrl(uploadedImageUrl);
         updatedProduct.imageUrl = uploadedImageUrl;
       }
 
       await validationSchema.validate(updatedProduct);
 
-      const response = await axios.put(`${BACKEND_PORT}/api/products/${product._id}`, updatedProduct);
+      const response = await axios.put(`${BACKEND_PORT}/api/category/${product._id}`, updatedProduct);
+      // console.log(response.data, "1");
 
       if (response.status === 200) {
         showToast("success", "Product updated successfully!");
@@ -153,6 +156,8 @@ const EditCategory = () => {
       });
 
       if (response.status === 200) {
+        console.log("upload was success");
+
         setUploading(false);
         return response.data.fileUrl;
       } else {

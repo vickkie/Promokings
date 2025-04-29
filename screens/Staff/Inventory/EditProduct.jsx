@@ -36,9 +36,9 @@ const EditProduct = () => {
 
   const product = productold || item;
 
-  console.log(item);
+  // console.log(item);
 
-  console.log("old", item?.quantity);
+  // console.log("old", item?.quantity);
 
   const [title, setTitle] = useState(product?.title || "");
   const [price, setPrice] = useState(product?.price || "");
@@ -128,7 +128,7 @@ const EditProduct = () => {
     try {
       const response = await axios.delete(`${BACKEND_PORT}/api/products/${product._id}`);
 
-      console.log(response.status);
+      // console.log(response.status);
 
       if (response.status === 200 || response.status === 204) {
         showToast("success", "Product deleted successfully!");
@@ -181,7 +181,13 @@ const EditProduct = () => {
 
       if (response.status === 200) {
         showToast("success", "Product updated successfully!");
-        navigation.navigate("EditProductsList", { refreshList: true });
+
+        navigation.navigate("Inventory Navigation", {
+          screen: {
+            name: "EditProductsList",
+            refreshList: true,
+          },
+        });
       }
     } catch (error) {
       showToast("error", "Product update failed", error.message);
@@ -195,7 +201,7 @@ const EditProduct = () => {
       const formData = new FormData();
       const fileType = image.split(".").pop();
 
-      formData.append("profilePicture", {
+      formData.append("file", {
         uri: image,
         name: `productImage.${fileType}`,
         type: `image/${fileType}`,
@@ -219,6 +225,7 @@ const EditProduct = () => {
       throw err;
     } finally {
       setLoader(false);
+      setUploading(false);
     }
   };
 
@@ -258,7 +265,7 @@ const EditProduct = () => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
             <Icon name="backbutton" size={26} />
           </TouchableOpacity>
-          <Text style={styles.heading}>{loader ? "DELETING ..." : "UPDATE PRODUCT"}</Text>
+          <Text style={styles.heading}>{loader ? "UPDATING ..." : "UPDATE PRODUCT"}</Text>
           <TouchableOpacity
             style={styles.buttonWrap}
             onPress={() => {

@@ -133,7 +133,7 @@ const InventoryRequests = () => {
         .length
     : 0;
 
-  console.log("open", openBids);
+  // console.log("open", openBids);
 
   const flatListKey = isGridView ? "grid" : "list"; // Key for FlatList
 

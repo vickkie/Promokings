@@ -21,6 +21,7 @@ import Icon from "../constants/icons";
 import { StatusBar } from "react-native";
 import Toast from "react-native-toast-message";
 import axiosRetry from "axios-retry";
+import { navigate } from "../Helpers/NavigationService";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
@@ -42,7 +43,7 @@ const LoginPage = ({ navigation }) => {
   const [obsecureText, setObsecureText] = useState(false);
 
   React.useEffect(() => {
-    console.log("Navigated to LoginPage");
+    // console.log("Navigated to LoginPage");
   }, []);
 
   const inValidForm = () => {
@@ -94,12 +95,18 @@ const LoginPage = ({ navigation }) => {
         supplier: "Supplier Navigation",
       };
 
-      if (role in roleRoutes) {
-        console.log("Navigating to:", roleRoutes[role]);
-        navigation.replace(roleRoutes[role]);
-      } else {
-        navigation.replace("Bottom Navigation");
-      }
+      //!TEMPORARY FIX
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Bottom Navigation", params: { screen: "Home" } }],
+      });
+
+      // if (role in roleRoutes) {
+      //   // console.log("Navigating to:", roleRoutes[role]);
+      //   navigation.replace(roleRoutes[role]);
+      // } else {
+      //   navigation.replace("Bottom Navigation");
+      // }
     } catch (error) {
       // Pull the error message from the response
       const errorMsg = error.response?.data?.message || "Oops! Error logging in. Please try again.";
@@ -117,7 +124,6 @@ const LoginPage = ({ navigation }) => {
         <View>
           <BackBtn
             onPress={() => {
-              console.log("going home");
               if (navigation.canGoBack()) {
                 navigation.goBack();
               } else {

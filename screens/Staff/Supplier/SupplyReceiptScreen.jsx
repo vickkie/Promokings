@@ -34,7 +34,7 @@ const SupplyReceiptScreen = () => {
     (bid) => bid.supplier.toString() === transaction.inventoryRequest.selectedSupplier.toString()
   );
 
-  console.log("Transaction:", transaction);
+  // console.log("Transaction:", transaction);
 
   // Function to generate the HTML receipt using transaction data
   const generateHTMLInvoice = (showWatermark = true) => {
@@ -218,10 +218,10 @@ const SupplyReceiptScreen = () => {
       if (permission.granted) {
         return permission.directoryUri;
       } else {
-        console.log("Permission not granted for directory access.");
+        console.warn("Permission not granted for directory access.");
       }
     } catch (error) {
-      console.log("Error picking directory:", error);
+      console.warn("Error picking directory:", error);
     }
     return null;
   };

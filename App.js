@@ -123,6 +123,7 @@ import SupplierTabNavigation from "./navigation/SupplierTabNavigation";
 import DispatcherTabNavigation from "./navigation/DispatcherTabNavigation ";
 
 import PushNotification from "./components/auth/pushNotification";
+import { RouteProvider } from "./components/auth/RouteContext";
 
 enableScreens();
 
@@ -259,7 +260,6 @@ export default function App() {
 
         <BottomSheetModalProvider>
           <AuthProvider>
-            {/* <OneSignalId /> */}
             <ProfileCompletionProvider>
               <CartProvider>
                 <WishProvider>
@@ -276,6 +276,7 @@ export default function App() {
                       ))}
                     </Stack.Navigator>
                     <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
+                    {/* <RouteProvider /> */}
                   </NavigationContainer>
                 </WishProvider>
               </CartProvider>

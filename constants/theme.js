@@ -22,6 +22,7 @@ const COLORS = {
   lightWhite: "#FAFAFC",
 
   themey: "#e6d270",
+  // themey: "#e81e4d",// reddish
   themeg: "#F0F5F9",
   themeb: "#000",
   themew: "#fff",

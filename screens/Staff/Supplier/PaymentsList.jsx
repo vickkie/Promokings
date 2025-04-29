@@ -209,7 +209,7 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
         <TouchableOpacity
           style={styles.editIcon}
           onPress={() => {
-            console.log("meeee", item?.inventoryRequest);
+            // console.log("meeee", item?.inventoryRequest);
             navigation.navigate("SupplyDetails", {
               item: item,
               bid: item?.inventoryRequest,

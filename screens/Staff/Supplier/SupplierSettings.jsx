@@ -85,7 +85,7 @@ const ProfileScreen = ({ profileImageUrl }) => {
       const parsedMessage = JSON.parse(event.nativeEvent.data);
 
       if (parsedMessage.type === "status") {
-        console.log("ℹ️ Status:", parsedMessage.message);
+        // console.log("ℹ️ Status:", parsedMessage.message);
       } else if (parsedMessage.type === "colors" && Array.isArray(parsedMessage.data)) {
         // Convert the extracted colors to rgb format
         const smoothGradient = parsedMessage.data.map((color) => `rgb(${color.join(",")})`);

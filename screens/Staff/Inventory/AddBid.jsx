@@ -202,7 +202,7 @@ const AddBid = () => {
   };
 
   const pickImage = async () => {
-    console.log("requesting");
+    // console.log("requesting");
 
     let result = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (result.granted === false) {

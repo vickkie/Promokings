@@ -135,7 +135,7 @@ const MySupply = () => {
     ? filteredData.filter((bid) => bid.status !== "Completed").length
     : 0;
 
-  console.log("open", pendingSupplies);
+  // console.log("open", pendingSupplies);
 
   const flatListKey = isGridView ? "grid" : "list"; // Key for FlatList
 

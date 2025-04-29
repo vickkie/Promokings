@@ -32,7 +32,9 @@ const ChangeLogMenu = forwardRef((props, ref) => {
   const renderItem = ({ item }) => (
     <View style={styles.listContainer}>
       <Text style={{ fontSize: SIZES.small, marginBottom: 10 }}>{item.releaseDate}</Text>
-      <Text style={styles.releaseVersion}>V{item.version}</Text>
+      <Text style={styles.releaseVersion}>
+        v{item.version} {item?.beta ? "Beta" : ""}
+      </Text>
       {item.whatsNew.length > 0 && (
         <View>
           <Text style={styles.subheading}>What's New</Text>

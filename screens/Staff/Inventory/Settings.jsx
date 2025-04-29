@@ -90,7 +90,7 @@ const ProfileScreen = ({ profileImageUrl }) => {
         // Convert the extracted colors to rgb format
         const smoothGradient = parsedMessage.data.map((color) => `rgb(${color.join(",")})`);
         setGradientColors(smoothGradient);
-        console.log(smoothGradient);
+        // console.log(smoothGradient);
       } else if (parsedMessage.type === "error") {
         console.error("❌ Error:", parsedMessage.message);
       } else {
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
   },
 
   nameBtn: {
-    backgroundColor: COLORS.secondary,
+    backgroundColor: COLORS.themey,
     padding: 2,
     borderWidth: 0.4,
     borderColor: COLORS.primary,

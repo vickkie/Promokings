@@ -85,7 +85,7 @@ const SupplyDetails = () => {
       const fetchPaymentDetails = async () => {
         let routeport = `${BACKEND_PORT}/api/V2/supplier/V4/accountpay/${item?.inventoryRequest?.selectedSupplier}`;
 
-        console.log("port ", routeport);
+        // console.log("port ", routeport);
         try {
           const response = await axios.get(routeport, {
             headers: {
@@ -100,7 +100,7 @@ const SupplyDetails = () => {
         }
       };
       fetchPaymentDetails();
-      console.log(item?.inventoryRequest?.selectedSupplier);
+      // console.log(item?.inventoryRequest?.selectedSupplier);
 
       if (item?.inventoryRequest?.selectedSupplier && userData?.TOKEN) {
       } else {
@@ -191,7 +191,7 @@ const SupplyDetails = () => {
       <View>
         {preferred === "BankTransfer" && renderBank()}
         {preferred === "MobileMoney" && renderMpesa()}
-        {preferred === "Paypal" && renderPaypal()}
+        {preferred === "PayPal" && renderPaypal()}
         {!preferred && renderFallback()}
 
         {item?.paidAt && <InputField icon="calendar" value={formatDate(item?.paidAt)} placeholder="Date Paid" />}

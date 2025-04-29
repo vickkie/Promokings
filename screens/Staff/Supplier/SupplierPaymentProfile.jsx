@@ -39,6 +39,8 @@ const SupplierPaymentProfile = () => {
 
   const [filteredCountries, setFilteredCountries] = useState(allcountries);
 
+  const supplierProf = userData?.supplierProfile?._id || userData?.supplierProfile;
+
   const getPhoneMeta = (number, defaultDialCode = "+254") => {
     if (!number) {
       return {
@@ -115,7 +117,7 @@ const SupplierPaymentProfile = () => {
 
     setLoader(true);
     try {
-      const endpoint = `${BACKEND_PORT}/api/v2/supplier/v4/accountpay/${userData?.supplierProfile?._id}`;
+      const endpoint = `${BACKEND_PORT}/api/v2/supplier/v4/accountpay/${supplierProf}`;
 
       const methodMap = {
         paypal: "PayPal",
@@ -258,7 +260,7 @@ const SupplierPaymentProfile = () => {
     // Fetching payment details from API
     useEffect(() => {
       const fetchPaymentDetails = async () => {
-        let routeport = `${BACKEND_PORT}/api/V2/supplier/V4/accountpay/${userData?.supplierProfile?._id}`;
+        let routeport = `${BACKEND_PORT}/api/V2/supplier/V4/accountpay/${supplierProf}`;
 
         try {
           const response = await axios.get(routeport, {
@@ -826,6 +828,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: 15,
     alignItems: "center",
+    color: COLORS.themeb,
   }),
 
   iconStyle: {

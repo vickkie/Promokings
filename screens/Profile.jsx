@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
   },
 
   nameBtn: {
-    backgroundColor: COLORS.secondary,
+    backgroundColor: COLORS.themey,
     padding: 2,
     borderWidth: 0.4,
     borderColor: COLORS.primary,

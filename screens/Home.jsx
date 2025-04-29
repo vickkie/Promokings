@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
 import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Welcome } from "../components/home";
 import Carousel from "../components/home/Carousel";
 import Headings from "../components/home/Headings";
@@ -20,9 +20,11 @@ const Home = () => {
   const navigation = useNavigation();
   const { cart } = useCart();
   const [refreshList, setRefreshList] = useState(false);
+  const route = useRoute();
+  // console.log("navige", route.key);
 
   useEffect(() => {
-    if (userLogin) {
+    if (userData) {
       if (hasRole("inventory")) {
         navigation.replace("Inventory Navigation");
       } else if (hasRole("sales")) {
@@ -37,8 +39,32 @@ const Home = () => {
         navigation.replace("Supplier Navigation");
       }
     }
-    console.log(userData?.position);
-  }, [userLogin, hasRole]);
+
+    //!donst work -- temp fix above
+
+    //  const roleRoutes = {
+    //    admin: "Admin Navigation",
+    //    inventory: "Inventory Navigation",
+    //    sales: "Sales Navigation",
+    //    finance: "Finance Navigation",
+    //    customer: "Bottom Navigation",
+    //    driver: "Driver Navigation",
+    //    dispatcher: "Dispatch Navigation",
+    //    supplier: "Supplier Navigation",
+    //  };
+
+    // if (userData) {
+
+    //  const role = getRole(userData)
+    //   if (role in roleRoutes) {
+    //     console.log("Navigating to:", roleRoutes[role]);
+    //     navigation.replace(roleRoutes[role]);
+    //   } else {
+    //     navigation.replace("Bottom Navigation");
+    //   }
+    // }
+    // console.log(userData?.position);
+  }, [userData, hasRole, route.key]);
 
   const renderProfilePicture = () => {
     if (!userLogin) {

@@ -37,6 +37,8 @@ const CompanyProfile = () => {
   const [profilePicture, setProfilePicture] = useState(userData?.profilePicture || null);
   const [localProfilePicture, setLocalProfilePicture] = useState(null); // New state variable for local image URI
   const [userId, setUserId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [fallBack, setFallback] = useState(null);
   const [showPasswordFields, setShowPasswordFields] = useState(false); // State for toggling password fields
 
   useEffect(() => {
@@ -94,7 +96,10 @@ const CompanyProfile = () => {
       };
       // console.log(userUpdateData);
 
-      const endpoint = `${BACKEND_PORT}/api/v2/supplier/${userData?.supplierProfile?._id}`;
+      const supplierProf = userData?.supplierProfile?._id || userData?.supplierProfile;
+
+      const endpoint = `${BACKEND_PORT}/api/v2/supplier/${supplierProf}`;
+      console.log(endpoint);
 
       const response = await axios.put(endpoint, userUpdateData, {
         headers: {
@@ -103,7 +108,7 @@ const CompanyProfile = () => {
         },
       });
 
-      // console.log("response", response.data);
+      console.log("response", response.data);
 
       if (response.status === 200) {
         const updatedUserData = {
@@ -126,6 +131,35 @@ const CompanyProfile = () => {
 
     setLoader(false);
   };
+
+  console.log(userData?.supplierProfile);
+
+  const fetchCompanyDetails = async () => {
+    const supplierProf = userData?.supplierProfile?._id || userData?.supplierProfile;
+
+    let routeport = `${BACKEND_PORT}/api/V2/supplier/${supplierProf}`;
+
+    try {
+      setLoading(true);
+      const response = await axios.get(routeport, {
+        headers: {
+          Authorization: `Bearer ${userData.token}`,
+        },
+      });
+      setFallback(response.data.supplier || {});
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch payment details");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!userData?.supplierProfile?._id) {
+      fetchCompanyDetails();
+    }
+  }, []);
+  console.log(fallBack?.name);
 
   const pickImage = async () => {
     let result = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -255,12 +289,13 @@ const CompanyProfile = () => {
         <View style={styles.detailsWrapper}>
           {userLogin && userData !== null ? (
             <Formik
+              enableReinitialize
               initialValues={{
-                name: userData?.supplierProfile?.name || "",
-                email: userData?.supplierProfile?.email || "",
-                address: userData.supplierProfile?.address || "",
-                phoneNumber: userData.supplierProfile?.phoneNumber || "",
-                dateCreated: userData.supplierProfile?.createdAt || "",
+                name: userData?.supplierProfile?.name || fallBack?.name || "",
+                email: userData?.supplierProfile?.email || fallBack?.email || "",
+                address: userData.supplierProfile?.address || fallBack?.address || "",
+                phoneNumber: userData.supplierProfile?.phoneNumber || fallBack?.phoneNumber || "",
+                dateCreated: userData.supplierProfile?.createdAt || fallBack?.createdAt || "",
               }}
               validationSchema={getValidationSchema(showPasswordFields)}
               onSubmit={(values) => {
@@ -281,7 +316,7 @@ const CompanyProfile = () => {
                         editable={false}
                         autoCapitalize="none"
                         autoCorrect={false}
-                        style={{ flex: 1 }}
+                        style={{ flex: 1, color: COLORS.themeb }}
                         value={values.name}
                       />
                     </View>

@@ -100,8 +100,8 @@ const MainCenter = () => {
     },
     {
       id: "4",
-      title: "Posted Bids list",
-      detail: "Get informationof your supplier bids",
+      title: "Manage Supply",
+      detail: "Get informationof your supplier deals",
       route: "BidList",
       icon: "contract",
       bgcolor: COLORS.themeg,
@@ -109,9 +109,9 @@ const MainCenter = () => {
 
     {
       id: "5",
-      title: "Manage Supply",
-      detail: "Manage and receive products from suppliers",
-      route: "FinalBids",
+      title: "Best Selling",
+      detail: "Get Overview of best selling products",
+      route: "BestProductList",
       icon: "businesscash",
       bgcolor: COLORS.themeg,
     },

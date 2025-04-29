@@ -92,8 +92,8 @@ const SupplierProfile = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      console.log("Uploaded file URL:", response.data.fileUrl);
-      return response.data.fileUrl;
+      // console.log("Uploaded file URL:", response.data.fileUrl);
+      // return response.data.fileUrl;
     } catch (error) {
       console.log("Error occurred, but extracting file URL anyway...");
 
