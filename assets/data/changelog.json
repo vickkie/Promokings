@@ -138,7 +138,7 @@
       "version": "1.4.5",
       "whatsNew": ["Major release rollout","Now targets android 13","Refined Transaction tracking","Revamped checkout process","Added payment & delivery methods",
       "Home items pull down refresh"],
-      "fixed": ["Size applicable to all products bug"]
+      "fixed": ["Size applicable to all products bug","Double navigation fix"]
     }
   ]
 }
