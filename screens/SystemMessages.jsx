@@ -84,7 +84,7 @@ const SystemMessages = () => {
         <Bubble
           {...props}
           wrapperStyle={{
-            right: {
+            left: {
               backgroundColor,
               marginBottom: 5,
               padding: 10,
@@ -162,6 +162,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "absolute",
     bottom: 10,
+    // marginBottom: 10,
     textAlign: "center",
     width: SIZES.width,
   },
