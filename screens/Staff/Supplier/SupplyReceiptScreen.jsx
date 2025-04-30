@@ -10,7 +10,7 @@ import Icon from "../../../constants/icons"; // adjust import if needed
 import { SIZES, COLORS } from "../../../constants";
 import Toast from "react-native-toast-message";
 
-let localLogo = FileSystem.getContentUriAsync("../../../assets/svg/promoking.png");
+const onlinelogo = "https://res.cloudinary.com/drsuclnkw/image/upload/v1741609689/Promokings/promoking-logo_h3hu4v.png";
 
 const SupplyReceiptScreen = () => {
   const route = useRoute();
@@ -118,7 +118,7 @@ const SupplyReceiptScreen = () => {
   <body>
     ${showWatermark ? `<div class="watermark">CONFIDENTIAL</div>` : ""}
     <div class="logo">
-      <img src=${localLogo} width="81" height="69" />
+      <img src=${onlinelogo} width="81" height="69" />
     </div>
     <div class="header">Promokings Limited Kenya</div>
     <div class="section">

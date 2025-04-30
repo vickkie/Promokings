@@ -19,9 +19,6 @@ import { COLORS, SIZES } from "../constants";
 import { BACKEND_PORT } from "@env";
 import Icon from "../constants/icons";
 import { StatusBar } from "react-native";
-import Toast from "react-native-toast-message";
-import axiosRetry from "axios-retry";
-import { navigate } from "../Helpers/NavigationService";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
