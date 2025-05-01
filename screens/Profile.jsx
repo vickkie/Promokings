@@ -285,7 +285,7 @@ const Profile = () => {
       type: type,
       text1: text1,
       text2: text2 ? text2 : "",
-      visibilityTime: 3000,
+      visibilityTime: 5000,
     });
   };
 
