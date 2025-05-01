@@ -84,7 +84,7 @@ const SystemMessages = () => {
         <Bubble
           {...props}
           wrapperStyle={{
-            left: {
+            right: {
               backgroundColor,
               marginBottom: 5,
               padding: 10,
