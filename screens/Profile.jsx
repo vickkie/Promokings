@@ -11,14 +11,17 @@ import Icon from "../constants/icons";
 import * as FileSystem from "expo-file-system";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useDelete from "../hook/useDelete2";
-import { VERSION_LONG, VERSION_SHORT } from "@env";
+import { VERSION_LONG, VERSION_SHORT, BACKEND_PORT } from "@env";
 import { useCart } from "../contexts/CartContext";
 import { useWish } from "../contexts/WishContext";
 import WebView from "react-native-webview";
 import { LinearGradient } from "expo-linear-gradient";
+import axios from "axios";
+import LottieView from "lottie-react-native";
 
 const ProfileScreen = ({ profileImageUrl }) => {
   const [gradientColors, setGradientColors] = useState(["rgb(43,58,68)", "rgb(177,196,199)"]);
+
   const [webViewKey, setWebViewKey] = useState(0);
 
   useEffect(() => {
@@ -121,6 +124,7 @@ const Profile = () => {
   const navigation = useNavigation();
   const { userData, userLogout, userLogin } = useContext(AuthContext);
   const { deleteStatus, isDeleting, errorStatus, redelete } = useDelete(`user/`);
+  const [deleting, setDEleting] = useState(false);
   const { clearCart } = useCart();
   const { clearWishlist } = useWish();
 
@@ -187,6 +191,47 @@ const Profile = () => {
     );
   };
 
+  const deleteAccount = async () => {
+    // return;
+    setDEleting(false);
+    try {
+      const endpoint = `${BACKEND_PORT}/api/user/delete-account/${userData?._id}`;
+
+      console.log(endpoint);
+
+      const response = await axios.delete(endpoint);
+
+      console.log(response);
+      // Check response status and token first
+      if (response.status === 200 && response.data.success) {
+        console.log("here1");
+
+        console.log("here2");
+        await clearCache();
+        console.log("here3");
+
+        userLogout();
+
+        // Reset the navigation stack
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Bottom Navigation" }],
+        });
+        showToast("success", response?.data?.message, response?.data?.message2);
+        setDEleting(false);
+        return;
+      } else {
+        Alert.alert("Error Deleting", "Unexpected response. Please try again later.");
+        setDEleting(false);
+      }
+    } catch (error) {
+      console.log(error);
+      showToast("error", "Sorry an error occured");
+    } finally {
+      setDEleting(false);
+    }
+  };
+
   const handleDeleteAccount = () => {
     Alert.alert(
       "Delete account",
@@ -201,21 +246,8 @@ const Profile = () => {
         },
         {
           text: "Continue",
-          onPress: async () => {
-            await redelete(userId, async () => {
-              await clearCache();
-              userLogout();
-              // Reset the navigation stack
-              navigation.reset({
-                index: 0,
-                routes: [{ name: "Bottom Navigation" }],
-              });
-              Toast.show({
-                type: "success",
-                text1: "Account deleted",
-                text2: "Your account has been successfully deleted.",
-              });
-            });
+          onPress: () => {
+            deleteAccount();
           },
         },
       ],
@@ -327,7 +359,7 @@ const Profile = () => {
               </TouchableOpacity>
             </View>
           )}
-          {userData && (
+          {userData && !deleting && (
             <View style={styles.menuWrapper}>
               <TouchableOpacity onPress={() => navigation.navigate("UserDetails")}>
                 <View style={styles.menuItem(0.5)}>
@@ -373,7 +405,11 @@ const Profile = () => {
                   <Text style={styles.menuText}>Clear cache</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleDeleteAccount}>
+              <TouchableOpacity
+                onPress={() => {
+                  handleDeleteAccount();
+                }}
+              >
                 <View style={styles.menuItem(0.5)}>
                   <Ionicons name="person-remove-outline" size={24} color={COLORS.primary} />
                   <Text style={styles.menuText}>Delete Account</Text>
@@ -396,6 +432,15 @@ const Profile = () => {
               )}
               <View style={styles.versionWrapper}>
                 <Text style={styles.versionText}>{VERSION_LONG}</Text>
+              </View>
+            </View>
+          )}
+          {deleting && (
+            <View style={styles.containerx}>
+              <View style={styles.containLottie}>
+                <View style={styles.animationWrapper}>
+                  <LottieView source={require("../assets/data/loading.json")} autoPlay loop style={styles.animation} />
+                </View>
               </View>
             </View>
           )}
@@ -503,5 +548,30 @@ const styles = StyleSheet.create({
   versionText: {
     fontFamily: "GtAlpine",
     color: COLORS.gray,
+  },
+  containLottie: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: SIZES.width - 20,
+    flex: 1,
+  },
+  animationWrapper: {
+    width: 200,
+    height: 200,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  animation: {
+    width: "100%",
+    height: "100%",
+  },
+  containerx: {
+    minHeight: SIZES.height / 2 - 20,
+    backgroundColor: COLORS.themeg,
+    marginTop: 30,
+    width: SIZES.width - 20,
+    marginHorizontal: 10,
+    borderRadius: SIZES.medium,
   },
 });

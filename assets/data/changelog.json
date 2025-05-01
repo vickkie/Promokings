@@ -142,9 +142,9 @@
     },{
       "releaseDate": "2025-04-30",
       "version": "1.4.6",
-      "whatsNew": ["Order status notifications added","New ",
+      "whatsNew": ["Order status notifications added ",
       "Home items pull down refresh"],
-      "fixed": [""]
+      "fixed": ["Delete account fix."]
     }
   ]
 }
