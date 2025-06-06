@@ -37,7 +37,7 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
   // For controlling which tab is selected
   const [activeTab, setActiveTab] = useState("All");
 
-  const limit = 200; // Adjusted limit for performance
+  const limit = 50; // Adjusted limit for performance
 
   const fetchData = async (reset = false, paymentStatus = "All", searchQuery = "") => {
     if (loading || (!reset && !hasMore)) return;
@@ -57,6 +57,7 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
       const response = await axios.get(`${BACKEND_PORT}/api/orders`, {
         params,
       });
+      console.log(response.data);
 
       const newOrders = response.data.orders || [];
       setData((prev) => (reset ? newOrders : [...prev, ...newOrders]));
@@ -117,8 +118,8 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
     return [...data].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }, [data]);
 
-  // Example: filter by “Sent”, “Request”, “Transfer”, etc.
-  // (You need to adapt this to how your data tracks each transaction type.)
+  //  filter by “Sent”, “Request”, “Transfer”, etc.
+
   const filteredData = useMemo(() => {
     if (activeTab === "All") return sortedData;
     return sortedData.filter((item) => {
@@ -156,7 +157,6 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
     return sections;
   };
 
-  // Utility: Show “Today” / “Yesterday” / “MMM DD, YYYY”
   const formatSectionHeader = (dateStr) => {
     const date = moment(dateStr);
     if (date.isSame(moment(), "day")) return "Today";
@@ -301,7 +301,7 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
   // 9. Render Component
   // -------------------------------
   return (
-    <View style={[styles.container, { marginBottom: 0 }]}>
+    <View style={[styles.container, { marginBottom: 50 }]}>
       {/* Render the top tabs */}
       {renderTabs()}
 

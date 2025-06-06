@@ -35,10 +35,13 @@ const ProductList = ({ sendDataToParent, routeParams }) => {
     setLoading(true);
 
     try {
+      console.log(BACKEND_PORT);
+
       const response = await axios.get(`${BACKEND_PORT}/api/${routeParam}`, {
         params: { limit, offset: reset ? 0 : offset },
       });
-      // console.log(response.data.length);
+
+      console.log(response.data.length);
 
       // Ensure unique products
       setProducts((prev) => {

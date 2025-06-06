@@ -114,7 +114,7 @@ const Help = () => {
     const uploadImage = async (imageUri) => {
       try {
         const formData = new FormData();
-        formData.append("profilePicture", {
+        formData.append("file", {
           uri: imageUri,
           name: `image_${Date.now()}.jpg`,
           type: "image/jpeg",

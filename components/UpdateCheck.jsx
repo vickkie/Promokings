@@ -48,12 +48,13 @@ export default function UpdateCheck() {
 
       const response = await fetch(CHECK_UPDATE_URL);
       const data = await response.json();
+      // console.log(heyy);
 
       if (applicationName === "Expo Go") {
         setIsForced(false);
         return;
       }
-      console.log(data.version);
+      // console.log(data.version);
 
       const newVersion = data.version;
       setLatestVersion(newVersion);

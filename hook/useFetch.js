@@ -4,7 +4,7 @@ import { BACKEND_PORT } from "@env";
 
 // const BACKEND_PORT = "http://192.168.100.218:3000";
 
-// console.log(BACKEND_PORT);
+console.log(BACKEND_PORT);
 
 const useFetch = (endpoint, requiresAuth = false, token = null) => {
   const [data, setData] = useState([]);
@@ -22,7 +22,7 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
 
       const url = `${BACKEND_PORT}/api/${endpoint}`;
 
-      // console.log(url);
+      console.log(url);
 
       const headers = {};
 

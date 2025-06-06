@@ -100,8 +100,8 @@ const EditPaymentDetails = () => {
             // navigation.replace("OrderPaymentDetails", { refresh: true, refreshing: true });
             setTimeout(() => {
               navigation.navigate("Finance Navigation", {
-                screen: "FinanceDashboard", // 👈 Specify the screen inside the navigator
-                params: { refreshList: true }, // 👈 Pass params properly
+                screen: "FinanceDashboard",
+                params: { refreshList: true },
               });
             }, 500);
           } catch (error) {
@@ -261,8 +261,8 @@ const EditPaymentDetails = () => {
               </TouchableOpacity>
             </View>
 
-            <Text style={{ fontFamily: "GtAlpine", color: COLORS.themeb, fontSize: SIZES.medium, marginVertical: 15 }}>
-              Order id : {orderId}
+            <Text style={{ color: COLORS.themeb, fontSize: SIZES.medium, marginVertical: 15 }}>
+              Transaction id : {item?.transactionId}
             </Text>
 
             <TouchableOpacity
@@ -376,13 +376,14 @@ const EditPaymentDetails = () => {
                     <Text style={styles.submitText}>Mark Payment Complete</Text>
                   )}
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.partialBtn} onPress={handlePartialPayment}>
+                {/*   <TouchableOpacity style={styles.partialBtn} onPress={handlePartialPayment}>
                   {uploading ? (
                     <ActivityIndicator size={30} color={COLORS.themew} />
                   ) : (
                     <Text style={styles.submitText}>Mark Payment Partial</Text>
                   )}
                 </TouchableOpacity>
+                */}
                 <TouchableOpacity style={styles.deleteBtn} onPress={handleCancelOrder}>
                   {isLoading ? (
                     <ActivityIndicator size={30} color={COLORS.themew} />

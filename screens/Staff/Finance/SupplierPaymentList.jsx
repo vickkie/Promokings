@@ -57,8 +57,10 @@ const SupplierPaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh
         params.search = searchQuery.trim();
       }
       let token = userData?.TOKEN;
+      let gateway = `${BACKEND_PORT}/api/v3/payments/`;
+      console.log(token, gateway);
 
-      const response = await axios.get(`${BACKEND_PORT}/api/v3/payments`, {
+      const response = await axios.get(gateway, {
         params,
         headers: {
           Authorization: `Bearer ${token}`,
@@ -73,6 +75,7 @@ const SupplierPaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh
       setOffset((prev) => (reset ? limit : prev + limit));
       setError(null);
     } catch (err) {
+      console.log(err);
       setError("Failed to fetch payments.");
     } finally {
       setLoading(false);
@@ -275,6 +278,7 @@ const SupplierPaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh
       </View>
       {error ? (
         <View style={styles.errorContainer}>
+          {console.log(error)}
           <Text style={styles.errorMessage}>An error occured</Text>
           <Text style={styles.errorMessage}>Please retry</Text>
           <TouchableOpacity onPress={onRefresh} style={styles.retryButton}>

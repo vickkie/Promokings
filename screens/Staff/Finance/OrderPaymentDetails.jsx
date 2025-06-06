@@ -14,7 +14,7 @@ const OrderPaymentDetails = () => {
   const { products, totals, orderId, item } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
 
-  // console.log(products, orderId, item);
+  // console.log(item);
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorState, setErrorState] = useState(false);
@@ -158,8 +158,8 @@ const OrderPaymentDetails = () => {
               </TouchableOpacity>
             </View>
 
-            <Text style={{ fontFamily: "GtAlpine", color: COLORS.themeb, fontSize: SIZES.medium, marginVertical: 15 }}>
-              Order id : {orderId}
+            <Text style={{ color: COLORS.themeb, fontSize: SIZES.medium, marginVertical: 10 }}>
+              Transaction id : {item?.transactionId}
             </Text>
 
             <TouchableOpacity
@@ -174,7 +174,7 @@ const OrderPaymentDetails = () => {
                     : item?.paymentStatus === "cancelled"
                     ? "#F3D0CE"
                     : COLORS.themey, // Default color
-                paddingVertical: 4,
+                paddingVertical: 2,
                 paddingHorizontal: 8,
                 borderRadius: SIZES.medium,
               }}
@@ -208,6 +208,7 @@ const OrderPaymentDetails = () => {
                 <View style={styles.stepContainer}>
                   <View style={{ justifyContent: "center", marginVertical: 20 }}>
                     <Text style={styles.relatedHeader}>Ordered items</Text>
+                    <Text style={styles.relatedHeader2}>Order id : {item?.orderId}</Text>
                   </View>
 
                   <View style={{ width: SIZES.width - 27 }}>
@@ -520,6 +521,13 @@ const styles = StyleSheet.create({
     fontFamily: "bold",
     fontSize: SIZES.medium + 4,
     paddingVertical: 10,
+    paddingHorizontal: 15,
+    color: COLORS.gray,
+  },
+  relatedHeader2: {
+    fontFamily: "bold",
+    fontSize: SIZES.small,
+    paddingVertical: 2,
     paddingHorizontal: 15,
     color: COLORS.gray,
   },
