@@ -18,6 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import LottieView from "lottie-react-native";
 import { db } from "../components/auth/firebase";
 import { ref, onValue } from "firebase/database";
+import { StatusBar } from "expo-status-bar";
 
 const HelpListScreen = () => {
   const [chatSections, setChatSections] = useState([]);
@@ -140,59 +141,62 @@ const HelpListScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.wrapper}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
-          <Icon name="backbutton" size={26} />
-        </TouchableOpacity>
-        <View style={styles.upperRow}>
-          <Text style={styles.heading}>Messages</Text>
-          <TouchableOpacity onPress={() => {}} style={styles.outWrap}>
-            <Icon name="bellfilled" size={26} />
+    <>
+      <StatusBar backgroundColor={COLORS.themey} />
+      <SafeAreaView style={styles.container}>
+        <View style={styles.wrapper}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
+            <Icon name="backbutton" size={26} />
           </TouchableOpacity>
-          <View style={styles.lowerheader}>
-            <Text style={styles.statement}>Select a chat</Text>
+          <View style={styles.upperRow}>
+            <Text style={styles.heading}>Messages</Text>
+            <TouchableOpacity onPress={() => {}} style={styles.outWrap}>
+              <Icon name="bellfilled" size={26} />
+            </TouchableOpacity>
+            <View style={styles.lowerheader}>
+              <Text style={styles.statement}>Select a chat</Text>
+            </View>
           </View>
         </View>
-      </View>
 
-      <View style={{ marginTop: 130 }}>
-        <View style={styles.searchBarContainer}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search by name"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-          <TouchableOpacity style={styles.searchButton}>
-            <Icon name="search" size={26} />
-          </TouchableOpacity>
-        </View>
-
-        {loading ? (
-          <View style={styles.mtop}>
-            <LottieView source={require("../assets/data/loading.json")} autoPlay loop style={styles.animation} />
+        <View style={{ marginTop: 100 }}>
+          <View style={styles.searchBarContainer}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search by name"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+            <TouchableOpacity style={styles.searchButton}>
+              <Icon name="search" size={26} />
+            </TouchableOpacity>
           </View>
-        ) : (
-          <SectionList
-            sections={chatSections}
-            keyExtractor={(item) => item.userId}
-            renderItem={renderItem}
-            renderSectionHeader={renderSectionHeader}
-            ListEmptyComponent={
-              <View style={styles.containLottie}>
-                <LottieView
-                  source={require("../assets/data/nodata.json")}
-                  autoPlay
-                  loop={false}
-                  style={styles.animation}
-                />
-              </View>
-            }
-          />
-        )}
-      </View>
-    </SafeAreaView>
+
+          {loading ? (
+            <View style={styles.mtop}>
+              <LottieView source={require("../assets/data/loading.json")} autoPlay loop style={styles.animation} />
+            </View>
+          ) : (
+            <SectionList
+              sections={chatSections}
+              keyExtractor={(item) => item.userId}
+              renderItem={renderItem}
+              renderSectionHeader={renderSectionHeader}
+              ListEmptyComponent={
+                <View style={styles.containLottie}>
+                  <LottieView
+                    source={require("../assets/data/nodata.json")}
+                    autoPlay
+                    loop={false}
+                    style={styles.animation}
+                  />
+                </View>
+              }
+            />
+          )}
+        </View>
+      </SafeAreaView>
+    </>
   );
 };
 
@@ -342,6 +346,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    top: 30,
     backgroundColor: "#F9F9F9",
   },
   wrapper: {
