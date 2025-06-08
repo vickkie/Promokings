@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import { StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text } from "react-native";
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
-import { useRoute } from "@react-navigation/native";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
 import { db } from "../components/auth/firebase";
 import { ref, onValue, push } from "firebase/database";
@@ -17,11 +17,13 @@ const HelpAgentChatScreen = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isSending, setIsSending] = useState(false);
 
-  const { userData } = useContext(AuthContext); // agent data
+  const { userData } = useContext(AuthContext);
   const route = useRoute();
+  const navigation = useNavigation();
 
-  // Customer ID to chat with
-  const customerId = route.params?.userId;
+  const customerId = route.params?.chatWith?._id;
+  const chatWith = route.params?.chatWith;
+
   if (!customerId) {
     return <Text>No customer selected</Text>;
   }
@@ -29,7 +31,6 @@ const HelpAgentChatScreen = () => {
   const sentRef = useMemo(() => ref(db, `messages-query/${customerId}/sent`), [customerId]);
   const receivedRef = useMemo(() => ref(db, `messages-query/${customerId}/received`), [customerId]);
 
-  // Listen for messages (customer sent + agent received)
   useEffect(() => {
     const handleDataChange = (snapshot, type) => {
       const data = snapshot.val();
@@ -44,7 +45,6 @@ const HelpAgentChatScreen = () => {
       setMessages((prevMessages) => {
         const filtered = prevMessages.filter((msg) => msg.type !== type);
         const combined = [...filtered, ...newMessages];
-        // Sort descending by createdAt
         const unique = Array.from(new Map(combined.map((m) => [m._id, m])).values());
         return unique.sort((a, b) => b.createdAt - a.createdAt);
       });
@@ -66,13 +66,11 @@ const HelpAgentChatScreen = () => {
         alert("Need camera roll permissions!");
         return;
       }
-
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         quality: 1,
       });
-
       if (!result.canceled && result.assets.length > 0 && result.assets[0].uri) {
         setSelectedImage(result.assets[0].uri);
       }
@@ -89,13 +87,11 @@ const HelpAgentChatScreen = () => {
         name: `image_${Date.now()}.jpg`,
         type: "image/jpeg",
       });
-
       const res = await fetch(`${BACKEND_PORT}/upload`, {
         method: "POST",
         body: formData,
         headers: { "Content-Type": "multipart/form-data" },
       });
-
       const json = await res.json();
       return json.fileUrl || null;
     } catch (err) {
@@ -156,6 +152,24 @@ const HelpAgentChatScreen = () => {
         </View>
       )}
 
+      <View style={styles.wrapper}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
+          <Icon name="backbutton" size={26} />
+        </TouchableOpacity>
+        <View style={styles.upperRow}>
+          <View style={styles.upperButtons}>
+            <Text style={styles.heading}>{chatWith?.username || "Chat"}</Text>
+          </View>
+          <TouchableOpacity onPress={() => {}} style={styles.buttonWrap2}>
+            {chatWith?.profilePicture ? (
+              <Image source={{ uri: chatWith.profilePicture }} style={styles.profilePicture} />
+            ) : (
+              <Image source={require("../assets/images/userDefault.webp")} style={styles.profilePicture} />
+            )}
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <ImageBackground
         resizeMode="cover"
         source={require("../assets/images/chat-glass.png")}
@@ -180,32 +194,37 @@ const HelpAgentChatScreen = () => {
           )}
           renderBubble={(props) => {
             const { currentMessage } = props;
-            const isSentByAgent = currentMessage.type === "received"; // agent messages are 'received' here
+            const isReceived = currentMessage.type === "sent"; // customer messages on left
             return (
               <Bubble
                 {...props}
                 wrapperStyle={{
                   left: {
-                    backgroundColor: isSentByAgent ? COLORS.lightGrey : COLORS.white,
+                    backgroundColor: COLORS.white,
                     marginBottom: 5,
                   },
                   right: {
+                    backgroundColor: COLORS.lightGrey,
                     marginBottom: 5,
                   },
                 }}
                 textStyle={{
-                  right: { color: COLORS.white },
-                  left: { color: isSentByAgent ? COLORS.black : COLORS.darkGrey },
+                  left: { color: COLORS.darkGrey },
+                  right: { color: COLORS.black },
                 }}
               />
             );
           }}
           renderAvatar={(props) => {
-            return (
-              <View style={styles.avatarContainer}>
-                <Image source={require("../assets/icon-home.png")} style={styles.avatarImage} />
-              </View>
-            );
+            const { currentMessage } = props;
+            if (currentMessage?.user?.avatar) {
+              return (
+                <View style={styles.avatarContainer}>
+                  <Image source={{ uri: currentMessage.user.avatar }} style={styles.avatarImage} />
+                </View>
+              );
+            }
+            return <View style={styles.avatarContainer} />;
           }}
           renderSend={(props) => {
             const { text, onSend } = props;
@@ -229,3 +248,188 @@ const HelpAgentChatScreen = () => {
 };
 
 export default HelpAgentChatScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  backgroundImage: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
+  actionsContainer: {
+    position: "absolute",
+    right: 50,
+    bottom: 5,
+    zIndex: 9999,
+  },
+  sendBtn: {
+    height: 40,
+    width: 40,
+    borderRadius: 40,
+    backgroundColor: COLORS.themey,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 5,
+  },
+  inputBox: {
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 2,
+    borderRadius: 20,
+    paddingTop: 5,
+    bottom: 5,
+  },
+  previewBox: {
+    position: "absolute",
+    top: 20,
+    left: 10,
+    height: 170,
+    width: 150,
+    backgroundColor: COLORS.themey,
+    borderRadius: 10,
+    zIndex: 10,
+    borderStyle: "solid",
+    borderColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  previewImage: {
+    width: "96%",
+    height: "96%",
+    resizeMode: "contain",
+  },
+  isSending: {
+    position: "absolute",
+    top: 20,
+    left: 10,
+    height: 20,
+    width: SIZES.width,
+    backgroundColor: COLORS.themew,
+    overflow: "hidden",
+  },
+  avatarImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  avatarContainer: {
+    borderRadius: 100,
+    marginBottom: 10,
+  },
+  cancelPreview: {
+    position: "absolute",
+    left: 1,
+    bottom: -33,
+    backgroundColor: "white",
+    height: 30,
+    width: 30,
+    borderRadius: 100,
+    padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  wrapper: {
+    flexDirection: "column",
+    position: "absolute",
+    top: 2,
+  },
+  backBtn: {
+    left: 10,
+  },
+  buttonView: {
+    backgroundColor: COLORS.themew,
+    padding: 12,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 30,
+    height: 30,
+    transform: [{ rotate: "180deg" }],
+  },
+  buttonWrap: {
+    backgroundColor: COLORS.themeg,
+    padding: 12,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    zIndex: 9,
+    top: 10,
+    left: 10,
+  },
+  upperRow: {
+    width: SIZES.width - 12,
+    marginHorizontal: 6,
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: COLORS.themew,
+    borderRadius: SIZES.large,
+    top: SIZES.xxSmall,
+    zIndex: 2,
+    minHeight: 60,
+  },
+  upperButtons: {
+    width: SIZES.width - 20,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: SIZES.medium,
+  },
+  topprofileheading: {
+    fontSize: SIZES.medium,
+    textAlign: "center",
+    color: COLORS.themeb,
+    fontFamily: "semibold",
+  },
+  outWrap: {
+    backgroundColor: COLORS.themeg,
+    padding: 12,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: 5,
+    right: 10,
+  },
+  lowerheader: {
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    width: SIZES.width - 20,
+    marginTop: 5,
+    paddingTop: SIZES.xSmall,
+    paddingBottom: 20,
+  },
+  heading: {
+    fontFamily: "bold",
+    textTransform: "capitalize",
+    fontSize: SIZES.xLarge + 3,
+    textAlign: "left",
+    color: COLORS.themeb,
+    marginStart: 20,
+  },
+  statement: {
+    fontFamily: "regular",
+    paddingLeft: 20,
+    paddingVertical: 5,
+    color: COLORS.gray2,
+    textAlign: "center",
+  },
+  buttonWrap2: {
+    backgroundColor: COLORS.hyperlight,
+    borderRadius: 100,
+    width: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    right: 13,
+    top: 5,
+  },
+  profilePicture: {
+    height: 52,
+    width: 52,
+    borderRadius: 100,
+  },
+});

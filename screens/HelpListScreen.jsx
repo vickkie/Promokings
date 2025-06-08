@@ -103,7 +103,7 @@ const HelpListScreen = () => {
         _id: user.userId,
         fullname: user.name,
         profilePicture: user.avatar,
-        role: user?.role,
+        role: user?.role || "customer",
       },
       userData,
     });
@@ -149,7 +149,7 @@ const HelpListScreen = () => {
             <Icon name="backbutton" size={26} />
           </TouchableOpacity>
           <View style={styles.upperRow}>
-            <Text style={styles.heading}>Messages</Text>
+            <Text style={styles.heading}>Assistance Messages</Text>
             <TouchableOpacity onPress={() => {}} style={styles.outWrap}>
               <Icon name="bellfilled" size={26} />
             </TouchableOpacity>
@@ -424,10 +424,12 @@ const styles = StyleSheet.create({
   heading: {
     fontFamily: "bold",
     textTransform: "capitalize",
-    fontSize: SIZES.xLarge + 3,
+    fontSize: SIZES.small + 3,
     textAlign: "left",
     color: COLORS.themeb,
     marginStart: 20,
+    marginTop: 20,
+    alignSelf: "center",
   },
   statement: {
     fontFamily: "regular",
