@@ -28,8 +28,8 @@ const Help = () => {
   const route = useRoute();
 
   const userId = useMemo(() => userData?._id, [userData]);
-  const sentRef = useMemo(() => ref(db, `messages/${userId}/sent`), [userId]);
-  const replyRef = useMemo(() => ref(db, `messages/${userId}/reply`), [userId]);
+  const sentRef = useMemo(() => ref(db, `messages-query/${userId}/sent`), [userId]);
+  const replyRef = useMemo(() => ref(db, `messages-query/${userId}/reply`), [userId]);
 
   useEffect(() => {
     if (userData && userData._id && userData?.TOKEN) {
@@ -109,7 +109,7 @@ const Help = () => {
     console.log("Sending message:", newMessages);
     if (newMessages.length === 0) return;
 
-    const userMessagesRef = ref(db, `messages/${userData._id}/${type}`);
+    const userMessagesRef = ref(db, `messages-query/${userData._id}/${type}`);
 
     const uploadImage = async (imageUri) => {
       try {
@@ -158,6 +158,7 @@ const Help = () => {
             avatar: user.avatar || null,
           },
           image: itemImage || imageUrl,
+          read: false,
         });
 
         console.log("Message successfully pushed to Firebase");
@@ -300,10 +301,10 @@ const styles = StyleSheet.create({
   inputBox: {
     marginLeft: 10,
     marginRight: 10,
-    marginBottom: 2,
+    marginBottom: 12,
     borderRadius: 20,
     paddingTop: 5,
-    bottom: 5,
+    bottom: 10,
   },
   previewBox: {
     position: "absolute",

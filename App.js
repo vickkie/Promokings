@@ -110,6 +110,7 @@ import {
   SupplierPaymentProfile,
   CompanyProfile,
   BestProductList,
+  HelpListScreen,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -226,6 +227,7 @@ const screens = [
   { name: "SupplierRegister", component: SupplierRegister, options: { headerShown: false } },
   { name: "SupplierPaymentProfile", component: SupplierPaymentProfile, options: { headerShown: false } },
   { name: "CompanyProfile", component: CompanyProfile, options: { headerShown: false } },
+  { name: "HelpListScreen", component: HelpListScreen, options: { headerShown: false } },
 ];
 
 export default function App() {

@@ -95,6 +95,15 @@ const MessageCenter = ({ navigation }) => {
                     <Icon name="forward" size={24} color={COLORS.primary} />
                   </View>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate("HelpListScreen")}>
+                  <View style={styles.menuItem(0.5)}>
+                    <View style={styles.itswrap}>
+                      <Icon name="cartcheck" size={26} color={COLORS.primary} />
+                      <Text style={styles.menuText}>Help center</Text>
+                    </View>
+                    <Icon name="forward" size={24} color={COLORS.primary} />
+                  </View>
+                </TouchableOpacity>
               </>
             )}
           </View>
