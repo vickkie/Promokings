@@ -55,6 +55,7 @@ import SalesSettings from "./Staff/Sales/SalesSettings";
 import InventoryDashboard from "./Staff/Inventory/InventoryDashboard";
 import OrdersSales from "./Staff/Sales/Orders";
 import HelpListScreen from "./HelpListScreen";
+import HelpAgentChatScreen from "./HelpAgentChatScreen";
 
 import BestProductList from "./Staff/Sales/SalesBest";
 
@@ -177,6 +178,7 @@ export {
   InvoiceScreen,
   BestProductList,
   HelpListScreen,
+  HelpAgentChatScreen,
 
   //Drivers
   DriverDashboard,

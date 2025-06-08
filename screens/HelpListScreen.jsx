@@ -98,12 +98,12 @@ const HelpListScreen = () => {
   };
 
   const startChat = (user) => {
-    navigation.navigate("ChatScreen", {
+    navigation.navigate("HelpAgentChatScreen", {
       chatWith: {
         _id: user.userId,
         fullname: user.name,
         profilePicture: user.avatar,
-        role: "customer",
+        role: user?.role,
       },
       userData,
     });

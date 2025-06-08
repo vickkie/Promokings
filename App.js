@@ -111,6 +111,7 @@ import {
   CompanyProfile,
   BestProductList,
   HelpListScreen,
+  HelpAgentChatScreen,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -228,6 +229,7 @@ const screens = [
   { name: "SupplierPaymentProfile", component: SupplierPaymentProfile, options: { headerShown: false } },
   { name: "CompanyProfile", component: CompanyProfile, options: { headerShown: false } },
   { name: "HelpListScreen", component: HelpListScreen, options: { headerShown: false } },
+  { name: "HelpAgentChatScreen", component: HelpAgentChatScreen, options: { headerShown: false } },
 ];
 
 export default function App() {
