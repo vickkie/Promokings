@@ -29,7 +29,7 @@ const Help = () => {
 
   const userId = useMemo(() => userData?._id, [userData]);
   const sentRef = useMemo(() => ref(db, `messages-query/${userId}/sent`), [userId]);
-  const replyRef = useMemo(() => ref(db, `messages-query/${userId}/reply`), [userId]);
+  const replyRef = useMemo(() => ref(db, `messages-query/${userId}/received`), [userId]);
 
   useEffect(() => {
     if (userData && userData._id && userData?.TOKEN) {

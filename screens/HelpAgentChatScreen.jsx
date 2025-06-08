@@ -204,13 +204,13 @@ const HelpAgentChatScreen = () => {
                     marginBottom: 5,
                   },
                   right: {
-                    backgroundColor: COLORS.lightGrey,
+                    // backgroundColor: "skyblue",
                     marginBottom: 5,
                   },
                 }}
                 textStyle={{
                   left: { color: COLORS.darkGrey },
-                  right: { color: COLORS.black },
+                  right: { color: COLORS.white },
                 }}
               />
             );
@@ -252,6 +252,7 @@ export default HelpAgentChatScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 3,
   },
   backgroundImage: {
     flex: 1,
@@ -276,7 +277,7 @@ const styles = StyleSheet.create({
   inputBox: {
     marginLeft: 10,
     marginRight: 10,
-    marginBottom: 2,
+    marginBottom: 18,
     borderRadius: 20,
     paddingTop: 5,
     bottom: 5,
