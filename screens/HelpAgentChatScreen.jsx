@@ -49,6 +49,11 @@ const HelpAgentChatScreen = () => {
         const unique = Array.from(new Map(combined.map((m) => [m._id, m])).values());
         return unique.sort((a, b) => b.createdAt - a.createdAt);
       });
+
+      // Mark "sent" messages as read
+      if (type === "sent") {
+        markSentMessagesAsRead().catch(console.error);
+      }
     };
 
     const unsubSent = onValue(sentRef, (snap) => handleDataChange(snap, "sent"));
@@ -59,6 +64,32 @@ const HelpAgentChatScreen = () => {
       unsubReceived();
     };
   }, [customerId]);
+
+  const markSentMessagesAsRead = async () => {
+    const snapshot = await new Promise((resolve) => {
+      onValue(
+        sentRef,
+        (snap) => {
+          resolve(snap);
+        },
+        { onlyOnce: true }
+      );
+    });
+
+    const data = snapshot.val();
+    if (!data) return;
+
+    const updates = {};
+    Object.entries(data).forEach(([key, message]) => {
+      if (message.read === false) {
+        updates[`${key}/read`] = true;
+      }
+    });
+
+    if (Object.keys(updates).length > 0) {
+      await update(sentRef, updates);
+    }
+  };
 
   const spinAnim = useRef(new Animated.Value(0)).current;
 
