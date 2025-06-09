@@ -58,7 +58,7 @@ const MessageCenter = ({ navigation }) => {
                 <View style={[styles.menuItem(0.5)]}>
                   <View style={styles.itswrap}>
                     <Icon name="customerservice" size={24} color={COLORS.primary} />
-                    <Text style={styles.menuText}>Contact Customer service</Text>
+                    <Text style={styles.menuText}>Customer support</Text>
                   </View>
                   <Icon name="forward" size={24} color={COLORS.primary} />
                 </View>
@@ -97,12 +97,13 @@ const MessageCenter = ({ navigation }) => {
                 </TouchableOpacity>
               </>
             )}
-            {userData?.position && (
+
+            {["sales", "customer support"].includes(userData?.position) && (
               <TouchableOpacity onPress={() => navigation.navigate("HelpListScreen")}>
                 <View style={styles.menuItem(0.5)}>
                   <View style={styles.itswrap}>
-                    <Icon name="message" size={26} color={COLORS.primary} />
-                    <Text style={styles.menuText}>Customer service management</Text>
+                    <Icon name="customerservice" size={26} color={COLORS.primary} />
+                    <Text style={styles.menuText}>Customer support management</Text>
                   </View>
                   <Icon name="forward" size={24} color={COLORS.primary} />
                 </View>

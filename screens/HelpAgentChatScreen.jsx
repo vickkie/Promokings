@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import React, { useRef, useState, useEffect, useContext, useMemo } from "react";
 import { StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text } from "react-native";
+import { Animated, Easing } from "react-native";
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
 import { db } from "../components/auth/firebase";
-import { ref, onValue, push } from "firebase/database";
+import { ref, onValue, push, update } from "firebase/database";
 import * as ImagePicker from "expo-image-picker";
 import Icon from "../constants/icons";
 import { COLORS, SIZES } from "../constants";
@@ -58,6 +59,28 @@ const HelpAgentChatScreen = () => {
       unsubReceived();
     };
   }, [customerId]);
+
+  const spinAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (!isSending) {
+      Animated.loop(
+        Animated.timing(spinAnim, {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        })
+      ).start();
+    } else {
+      spinAnim.stopAnimation();
+    }
+  }, [isSending]);
+
+  const spin = spinAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "360deg"],
+  });
 
   const pickImage = async () => {
     try {
@@ -231,13 +254,20 @@ const HelpAgentChatScreen = () => {
             return (
               <TouchableOpacity
                 style={styles.sendBtn}
+                disabled={isSending}
                 onPress={() => {
                   if (text.trim().length > 0) {
-                    onSend([{ text: text.trim(), user: { _id: userData._id } }]);
+                    onSend({ text: text.trim() }, true);
                   }
                 }}
               >
-                <Icon name="sendfilled" size={20} color={COLORS.white} />
+                {!isSending ? (
+                  <Icon name="sendfilled" size={20} color={COLORS.white} />
+                ) : (
+                  <Animated.View style={{ transform: [{ rotate: spin }] }}>
+                    <Icon name="loadingcircle" size={20} color={COLORS.white} />
+                  </Animated.View>
+                )}
               </TouchableOpacity>
             );
           }}

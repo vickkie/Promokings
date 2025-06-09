@@ -184,12 +184,14 @@ const HelpListScreen = () => {
               renderSectionHeader={renderSectionHeader}
               ListEmptyComponent={
                 <View style={styles.containLottie}>
-                  <LottieView
-                    source={require("../assets/data/nodata.json")}
-                    autoPlay
-                    loop={false}
-                    style={styles.animation}
-                  />
+                  <View style={styles.animationWrapper}>
+                    <LottieView
+                      source={require("../assets/data/nodata.json")}
+                      autoPlay
+                      loop={false}
+                      style={styles.animation}
+                    />
+                  </View>
                 </View>
               }
             />

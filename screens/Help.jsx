@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import React, { useState, useEffect, useContext, useMemo, useRef } from "react";
 import { StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text } from "react-native";
+import { Animated, Easing } from "react-native";
+
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
 import { useRoute } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
@@ -35,6 +37,7 @@ const Help = () => {
     if (userData && userData._id && userData?.TOKEN) {
       const handleDataChange = (snapshot, type) => {
         const data = snapshot.val();
+        // console.log(data);
         const newMessages = data
           ? Object.keys(data).map((key) => ({
               _id: key,
@@ -46,6 +49,7 @@ const Help = () => {
         setMessages((prevMessages) => {
           const filteredMessages = prevMessages.filter((msg) => msg.type !== type);
           const allMessages = [...filteredMessages, ...newMessages];
+
           const uniqueMessages = Array.from(new Map(allMessages.map((item) => [item._id, item])).values());
           return uniqueMessages.sort((a, b) => b.createdAt - a.createdAt);
         });
@@ -72,6 +76,28 @@ const Help = () => {
     setIsPreviewVisible(true);
     setImageFromRoute(true);
   }, [route.params?.item_id]);
+
+  const spinAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (!isSending) {
+      Animated.loop(
+        Animated.timing(spinAnim, {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        })
+      ).start();
+    } else {
+      spinAnim.stopAnimation();
+    }
+  }, [isSending]);
+
+  const spin = spinAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "360deg"],
+  });
 
   const pickImage = async () => {
     try {
@@ -170,7 +196,7 @@ const Help = () => {
     setIsSending(false);
     setIsPreviewVisible(false);
     setSelectedImage(null);
-    setPrefilledMessage("");
+    setPrefilledMessage(" ");
     setItemId(null);
     setItemName("");
     setItemImage(null);
@@ -245,24 +271,41 @@ const Help = () => {
             );
           }}
           renderAvatar={(props) => {
+            const avatarUri = props.currentMessage?.user?.avatar;
+            const hasAvatar = !!avatarUri;
+
             return (
-              <View style={styles.avatarContainer}>
-                <Image source={require("../assets/icon-home.png")} style={styles.avatarImage} />
+              <View
+                style={[styles.avatarContainer, props.position === "left" ? { marginRight: 8 } : { marginLeft: 8 }]}
+              >
+                {hasAvatar ? (
+                  <Image source={{ uri: avatarUri }} style={styles.avatarImage} />
+                ) : (
+                  <Image source={require("../assets/images/userDefault.webp")} style={styles.avatarImage} />
+                )}
               </View>
             );
           }}
+          showAvatarForEveryMessage={true}
           renderSend={(props) => {
             const { text, onSend } = props;
             return (
               <TouchableOpacity
                 style={styles.sendBtn}
+                disabled={isSending}
                 onPress={() => {
                   if (text.trim().length > 0) {
                     onSend([{ text: text.trim(), user: { _id: userId } }], true);
                   }
                 }}
               >
-                <Icon name="sendfilled" size={20} color={COLORS.white} />
+                {!isSending ? (
+                  <Icon name="sendfilled" size={20} color={COLORS.white} />
+                ) : (
+                  <Animated.View style={{ transform: [{ rotate: spin }] }}>
+                    <Icon name="loadingcircle" size={20} color={COLORS.white} />
+                  </Animated.View>
+                )}
               </TouchableOpacity>
             );
           }}
