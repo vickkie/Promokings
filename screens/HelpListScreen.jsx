@@ -29,8 +29,9 @@ const HelpListScreen = () => {
 
   useEffect(() => {
     const messagesRef = ref(db, "messages-query");
+    const unsubscribers = [];
 
-    const unsubscribe = onValue(messagesRef, (snapshot) => {
+    onValue(messagesRef, (snapshot) => {
       const data = snapshot.val();
       if (!data) {
         setChatSections([]);
@@ -38,56 +39,66 @@ const HelpListScreen = () => {
         return;
       }
 
-      const usersList = Object.keys(data).map((userId) => {
-        const sentMsgs = data[userId]?.sent;
-        if (!sentMsgs) return null;
+      const userIds = Object.keys(data);
+      const userMap = {};
 
-        const messagesArray = Object.values(sentMsgs);
-        const latestMessage = messagesArray.reduce(
-          (latest, msg) => (!latest || msg.createdAt > latest.createdAt ? msg : latest),
-          null
-        );
+      userIds.forEach((userId) => {
+        const userRef = ref(db, `messages-query/${userId}/sent`);
+        const unsub = onValue(userRef, (snap) => {
+          const receivedMsgs = snap.val() || {};
+          const sentMsgs = data[userId]?.sent || {};
 
-        // Count all unread messages (read === false)
-        let unreadCount = 0;
-        messagesArray.forEach((msg) => {
-          if (msg.read === false) unreadCount++;
+          const allMessages = [...Object.values(sentMsgs), ...Object.values(receivedMsgs)];
+          if (allMessages.length === 0) return;
+
+          const latestMessage = allMessages.reduce(
+            (latest, msg) => (!latest || msg.createdAt > latest.createdAt ? msg : latest),
+            null
+          );
+
+          const unreadCount = Object.values(receivedMsgs).filter((msg) => msg.read === false).length;
+
+          userMap[userId] = {
+            userId,
+            name: latestMessage?.user?.name || "Unknown",
+            avatar: latestMessage?.user?.avatar || null,
+            text: latestMessage?.text || "",
+            createdAt: latestMessage?.createdAt || 0,
+            unreadCount,
+          };
+
+          // Once userMap is updated, refresh chatSections
+          const filtered = Object.values(userMap)
+            .filter(Boolean)
+            .filter((user) => user.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+          const grouped = {};
+
+          filtered.forEach((msg) => {
+            const dateKey = moment(msg.createdAt).startOf("day").format();
+            if (!grouped[dateKey]) grouped[dateKey] = [];
+            grouped[dateKey].push(msg);
+          });
+
+          const sections = Object.keys(grouped)
+            .sort((a, b) => new Date(b) - new Date(a))
+            .map((dateKey) => ({
+              title: formatSectionHeader(dateKey),
+              data: grouped[dateKey],
+            }));
+
+          setChatSections(sections);
         });
 
-        return {
-          userId,
-          name: latestMessage?.user?.name || "Unknown",
-          avatar: latestMessage?.user?.avatar || null,
-          text: latestMessage?.text || "",
-          createdAt: latestMessage?.createdAt || 0,
-          unreadCount,
-        };
+        unsubscribers.push(unsub);
       });
 
-      const filtered = usersList
-        .filter(Boolean)
-        .filter((user) => user.name.toLowerCase().includes(searchQuery.toLowerCase()));
-
-      const grouped = {};
-
-      filtered.forEach((msg) => {
-        const dateKey = moment(msg.createdAt).startOf("day").format();
-        if (!grouped[dateKey]) grouped[dateKey] = [];
-        grouped[dateKey].push(msg);
-      });
-
-      const sections = Object.keys(grouped)
-        .sort((a, b) => new Date(b) - new Date(a))
-        .map((dateKey) => ({
-          title: formatSectionHeader(dateKey),
-          data: grouped[dateKey],
-        }));
-
-      setChatSections(sections);
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribers.forEach((unsub) => unsub && unsub());
+    };
   }, [searchQuery]);
 
   const formatSectionHeader = (dateStr) => {
