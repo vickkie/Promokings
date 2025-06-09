@@ -86,7 +86,7 @@ export default CategoryCardView;
 const styles = StyleSheet.create({
   container: {
     width: SIZES.width - 14,
-    height: SIZES.width / 2,
+    height: SIZES.width / 1.7,
     marginEnd: 6,
     borderRadius: SIZES.medium,
     backgroundColor: COLORS.themeg,

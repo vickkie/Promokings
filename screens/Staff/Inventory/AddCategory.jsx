@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -20,9 +20,11 @@ import { ScrollView } from "react-native-gesture-handler";
 import useFetch from "../../../hook/useFetch";
 import { BACKEND_PORT } from "@env";
 import Icon from "../../../constants/icons";
+import { AuthContext } from "../../../components/auth/AuthContext";
 
 const AddCategory = () => {
   const navigation = useNavigation();
+  const { userData } = useContext(AuthContext);
   const [title, setTitle] = useState("");
   const [imageUrl, setImageUrl] = useState("https://i.postimg.cc/j56q20rB/images.jpg");
   const [image, setImage] = useState(null);
@@ -81,6 +83,7 @@ const AddCategory = () => {
         navigation.navigate("EditCategoriesList", { refreshList: true });
       }
     } catch (error) {
+      console.log(error);
       showToast("error", "Category doesn't meet the required standard", error.message);
     }
   };
@@ -126,7 +129,7 @@ const AddCategory = () => {
     let pickerResult = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 2.5],
+      aspect: [4, 3],
       quality: 1,
     });
 

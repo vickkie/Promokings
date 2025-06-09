@@ -146,5 +146,12 @@
       "Home items pull down refresh"],
       "fixed": ["Delete account fix."]
     }
+    ,{
+      "releaseDate": "2025-05-09",
+      "version": "1.4.7",
+      "whatsNew": ["Customer support refurbished ",
+      "Messages marked as read"],
+      "fixed": [""]
+    }
   ]
 }
