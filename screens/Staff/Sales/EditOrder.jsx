@@ -581,7 +581,7 @@ const EditSalesOrder = () => {
                     <Text style={styles.submitText}>Mark Order Complete</Text>
                   )}
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelBtn} onPress={handleOrderPending}>
+                <TouchableOpacity style={styles.cancelBtn2} onPress={handleOrderPending}>
                   {uploading ? (
                     <ActivityIndicator size={30} color={COLORS.themew} />
                   ) : (
@@ -592,7 +592,7 @@ const EditSalesOrder = () => {
                   {uploading ? (
                     <ActivityIndicator size={30} color={COLORS.themew} />
                   ) : (
-                    <Text style={styles.submitText}>Cancel Order</Text>
+                    <Text style={[styles.submitText, { fontFamily: "bold" }]}>Cancel Order</Text>
                   )}
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.deleteBtn} onPress={handleDeleteOrder}>
@@ -933,6 +933,16 @@ const styles = StyleSheet.create({
   },
   cancelBtn: {
     backgroundColor: COLORS.gray2,
+    padding: 6,
+    marginVertical: 10,
+    borderRadius: SIZES.medium,
+    alignItems: "center",
+    height: 60,
+    // marginBottom: -60,
+    justifyContent: "center",
+  },
+  cancelBtn2: {
+    backgroundColor: COLORS.primary,
     padding: 6,
     marginVertical: 10,
     borderRadius: SIZES.medium,
