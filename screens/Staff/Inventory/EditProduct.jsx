@@ -61,7 +61,7 @@ const EditProduct = () => {
   const [suppliers, setSuppliers] = useState([]);
   const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
 
-  const { data: supplierData, isLoading: isSuppliersLoading, error: supplierError } = useFetch("v2/supplier");
+  const { data: supplierData, isLoading: isSuppliersLoading, error: supplierError } = useFetch("v2/supplier/names");
 
   useEffect(() => {
     if (!isSuppliersLoading && !supplierError && supplierData) {

@@ -27,7 +27,7 @@ import { BACKEND_PORT } from "@env";
 
 const AddProduct = () => {
   const route = useRoute();
-  console.log(route?.params?.product);
+  // console.log(route?.params?.product);
   const initialProduct = route?.params?.product;
 
   const navigation = useNavigation();
@@ -39,7 +39,7 @@ const AddProduct = () => {
   const [image, setImage] = useState(null);
   const [loader, setLoader] = useState(false);
   const [category, setCategory] = useState("");
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(initialProduct?.quantity || 0);
   const [supplier, setSupplier] = useState("");
   const [sizeApplicable, setSizeApplicable] = useState(true);
   const [description, setDescription] = useState("");
@@ -49,11 +49,13 @@ const AddProduct = () => {
   const [suppliers, setSuppliers] = useState([]);
   const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
 
-  const { data: supplierData, isLoading: isSuppliersLoading, error: supplierError } = useFetch("v2/supplier");
+  const { data: supplierData, isLoading: isSuppliersLoading, error: supplierError } = useFetch("v2/supplier/names");
+
+  console.log(supplierData);
 
   useEffect(() => {
     if (initialProduct) {
-      console.log(initialProduct?.quantity);
+      // console.log(initialProduct?.quantity);
       setTitle(initialProduct?.productName);
       setPrice();
       setAvailability(true);
@@ -62,11 +64,23 @@ const AddProduct = () => {
       setProductId(generateProductId());
       setImage(initialProduct?.imageUrl);
       setCategory("");
-      setSupplier(initialProduct?.imageUrl);
       setDescription("");
       setQuantity(initialProduct?.quantity);
+
+      const selectedId = initialProduct?.selectedSupplier;
+
+      const selectedSupplier = supplierData?.suppliers?.find((supplier) => supplier._id === selectedId);
+
+      if (selectedSupplier) {
+        console.log("Found supplier:", selectedSupplier.name);
+        setSupplier(selectedSupplier.name);
+      } else {
+        console.log("No supplier found");
+      }
     }
-  }, [initialProduct]);
+
+    console.log("my", quantity);
+  }, [initialProduct, supplierData]);
 
   useEffect(() => {
     if (!isSuppliersLoading && !supplierError && supplierData) {
@@ -135,7 +149,7 @@ const AddProduct = () => {
       if (image) {
         const uploadedImageUrl = await uploadImage(image);
 
-        console.log(image, uploadedImageUrl);
+        // console.log(image, uploadedImageUrl);
         setImageUrl(uploadedImageUrl);
         newProduct.imageUrl = uploadedImageUrl;
       }
@@ -277,12 +291,14 @@ const AddProduct = () => {
                 value={productId}
                 editable={false}
               />
+              <Text style={styles.label}>Title</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Product Title"
                 value={title}
                 onChangeText={(text) => setTitle(text)}
               />
+              <Text style={styles.label}>Price</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Price"
@@ -290,7 +306,7 @@ const AddProduct = () => {
                 onChangeText={(text) => setPrice(text)}
                 keyboardType="numeric"
               />
-
+              <Text style={styles.label}>Description</Text>
               <TextInput
                 style={styles.descriptionInput}
                 placeholder="Product Description"
@@ -298,6 +314,7 @@ const AddProduct = () => {
                 onChangeText={(text) => setDescription(text)}
                 multiline
               />
+              <Text style={styles.label}>Image url (manual)</Text>
               <View style={styles.imageurlContainer}>
                 <TextInput
                   style={[styles.input, styles.imageurl, !isEditable ? styles.nonEditable : ""]}
@@ -329,12 +346,14 @@ const AddProduct = () => {
                     })}
                 </Picker>
               </View>
+
               <View style={{ marginTop: 20 }}>
+                <Text style={styles.label}>Quantity</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Quantity"
-                  value={quantity}
-                  onChangeText={(text) => setQuantity(text)}
+                  value={quantity?.toString() || ""}
+                  onChangeText={(text) => setQuantity(text ? parseInt(text, 10) : 0)}
                   keyboardType="numeric"
                 />
               </View>

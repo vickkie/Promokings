@@ -91,8 +91,8 @@ const EditProductList = () => {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     try {
+      navigation.setParams({ refreshList: undefined, products: "products?skip=true" }); // Clear params
       refetch();
-      navigation.setParams({ refreshList: undefined, products: "products" }); // Clear params
     } catch (error) {
       // Handle error
     } finally {
