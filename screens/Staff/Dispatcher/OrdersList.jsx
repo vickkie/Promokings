@@ -149,11 +149,20 @@ const OrdersDispatchList = ({ refreshList, setRefreshing, setiRefresh, irefresh,
               paddingVertical: 4,
               paddingHorizontal: 8,
               borderRadius: SIZES.medium,
-              width: 90,
+              minWidth: 90,
               textAlign: "center",
             }}
           >
-            {order.deliveryStatus}
+            {(() => {
+              switch (order.deliveryStatus) {
+                case "pending":
+                  return "undelivered";
+                case "ready_for_pickup":
+                  return "pickup ready";
+                default:
+                  return order.deliveryStatus;
+              }
+            })()}
           </Text>
           <Text
             style={{

@@ -204,7 +204,7 @@ const EditDispatchOrder = () => {
     ]);
   };
 
-  const handleCompleteOrder = async () => {
+  const handleAssignOrder = async () => {
     setUploading2(true);
     const deliveryStatus = "ready_for_pickup";
     const id = orderId;
@@ -252,6 +252,66 @@ const EditDispatchOrder = () => {
               setIsAssigning(false);
               setAssignedDriver(null);
               setUploading2(false);
+            }, 2000);
+          }
+        },
+      },
+    ]);
+  };
+
+  const handleCompleteOrder = async () => {
+    setUploading2(true);
+
+    if (!orderId) {
+      Alert.alert("Error", "Missing Order ID!");
+      setUploading2(false);
+      return;
+    }
+
+    const completeOrder = async () => {
+      const res = await fetch(`${BACKEND_PORT}/api/order/${orderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "completed" }),
+      });
+
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message || "Order update failed");
+      return data;
+    };
+
+    Alert.alert("Confirm Completion", "Are you sure you want to complete this order?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+        onPress: () => setUploading2(false),
+      },
+      {
+        text: "Confirm",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            const orderData = await completeOrder();
+
+            Toast.show({
+              type: "success",
+              text1: "Order Completed",
+              text2: "The order has been successfully updated!",
+            });
+
+            if (setItem) setItem(orderData);
+
+            setTimeout(() => {
+              navigation.navigate("Dispatcher Navigation", {});
+            }, 3000);
+          } catch (err) {
+            console.warn("Order update error:", err);
+            alert(err.message || "Something went wrong");
+          } finally {
+            setTimeout(() => {
+              setUploading2(false);
+              if (setIsAssigning) setIsAssigning(false);
+              if (setAssignedDriver) setAssignedDriver(null);
             }, 2000);
           }
         },
@@ -472,12 +532,20 @@ const EditDispatchOrder = () => {
               <View>
                 <Text style={styles.relatedHeader}>Critical Actions</Text>
 
-                {item?.orderType === "pickup" && (
-                  <TouchableOpacity style={styles.completeBtn} onPress={handleCompleteOrder}>
+                {item?.orderType === "pickup" && item?.deliveryStatus !== "ready_for_pickup" ? (
+                  <TouchableOpacity style={styles.completeBtn} onPress={handleAssignOrder}>
                     {uploading2 ? (
                       <ActivityIndicator size={30} color={COLORS.themew} />
                     ) : (
                       <Text style={styles.submitText}> Ready for pickup</Text>
+                    )}
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity style={styles.completeBtn} onPress={handleCompleteOrder}>
+                    {uploading2 ? (
+                      <ActivityIndicator size={30} color={COLORS.themew} />
+                    ) : (
+                      <Text style={styles.submitText}>Mark Picked up</Text>
                     )}
                   </TouchableOpacity>
                 )}

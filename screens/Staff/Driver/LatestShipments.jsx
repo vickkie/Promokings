@@ -90,6 +90,7 @@ const LatestShipments = ({ refreshList, setRefreshing, limit, offset, status, se
         }}
         style={[styles.flexEnd, styles.buttonView]}
       >
+        {console.log(shipment?.deliveryStatus)}
         <Text
           style={{
             backgroundColor:

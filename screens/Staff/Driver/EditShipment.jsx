@@ -111,93 +111,81 @@ const EditShipmentDriver = () => {
     setUploading2(true);
     const orderId = shipment?.orderId?._id;
 
-    // Determine which type of completion we're handling
     const isOrderCompletion = !!orderId;
     const isShipmentCompletion = !!shipmentId;
 
-    // Validate required fields
-    if (isOrderCompletion && !orderId) {
-      Alert.alert("Error", "Order ID is required!");
+    // validate required fields
+    if (!orderId || !shipmentId || !driverNotes) {
+      Alert.alert("Error", "Missing required fields!");
       setUploading2(false);
       return;
     }
 
-    if (isShipmentCompletion && (!shipmentId || !driverNotes)) {
-      Alert.alert("Error", "Order ID and driver notes are required!");
-      setUploading2(false);
-      return;
-    }
+    const completeOrder = async () => {
+      const orderRes = await fetch(`${BACKEND_PORT}/api/order/${orderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "completed" }),
+      });
 
-    const handleCompletion = async () => {
-      try {
-        const status = isOrderCompletion ? "completed" : "delivered";
-        const endpoint = isOrderCompletion
-          ? `${BACKEND_PORT}/api/order/${orderId}`
-          : `${BACKEND_PORT}/api/shipment/myDeliveries/${shipmentId}/status`;
-
-        const response = await fetch(endpoint, {
-          method: isOrderCompletion ? "PATCH" : "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            status,
-            ...(isShipmentCompletion && { driverNotes }),
-          }),
-        });
-
-        const data = await response.json();
-
-        if (!data.success) {
-          throw new Error(data.message || "Failed to complete order");
-        }
-
-        if (isOrderCompletion) {
-          alert("Order completed");
-          Toast.show({
-            type: "success",
-            text1: "Delivery Completed",
-            text2: "The delivery has been completed successfully",
-          });
-
-          setTimeout(() => {
-            navigation.navigate("Driver Navigation", {});
-          }, 3000);
-        }
-
-        if (setItem) {
-          setItem(data);
-        }
-      } catch (error) {
-        console.warn("Error completing order:", error);
-        alert(error);
-      } finally {
-        setTimeout(() => {
-          setUploading2(false);
-          if (setIsAssigning) setIsAssigning(false);
-          if (setAssignedDriver) setAssignedDriver(null);
-        }, 2000);
-      }
+      const orderData = await orderRes.json();
+      if (!orderData.success) throw new Error(orderData.message || "Order update failed");
+      return orderData;
     };
 
-    Alert.alert(
-      "Confirm completing",
-      isOrderCompletion
-        ? "Are you sure you want to complete this order?"
-        : "Are you sure you want to complete this delivery?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-          onPress: () => setUploading2(false),
+    const completeShipment = async () => {
+      const shipRes = await fetch(`${BACKEND_PORT}/api/shipment/myDeliveries/${shipmentId}/status`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "delivered", driverNotes }),
+      });
+
+      const shipData = await shipRes.json();
+      if (!shipData.success) throw new Error(shipData.message || "Shipment update failed");
+      return shipData;
+    };
+
+    Alert.alert("Confirm Completion", "Complete order and shipment?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+        onPress: () => setUploading2(false),
+      },
+      {
+        text: "Confirm",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            const [orderData, shipData] = await Promise.all([
+              isOrderCompletion ? completeOrder() : null,
+              isShipmentCompletion ? completeShipment() : null,
+            ]);
+
+            Toast.show({
+              type: "success",
+              text1: "Completed",
+              text2: "Order and shipment updated successfully!",
+            });
+
+            if (setItem && orderData) setItem(orderData);
+            if (setItem && shipData) setItem(shipData);
+
+            setTimeout(() => {
+              navigation.navigate("Driver Navigation", {});
+            }, 3000);
+          } catch (err) {
+            console.warn("Error:", err);
+            alert(err.message || "Something went wrong");
+          } finally {
+            setTimeout(() => {
+              setUploading2(false);
+              if (setIsAssigning) setIsAssigning(false);
+              if (setAssignedDriver) setAssignedDriver(null);
+            }, 2000);
+          }
         },
-        {
-          text: "Confirm",
-          style: "destructive",
-          onPress: handleCompletion,
-        },
-      ]
-    );
+      },
+    ]);
   };
 
   return (
