@@ -155,7 +155,7 @@ const Home = () => {
               <Carousel />
               <Headings heading={"Top products"} />
               <ProductsRow refreshList={refreshList} setRefreshList={setRefreshList} />
-              <Headings heading={"Latest Products"} />
+              <Headings heading={"Featured Products"} />
               <LatestProducts refreshList={refreshList} setRefreshList={setRefreshList} />
             </View>
           </View>

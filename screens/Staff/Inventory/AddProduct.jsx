@@ -44,6 +44,7 @@ const AddProduct = () => {
   const [sizeApplicable, setSizeApplicable] = useState(true);
   const [description, setDescription] = useState("");
   const [isEditable, setIsEditable] = useState(false);
+  const [featured, setFeatured] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [suppliers, setSuppliers] = useState([]);
@@ -66,7 +67,7 @@ const AddProduct = () => {
       setCategory("");
       setDescription("");
       setQuantity(initialProduct?.quantity);
-
+      setFeatured(false);
       const selectedId = initialProduct?.selectedSupplier;
 
       const selectedSupplier = supplierData?.suppliers?.find((supplier) => supplier._id === selectedId);
@@ -107,6 +108,7 @@ const AddProduct = () => {
       setSupplier("");
       setDescription("");
       setQuantity(0);
+      setFeatured(false);
     } catch (error) {
       console.log("refresh failed");
     } finally {
@@ -143,6 +145,7 @@ const AddProduct = () => {
       supplier,
       description,
       quantity,
+      featured,
     };
 
     try {
@@ -177,6 +180,7 @@ const AddProduct = () => {
         setDescription("");
         setQuantity(0);
         setSizeApplicable(true);
+        setFeatured(true);
 
         // Navigate to dashboard
         navigation.navigate("Inventory Navigation", {
@@ -387,6 +391,10 @@ const AddProduct = () => {
               <View style={styles.availabilityRow}>
                 <Text>Size Applicable:</Text>
                 <Switch value={sizeApplicable} onValueChange={(value) => setSizeApplicable(value)} />
+              </View>
+              <View style={styles.availabilityRow}>
+                <Text>Featured Product:</Text>
+                <Switch value={featured} onValueChange={(value) => setFeatured(value)} />
               </View>
 
               <TouchableOpacity style={styles.submitBtn} onPress={handleAddProduct}>

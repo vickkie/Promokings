@@ -36,17 +36,15 @@ const EditProduct = () => {
 
   const product = productold || item;
 
-  // console.log(item);
-
-  // console.log("old", item?.quantity);
-
   const [title, setTitle] = useState(product?.title || "");
   const [price, setPrice] = useState(product?.price || "");
   const [availability, setAvailability] = useState(product?.availability || false);
+
   const [imageUrl, setImageUrl] = useState(product?.imageUrl || "https://i.postimg.cc/j56q20rB/images.jpg");
   const [productId, setProductId] = useState(product?.productId || "");
   const [image, setImage] = useState(null);
   const [loader, setLoader] = useState(false);
+  const [featured, setFeatured] = useState(product?.featured || false);
   const [category, setCategory] = useState(product?.category || "");
   const [supplier, setSupplier] = useState(item?.selectedSupplier || product?.supplier || "");
   const [description, setDescription] = useState(product?.description || "");
@@ -87,6 +85,7 @@ const EditProduct = () => {
       setSupplier(product?.supplier || "");
       setDescription(product?.description || "");
       setQuantity(product?.quantity || 0);
+      setFeatured(product?.featured);
     } catch (error) {
       console.log("refresh failed");
     } finally {
@@ -166,6 +165,7 @@ const EditProduct = () => {
       supplier,
       description,
       quantity,
+      featured,
     };
 
     try {
@@ -257,6 +257,22 @@ const EditProduct = () => {
       visibilityTime: 3000,
     });
   };
+
+  useEffect(() => {
+    const selectedName = product?.supplier;
+
+    const selectedSupplier = supplierData?.suppliers?.find((supplier) => supplier.name === selectedName);
+
+    if (selectedSupplier) {
+      // console.log("Found supplier:", selectedSupplier.name);
+      setSupplier(selectedSupplier.name);
+      setCategory(product?.category);
+    } else {
+      console.log("No supplier found");
+    }
+  }, [product]);
+
+  // console.log(product?.supplier);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -369,6 +385,7 @@ const EditProduct = () => {
                 </View>
               </View>
               <View style={{ marginTop: 20 }}>
+                <Text style={styles.pickerLabel}>Quantity</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Quantity"
@@ -400,6 +417,10 @@ const EditProduct = () => {
               <View style={styles.switchContainer}>
                 <Text style={styles.label}>Availability</Text>
                 <Switch value={availability} onValueChange={(newValue) => setAvailability(newValue)} />
+              </View>
+              <View style={styles.switchContainer}>
+                <Text style={styles.label}>Featured Product:</Text>
+                <Switch value={featured} onValueChange={(value) => setFeatured(value)} />
               </View>
             </View>
 
