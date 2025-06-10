@@ -116,7 +116,7 @@ const EditCategory = () => {
       if (image) {
         const uploadedImageUrl = await uploadImage(image);
 
-        console.log(uploadedImageUrl);
+        // console.log(uploadedImageUrl);
         setImageUrl(uploadedImageUrl);
         updatedProduct.imageUrl = uploadedImageUrl;
       }

@@ -51,7 +51,7 @@ const AddProduct = () => {
 
   const { data: supplierData, isLoading: isSuppliersLoading, error: supplierError } = useFetch("v2/supplier/names");
 
-  console.log(supplierData);
+  // console.log(supplierData);
 
   useEffect(() => {
     if (initialProduct) {
@@ -72,14 +72,14 @@ const AddProduct = () => {
       const selectedSupplier = supplierData?.suppliers?.find((supplier) => supplier._id === selectedId);
 
       if (selectedSupplier) {
-        console.log("Found supplier:", selectedSupplier.name);
+        // console.log("Found supplier:", selectedSupplier.name);
         setSupplier(selectedSupplier.name);
       } else {
         console.log("No supplier found");
       }
     }
 
-    console.log("my", quantity);
+    // console.log("my", quantity);
   }, [initialProduct, supplierData]);
 
   useEffect(() => {
