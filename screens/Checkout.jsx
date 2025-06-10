@@ -700,7 +700,7 @@ const Checkout = () => {
                       loop={true}
                       style={styles.animation}
                     />
-                    <Text style={styles.errorMessage}>{"Submitting your order"}</Text>
+                    <Text style={styles.errorMessage}>{"Submitting order"}</Text>
                   </View>
                 </View>
               )}

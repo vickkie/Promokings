@@ -145,60 +145,60 @@ const EditSalesOrder = () => {
       },
     ]);
   };
-  const handleCompleteOrder = async () => {
-    setUploading2(true);
-    const status = "delivered";
+  // const handleCompleteOrder = async () => {
+  //   setUploading2(true);
+  //   const status = "completed";
 
-    if (!orderId) {
-      Alert.alert("Error", "Order ID is required!");
-      setUploading(false);
-      return;
-    }
+  //   if (!orderId) {
+  //     Alert.alert("Error", "Order ID is required!");
+  //     setUploading(false);
+  //     return;
+  //   }
 
-    Alert.alert("Confirm completing", "Are you sure you want to complete this order?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-        onPress: () => setUploading2(false),
-      },
-      {
-        text: "Confirm",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            const response = await fetch(`${BACKEND_PORT}/api/order/${orderId}`, {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ status }),
-            });
+  //   Alert.alert("Confirm completing", "Are you sure you want to complete this order?", [
+  //     {
+  //       text: "Cancel",
+  //       style: "cancel",
+  //       onPress: () => setUploading2(false),
+  //     },
+  //     {
+  //       text: "Confirm",
+  //       style: "destructive",
+  //       onPress: async () => {
+  //         try {
+  //           const response = await fetch(`${BACKEND_PORT}/api/order/${orderId}`, {
+  //             method: "PATCH",
+  //             headers: {
+  //               "Content-Type": "application/json",
+  //             },
+  //             body: JSON.stringify({ status }),
+  //           });
 
-            const data = await response.json();
+  //           const data = await response.json();
 
-            if (!data.success) {
-              throw new Error(data.message || "Failed to complete order");
-            }
+  //           if (!data.success) {
+  //             throw new Error(data.message || "Failed to complete order");
+  //           }
 
-            alert("Order completed");
-            navigation.replace("OrdersSales", { refresh: true, refreshin: true });
-            setTimeout(() => {
-              navigation.navigate("Sales Navigation");
-            }, 500);
-          } catch (error) {
-            console.warn("Error completting Order:", error);
-            alert(error);
-          } finally {
-            setTimeout(() => {
-              setIsAssigning(false);
-              setAssignedDriver(null);
-              setUploading2(false);
-            }, 2000);
-          }
-        },
-      },
-    ]);
-  };
+  //           alert("Order completed");
+  //           navigation.replace("OrdersSales", { refresh: true, refreshin: true });
+  //           setTimeout(() => {
+  //             navigation.navigate("Sales Navigation");
+  //           }, 500);
+  //         } catch (error) {
+  //           console.warn("Error completting Order:", error);
+  //           alert(error);
+  //         } finally {
+  //           setTimeout(() => {
+  //             setIsAssigning(false);
+  //             setAssignedDriver(null);
+  //             setUploading2(false);
+  //           }, 2000);
+  //         }
+  //       },
+  //     },
+  //   ]);
+  // };
   const handleApproveOrder = async () => {
     const status = "approved";
 
@@ -574,21 +574,21 @@ const EditSalesOrder = () => {
             <View style={[styles.relatedRow, { marginBottom: 10 }]}>
               <View>
                 <Text style={styles.relatedHeader}>Critical Actions</Text>
-                <TouchableOpacity style={styles.completeBtn} onPress={handleCompleteOrder}>
+                {/* <TouchableOpacity style={styles.completeBtn} onPress={handleCompleteOrder}>
                   {uploading2 ? (
                     <ActivityIndicator size={30} color={COLORS.themew} />
                   ) : (
                     <Text style={styles.submitText}>Mark Order Complete</Text>
                   )}
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelBtn2} onPress={handleOrderPending}>
+                </TouchableOpacity> */}
+                <TouchableOpacity style={styles.completeBtn} onPress={handleOrderPending}>
                   {uploading ? (
                     <ActivityIndicator size={30} color={COLORS.themew} />
                   ) : (
-                    <Text style={styles.submitText}>Pending Order</Text>
+                    <Text style={styles.submitText}>Mark Order Pending</Text>
                   )}
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelBtn} onPress={handleCancelOrder}>
+                <TouchableOpacity style={styles.cancelBtn2} onPress={handleCancelOrder}>
                   {uploading ? (
                     <ActivityIndicator size={30} color={COLORS.themew} />
                   ) : (

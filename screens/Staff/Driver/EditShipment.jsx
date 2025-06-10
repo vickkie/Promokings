@@ -18,6 +18,7 @@ const EditShipmentDriver = () => {
   const navigation = useNavigation();
   const { shipmentId, order, shipment } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
+  console.log("i", shipment?.orderId?._id);
 
   const {
     data: delivery,
@@ -57,7 +58,7 @@ const EditShipmentDriver = () => {
       return;
     }
 
-    routeport = `${BACKEND_PORT}/api/shipment/myDeliveries/${shipmentId}/status`;
+    const shipmentPort = `${BACKEND_PORT}/api/shipment/myDeliveries/${shipmentId}/status`;
 
     Alert.alert("Confirm cancelling", "Are you sure you want to cancel this delivery?", [
       {
@@ -70,7 +71,7 @@ const EditShipmentDriver = () => {
         style: "destructive",
         onPress: async () => {
           try {
-            const response = await fetch(routeport, {
+            const response = await fetch(shipmentPort, {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
@@ -105,71 +106,98 @@ const EditShipmentDriver = () => {
       },
     ]);
   };
+
   const handleCompleteOrder = async () => {
     setUploading2(true);
-    const status = "delivered";
+    const orderId = shipment?.orderId?._id;
 
-    if (!shipmentId || !driverNotes) {
+    // Determine which type of completion we're handling
+    const isOrderCompletion = !!orderId;
+    const isShipmentCompletion = !!shipmentId;
+
+    // Validate required fields
+    if (isOrderCompletion && !orderId) {
+      Alert.alert("Error", "Order ID is required!");
+      setUploading2(false);
+      return;
+    }
+
+    if (isShipmentCompletion && (!shipmentId || !driverNotes)) {
       Alert.alert("Error", "Order ID and driver notes are required!");
       setUploading2(false);
       return;
     }
-    // routeport = `${BACKEND_PORT}/api/shipment/${shipmentId}`;
-    routeport = `${BACKEND_PORT}/api/shipment/myDeliveries/${shipmentId}/status`;
-    console.log(routeport);
 
-    Alert.alert("Confirm completing", "Are you sure you want to complete this delivery?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-        onPress: () => setUploading2(false),
-      },
-      {
-        text: "Confirm",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            const response = await fetch(routeport, {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ status, driverNotes }),
-            });
+    const handleCompletion = async () => {
+      try {
+        const status = isOrderCompletion ? "completed" : "delivered";
+        const endpoint = isOrderCompletion
+          ? `${BACKEND_PORT}/api/order/${orderId}`
+          : `${BACKEND_PORT}/api/shipment/myDeliveries/${shipmentId}/status`;
 
-            const data = await response.json();
-            setItem(data);
+        const response = await fetch(endpoint, {
+          method: isOrderCompletion ? "PATCH" : "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            status,
+            ...(isShipmentCompletion && { driverNotes }),
+          }),
+        });
 
-            if (response.status === 200) {
-              // When delivery is cancelled
-              Toast.show({
-                type: "success",
-                text1: "Delivery Completed",
-                text2: "The delivery has been completed successfully",
-              });
+        const data = await response.json();
 
-              setTimeout(() => {
-                navigation.navigate("Driver Navigation", {});
-              }, 3000);
-            } else {
-              Toast.show({
-                type: "error",
-                text1: "Completion update failed",
-                text2: "The delivery update Failed. Please contact Admin",
-              });
-            }
-          } catch (error) {
-            console.warn("Error completting Delivery:", error);
-            alert(error);
-          } finally {
-            setTimeout(() => {
-              setAssignedDriver(null);
-              setUploading2(false);
-            }, 2000);
-          }
+        if (!data.success) {
+          throw new Error(data.message || "Failed to complete order");
+        }
+
+        if (isOrderCompletion) {
+          alert("Order completed");
+          Toast.show({
+            type: "success",
+            text1: "Delivery Completed",
+            text2: "The delivery has been completed successfully",
+          });
+
+          setTimeout(() => {
+            navigation.navigate("Driver Navigation", {});
+          }, 3000);
+        }
+
+        if (setItem) {
+          setItem(data);
+        }
+      } catch (error) {
+        console.warn("Error completing order:", error);
+        alert(error);
+      } finally {
+        setTimeout(() => {
+          setUploading2(false);
+          if (setIsAssigning) setIsAssigning(false);
+          if (setAssignedDriver) setAssignedDriver(null);
+        }, 2000);
+      }
+    };
+
+    Alert.alert(
+      "Confirm completing",
+      isOrderCompletion
+        ? "Are you sure you want to complete this order?"
+        : "Are you sure you want to complete this delivery?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+          onPress: () => setUploading2(false),
         },
-      },
-    ]);
+        {
+          text: "Confirm",
+          style: "destructive",
+          onPress: handleCompletion,
+        },
+      ]
+    );
   };
 
   return (

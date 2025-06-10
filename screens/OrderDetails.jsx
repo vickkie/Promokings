@@ -275,7 +275,9 @@ const OrderDetails = () => {
                       : COLORS.primary,
                 }}
               >
-                {item.deliveryStatus === "ready_for_pickup"
+                {item.status === "completed"
+                  ? item.status
+                  : item.deliveryStatus === "ready_for_pickup"
                   ? "Ready for pickup"
                   : item.deliveryStatus === "failed"
                   ? "Cancelled"
