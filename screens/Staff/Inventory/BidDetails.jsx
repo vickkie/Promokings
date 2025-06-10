@@ -376,6 +376,21 @@ const BidDetails = () => {
                     </TouchableOpacity>
                   </View>
                 </View>
+                <View style={{ justifyContent: "space-between", marginTop: 10, display: "flex", flexDirection: "row" }}>
+                  <Text style={styles.relatedHeader}>Add Inventory</Text>
+                  <View style={styles.actionFlex}>
+                    <TouchableOpacity
+                      style={styles.buttonWrap}
+                      onPress={() =>
+                        navigation.navigate("Add Product", {
+                          product: bid,
+                        })
+                      }
+                    >
+                      <Icon name="basket" size={26} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
               </View>
             </View>
 

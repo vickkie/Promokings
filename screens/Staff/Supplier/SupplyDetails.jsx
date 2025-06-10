@@ -359,7 +359,7 @@ const SupplyDetails = () => {
                 <Text style={styles.paymentDetails}>Balance Amount</Text>
                 <Text style={styles.paymentDetails}>
                   {new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES" })
-                    .format(item?.amount - item?.amountPaid)
+                    .format(item?.amount + item?.additionalFees - item?.amountPaid)
                     .replace("Ksh", "")}
                 </Text>
               </View>

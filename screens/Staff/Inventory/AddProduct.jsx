@@ -12,7 +12,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
@@ -26,6 +26,10 @@ import useFetch from "../../../hook/useFetch";
 import { BACKEND_PORT } from "@env";
 
 const AddProduct = () => {
+  const route = useRoute();
+  console.log(route?.params?.product);
+  const initialProduct = route?.params?.product;
+
   const navigation = useNavigation();
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
@@ -46,6 +50,23 @@ const AddProduct = () => {
   const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
 
   const { data: supplierData, isLoading: isSuppliersLoading, error: supplierError } = useFetch("v2/supplier");
+
+  useEffect(() => {
+    if (initialProduct) {
+      console.log(initialProduct?.quantity);
+      setTitle(initialProduct?.productName);
+      setPrice();
+      setAvailability(true);
+      setSizeApplicable(false);
+      setImageUrl(initialProduct?.imageUrl);
+      setProductId(generateProductId());
+      setImage(initialProduct?.imageUrl);
+      setCategory("");
+      setSupplier(initialProduct?.imageUrl);
+      setDescription("");
+      setQuantity(initialProduct?.quantity);
+    }
+  }, [initialProduct]);
 
   useEffect(() => {
     if (!isSuppliersLoading && !supplierError && supplierData) {
