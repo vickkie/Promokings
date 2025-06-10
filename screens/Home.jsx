@@ -153,7 +153,7 @@ const Home = () => {
             <Welcome />
             <View style={styles.lowerWelcome}>
               <Carousel />
-              <Headings heading={"Top products"} />
+              <Headings heading={"Latest products"} />
               <ProductsRow refreshList={refreshList} setRefreshList={setRefreshList} />
               <Headings heading={"Featured Products"} />
               <LatestProducts refreshList={refreshList} setRefreshList={setRefreshList} />
