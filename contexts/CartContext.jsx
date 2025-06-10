@@ -1,55 +1,53 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 import { setItem, getItem } from "../utils/storage";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
+  const saveTimeout = useRef(null);
 
-  // Load cart from AsyncStorage when the app starts
   useEffect(() => {
     const loadCart = async () => {
       try {
         const savedCart = await getItem("cart");
-        setCart(savedCart ? JSON.parse(savedCart) : []); // 🛠️ Fix: Parse stored string
+        if (savedCart) {
+          const parsedCart = JSON.parse(savedCart);
+          if (Array.isArray(parsedCart)) {
+            setCart(parsedCart);
+          }
+        }
       } catch (error) {
         console.error("Failed to load cart:", error);
       }
     };
+
     loadCart();
   }, []);
 
-  // Save cart to AsyncStorage when it changes (debounced)
   useEffect(() => {
-    const saveCart = setTimeout(() => {
+    if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    saveTimeout.current = setTimeout(() => {
       setItem("cart", JSON.stringify(cart));
-    }, 200); // Debounce save to avoid frequent writes
-
-    return () => clearTimeout(saveCart);
+    }, 300); // debounce delay
   }, [cart]);
 
-  // ✅ Prevents duplicate items and updates quantity instead
   const addToCart = (product) => {
-    if (!product || typeof product !== "object" || !product.id) {
-      console.error("Invalid product added to cart:", product);
+    if (!product || !product.id) {
+      console.error("Invalid product:", product);
       return;
     }
 
     setCart((prevCart) => {
-      const existingItemIndex = prevCart.findIndex((item) => item.id === product.id && item.size === product.size);
+      const index = prevCart.findIndex((item) => item.id === product.id && item.size === product.size);
 
-      let updatedCart;
-
-      if (existingItemIndex !== -1) {
-        updatedCart = [...prevCart];
-        updatedCart[existingItemIndex].quantity =
-          (updatedCart[existingItemIndex].quantity || 0) + (product.quantity || 1);
-      } else {
-        updatedCart = [...prevCart, { ...product, quantity: product.quantity || 1 }];
+      if (index !== -1) {
+        const updated = [...prevCart];
+        updated[index].quantity += product.quantity || 1;
+        return updated;
       }
 
-      // console.log("Updated Cart:", JSON.stringify(updatedCart, null, 2));
-      return updatedCart;
+      return [...prevCart, { ...product, quantity: product.quantity || 1 }];
     });
   };
 
@@ -59,10 +57,16 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = () => setCart([]);
 
-  const cartCount = cart.length;
-
   return (
-    <CartContext.Provider value={{ cart, cartCount, addToCart, removeFromCart, clearCart }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        cartCount: cart.reduce((sum, item) => sum + item.quantity, 0),
+        addToCart,
+        removeFromCart,
+        clearCart,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

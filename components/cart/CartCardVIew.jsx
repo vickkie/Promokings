@@ -17,6 +17,23 @@ const CartCardView = ({ item, handleRefresh }) => {
 
   const { id, title, price, imageUrl, imageUri, quantity, size } = item || {};
 
+  const parsedPrice =
+    typeof price === "number" ? price : price != null ? parseFloat(String(price).replace(/[^0-9.-]+/g, "")) || 0 : 0;
+
+  const [count, setCount] = useState(quantity || 1);
+  const [selectedSize, setSelectedSize] = useState(size || "M");
+  const [totalPrice, setTotalPrice] = useState(parsedPrice * (quantity || 1));
+  const [isWished, setIsWished] = useState(false);
+
+  useEffect(() => {
+    setTotalPrice(parsedPrice * count);
+  }, [count, parsedPrice]);
+
+  useEffect(() => {
+    const found = wishlist.some((wishItem) => wishItem.id === item.id && wishItem.size === selectedSize);
+    setIsWished(found);
+  }, [wishlist, item.id, selectedSize]);
+
   useFocusEffect(
     useCallback(() => {
       if (!cart || !Array.isArray(cart)) {
@@ -24,32 +41,15 @@ const CartCardView = ({ item, handleRefresh }) => {
         return;
       }
 
-      const foundItem = cart.find((item) => item.id === id);
+      const foundItem = cart.find((cartItem) => cartItem.id === id && cartItem.size === size);
 
       if (foundItem) {
         setCount(foundItem.quantity);
-        // console.log(foundItem.quantity);
       } else {
         console.warn("Item not found in cart:", id);
       }
-    }, [cart, id])
+    }, [cart, id, size])
   );
-
-  if (!item.id) return null;
-  // return null;
-
-  const parsedPrice =
-    typeof price === "number" ? price : price != null ? parseFloat(String(price).replace(/[^0-9.-]+/g, "")) : 0;
-
-  const [count, setCount] = useState(item.quantity);
-  const [selectedSize, setSelectedSize] = useState("M");
-  const [totalPrice, setTotalPrice] = useState(parsedPrice * quantity);
-  const [isWished, setIsWished] = useState(false);
-
-  useEffect(() => {
-    const found = wishlist.some((wishItem) => wishItem.id === item.id && wishItem.size === selectedSize);
-    setIsWished(found);
-  }, [wishlist, item]);
 
   useEffect(() => {
     setTotalPrice(parsedPrice * count);

@@ -57,9 +57,12 @@ const CartList = ({ cart }) => {
   return (
     <View>
       <View style={styles.container}>
+        {console.log(cart)}
         <FlatList
           keyExtractor={(item, index) => {
-            `${item.id}-${item.size ?? index}`;
+            const key = `${item.id}-${item.size ?? index}`;
+            // console.log("🧩 key:", key);
+            return key;
           }}
           nestedScrollEnabled={true}
           scrollEnabled={false}

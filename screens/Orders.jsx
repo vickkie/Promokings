@@ -268,6 +268,7 @@ const Orders = () => {
             backgroundColor: COLORS.lightWhite,
             paddingHorizontal: 10,
             borderRadius: 8,
+            overflow: "hidden",
           },
         ]}
       >
@@ -542,6 +543,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "column",
     padding: 15,
+    // overflow: "hidden",
   },
   image: {
     position: "absolute", // Default styles, overridden by `parsedStyle`
