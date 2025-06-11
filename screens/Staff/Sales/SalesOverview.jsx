@@ -75,13 +75,13 @@ const SalesOverview = () => {
   }, [isLoading, data]);
 
   const products = [
-    {
-      id: "1",
-      title: "Sales Report",
-      detail: "Get detailed sales information",
-      route: "SalesData",
-      image: require("../../../assets/images/isometric.webp"),
-    },
+    // {
+    //   id: "1",
+    //   title: "Sales Report",
+    //   detail: "Get detailed sales information",
+    //   route: "SalesData",
+    //   image: require("../../../assets/images/isometric.webp"),
+    // },
     {
       id: "2",
       title: "Best Selling Interactions",
