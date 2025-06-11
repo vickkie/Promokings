@@ -22,7 +22,7 @@
       "bundleIdentifier": "com.uzitrake.promokings"
     },
     "android": {
-      "versionCode": 6,
+      "versionCode": 7,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon-home.png",
         "backgroundColor": "#ffffff"
