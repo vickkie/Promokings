@@ -269,7 +269,7 @@ const UserDetails = () => {
                     paddingVertical: 4,
                     paddingHorizontal: 8,
                     borderRadius: SIZES.medium,
-                    width: 120,
+                    minwidth: 120,
                     alignSelf: "center",
                   }}
                 >

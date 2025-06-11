@@ -41,7 +41,7 @@ const OrderSuccess = () => {
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.gray2} />
       <View style={styles.imageContainer}>
-        <Image source={require("../assets/images/mz1.jpg")} style={styles.image} />
+        <Image source={require("../assets/images/happyy.webp")} style={styles.image} />
         <BlurView intensity={50} style={styles.blurView} />
       </View>
 
