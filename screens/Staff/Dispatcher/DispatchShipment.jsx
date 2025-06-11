@@ -368,9 +368,11 @@ const DispatchShipments = () => {
               </TouchableOpacity>
             </View>
 
+            {/* {console.log("i", filteredOrders)} */}
+
             <FlatList
               horizontal
-              data={["All", "pending", "transit", "completed", "failed"]}
+              data={["All", "pending", "transit", "delivered", "failed"]}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={[styles.filterButton, selectedStatus === item && styles.selectedFilter]}

@@ -57,7 +57,7 @@ const CartList = ({ cart }) => {
   return (
     <View>
       <View style={styles.container}>
-        {console.log(cart)}
+        {/* {console.log(cart)} */}
         <FlatList
           keyExtractor={(item, index) => {
             const key = `${item.id}-${item.size ?? index}`;

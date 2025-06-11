@@ -26,7 +26,7 @@ const OrdersDispatch = () => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
             <Icon name="backbutton" size={26} />
           </TouchableOpacity>
-          <Text style={styles.heading}>Unassigned Dispatch</Text>
+          <Text style={styles.heading}>Dispatch Orders</Text>
           <TouchableOpacity
             style={styles.buttonWrap}
             onPress={() => {
@@ -40,7 +40,7 @@ const OrdersDispatch = () => {
           </TouchableOpacity>
         </View>
 
-        <OrdersDispatchList irefresh={irefresh} setiRefresh={setiRefresh} setPending={setPending} filter={"approved"} />
+        <OrdersDispatchList irefresh={irefresh} setiRefresh={setiRefresh} setPending={setPending} filter={"transit"} />
       </View>
     </SafeAreaView>
   );

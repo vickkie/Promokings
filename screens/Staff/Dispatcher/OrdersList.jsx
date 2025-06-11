@@ -18,7 +18,7 @@ import { BACKEND_PORT } from "@env";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import LottieView from "lottie-react-native";
 
-const OrdersDispatchList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPending }) => {
+const OrdersDispatchList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPending, filter }) => {
   const { userData } = useContext(AuthContext);
   const navigation = useNavigation();
 
@@ -30,6 +30,8 @@ const OrdersDispatchList = ({ refreshList, setRefreshing, setiRefresh, irefresh,
   const [error, setError] = useState(null);
   const limit = 210000;
 
+  console.log(filter);
+
   // Fetch products from API
   const fetchData = async (reset = false) => {
     if (loading) return; // Prevent multiple fetch calls
@@ -37,7 +39,7 @@ const OrdersDispatchList = ({ refreshList, setRefreshing, setiRefresh, irefresh,
 
     try {
       const response = await axios.get(`${BACKEND_PORT}/api/orders`, {
-        params: { limit, offset: reset ? 0 : offset, status: "approved" },
+        params: { limit, offset: reset ? 0 : offset, status: filter },
         Authorization: `Bearer ${userData?.TOKEN}`,
       });
 

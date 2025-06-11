@@ -127,7 +127,7 @@ const DeliveryDispatchDetails = () => {
                       : COLORS.primary,
                 }}
               >
-                {console.log(item)}
+                {/* {console.log(item)} */}
                 {delivery?.status === "failed" ? "cancelled" : delivery?.status}
               </Text>
             </TouchableOpacity>
