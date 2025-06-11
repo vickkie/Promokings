@@ -114,6 +114,7 @@ import SupplyDetails from "./Staff/Supplier/SupplyDetails";
 import SupplyReceiptScreen from "./Staff/Supplier/SupplyReceiptScreen";
 import SupplierPaymentProfile from "./Staff/Supplier/SupplierPaymentProfile";
 import CompanyProfile from "./Staff/Supplier/CompanyProfile";
+import FinanceReportScreen from "./Staff/Finance/FinanceReportScreen";
 
 export {
   ChatListScreen,
@@ -227,4 +228,5 @@ export {
   SupplierPaymentProfile,
   CompanyProfile,
   SalesReportScreen,
+  FinanceReportScreen,
 };

@@ -113,6 +113,7 @@ import {
   HelpListScreen,
   HelpAgentChatScreen,
   SalesReportScreen,
+  FinanceReportScreen,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -232,6 +233,7 @@ const screens = [
   { name: "HelpListScreen", component: HelpListScreen, options: { headerShown: false } },
   { name: "HelpAgentChatScreen", component: HelpAgentChatScreen, options: { headerShown: false } },
   { name: "SalesReportScreen", component: SalesReportScreen, options: { headerShown: false } },
+  { name: "FinanceReportScreen", component: FinanceReportScreen, options: { headerShown: false } },
 ];
 
 export default function App() {

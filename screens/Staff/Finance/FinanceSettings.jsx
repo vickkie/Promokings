@@ -305,6 +305,12 @@ const FinanceSettings = () => {
                   <Text style={styles.menuText}>Message Center</Text>
                 </View>
               </TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate("FinanceReportScreen")}>
+                <View style={styles.menuItem(0.5)}>
+                  <Icon name="treebox" size={24} color={COLORS.primary} />
+                  <Text style={styles.menuText}>Financial Report</Text>
+                </View>
+              </TouchableOpacity>
               <TouchableOpacity onPress={() => navigation.navigate("About")}>
                 <View style={styles.menuItem(0.5)}>
                   <Icon name="about" size={24} color={COLORS.primary} />
