@@ -282,7 +282,7 @@ const FinanceReportScreen = () => {
   // Generate the PDF in the background
   const generatePDF = async () => {
     if (!data || !data.data || !data.grandTotal) {
-      Alert.alert("Missing data", "Sales data is not available yet.");
+      //   Alert.alert("Missing data", "Sales data is not available yet.");
       return;
     }
 
@@ -299,7 +299,6 @@ const FinanceReportScreen = () => {
       if (Platform.OS === "android") {
         const base64Data = await FileSystem.readAsStringAsync(newUri, { encoding: FileSystem.EncodingType.Base64 });
         setPdfUri(`data:application/pdf;base64,${base64Data}`);
-        console.log(base64Data);
       } else {
         setPdfUri(newUri);
       }
