@@ -275,13 +275,28 @@ const OrderDetails = () => {
                       : COLORS.primary,
                 }}
               >
-                {item.status === "completed"
+                {/* {item.status === "completed"
                   ? item.status
                   : item.deliveryStatus === "ready_for_pickup"
                   ? "Ready for pickup"
                   : item.deliveryStatus === "failed"
                   ? "Cancelled"
-                  : item.deliveryStatus}
+                  : item.deliveryStatus} */}
+
+                {(() => {
+                  // console.log(item?.deliveryStatus, item?.status);
+                  if (item.status === "pending") {
+                    if (item.deliveryStatus === "pending") return "pending";
+                    if (item.deliveryStatus === "transit") return "transit";
+                    if (item.deliveryStatus === "ready_for_pickup") return "ready for pickup";
+                  }
+
+                  if (item.status === "transit") {
+                    if (item.deliveryStatus === "pending") return "transit";
+                  }
+
+                  return item.status;
+                })()}
               </Text>
             </TouchableOpacity>
 

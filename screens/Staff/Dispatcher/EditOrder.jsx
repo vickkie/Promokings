@@ -531,16 +531,18 @@ const EditDispatchOrder = () => {
             <View style={[styles.relatedRow, { marginBottom: 10 }]}>
               <View>
                 <Text style={styles.relatedHeader}>Critical Actions</Text>
+                {console.log(item?.orderType, item?.deliveryStatus)}
 
-                {item?.orderType === "pickup" && item?.deliveryStatus !== "ready_for_pickup" ? (
+                {item?.orderType === "pickup" && item?.deliveryStatus !== "ready_for_pickup" && (
                   <TouchableOpacity style={styles.completeBtn} onPress={handleAssignOrder}>
                     {uploading2 ? (
                       <ActivityIndicator size={30} color={COLORS.themew} />
                     ) : (
-                      <Text style={styles.submitText}> Ready for pickup</Text>
+                      <Text style={styles.submitText}>Ready for pickup</Text>
                     )}
                   </TouchableOpacity>
-                ) : (
+                )}
+                {item?.orderType === "pickup" && item?.deliveryStatus === "ready_for_pickup" && (
                   <TouchableOpacity style={styles.completeBtn} onPress={handleCompleteOrder}>
                     {uploading2 ? (
                       <ActivityIndicator size={30} color={COLORS.themew} />

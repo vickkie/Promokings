@@ -373,7 +373,7 @@ const Orders = () => {
 
             <FlatList
               horizontal
-              data={["All", "pending", "delivery", "delivered"]}
+              data={["All", "pending", "transit", "completed"]}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={[styles.filterButton, selectedStatus === item && styles.selectedFilter]}
