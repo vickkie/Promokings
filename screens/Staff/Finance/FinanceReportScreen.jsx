@@ -55,7 +55,7 @@ const FinanceReportScreen = () => {
 
   useEffect(() => {
     if (responseData) {
-      console.log("📦 Got report data:", responseData);
+      //   console.log("📦 Got report data:", responseData);
       setData(responseData);
       generatePDF();
     }
@@ -281,8 +281,8 @@ const FinanceReportScreen = () => {
 
   // Generate the PDF in the background
   const generatePDF = async () => {
-    if (!data || !data.data || !data.grandTotals) {
-      //   Alert.alert("Missing data", "Sales data is not available yet.");
+    if (!data || !data.data || !data.grandTotal) {
+      Alert.alert("Missing data", "Sales data is not available yet.");
       return;
     }
 
@@ -294,16 +294,17 @@ const FinanceReportScreen = () => {
         html: generateSalesForecastHTML(),
         base64: false,
       });
-      const newUri = `${FileSystem.documentDirectory}report_2025.pdf`;
+      const newUri = `${FileSystem.documentDirectory}finance_2025.pdf`;
       await FileSystem.moveAsync({ from: uri, to: newUri });
       if (Platform.OS === "android") {
         const base64Data = await FileSystem.readAsStringAsync(newUri, { encoding: FileSystem.EncodingType.Base64 });
         setPdfUri(`data:application/pdf;base64,${base64Data}`);
+        console.log(base64Data);
       } else {
         setPdfUri(newUri);
       }
     } catch (error) {
-      // Alert.alert("Error", "Could not generate PDF");
+      Alert.alert("Error", "Could not generate PDF");
       console.error(error);
     } finally {
       setIsLoading2(false);
