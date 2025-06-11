@@ -56,7 +56,7 @@ import InventoryDashboard from "./Staff/Inventory/InventoryDashboard";
 import OrdersSales from "./Staff/Sales/Orders";
 import HelpListScreen from "./HelpListScreen";
 import HelpAgentChatScreen from "./HelpAgentChatScreen";
-
+import SalesReportScreen from "./Staff/Sales/SalesReportScreen";
 import BestProductList from "./Staff/Sales/SalesBest";
 
 //Driver
@@ -226,4 +226,5 @@ export {
   SupplyReceiptScreen,
   SupplierPaymentProfile,
   CompanyProfile,
+  SalesReportScreen,
 };

@@ -44,7 +44,7 @@ const usePost = (endpoint) => {
     updateData();
   };
 
-  return { updateStatus, isLoading, error, errorMessage, addCart, postData };
+  return { updateStatus, isLoading, error, errorMessage, addCart, postData, data };
 };
 
 export default usePost;
