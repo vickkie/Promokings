@@ -100,7 +100,8 @@ const ProductDetails = ({ navigation }) => {
       imageUrl: item.imageUrl,
       imageUri: imageUri,
       size: selectedSize,
-      price: item,
+      price: item?.price,
+      item: item,
     };
 
     if (isWished) {
@@ -227,43 +228,77 @@ const ProductDetails = ({ navigation }) => {
                 <Text style={styles.description}>{item.description}</Text>
               </View>
             )}
-            <View style={styles.cartRow}>
-              <TouchableOpacity
-                onPress={() => {
-                  handleAddToCart();
-                }}
-                style={styles.cartBtn}
-              >
-                {isLoadingCart ? (
-                  <ActivityIndicator size="small" color={COLORS.white} />
-                ) : feedback ? (
-                  <Text style={styles.cartTitle}>
-                    {feedback.status === "error" ? "Failed to add" : "Added to cart successfully"}
-                  </Text>
-                ) : (
-                  <Text style={styles.cartTitle}>{"Order now"}</Text>
-                )}
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => {
-                  handleAddToCart();
-                }}
-                style={styles.addBtn}
-              >
-                {isLoadingCart ? (
-                  <ActivityIndicator size="small" color={COLORS.lightWhite} />
-                ) : feedback ? (
-                  feedback.status === "error" ? (
-                    <Ionicons name="ios-close-circle-outline" color={COLORS.red} size={32} />
+            {!item?.quoteBased ? (
+              <View style={styles.cartRow}>
+                <TouchableOpacity
+                  onPress={() => {
+                    handleAddToCart();
+                  }}
+                  style={[styles.cartBtn]}
+                >
+                  {isLoadingCart ? (
+                    <ActivityIndicator size="small" color={COLORS.white} />
+                  ) : feedback ? (
+                    <Text style={styles.cartTitle}>
+                      {feedback.status === "error" ? "Failed to add" : "Added to cart successfully"}
+                    </Text>
                   ) : (
-                    <Ionicons name="ios-checkmark-circle-outline" color={COLORS.green} size={32} />
-                  )
-                ) : (
-                  <Fontisto name="shopping-bag" color={COLORS.lightWhite} size={17} />
-                )}
-              </TouchableOpacity>
-            </View>
+                    <Text style={styles.cartTitle}>{"Order now"}</Text>
+                  )}
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    handleAddToCart();
+                  }}
+                  style={styles.addBtn}
+                >
+                  {isLoadingCart ? (
+                    <ActivityIndicator size="small" color={COLORS.lightWhite} />
+                  ) : feedback ? (
+                    feedback.status === "error" ? (
+                      <Ionicons name="ios-close-circle-outline" color={COLORS.red} size={32} />
+                    ) : (
+                      <Ionicons name="ios-checkmark-circle-outline" color={COLORS.green} size={32} />
+                    )
+                  ) : (
+                    <Fontisto name="shopping-bag" color={COLORS.lightWhite} size={17} />
+                  )}
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View style={styles.cartRow}>
+                <TouchableOpacity
+                  onPress={() => {
+                    userLogin
+                      ? navigation.navigate("Help", {
+                          item_id: item._id,
+                          item_name: item.title,
+                          item_image: item.imageUrl,
+                        })
+                      : showToast("error", "Oops!", "Please log in to continue your inquiry.");
+                  }}
+                  style={styles.cartBtn2}
+                >
+                  <Text style={styles.cartTitle}>{"Inquire now"}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    userLogin
+                      ? navigation.navigate("Help", {
+                          item_id: item._id,
+                          item_name: item.title,
+                          item_image: item.imageUrl,
+                        })
+                      : showToast("error", "Oops!", "Please log in to continue your inquiry.");
+                  }}
+                  style={styles.addBtn2}
+                >
+                  <Fontisto name="phone" color={COLORS.lightWhite} size={17} />
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </View>
       </View>

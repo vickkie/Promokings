@@ -90,16 +90,35 @@ const FavouritesCardView = memo(({ item, handleRefetch }) => {
             {title.length > 20 ? `${title.substring(0, 20)}...` : title}
           </Text>
           <View style={styles.lovehate}>
-            <TouchableOpacity
-              style={styles.lovebuttons}
-              onPress={() => {
-                if (id && size) {
-                  handleAddToCart(item);
-                }
-              }}
-            >
-              <Icon name="cart" size={18}></Icon>
-            </TouchableOpacity>
+            {/* {console.log(item?.item?.category)} */}
+            {!(item?.item?.quoteBased || item?.item?.category === "Quote-Based") ? (
+              <TouchableOpacity
+                style={styles.lovebuttons}
+                onPress={() => {
+                  if (id && size) {
+                    handleAddToCart(item);
+                  }
+                }}
+              >
+                <Icon name="cart" size={18} />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.lovebuttons}
+                onPress={() => {
+                  userData
+                    ? navigation.navigate("Help", {
+                        item_id: item._id,
+                        item_name: item.title,
+                        item_image: item.imageUrl,
+                      })
+                    : showToast("error", "Oops!", "Please log in to continue your inquiry.");
+                }}
+              >
+                <Icon name="call" size={18} />
+              </TouchableOpacity>
+            )}
+
             <TouchableOpacity style={styles.lovebuttons} onPress={deleteItem}>
               <Icon name="delete" size={18}></Icon>
             </TouchableOpacity>
