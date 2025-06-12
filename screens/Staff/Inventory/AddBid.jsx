@@ -36,7 +36,7 @@ const AddBid = () => {
   // Use product details as initial values if available, or fallback to empty/default values
   const [productName, setProductName] = useState(product?.title || "");
   const [inventoryId, setInventoryId] = useState(product?._id || null);
-  const [expectedPrice, setExpectedPrice] = useState("");
+  const [expectedPrice, setExpectedPrice] = useState(product?.price || "");
   const [quantity, setQuantity] = useState(0);
   const [bidDescription, setBidDescription] = useState("");
   const [imageUrl, setImageUrl] = useState(product?.imageUrl || "https://i.postimg.cc/j56q20rB/images.jpg");
@@ -112,6 +112,10 @@ const AddBid = () => {
   });
 
   const handleAddBid = async () => {
+    if (product && product?.price && expectedPrice > product?.price) {
+      alert("Supplier Bid price should not exceed selling price!");
+      return;
+    }
     setLoader(true);
     const newBidRequest = {
       productName,
