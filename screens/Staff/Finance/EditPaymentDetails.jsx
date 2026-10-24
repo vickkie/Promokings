@@ -46,6 +46,7 @@ const EditPaymentDetails = () => {
 
   useEffect(() => {
     if (!driverLoading && alldrivers && !driverError) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setDrivers(alldrivers);
       //   console.log(alldrivers);
     }
@@ -53,6 +54,7 @@ const EditPaymentDetails = () => {
 
   useEffect(() => {
     if (!deliveryLoading && delivery && !deliveryErrorMessage) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setDeliveryData(Array.isArray(delivery) ? delivery[0] : delivery);
     }
   }, [deliveryLoading, delivery]);

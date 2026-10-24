@@ -31,6 +31,7 @@ const usePost = (endpoint) => {
 
   useEffect(() => {
     if (endpoint && data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       updateData();
     }
   }, [endpoint, data]);

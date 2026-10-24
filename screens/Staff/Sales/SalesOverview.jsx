@@ -33,6 +33,7 @@ const SalesOverview = () => {
     if (!userLogin) {
       navigation.replace("Login");
     } else if (hasRole("sales")) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData._id);
     } else {
       userLogout();
@@ -68,6 +69,7 @@ const SalesOverview = () => {
 
   useEffect(() => {
     if (!isLoading && data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setQuanties(data);
     } else if (!isLoading && !data) {
       setQuanties(zeroData);

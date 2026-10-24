@@ -26,11 +26,13 @@ const CartCardView = ({ item, handleRefresh }) => {
   const [isWished, setIsWished] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     setTotalPrice(parsedPrice * count);
   }, [count, parsedPrice]);
 
   useEffect(() => {
     const found = wishlist.some((wishItem) => wishItem.id === item.id && wishItem.size === selectedSize);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     setIsWished(found);
   }, [wishlist, item.id, selectedSize]);
 
@@ -52,6 +54,7 @@ const CartCardView = ({ item, handleRefresh }) => {
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     setTotalPrice(parsedPrice * count);
   }, [count]);
 

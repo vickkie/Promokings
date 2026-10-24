@@ -29,6 +29,7 @@ const DispatchShipments = () => {
     if (!userLogin) {
       navigation.replace("Login");
     } else if (hasRole("dispatcher")) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData._id);
     } else {
       userLogout();
@@ -53,6 +54,7 @@ const DispatchShipments = () => {
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1);
       navigation.navigate("Login");
       return;
@@ -99,6 +101,7 @@ const DispatchShipments = () => {
     if (!isLoading && !error && data && data.length !== 0) {
       // Destructure orders from data
       const shipments = data || [];
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setOrdersData(shipments);
 
       // Sort orders

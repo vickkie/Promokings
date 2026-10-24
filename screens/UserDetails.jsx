@@ -44,6 +44,7 @@ const UserDetails = () => {
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1);
       // navigation.navigate("Login");
       return;

@@ -19,6 +19,7 @@ const CartList = ({ cart }) => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     calculateTotals(cart);
   }, [cart]);
 

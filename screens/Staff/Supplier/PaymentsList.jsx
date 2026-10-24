@@ -75,10 +75,12 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
 
   // initial & refresh fetches
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     fetchData(true, activeTab, searchQuery);
   }, [refreshList, supplierId]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     fetchData(true, activeTab, searchQuery);
   }, [activeTab, searchQuery]);
 

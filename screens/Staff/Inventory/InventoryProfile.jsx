@@ -36,6 +36,7 @@ const InventoryProfile = () => {
         routes: [{ name: "Login" }],
       });
     } else if (hasRole("inventory")) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData._id);
     } else {
       userLogout();

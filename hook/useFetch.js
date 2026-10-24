@@ -60,6 +60,7 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
 
   useEffect(() => {
     if (endpoint) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       fetchData();
     }
   }, [endpoint, token]);

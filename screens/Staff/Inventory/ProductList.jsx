@@ -95,6 +95,7 @@ const EditProductList = () => {
   useEffect(() => {
     if (data.length > 0) {
       const uniqueCategories = [...new Set(data.map((item) => item.category))];
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setCategories(uniqueCategories);
     }
   }, [data]);

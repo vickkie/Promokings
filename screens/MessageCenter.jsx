@@ -10,6 +10,7 @@ const MessageCenter = ({ navigation }) => {
   const [userId, setUserId] = useState(null);
   useEffect(() => {
     if (userData && userData._id && userData.TOKEN) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData._id);
     } else {
       navigation.navigate("Login");

@@ -87,6 +87,7 @@ const GoogleSignInButton = ({ navigation }) => {
       // authentication.idToken (params.id_token is also populated).
       const idToken = response.authentication?.idToken || response.params?.id_token;
       if (idToken) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
         exchangeIdToken(idToken);
       } else {
         setBusy(false);

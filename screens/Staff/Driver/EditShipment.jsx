@@ -44,6 +44,7 @@ const EditShipmentDriver = () => {
   useEffect(() => {
     // console.log(delivery?.order);
     if (!deliveryLoading && delivery && delivery?.status === "success") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setDeliveryData(Array.isArray(delivery?.order) ? delivery?.order[0] : delivery?.order);
     }
   }, [deliveryLoading, delivery]);

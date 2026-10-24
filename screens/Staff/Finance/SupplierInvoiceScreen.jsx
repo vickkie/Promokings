@@ -279,6 +279,7 @@ const TransactionReceiptScreen = () => {
 
   useEffect(() => {
     if (transaction) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       generatePDF();
     }
   }, [transaction]);

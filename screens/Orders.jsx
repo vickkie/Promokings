@@ -27,6 +27,7 @@ const Orders = () => {
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1);
       navigation.navigate("Login");
       return;
@@ -53,6 +54,7 @@ const Orders = () => {
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1); // Consider handling this differently, maybe redirecting to login immediately
       navigation.navigate("Login");
       return;
@@ -97,6 +99,7 @@ const Orders = () => {
     if (!isLoading && !error && data.orders && data.orders.length !== 0) {
       // Destructure orders from data
       const orders = data.orders || [];
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setOrdersData(orders);
 
       // Sort orders

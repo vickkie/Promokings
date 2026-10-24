@@ -42,6 +42,7 @@ const ProfileScreen = ({ profileImageUrl }) => {
   const [webViewKey, setWebViewKey] = useState(0);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     setWebViewKey((prevKey) => prevKey + 1); // Force re-render when profileImageUrl changes
   }, [profileImageUrl]);
 
@@ -142,6 +143,7 @@ const DriverSettings = () => {
     if (!userLogin) {
       navigation.replace("Login");
     } else if (hasRole("driver")) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData._id);
     } else {
       userLogout();

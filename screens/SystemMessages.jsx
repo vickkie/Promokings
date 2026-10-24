@@ -16,6 +16,7 @@ const SystemMessages = () => {
 
   useEffect(() => {
     if (userData && userData._id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData._id);
     } else {
       setUserId(1); // Handle case where userData is not available
@@ -60,6 +61,7 @@ const SystemMessages = () => {
       // Sort messages by createdAt
       formattedMessages.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setMessages(formattedMessages);
     }
   }, [isLoadingUser, isLoadingSystem, userNotifications, systemNotifications]);

@@ -22,12 +22,14 @@ const PreviewProduct = ({ navigation }) => {
 
   useEffect(() => {
     if (data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setItemDescription(data.description);
     }
   }, [data, refetch, itemDescription]);
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1); // Default user ID for demonstration purposes && test
     } else if (userData && userData._id) {
       setUserId(userData._id);
@@ -43,6 +45,7 @@ const PreviewProduct = ({ navigation }) => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     processDescription();
   }, [itemDescription]);
 

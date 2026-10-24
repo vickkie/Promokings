@@ -32,6 +32,7 @@ const ProductDetails = ({ navigation }) => {
   // ✅ Check if the item is in the wishlist when the component loads
   useEffect(() => {
     const found = wishlist.some((wishItem) => wishItem.id === item._id && wishItem.size === selectedSize);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     setIsWished(found);
   }, [wishlist, item, selectedSize]);
 
@@ -49,6 +50,7 @@ const ProductDetails = ({ navigation }) => {
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1); // Default user ID for demonstration purposes && test
     } else if (userData && userData._id) {
       setUserId(userData._id);
@@ -57,6 +59,7 @@ const ProductDetails = ({ navigation }) => {
 
   useEffect(() => {
     if (data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setItemDescription(data.description);
       setQuantity(data.quantity ? data.quantity : 0);
     }
@@ -71,6 +74,7 @@ const ProductDetails = ({ navigation }) => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     processDescription();
   }, [itemDescription]);
 

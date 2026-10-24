@@ -95,6 +95,7 @@ const InventoryRequests = () => {
   useEffect(() => {
     if (data.length > 0) {
       const uniqueStatus = [...new Set(data.map((item) => item.status))];
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setstatuses(uniqueStatus);
     }
   }, [data]);

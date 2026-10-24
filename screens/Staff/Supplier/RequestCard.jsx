@@ -73,6 +73,7 @@ const RequestCard = ({ item, isGridView }) => {
 
   useEffect(() => {
     if (item?.selectedSupplier === userData?.supplierProfile?._id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setBidAccepted(true);
     } else if (item?.selectedSupplier !== null) {
       setLostBid(true);

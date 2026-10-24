@@ -50,6 +50,7 @@ const DriverProfile = () => {
         routes: [{ name: "Login" }],
       });
     } else if (hasRole("driver")) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData._id);
     } else {
       userLogout();

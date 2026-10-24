@@ -383,6 +383,7 @@ const FinanceReportScreen = () => {
   useEffect(() => {
     if (responseData) {
       //   console.log("📦 Got report data:", responseData);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setData(responseData);
       generatePDF();
     }

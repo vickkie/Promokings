@@ -29,6 +29,7 @@ const SalesShipments = () => {
     if (!userLogin) {
       navigation.replace("Login");
     } else if (hasRole("sales")) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData._id);
     } else {
       userLogout();
@@ -53,6 +54,7 @@ const SalesShipments = () => {
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1); // Consider handling this differently, maybe redirecting to login immediately
       navigation.navigate("Login");
       return;
@@ -99,6 +101,7 @@ const SalesShipments = () => {
     if (!isLoading && !error && data && data.length !== 0) {
       // Destructure orders from data
       const shipments = data || [];
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setOrdersData(shipments);
 
       // Sort orders

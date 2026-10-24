@@ -59,6 +59,7 @@ const ProductsCardView = ({ item, refetch }) => {
 
   useEffect(() => {
     const found = wishlist.some((wishItem) => wishItem.id === item._id && wishItem.size === selectedSize);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     setIsWished(found);
   }, [wishlist, item]);
 

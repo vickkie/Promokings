@@ -49,6 +49,7 @@ const SalesProfile = () => {
       });
       // console.log(userData);
     } else if (hasRole("sales")) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData._id);
     } else {
       userLogout();

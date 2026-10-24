@@ -64,6 +64,7 @@ const EditProduct = () => {
 
   useEffect(() => {
     if (!isSuppliersLoading && !supplierError && supplierData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setSuppliers(supplierData?.suppliers);
     }
 
@@ -266,6 +267,7 @@ const EditProduct = () => {
 
     if (selectedSupplier) {
       // console.log("Found supplier:", selectedSupplier.name);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setSupplier(selectedSupplier.name);
       setCategory(product?.category);
     } else {

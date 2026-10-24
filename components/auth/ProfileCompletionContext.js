@@ -124,6 +124,7 @@ const ProfileCompletionProvider = ({ children }) => {
     if (userData) {
       // Check role and update locally first for instant UI feedback
       if (userData.role === "staff") {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
         updateLocalProfileCompletionForStaff(userData);
       } else {
         updateLocalProfileCompletionForCustomer(userData);

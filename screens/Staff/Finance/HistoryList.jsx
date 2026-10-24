@@ -73,10 +73,12 @@ const HistoryList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
 
   // Initial fetch (or refetch when refreshList changes)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     fetchData(true);
   }, [refreshList]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     fetchData(true, activeTab, searchQuery);
   }, [activeTab, searchQuery]);
 

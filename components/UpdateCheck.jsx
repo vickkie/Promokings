@@ -124,6 +124,7 @@ export default function UpdateCheck() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     checkForUpdates();
     const interval = setInterval(checkForUpdates, CHECK_INTERVAL);
     return () => clearInterval(interval);

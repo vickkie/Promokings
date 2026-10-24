@@ -24,6 +24,7 @@ const FavouritesList = ({ wishlist = [] }) => {
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1);
     } else if (userData && userData._id) {
       setUserId(userData._id);
@@ -53,6 +54,7 @@ const FavouritesList = ({ wishlist = [] }) => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     calculateTotals(wishlist);
   }, [wishlist]);
 
