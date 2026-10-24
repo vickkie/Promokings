@@ -11,7 +11,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation , useRoute } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
@@ -23,7 +23,6 @@ import { Picker } from "@react-native-picker/picker";
 import DatePicker from "react-native-date-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { BACKEND_PORT } from "@env";
-import { useRoute } from "@react-navigation/native";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import Routes from "../../../navigation/routes";
 

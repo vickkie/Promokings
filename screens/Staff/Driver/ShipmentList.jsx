@@ -10,7 +10,7 @@ import {
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation , useFocusEffect , useRoute } from "@react-navigation/native";
 
 import { COLORS, SIZES } from "../../../constants";
 import { ScrollView } from "react-native-gesture-handler";
@@ -18,8 +18,6 @@ import useFetch from "../../../hook/useFetch";
 import { BACKEND_PORT } from "@env";
 import Icon from "../../../constants/icons";
 import LatestShipments from "./LatestShipments";
-import { useFocusEffect } from "@react-navigation/native";
-import { useRoute } from "@react-navigation/native";
 
 const ShipmentList = () => {
   const navigation = useNavigation();

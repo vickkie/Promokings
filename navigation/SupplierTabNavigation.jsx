@@ -5,9 +5,9 @@ import { InventoryRequests, MySupply, SupplierDashboard, SupplierSettings, Suppl
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { StyleSheet, View } from "react-native";
 
 const Tab = createBottomTabNavigator();
-import { StyleSheet, View } from "react-native";
 
 const screenOptions = {
   tabBarShowLabel: true,

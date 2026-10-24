@@ -1,8 +1,7 @@
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, StyleSheet } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, StyleSheet , Image , Modal } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackBtn from "../components/BackBtn";
-import { Image } from "react-native";
 import Button from "../components/Button";
 import { Formik, validateYupSchema } from "formik";
 import * as Yup from "yup";
@@ -13,7 +12,6 @@ import { BACKEND_PORT } from "@env";
 import Toast from "react-native-toast-message";
 import usePost2 from "../hook/usePost2";
 import IntlPhoneInput from "react-native-intl-phone-input";
-import { Modal } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 
 const validationSchema = Yup.object().shape({

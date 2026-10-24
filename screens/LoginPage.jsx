@@ -2,10 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 
 import { Buffer } from "buffer";
 
-global.atob = (input) => Buffer.from(input, "base64").toString("utf-8");
-global.btoa = (input) => Buffer.from(input, "utf-8").toString("base64");
-
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, StyleSheet } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, StyleSheet , StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -19,8 +16,10 @@ import CustomButton from "../components/Button";
 import { COLORS, SIZES } from "../constants";
 import { BACKEND_PORT } from "@env";
 import Icon from "../constants/icons";
-import { StatusBar } from "react-native";
 import Routes, { ROLE_ROUTES } from "../navigation/routes";
+
+global.atob = (input) => Buffer.from(input, "base64").toString("utf-8");
+global.btoa = (input) => Buffer.from(input, "utf-8").toString("base64");
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()

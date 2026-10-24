@@ -1,10 +1,9 @@
 import { useEffect, useContext, useRef, useState } from "react";
-import { Animated } from "react-native";
+import { Animated , View, Text, TouchableOpacity, Image, Vibration } from "react-native";
 import * as Notifications from "expo-notifications";
 import { ensureNotificationPermission } from "./registerPushNotification";
 import { AuthContext } from "./AuthContext";
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, TouchableOpacity, Image, Vibration } from "react-native";
 import * as Haptics from "expo-haptics";
 
 // Ensure notifications are handled correctly

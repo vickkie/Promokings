@@ -11,12 +11,12 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import RNPickerSelect from "react-native-picker-select";
 import { SIZES, COLORS } from "../../../constants";
 import { BACKEND_PORT } from "@env";
+import Toast from "react-native-toast-message";
+import usePost2 from "../../../hook/usePost2";
 
 // Inline invoice/receipt HTML needs no JS and may only navigate to the
 // backend origin (MB-SEC-006).
 const BACKEND_ORIGIN = (BACKEND_PORT || "").replace(/(https?:\/\/[^/]+).*/, "$1");
-import Toast from "react-native-toast-message";
-import usePost2 from "../../../hook/usePost2";
 
 const onlinelogo = "https://res.cloudinary.com/drsuclnkw/image/upload/v1741609689/Promokings/promoking-logo_h3hu4v.png";
 

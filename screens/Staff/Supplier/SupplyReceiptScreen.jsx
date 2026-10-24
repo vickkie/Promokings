@@ -9,11 +9,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "../../../constants/icons"; // adjust import if needed
 import { SIZES, COLORS } from "../../../constants";
 import { BACKEND_PORT } from "@env";
+import Toast from "react-native-toast-message";
 
 // Inline invoice/receipt HTML needs no JS and may only navigate to the
 // backend origin (MB-SEC-006).
 const BACKEND_ORIGIN = (BACKEND_PORT || "").replace(/(https?:\/\/[^/]+).*/, "$1");
-import Toast from "react-native-toast-message";
 
 const onlinelogo = "https://res.cloudinary.com/drsuclnkw/image/upload/v1741609689/Promokings/promoking-logo_h3hu4v.png";
 

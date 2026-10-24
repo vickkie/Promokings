@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
+import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking , Alert } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
@@ -12,7 +12,6 @@ import { BACKEND_PORT } from "@env";
 import axios from "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import BidToInventory from "../../../components/bottomsheets/BidToInventory";
-import { Alert } from "react-native";
 import SupplierPaymentTracker from "./SupplierPaymentTracker";
 
 const SupplyDetails = () => {

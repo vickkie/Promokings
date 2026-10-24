@@ -14,10 +14,9 @@ import useFetch from "../../../hook/useFetch";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Icon from "../../../constants/icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute , useFocusEffect } from "@react-navigation/native";
 import InventoryAdd from "../../../components/bottomsheets/InventoryAdd";
 
-import { useFocusEffect } from "@react-navigation/native";
 
 import { Picker } from "@react-native-picker/picker";
 import RequestCard from "./RequestCard";

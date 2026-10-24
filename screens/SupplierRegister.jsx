@@ -1,8 +1,7 @@
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, StyleSheet , Image , Modal , BackHandler } from "react-native";
+import React, { useEffect, useState , useCallback } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackBtn from "../components/BackBtn";
-import { Image } from "react-native";
 import Button from "../components/Button";
 import { Formik, useFormik, validateYupSchema } from "formik";
 import * as Yup from "yup";
@@ -13,14 +12,11 @@ import { BACKEND_PORT } from "@env";
 import Toast from "react-native-toast-message";
 import usePost2 from "../hook/usePost2";
 import IntlPhoneInput from "react-native-intl-phone-input";
-import { Modal } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import Icon from "../constants/icons";
 
 import LottieView from "lottie-react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { BackHandler } from "react-native";
-import { useCallback } from "react";
 
 const SupplierRegister = ({ navigation }) => {
   const [loader, setLoader] = useState(false);

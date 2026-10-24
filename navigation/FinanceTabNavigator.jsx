@@ -4,9 +4,9 @@ import { FinanceDashboard, Payments, PaymentsHistory, FinanceSettings, SupplierP
 
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
+import { StyleSheet, View } from "react-native";
 
 const Tab = createBottomTabNavigator();
-import { StyleSheet, View } from "react-native";
 
 const screenOptions = {
   tabBarShowLabel: true,

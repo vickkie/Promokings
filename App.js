@@ -1,4 +1,4 @@
-import "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { enableScreens } from "react-native-screens";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -8,7 +8,6 @@ import * as SplashScreen from "expo-splash-screen";
 import Toast from "react-native-toast-message";
 import toastConfig from "./utils/toastConfig";
 
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import ErrorBoundary2 from "./screens_options/ErrorBoundary";
 

@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { View, Button, Alert, Text, StyleSheet, Platform } from "react-native";
+import { View, Button, Alert, Text, StyleSheet, Platform , TouchableOpacity, ScrollView } from "react-native";
 import * as Print from "expo-print";
 import * as FileSystem from "expo-file-system";
 
 import { WebView } from "react-native-webview";
 import { shareAsync } from "expo-sharing";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import { TouchableOpacity, ScrollView } from "react-native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
 import { BACKEND_PORT } from "@env";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 // Inline invoice/receipt HTML needs no JS and may only navigate to the
 // backend origin (MB-SEC-006).
 const BACKEND_ORIGIN = (BACKEND_PORT || "").replace(/(https?:\/\/[^/]+).*/, "$1");
-import { SafeAreaView } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
 
 const onlinelogo = "https://res.cloudinary.com/drsuclnkw/image/upload/v1741609689/Promokings/promoking-logo_h3hu4v.png";
 

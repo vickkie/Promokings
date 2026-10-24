@@ -10,7 +10,7 @@ import {
   Image,
   ActivityIndicator,
   Linking,
-} from "react-native";
+ Alert } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
@@ -23,7 +23,6 @@ import { BACKEND_PORT } from "@env";
 import axios from "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import BidToInventory from "../../../components/bottomsheets/BidToInventory";
-import { Alert } from "react-native";
 import Routes from "../../../navigation/routes";
 
 const BidDetails = () => {

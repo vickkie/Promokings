@@ -9,7 +9,7 @@ import {
   Image,
   RefreshControl,
   TextInput,
-} from "react-native";
+ FlatList } from "react-native";
 import moment from "moment";
 import axios from "axios";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,7 +17,6 @@ import { COLORS, SIZES } from "../../../constants";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { BACKEND_PORT } from "@env";
-import { FlatList } from "react-native";
 import LottieView from "lottie-react-native";
 
 // Example tabs

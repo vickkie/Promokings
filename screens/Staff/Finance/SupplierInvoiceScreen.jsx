@@ -9,11 +9,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
 import { BACKEND_PORT } from "@env";
+import Toast from "react-native-toast-message";
 
 // Inline invoice/receipt HTML needs no JS and may only navigate to the
 // backend origin (MB-SEC-006).
 const BACKEND_ORIGIN = (BACKEND_PORT || "").replace(/(https?:\/\/[^/]+).*/, "$1");
-import Toast from "react-native-toast-message";
 
 const TransactionReceiptScreen = () => {
   const route = useRoute();
