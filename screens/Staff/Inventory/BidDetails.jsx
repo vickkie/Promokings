@@ -45,7 +45,7 @@ const BidDetails = () => {
     } else if (userData && userData._id) {
       setUserId(userData._id);
     }
-  }, [userLogin, userData]);
+  }, [userLogin, userData, navigation]);
 
   const datapath = `v2/supplier/${bid?.selectedSupplier}`;
 

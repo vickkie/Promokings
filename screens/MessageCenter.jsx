@@ -15,7 +15,7 @@ const MessageCenter = ({ navigation }) => {
     } else {
       navigation.navigate("Login");
     }
-  }, [userData]);
+  }, [userData, navigation]);
 
   return (
     <SafeAreaView>

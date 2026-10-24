@@ -93,11 +93,13 @@ const InventoryAdd = forwardRef(function InventoryAdd(props, ref) {
             style={styles.actionButton}
             onPress={() => {
               bottomSheetRef.current?.dismiss();
-              userLogin
-                ? navigation.navigate("EditProduct", {
+              if (userLogin) {
+                navigation.navigate("EditProduct", {
                     item: item,
-                  })
-                : showToast("error", "Oops!", "Please log in to continue ");
+                  });
+              } else {
+                showToast("error", "Oops!", "Please log in to continue ");
+              }
             }}
           >
             <Text style={styles.actionButtonText}>Edit Product</Text>

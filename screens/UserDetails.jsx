@@ -7,7 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
+import { create as createAxiosInstance } from "axios";
 import axiosRetry from "axios-retry";
 
 import { BACKEND_PORT } from "@env";
@@ -21,7 +21,7 @@ import Routes from "../navigation/routes";
 
 // Dedicated instance: mutating the shared axios default would
 // silently replay order/payment POSTs app-wide (MB-SEC-008).
-const retryClient = axios.create();
+const retryClient = createAxiosInstance();
 axiosRetry(retryClient, { retries: 3 });
 
 const UserDetails = () => {

@@ -34,7 +34,7 @@ const Orders = () => {
     } else if (userData && userData._id) {
       setUserId(userData._id);
     }
-  }, [userLogin, userData]);
+  }, [userLogin, userData, navigation]);
 
   // const { data, isLoading, error, refetch } = useFetch(`orders/user/${userId}`);
 
@@ -61,7 +61,7 @@ const Orders = () => {
     } else if (userData && userData._id) {
       setUserId(userData._id);
     }
-  }, [userLogin, userData]);
+  }, [userLogin, userData, navigation]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -318,7 +318,7 @@ const Orders = () => {
         shippingId={item.shippingId}
       />
     ),
-    [data]
+    []
   );
 
   return (
@@ -418,7 +418,7 @@ const Orders = () => {
                 />
               )}
 
-              {!isLoading && filteredOrders.length == 0 && (
+              {!isLoading && filteredOrders.length === 0 && (
                 <View style={styles.containLottie}>
                   <View style={styles.animationWrapper}>
                     <LottieView

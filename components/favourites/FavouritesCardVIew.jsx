@@ -105,13 +105,15 @@ const FavouritesCardView = memo(function FavouritesCardView({ item, handleRefetc
               <TouchableOpacity
                 style={styles.lovebuttons}
                 onPress={() => {
-                  userData
-                    ? navigation.navigate("Help", {
+                  if (userData) {
+                    navigation.navigate("Help", {
                         item_id: item._id,
                         item_name: item.title,
                         item_image: item.imageUrl,
-                      })
-                    : showToast("error", "Oops!", "Please log in to continue your inquiry.");
+                      });
+                  } else {
+                    showToast("error", "Oops!", "Please log in to continue your inquiry.");
+                  }
                 }}
               >
                 <Icon name="call" size={18} />

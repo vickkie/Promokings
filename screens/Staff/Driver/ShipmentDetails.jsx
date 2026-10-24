@@ -7,7 +7,6 @@ import LottieView from "lottie-react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import useFetch from "../../../hook/useFetch";
-import { ErrorMessage } from "formik";
 
 const ShipmentDetails = () => {
   const route = useRoute();
@@ -34,7 +33,7 @@ const ShipmentDetails = () => {
       setcustomerDetails(data?.orderId?.userId);
       setProducts(data?.orderId?.products);
     }
-  }, [data, dataLoading, ErrorMessage]);
+  }, [data, dataLoading]);
 
   const handleEmailPress = (email) => {
     Linking.openURL(`mailto:${email}`);
@@ -207,7 +206,7 @@ const ShipmentDetails = () => {
                       <TouchableOpacity
                         style={styles.reachWrapper}
                         onPress={() => {
-                          customerDetails ? handleEmailPress(customerDetails?.email) : "";
+                          if (customerDetails) handleEmailPress(customerDetails?.email);
                         }}
                       >
                         <Icon name="email" size={20} />

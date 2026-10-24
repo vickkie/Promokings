@@ -33,7 +33,7 @@ const OrderPaymentDetails = () => {
     } else if (userData && userData._id) {
       setUserId(userData._id);
     }
-  }, [userLogin, userData]);
+  }, [userLogin, userData, navigation]);
 
   const [, ] = useState(1);
   const [, ] = useState("");
@@ -327,7 +327,7 @@ const OrderPaymentDetails = () => {
                   <TouchableOpacity
                     style={styles.reachWrapper}
                     onPress={() => {
-                      customerDetails ? handleEmailPress(customerDetails?.email) : "";
+                      if (customerDetails) handleEmailPress(customerDetails?.email);
                     }}
                   >
                     <Icon name="email" size={20} />

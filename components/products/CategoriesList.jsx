@@ -39,7 +39,7 @@ const CategoriesList = () => {
     checkNetInfo();
   }, []);
 
-  !NetInfo.useNetInfo().isConnected;
+  NetInfo.useNetInfo();
 
   if (isLoading) {
     return (

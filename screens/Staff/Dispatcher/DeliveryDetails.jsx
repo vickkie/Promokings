@@ -7,7 +7,6 @@ import LottieView from "lottie-react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import useFetch from "../../../hook/useFetch";
-import { ErrorMessage } from "formik";
 
 const DeliveryDispatchDetails = () => {
   const route = useRoute();
@@ -34,7 +33,7 @@ const DeliveryDispatchDetails = () => {
       setdriverDetails(data?.driverId);
       setProducts(data?.orderId?.products);
     }
-  }, [data, dataLoading, ErrorMessage]);
+  }, [data, dataLoading]);
 
   const handleEmailPress = (email) => {
     Linking.openURL(`mailto:${email}`);
@@ -249,7 +248,7 @@ const DeliveryDispatchDetails = () => {
                       <TouchableOpacity
                         style={styles.reachWrapper}
                         onPress={() => {
-                          driverDetails ? handleEmailPress(driverDetails?.email) : "";
+                          if (driverDetails) handleEmailPress(driverDetails?.email);
                         }}
                       >
                         <Icon name="email" size={20} />
@@ -257,7 +256,7 @@ const DeliveryDispatchDetails = () => {
                       <TouchableOpacity
                         style={styles.reachWrapper}
                         onPress={() => {
-                          driverDetails ? handleCallPress(driverDetails?.phoneNumber) : "";
+                          if (driverDetails) handleCallPress(driverDetails?.phoneNumber);
                         }}
                       >
                         <Icon name="call" size={20} />

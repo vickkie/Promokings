@@ -35,7 +35,7 @@ const OrderSalesDetails = () => {
     } else if (userData && userData._id) {
       setUserId(userData._id);
     }
-  }, [userLogin, userData]);
+  }, [userLogin, userData, navigation]);
 
   const [, ] = useState(1);
   const [, ] = useState("");

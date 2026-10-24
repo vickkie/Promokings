@@ -33,7 +33,7 @@ const OrderPaymentDetails = () => {
     } else if (userData && userData._id) {
       setUserId(userData._id);
     }
-  }, [userLogin, userData]);
+  }, [userLogin, userData, navigation]);
 
   const [, ] = useState(1);
   const [, ] = useState("");
@@ -95,7 +95,7 @@ const OrderPaymentDetails = () => {
       } else {
         setLoading(false);
       }
-    }, [item?.inventoryRequest?.selectedSupplier, userData?.TOKEN]);
+    }, [item?.inventoryRequest?.selectedSupplier]);
 
     const payment = paymentDetails;
     const preferred = payment?.preferredMethod;
@@ -383,7 +383,7 @@ const OrderPaymentDetails = () => {
                   <TouchableOpacity
                     style={styles.reachWrapper}
                     onPress={() => {
-                      supplierDetails ? handleEmailPress(supplierDetails?.email) : "";
+                      if (supplierDetails) handleEmailPress(supplierDetails?.email);
                     }}
                   >
                     <Icon name="email" size={20} />

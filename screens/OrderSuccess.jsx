@@ -31,7 +31,7 @@ const OrderSuccess = () => {
     return () => {
       BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
     };
-  }, []);
+  }, [navigation]);
 
   const handleCopy = async () => {
     await Clipboard.setStringAsync(orderId);

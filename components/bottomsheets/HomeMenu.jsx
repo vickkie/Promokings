@@ -112,7 +112,11 @@ const HomeMenu = forwardRef(function HomeMenu(props, ref) {
           <View style={styles.listContainer}>
             <TouchableOpacity
               onPress={() => {
-                userLogin ? handleNavigation("Message") : handleNavigation("Login");
+                if (userLogin) {
+                  handleNavigation("Message");
+                } else {
+                  handleNavigation("Login");
+                }
                 // handleNavigation("Message");
               }}
             >
