@@ -26,7 +26,7 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (userData?._id) {
-      startPermissionCheck(userData._id);
+      startPermissionCheck();
     }
   }, [userData]);
 
