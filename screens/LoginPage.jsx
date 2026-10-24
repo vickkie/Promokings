@@ -103,7 +103,6 @@ const LoginPage = ({ navigation }) => {
 
       // Role-based navigation
       const roleRoutes = {
-        admin: "Admin Navigation",
         inventory: Routes.InventoryNavigation,
         sales: Routes.SalesNavigation,
         finance: Routes.FinanceNavigation,
