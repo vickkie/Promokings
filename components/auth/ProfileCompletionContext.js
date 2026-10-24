@@ -98,8 +98,6 @@ const ProfileCompletionProvider = ({ children }) => {
     // console.log(userData?._id);
     if (staffRoles.includes(userData.position)) {
       endpoint = `${BACKEND_PORT}/api/staff/v1/incomplete/${userData._id}`;
-
-      console.log(endpoint);
     } else {
       endpoint = `${BACKEND_PORT}/api/user/v1/incomplete/${userData._id}`;
     }

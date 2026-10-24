@@ -63,8 +63,6 @@ const LoginPage = ({ navigation }) => {
       const endpoint = `${BACKEND_PORT}/auth/login`;
       const data = { ...values, userType };
 
-      console.log(endpoint);
-
       const response = await axios.post(endpoint, data);
 
       // console.log(response);
@@ -76,7 +74,6 @@ const LoginPage = ({ navigation }) => {
 
       // Store login data
       await login(response.data);
-      console.log(response.data);
 
       // Get role from AuthContext
       const role = getRole(response.data);

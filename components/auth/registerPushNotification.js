@@ -59,15 +59,12 @@ export async function registerForPushNotificationsAsync(userId) {
   }
 
   const token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
-  console.log("Expo Push Token:", token);
 
   try {
-    const response = await axios.post(`${BACKEND_PORT}/api/notification/updatePushToken`, {
+    await axios.post(`${BACKEND_PORT}/api/notification/updatePushToken`, {
       userId,
       expoPushToken: token,
     });
-
-    console.log("Push token updated successfully", response.data);
   } catch (err) {
     console.error("Error updating push token:", err);
   }
