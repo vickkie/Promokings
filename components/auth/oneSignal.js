@@ -8,8 +8,8 @@ import { AuthContext } from "./AuthContext";
 export default function OneSignalId() {
   const { userData } = useContext(AuthContext);
 
-  // Using fallback ID ensures initialization even if env variable isn't set
-  const OnesignalId = ONESIGNAL_APP_ID || "0dadac55-ed3d-4b98-8e25-1d4aa685ef06";
+  // Env-only: no hardcoded tenant fallback (MB-SEC-003)
+  const OnesignalId = ONESIGNAL_APP_ID;
 
   useEffect(() => {
     // Early return if user isn't logged in
@@ -21,6 +21,12 @@ export default function OneSignalId() {
     // Skip initialization in Expo Go
     if (Constants.appOwnership === "expo") {
       console.log("Running in Expo Go; skipping OneSignal initialization");
+      return;
+    }
+
+    // Fail closed when the app id is not configured
+    if (!OnesignalId) {
+      console.warn("ONESIGNAL_APP_ID not configured; skipping OneSignal initialization");
       return;
     }
 
