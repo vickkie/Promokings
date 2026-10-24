@@ -12,6 +12,7 @@ import axios from "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import useFetch from "../../../hook/useFetch";
 import Toast from "react-native-toast-message";
+import Routes from "../../../navigation/routes";
 
 const EditDispatchOrder = () => {
   const route = useRoute();
@@ -302,7 +303,7 @@ const EditDispatchOrder = () => {
             if (setItem) setItem(orderData);
 
             setTimeout(() => {
-              navigation.navigate("Dispatcher Navigation", {});
+              navigation.navigate(Routes.DispatchNavigation, { screen: Routes.OrderDispatch });
             }, 3000);
           } catch (err) {
             console.warn("Order update error:", err);
