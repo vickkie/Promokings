@@ -24,6 +24,7 @@ import DatePicker from "react-native-date-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { BACKEND_PORT } from "@env";
 import { useRoute } from "@react-navigation/native";
+import Routes from "../../../navigation/routes";
 
 const EditBid = () => {
   const navigation = useNavigation();
@@ -146,8 +147,8 @@ const EditBid = () => {
         setDeadline(new Date());
 
         // Navigate back to inventory dashboard
-        navigation.navigate("Inventory Navigation", {
-          screen: "BidList",
+        navigation.navigate(Routes.InventoryNavigation, {
+          screen: Routes.BidList,
           params: { refreshList: true },
         });
       }

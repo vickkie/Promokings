@@ -26,6 +26,7 @@ import CheckoutStep3 from "./Payments";
 import LottieView from "lottie-react-native";
 import { BACKEND_PORT } from "@env";
 import axios from "axios";
+import Routes from "../navigation/routes";
 
 const Checkout = () => {
   const route = useRoute();
@@ -681,8 +682,8 @@ const Checkout = () => {
                   <TouchableOpacity
                     style={styles.buttonHome}
                     onPress={() =>
-                      navigation.navigate("Bottom Navigation", {
-                        screen: "Home",
+                      navigation.navigate(Routes.BottomNavigation, {
+                        screen: Routes.Home,
                         params: { refreshList: true },
                       })
                     }

@@ -12,6 +12,7 @@ import { BACKEND_PORT } from "@env";
 import axios from "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import useFetch from "../../../hook/useFetch";
+import Routes from "../../../navigation/routes";
 
 const EditPaymentDetails = () => {
   const route = useRoute();
@@ -99,8 +100,8 @@ const EditPaymentDetails = () => {
             }
             // navigation.replace("OrderPaymentDetails", { refresh: true, refreshing: true });
             setTimeout(() => {
-              navigation.navigate("Finance Navigation", {
-                screen: "FinanceDashboard",
+              navigation.navigate(Routes.FinanceNavigation, {
+                screen: Routes.FinanceDashboard,
                 params: { refreshList: true },
               });
             }, 500);
@@ -161,8 +162,8 @@ const EditPaymentDetails = () => {
 
             // navigation.replace("OrdersSales", { refresh: true, refreshin: true });
             setTimeout(() => {
-              navigation.navigate("Finance Navigation", {
-                screen: "Payments",
+              navigation.navigate(Routes.FinanceNavigation, {
+                screen: Routes.Payments,
                 params: { refreshList: true, refresh: true },
               });
             }, 500);
@@ -217,8 +218,8 @@ const EditPaymentDetails = () => {
             });
             // navigation.replace("OrdersSales", { refresh: true, refreshin: true });
             setTimeout(() => {
-              navigation.navigate("Finance Navigation", {
-                screen: "FinanceDashboard", // 👈 Specify the screen inside the navigator
+              navigation.navigate(Routes.FinanceNavigation, {
+                screen: Routes.FinanceDashboard, // 👈 Specify the screen inside the navigator
                 params: { refreshList: true }, // 👈 Pass params properly
               });
             }, 500);

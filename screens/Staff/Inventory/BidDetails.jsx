@@ -24,6 +24,7 @@ import axios from "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import BidToInventory from "../../../components/bottomsheets/BidToInventory";
 import { Alert } from "react-native";
+import Routes from "../../../navigation/routes";
 
 const BidDetails = () => {
   const route = useRoute();
@@ -125,8 +126,8 @@ const BidDetails = () => {
             Alert.alert("Order completed");
 
             setTimeout(() => {
-              navigation.navigate("Inventory Navigation", {
-                screen: "EditProductList",
+              navigation.navigate(Routes.InventoryNavigation, {
+                screen: Routes.EditProductList,
                 params: {
                   refresh: true,
                   refreshin: true,

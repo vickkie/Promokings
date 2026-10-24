@@ -24,6 +24,7 @@ import { Picker } from "@react-native-picker/picker";
 import useFetch from "../../../hook/useFetch";
 
 import { BACKEND_PORT } from "@env";
+import Routes from "../../../navigation/routes";
 
 const AddProduct = () => {
   const route = useRoute();
@@ -183,8 +184,8 @@ const AddProduct = () => {
         setFeatured(true);
 
         // Navigate to dashboard
-        navigation.navigate("Inventory Navigation", {
-          screen: "InventoryDashboard",
+        navigation.navigate(Routes.InventoryNavigation, {
+          screen: Routes.InventoryDashboard,
           params: { refreshList: true },
         });
       }

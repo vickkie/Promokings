@@ -20,6 +20,7 @@ import { COLORS, SIZES } from "../constants";
 import { BACKEND_PORT } from "@env";
 import Icon from "../constants/icons";
 import { StatusBar } from "react-native";
+import Routes from "../navigation/routes";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
@@ -103,26 +104,26 @@ const LoginPage = ({ navigation }) => {
       // Role-based navigation
       const roleRoutes = {
         admin: "Admin Navigation",
-        inventory: "Inventory Navigation",
-        sales: "Sales Navigation",
-        finance: "Finance Navigation",
-        customer: "Bottom Navigation",
-        driver: "Driver Navigation",
-        dispatcher: "Dispatch Navigation",
-        supplier: "Supplier Navigation",
+        inventory: Routes.InventoryNavigation,
+        sales: Routes.SalesNavigation,
+        finance: Routes.FinanceNavigation,
+        customer: Routes.BottomNavigation,
+        driver: Routes.DriverNavigation,
+        dispatcher: Routes.DispatchNavigation,
+        supplier: Routes.SupplierNavigation,
       };
 
       //!TEMPORARY FIX
       navigation.reset({
         index: 0,
-        routes: [{ name: "Bottom Navigation", params: { screen: "Home" } }],
+        routes: [{ name: Routes.BottomNavigation, params: { screen: Routes.Home } }],
       });
 
       // if (role in roleRoutes) {
       //   // console.log("Navigating to:", roleRoutes[role]);
       //   navigation.replace(roleRoutes[role]);
       // } else {
-      //   navigation.replace("Bottom Navigation");
+      //   navigation.replace(Routes.BottomNavigation);
       // }
     } catch (error) {
       // Pull the error message from the response
@@ -146,7 +147,7 @@ const LoginPage = ({ navigation }) => {
               } else {
                 navigation.reset({
                   index: 0,
-                  routes: [{ name: "Bottom Navigation", params: { screen: "Home" } }],
+                  routes: [{ name: Routes.BottomNavigation, params: { screen: Routes.Home } }],
                 });
               }
             }}

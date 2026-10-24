@@ -12,6 +12,7 @@ import { BACKEND_PORT } from "@env";
 import axios from "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import useFetch from "../../../hook/useFetch";
+import Routes from "../../../navigation/routes";
 
 const EditShipmentDriver = () => {
   const route = useRoute();
@@ -171,7 +172,7 @@ const EditShipmentDriver = () => {
             if (setItem && shipData) setItem(shipData);
 
             setTimeout(() => {
-              navigation.navigate("Driver Navigation", {});
+              navigation.navigate(Routes.DriverNavigation, {});
             }, 3000);
           } catch (err) {
             console.warn("Error:", err);

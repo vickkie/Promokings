@@ -11,6 +11,7 @@ import { BACKEND_PORT } from "@env";
 import axios from "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import useFetch from "../../../hook/useFetch";
+import Routes from "../../../navigation/routes";
 
 const EditSalesOrder = () => {
   const route = useRoute();
@@ -126,8 +127,8 @@ const EditSalesOrder = () => {
             alert("Order cancelled");
 
             setTimeout(() => {
-              navigation.navigate("Sales Navigation", {
-                screen: "OrdersSales",
+              navigation.navigate(Routes.SalesNavigation, {
+                screen: Routes.OrdersSales,
                 params: { refreshList: true },
               });
             }, 500);
@@ -183,7 +184,7 @@ const EditSalesOrder = () => {
   //           alert("Order completed");
   //           navigation.replace("OrdersSales", { refresh: true, refreshin: true });
   //           setTimeout(() => {
-  //             navigation.navigate("Sales Navigation");
+  //             navigation.navigate(Routes.SalesNavigation);
   //           }, 500);
   //         } catch (error) {
   //           console.warn("Error completting Order:", error);
@@ -236,7 +237,7 @@ const EditSalesOrder = () => {
             alert("Order approved");
             navigation.replace("OrdersSales", { refresh: true, refreshin: true });
             setTimeout(() => {
-              navigation.navigate("Sales Navigation");
+              navigation.navigate(Routes.SalesNavigation);
             }, 500);
           } catch (error) {
             console.warn("Error approving Order:", error);
@@ -285,7 +286,7 @@ const EditSalesOrder = () => {
             alert("Order changed to pending");
             navigation.replace("OrdersSales", { refresh: true, refreshin: true });
             setTimeout(() => {
-              navigation.navigate("Sales Navigation");
+              navigation.navigate(Routes.SalesNavigation);
             }, 500);
           } catch (error) {
             console.warn("Error updating Order:", error);

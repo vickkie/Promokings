@@ -24,6 +24,7 @@ import { Picker } from "@react-native-picker/picker";
 import useFetch from "../../../hook/useFetch";
 
 import { BACKEND_PORT } from "@env";
+import Routes from "../../../navigation/routes";
 
 const EditProduct = () => {
   const navigation = useNavigation();
@@ -132,7 +133,7 @@ const EditProduct = () => {
       if (response.status === 200 || response.status === 204) {
         showToast("success", "Product deleted successfully!");
 
-        navigation.navigate("Inventory Navigation", {
+        navigation.navigate(Routes.InventoryNavigation, {
           screen: {
             name: "InventoryDashboard",
             refreshList: true,
@@ -182,7 +183,7 @@ const EditProduct = () => {
       if (response.status === 200) {
         showToast("success", "Product updated successfully!");
 
-        navigation.navigate("Inventory Navigation", {
+        navigation.navigate(Routes.InventoryNavigation, {
           screen: {
             name: "EditProductsList",
             refreshList: true,
