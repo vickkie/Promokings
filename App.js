@@ -124,6 +124,7 @@ import SupplierTabNavigation from "./navigation/SupplierTabNavigation";
 import DispatcherTabNavigation from "./navigation/DispatcherTabNavigation ";
 
 import PushNotification from "./components/auth/pushNotification";
+import OneSignalId from "./components/auth/OneSignalId";
 import NoAccessScreen from "./components/auth/NoAccessScreen";
 import { requireRole } from "./components/auth/RoleGuard";
 import Routes from "./navigation/routes";
@@ -273,6 +274,7 @@ export default function App() {
                 <WishProvider>
                   <NavigationContainer>
                     <PushNotification />
+                    <OneSignalId />
                     <Stack.Navigator initialRouteName={Routes.BottomNavigation}>
                       {screens.map((screen, index) => (
                         <Stack.Screen
