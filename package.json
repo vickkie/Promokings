@@ -27,8 +27,8 @@
     "expo-application": "~5.8.4",
     "expo-blur": "~12.9.2",
     "expo-clipboard": "~5.0.1",
+    "expo-constants": "~15.4.6",
     "expo-device": "~5.9.4",
-    "expo-document-picker": "~11.10.1",
     "expo-file-system": "~16.0.9",
     "expo-font": "~11.10.3",
     "expo-haptics": "~12.8.1",
@@ -68,9 +68,7 @@
     "react-native-toast-message": "^2.2.1",
     "react-native-uuid": "^2.0.3",
     "react-native-webview": "13.6.4",
-    "uuid": "^10.0.0",
-    "yup": "^1.6.1",
-    "expo-constants": "~15.4.6"
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
