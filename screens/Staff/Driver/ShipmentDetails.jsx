@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text,  TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
@@ -15,10 +15,10 @@ const ShipmentDetails = () => {
   const { deliveryId } = route.params;
   //   console.log("id", deliveryId);
 
-  const { data, isLoading: dataLoading, refetch } = useFetch(`shipment/delivery/${deliveryId}`);
+  const { data, isLoading: dataLoading } = useFetch(`shipment/delivery/${deliveryId}`);
 
   const [products, setProducts] = useState([]);
-  const [orderId, setOrderId] = useState(null);
+  const [, setOrderId] = useState(null);
   const [item, setItem] = useState(null);
   const [delivery, setDelivery] = useState(null);
   const [customerDetails, setcustomerDetails] = useState(null);

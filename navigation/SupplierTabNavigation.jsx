@@ -128,4 +128,4 @@ const SupplierTabNavigation = () => {
 
 export default SupplierTabNavigation;
 
-const styles = StyleSheet.create({});
+StyleSheet.create({});

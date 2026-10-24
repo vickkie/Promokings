@@ -52,7 +52,7 @@ const ProductList = ({ sendDataToParent, routeParams }) => {
       setOffset((prev) => (reset ? limit : prev + limit));
 
       setError(null);
-    } catch (err) {
+    } catch (_err) {
       setError("Sorry try again.");
     } finally {
       setLoading(false);

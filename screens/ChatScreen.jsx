@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useContext, useRef } from "react";
+import React, { useState, useEffect, useMemo, useContext } from "react";
 import { Animated, Easing, StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text } from "react-native";
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
 import { useNavigation, useRoute } from "@react-navigation/native";

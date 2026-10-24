@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState,  useContext } from "react";
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Image,
+  
   Alert,
   Modal,
  ActivityIndicator } from "react-native";
@@ -19,31 +19,31 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
 import { BACKEND_PORT } from "@env";
-import axios from "axios";
+import "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
-import useFetch from "../../../hook/useFetch";
+import "../../../hook/useFetch";
 import Routes from "../../../navigation/routes";
 
 const EditSupplierPaymentDetails = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { bidId, item: order } = route.params;
-  const { userData, userLogin } = useContext(AuthContext);
+  useContext(AuthContext);
 
   const [partialAmount, setPartialAmount] = useState("");
   const [AdditionalAmount, setAdditionalAmount] = useState("");
   const [showPartialModal, setShowPartialModal] = useState(false);
   const [showAdditionalModal, setShowAdditionalModal] = useState(false);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [drivers, setDrivers] = useState(null);
-  const [item, setItem] = useState(order);
-  const [deliveryData, setDeliveryData] = useState(null);
-  const [assignedDriver, setAssignedDriver] = useState(null);
-  const [isAssigning, setIsAssigning] = useState(false);
-  const [isApproving, setIsApproving] = useState(false);
+  const [isLoading, ] = useState(false);
+  const [, ] = useState(null);
+  const [item, ] = useState(order);
+  const [, ] = useState(null);
+  const [, setAssignedDriver] = useState(null);
+  const [, setIsAssigning] = useState(false);
+  const [, ] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [uploading2, setUploading2] = useState(false);
+  const [uploading2, ] = useState(false);
 
   console.log(bidId);
 

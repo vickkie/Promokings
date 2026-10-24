@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
-import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet, RefreshControl } from "react-native";
+import { Text, TouchableOpacity, View, ScrollView,  StatusBar, StyleSheet, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
@@ -20,11 +20,11 @@ const MainCenter = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("orders/summary");
+  const { data, isLoading,    refetch } = useFetch("orders/summary");
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
   const [quantities, setQuanties] = useState(zeroData);
-  const [refreshList, setRefreshList] = useState(false);
+  const [, setRefreshList] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {

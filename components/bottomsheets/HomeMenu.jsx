@@ -13,7 +13,7 @@ const HomeMenu = forwardRef(function HomeMenu(props, ref) {
   const navigation = useNavigation();
   const { userData, userLogout, userLogin } = useContext(AuthContext);
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
 
   useEffect(() => {
     if (!userLogin) {

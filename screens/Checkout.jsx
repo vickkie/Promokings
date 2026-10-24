@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   View,
   Text,
-  Button,
+  
   TextInput,
   StyleSheet,
   TouchableOpacity,
@@ -31,7 +31,7 @@ import Routes from "../navigation/routes";
 const Checkout = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { estimatedAmount, products, totals, additionalFees } = route.params;
+  const { estimatedAmount, products,  additionalFees } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
   const { clearCart } = useCart();
 
@@ -39,11 +39,11 @@ const Checkout = () => {
   const phoneInputRef = useRef(null);
   const [errorState, setErrorState] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [success, setSuccess] = useState(null);
-  const [orderId, setOrderId] = useState(null);
+  const [, setSuccess] = useState(null);
+  const [, setOrderId] = useState(null);
   const [stockData, setStockData] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [, setLoading] = useState(true);
+  const [, setError] = useState(null);
 
   //user loggin chexks
   const [userId, setUserId] = useState(null);
@@ -142,7 +142,7 @@ const Checkout = () => {
           try {
             const data = { city, address, phoneNumber, finalPhoneNumber };
             saveShipping(data);
-          } catch (error) {
+          } catch (_error) {
           } finally {
             setStep(step + 1);
           }

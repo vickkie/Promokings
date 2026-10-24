@@ -21,10 +21,10 @@ const BACKEND_ORIGIN = (BACKEND_PORT || "").replace(/(https?:\/\/[^/]+).*/, "$1"
 const onlinelogo = "https://res.cloudinary.com/drsuclnkw/image/upload/v1741609689/Promokings/promoking-logo_h3hu4v.png";
 
 const SalesReportScreen = () => {
-  const route = useRoute();
+  useRoute();
 
   const [pdfUri, setPdfUri] = useState(null);
-  const [isLoading2, setIsLoading2] = useState(false);
+  const [, setIsLoading2] = useState(false);
   const [data, setData] = useState(null);
   const navigation = useNavigation();
 

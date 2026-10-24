@@ -27,7 +27,7 @@ const InventoryProfile = () => {
   const [loader, setLoader] = useState(false);
   const [profilePicture, setProfilePicture] = useState(userData?.profilePicture || null);
   const [localProfilePicture, setLocalProfilePicture] = useState(null); // New state variable for local image URI
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
   const [showPasswordFields, setShowPasswordFields] = useState(false); // State for toggling password fields
   useEffect(() => {
     if (!userData) {

@@ -1,31 +1,31 @@
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, StyleSheet , Image , Modal } from "react-native";
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import BackBtn from "../../../components/BackBtn";
+import "../../../components/BackBtn";
 import Button from "../../../components/Button";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import "@expo/vector-icons";
 import { COLORS, SIZES } from "../../../constants";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
 import Toast from "react-native-toast-message";
-import usePost2 from "../../../hook/usePost2";
+import "../../../hook/usePost2";
 import IntlPhoneInput from "react-native-intl-phone-input";
 import { FlatList } from "react-native-gesture-handler";
 import Icon from "../../../constants/icons";
 
 import LottieView from "lottie-react-native";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import {  useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import { parsePhoneNumberFromString } from "libphonenumber-js/min";
 
 const SupplierPaymentProfile = () => {
-  const [loader, setLoader] = useState(false);
+  const [, setLoader] = useState(false);
   const phoneInputRef = useRef(null);
   const [Rsuccess, setRsuccess] = useState(false);
-  const [obsecureText, setObsecureText] = useState(true);
-  const [step, setStep] = useState(1);
+  const [, ] = useState(true);
+  const [, ] = useState(1);
 
   const navigation = useNavigation();
   const { userData } = useContext(AuthContext);
@@ -589,7 +589,7 @@ const SupplierPaymentProfile = () => {
 
                   if (!selected) return null;
 
-                  const [method, { label, imagePath }] = selected;
+                  const [, {  imagePath }] = selected;
 
                   return (
                     <TouchableOpacity style={[styles.paymentMethodButton, styles.selectedPaymentMethod]}>

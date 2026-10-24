@@ -7,8 +7,8 @@ import { AuthContext } from "../../../components/auth/AuthContext";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
-import LatestOrders from "./LatestOrders";
-import SalesChart from "./SalesChart";
+import "./LatestOrders";
+import "./SalesChart";
 
 const zeroData = {
   totalProducts: 0,
@@ -22,11 +22,11 @@ const SalesOverview = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("orders/summary");
+  const { data, isLoading,    refetch } = useFetch("orders/summary");
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
   const [quantities, setQuanties] = useState(zeroData);
-  const [refreshList, setRefreshList] = useState(false);
+  const [, setRefreshList] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {

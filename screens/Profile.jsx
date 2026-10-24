@@ -120,12 +120,12 @@ const ProfileScreen = ({ profileImageUrl }) => {
 const Profile = () => {
   const navigation = useNavigation();
   const { userData, userLogout, userLogin } = useContext(AuthContext);
-  const { deleteStatus, isDeleting, errorStatus, redelete } = useDelete(`user/`);
+  useDelete(`user/`);
   const [deleting, setDEleting] = useState(false);
   const { clearCart } = useCart();
   const { clearWishlist } = useWish();
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
 
   useEffect(() => {
     if (!userLogin) {
@@ -156,7 +156,7 @@ const Profile = () => {
         text1: "Cache Cleared",
         text2: "All cached data and local storage have been removed.",
       });
-    } catch (error) {
+    } catch (_error) {
       // Show error message
       Toast.show({
         type: "error",

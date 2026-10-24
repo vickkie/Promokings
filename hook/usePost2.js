@@ -10,7 +10,6 @@ const usePost2 = (endpoint, requiresAuth = false, token = null) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [data, setData] = useState(null);
   const [responseData, setResponseData] = useState(null);
-  const isDevelopment = process.env.NODE_ENV === "development";
 
   const handleApiCall = () => {
     const url = `${backendUrl}/api/${endpoint}`;

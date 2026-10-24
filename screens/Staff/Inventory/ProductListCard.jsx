@@ -1,11 +1,11 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { COLORS, SIZES } from "../../../constants";
-import { Ionicons } from "@expo/vector-icons";
+import "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import usePost from "../../../hook/usePost";
+import "../../../hook/usePost";
 import { AuthContext } from "../../../components/auth/AuthContext";
-import Toast from "react-native-toast-message";
+import "react-native-toast-message";
 import * as FileSystem from "expo-file-system";
 import Icon from "../../../constants/icons";
 import InventoryAdd from "../../../components/bottomsheets/InventoryAdd";
@@ -24,7 +24,7 @@ const cacheImage = async (uri) => {
       // console.log(`Image already cached at ${fileUri}`);
     }
     return fileUri;
-  } catch (error) {
+  } catch (_error) {
     // console.error(`Failed to cache image from ${uri}`, error);
     return uri; // Fallback to the original URL if caching fails
   }
@@ -32,12 +32,12 @@ const cacheImage = async (uri) => {
 
 const ProductListCard = ({ item, isGridView }) => {
   const navigation = useNavigation();
-  const [isWished, setIsWished] = useState(false);
-  const [feedback, setFeedback] = useState(null);
+  const [, ] = useState(false);
+  const [, ] = useState(null);
   const [imageUri, setImageUri] = useState(null);
 
   const { userData, userLogin } = useContext(AuthContext);
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
 
   useEffect(() => {
     if (!userLogin) {
@@ -58,13 +58,6 @@ const ProductListCard = ({ item, isGridView }) => {
     loadImage();
   }, [item.imageUrl]);
 
-  const showToast = (type, text1, text2) => {
-    Toast.show({
-      type: type,
-      text1: text1,
-      text2: text2 ? text2 : "",
-    });
-  };
 
   const transitionTag = item._id ? `${item._id}` : null;
 

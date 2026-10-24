@@ -1,19 +1,19 @@
 import { TouchableOpacity, Text, View, Image, Alert } from "react-native";
-import React, { useState, useEffect, useContext, useCallback, useRef } from "react";
+import React, { useState, useEffect,  useCallback, useRef } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import styles from "./cartcardview.style";
 import Icon from "../../constants/icons";
 import Toast from "react-native-toast-message";
 import { useCart } from "../../contexts/CartContext";
 import { useWish } from "../../contexts/WishContext";
-import { Ionicons, Fontisto } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../../constants";
 
 const CartCardView = ({ item, handleRefresh }) => {
   // console.log(item);
   const navigation = useNavigation();
   const { cart, addToCart, removeFromCart } = useCart();
-  const { wishlist, wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
+  const { wishlist,  addToWishlist, removeFromWishlist } = useWish();
 
   const { id, title, price, imageUrl, imageUri, quantity, size } = item || {};
 
@@ -21,7 +21,7 @@ const CartCardView = ({ item, handleRefresh }) => {
     typeof price === "number" ? price : price != null ? parseFloat(String(price).replace(/[^0-9.-]+/g, "")) || 0 : 0;
 
   const [count, setCount] = useState(quantity || 1);
-  const [selectedSize, setSelectedSize] = useState(size || "M");
+  const [selectedSize, ] = useState(size || "M");
   const [totalPrice, setTotalPrice] = useState(parsedPrice * (quantity || 1));
   const [isWished, setIsWished] = useState(false);
 

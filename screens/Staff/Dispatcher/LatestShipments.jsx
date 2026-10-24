@@ -5,10 +5,10 @@ import {
   View,
   ActivityIndicator,
   TouchableOpacity,
-  Image,
+  
   RefreshControl,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
 import { Ionicons } from "@expo/vector-icons";

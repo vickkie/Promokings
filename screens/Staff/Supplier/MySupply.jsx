@@ -2,7 +2,7 @@ import {
   FlatList,
   Text,
   View,
-  ActivityIndicator,
+  
   TouchableOpacity,
   RefreshControl,
   StyleSheet,
@@ -54,7 +54,7 @@ const MySupply = () => {
     try {
       refetch();
       navigation.setParams({ refreshList: undefined, products: "products" }); // Clear params
-    } catch (error) {
+    } catch (_error) {
       // Handle error
     } finally {
       setRefreshing(false);
@@ -89,11 +89,6 @@ const MySupply = () => {
 
   const BottomSheetRef = React.useRef(null);
 
-  const openMenu = () => {
-    if (BottomSheetRef.current) {
-      BottomSheetRef.current.present();
-    }
-  };
 
   useEffect(() => {
     if (data.length > 0) {
@@ -130,7 +125,7 @@ const MySupply = () => {
   // Filter products based on selected category, selected and search text
   const filteredData = data.filter((item) => item.productName.toLowerCase().includes(searchText.toLowerCase()));
 
-  const now = new Date();
+  new Date();
 
   const pendingSupplies = Array.isArray(filteredData)
     ? filteredData.filter((bid) => bid.status !== "Completed").length

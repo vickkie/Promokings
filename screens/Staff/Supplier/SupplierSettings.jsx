@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { ScrollView, View, Text, Image, TouchableOpacity, Alert, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import {  MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { COLORS, SIZES } from "../../../constants";
 import { useNavigation } from "@react-navigation/native";
@@ -27,7 +27,7 @@ const clearCache = async () => {
       text1: "Cache cleared",
       text2: "All cached data has been removed.",
     });
-  } catch (error) {
+  } catch (_error) {
     // console.error("Failed to clear cache", error);
     Toast.show({
       type: "error",
@@ -135,9 +135,9 @@ const ProfileScreen = ({ profileImageUrl }) => {
 const SupplierSettings = () => {
   const navigation = useNavigation();
   const { userData, userLogout, userLogin } = useContext(AuthContext);
-  const { deleteStatus, isDeleting, errorStatus, redelete } = useDelete(`user/`);
+  useDelete(`user/`);
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
 
   useEffect(() => {
     if (!userLogin) {

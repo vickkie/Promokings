@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { DriverDashboard, DriverSettings, ShipmentList, Search, ShipmentHistory, ShipmentSearch } from "../screens";
+import { DriverDashboard, DriverSettings, ShipmentList,  ShipmentHistory, ShipmentSearch } from "../screens";
 
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
@@ -124,4 +124,4 @@ const DriverTabNavigation = () => {
 
 export default DriverTabNavigation;
 
-const styles = StyleSheet.create({});
+StyleSheet.create({});

@@ -27,18 +27,16 @@ const SupplierProfile = () => {
   const { userData, userLogin, updateUserData, userLogout, hasRole } = useContext(AuthContext);
   const {
     completionPercentage,
-    missingFields,
-    message,
+    
+    
     isComplete,
-    refreshProfileCompletion,
-    syncProfileCompletionFromServer,
   } = useContext(ProfileCompletionContext);
 
   const navigation = useNavigation();
   const [loader, setLoader] = useState(false);
   const [profilePicture, setProfilePicture] = useState(userData?.profilePicture || null);
   const [localProfilePicture, setLocalProfilePicture] = useState(null); // New state variable for local image URI
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
   const [showPasswordFields, setShowPasswordFields] = useState(false); // State for toggling password fields
 
   useEffect(() => {
@@ -92,7 +90,7 @@ const SupplierProfile = () => {
     });
 
     try {
-      const response = await retryClient.post(`${BACKEND_PORT}/upload`, formData, {
+      await retryClient.post(`${BACKEND_PORT}/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

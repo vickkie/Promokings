@@ -6,14 +6,14 @@ import {
   View,
   TouchableOpacity,
   Image,
-  Alert,
-  FlatList,
+  
+  
   ActivityIndicator,
 } from "react-native";
 import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { COLORS, SIZES } from "../../constants";
-import Icon from "../../constants/icons";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import "../../constants/icons";
+import {  useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../auth/AuthContext";
 import Toast from "react-native-toast-message";
 import { ScrollView } from "react-native-gesture-handler";
@@ -27,18 +27,18 @@ const SupplierBid = forwardRef(function SupplierBid(props, ref) {
   const { item, lostBid, bidAccepted } = props; // product details object
 
   const snapPoints = useMemo(() => ["70%", "80%"], []);
-  const navigation = useNavigation();
+  useNavigation();
   const { userData, userLogin } = useContext(AuthContext);
 
-  const [userId, setUserId] = useState(null);
-  const [product, setProduct] = useState(null);
+  const [, setUserId] = useState(null);
+  const [, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [bidData, setBidData] = useState([]);
   const [loader, setLoader] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [offset, setOffset] = useState(0);
-  const [limit, setLimit] = useState(2100);
-  const [refreshing, setRefreshing2] = useState(false);
+  const [limit, ] = useState(2100);
+  const [, setRefreshing2] = useState(false);
   const [haveBid, setHaveBid] = useState(false);
   const [oldBid, setOldBid] = useState(false);
   const [ilostBid, setIlostBid] = useState(false);
@@ -48,7 +48,7 @@ const SupplierBid = forwardRef(function SupplierBid(props, ref) {
     // console.log(ilostBid, bidAccepted);
   }, [ilostBid, bidAccepted]);
 
-  const [error, setError] = useState(null);
+  const [, setError] = useState(null);
 
   useEffect(() => {
     if (!userLogin) {
@@ -106,7 +106,7 @@ const SupplierBid = forwardRef(function SupplierBid(props, ref) {
       setOffset((prev) => (reset ? limit : prev + limit));
 
       setError(null);
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to fetch bids.");
     } finally {
       setLoading(false);
@@ -136,7 +136,7 @@ const SupplierBid = forwardRef(function SupplierBid(props, ref) {
       setOffset((prev) => (reset ? limit : prev + limit));
 
       setError(null);
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to fetch bids.");
     } finally {
       setLoading(false);

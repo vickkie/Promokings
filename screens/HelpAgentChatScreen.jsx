@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useContext, useMemo } from "react";
+import React, {  useState, useEffect, useContext, useMemo } from "react";
 import { StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text , Animated, Easing } from "react-native";
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
 import { useRoute, useNavigation } from "@react-navigation/native";
@@ -249,8 +249,8 @@ const HelpAgentChatScreen = () => {
             />
           )}
           renderBubble={(props) => {
-            const { currentMessage } = props;
-            const isReceived = currentMessage.type === "sent"; // customer messages on left
+            
+ // customer messages on left
             return (
               <Bubble
                 {...props}

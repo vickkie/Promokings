@@ -6,7 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  Alert,
+  
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
@@ -19,8 +19,8 @@ import axios from "axios";
 import Toast from "react-native-toast-message";
 import { COLORS, SIZES } from "../../../constants";
 import { ScrollView } from "react-native-gesture-handler";
-import { Picker } from "@react-native-picker/picker";
-import DatePicker from "react-native-date-picker";
+import "@react-native-picker/picker";
+import "react-native-date-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { BACKEND_PORT } from "@env";
 import { AuthContext } from "../../../components/auth/AuthContext";
@@ -35,14 +35,14 @@ const AddBid = () => {
 
   // Use product details as initial values if available, or fallback to empty/default values
   const [productName, setProductName] = useState(product?.title || "");
-  const [inventoryId, setInventoryId] = useState(product?._id || null);
+  const [inventoryId, ] = useState(product?._id || null);
   const [expectedPrice, setExpectedPrice] = useState(product?.price || "");
   const [quantity, setQuantity] = useState(0);
   const [bidDescription, setBidDescription] = useState("");
   const [imageUrl, setImageUrl] = useState(product?.imageUrl || "https://i.postimg.cc/j56q20rB/images.jpg");
 
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(product?.imageUrl || "");
+  const [imagePreview, ] = useState(product?.imageUrl || "");
   const [loader, setLoader] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -53,7 +53,7 @@ const AddBid = () => {
     return endOfDay;
   });
 
-  const [open, setOpen] = useState(false); // Controls DatePicker modal
+  const [, setOpen] = useState(false); // Controls DatePicker modal
 
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
@@ -86,7 +86,7 @@ const AddBid = () => {
       setBidDescription("");
       setQuantity(0);
       setDeadline(new Date());
-    } catch (error) {
+    } catch (_error) {
       console.log("refresh failed");
     } finally {
       setTimeout(() => {

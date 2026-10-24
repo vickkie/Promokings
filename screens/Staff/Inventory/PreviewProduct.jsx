@@ -1,7 +1,7 @@
-import { Text, TouchableOpacity, View, Image, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
+import { Text, TouchableOpacity, View, Image, ScrollView,  StyleSheet } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import React, { useState, useContext, useEffect } from "react";
-import { Ionicons, Fontisto } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../../../constants";
 import Icon from "../../../constants/icons";
 import { AuthContext } from "../../../components/auth/AuthContext";
@@ -17,7 +17,7 @@ const PreviewProduct = ({ navigation }) => {
 
   const [itemDescription, setItemDescription] = useState(item.description || ".");
   const { userData, userLogin } = useContext(AuthContext);
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
   const { data, refetch } = useFetch(`products/${item._id}`);
 
   useEffect(() => {

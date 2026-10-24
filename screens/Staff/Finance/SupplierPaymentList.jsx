@@ -181,7 +181,6 @@ const SupplierPaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh
   // render each payment item
   const renderItem = ({ item }) => {
     // assuming you want to display productName from inventoryRequest
-    const productName = item?.inventoryRequest?.productName || "No product";
     const paymentMethod = item?.method?.toLowerCase();
     const paymentLogo = paymentLogos[paymentMethod] || require("../../../assets/images/logos/paysafecard.png");
 

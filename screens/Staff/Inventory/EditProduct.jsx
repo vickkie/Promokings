@@ -58,7 +58,7 @@ const EditProduct = () => {
   const [uploading, setUploading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [suppliers, setSuppliers] = useState([]);
-  const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
+  const { data: categories } = useFetch("category");
 
   const { data: supplierData, isLoading: isSuppliersLoading, error: supplierError } = useFetch("v2/supplier/names");
 
@@ -88,7 +88,7 @@ const EditProduct = () => {
       setDescription(product?.description || "");
       setQuantity(product?.quantity || 0);
       setFeatured(product?.featured);
-    } catch (error) {
+    } catch (_error) {
       console.log("refresh failed");
     } finally {
       setTimeout(() => {

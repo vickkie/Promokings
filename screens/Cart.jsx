@@ -12,7 +12,6 @@ const Cart = () => {
   const navigation = useNavigation();
   const { userLogin, userData } = React.useContext(AuthContext);
   const { cart, cartCount, clearCart } = useCart();
-  const userId = userData?._id || null;
 
   const capitalizeFirstLetter = (string) => {
     if (!string) return "";

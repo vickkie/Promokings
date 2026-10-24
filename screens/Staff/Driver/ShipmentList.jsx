@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState,   useCallback } from "react";
 import {
   StyleSheet,
   View,
   Text,
-  TextInput,
+  
   TouchableOpacity,
-  Image,
+  
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
@@ -14,20 +14,20 @@ import { useNavigation , useFocusEffect , useRoute } from "@react-navigation/nat
 
 import { COLORS, SIZES } from "../../../constants";
 import { ScrollView } from "react-native-gesture-handler";
-import useFetch from "../../../hook/useFetch";
-import { BACKEND_PORT } from "@env";
+import "../../../hook/useFetch";
+import "@env";
 import Icon from "../../../constants/icons";
 import LatestShipments from "./LatestShipments";
 
 const ShipmentList = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const [title, setTitle] = useState("");
-  const [imageUrl, setImageUrl] = useState("https://i.postimg.cc/j56q20rB/images.jpg");
-  const [image, setImage] = useState(null);
-  const [description, setDescription] = useState("");
-  const [uploading, setUploading] = useState(false);
-  const [isEditable, setIsEditable] = useState(false);
+  const [, ] = useState("");
+  const [, ] = useState("https://i.postimg.cc/j56q20rB/images.jpg");
+  const [, ] = useState(null);
+  const [, ] = useState("");
+  const [, ] = useState(false);
+  const [, ] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [refreshList, setRefreshList] = useState(false);
 

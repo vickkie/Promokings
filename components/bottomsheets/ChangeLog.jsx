@@ -9,7 +9,7 @@ import { ScrollView, FlatList } from "react-native-gesture-handler";
 
 const ChangeLogMenu = forwardRef(function ChangeLogMenu(props, ref) {
   const snapPoints = useMemo(() => ["70%", "75%", "80%"], []);
-  const navigation = useNavigation();
+  useNavigation();
   const fallbackRef = useRef(null);
   const bottomSheetRef = ref || fallbackRef;
 
@@ -25,10 +25,6 @@ const ChangeLogMenu = forwardRef(function ChangeLogMenu(props, ref) {
     []
   );
 
-  const handleNavigation = (screen) => {
-    navigation.navigate(screen);
-    bottomSheetRef.current?.dismiss();
-  };
 
   const renderItem = ({ item }) => (
     <View style={styles.listContainer}>

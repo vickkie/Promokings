@@ -127,4 +127,4 @@ const DispatcherTabNavigation = () => {
 
 export default DispatcherTabNavigation;
 
-const styles = StyleSheet.create({});
+StyleSheet.create({});

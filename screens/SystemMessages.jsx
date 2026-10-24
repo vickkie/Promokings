@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, StyleSheet, ActivityIndicator, ImageBackground, Text, Image } from "react-native";
-import { GiftedChat, Bubble, InputToolbar } from "react-native-gifted-chat";
+import { View, StyleSheet,  ImageBackground, Text, Image } from "react-native";
+import { GiftedChat, Bubble } from "react-native-gifted-chat";
 import { COLORS, SIZES } from "../constants";
 import { AuthContext } from "../components/auth/AuthContext";
 import useFetch from "../hook/useFetch";
-import LottieView from "lottie-react-native";
-import { RefreshControl } from "react-native-gesture-handler";
+import "lottie-react-native";
+import "react-native-gesture-handler";
 
 const SystemMessages = () => {
   const [messages, setMessages] = useState([]);
   const { userData, userLogin } = useContext(AuthContext);
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
 
   // console.log(userId);
 
@@ -26,12 +26,10 @@ const SystemMessages = () => {
   const {
     data: userNotifications,
     isLoading: isLoadingUser,
-    refetch: refetchUser,
   } = useFetch(`notification/user/${userData?._id}`);
   const {
     data: systemNotifications,
     isLoading: isLoadingSystem,
-    refetch: refetchSystem,
   } = useFetch(`notification/user/all`);
 
   useEffect(() => {
@@ -68,7 +66,7 @@ const SystemMessages = () => {
 
   const renderCustomBubble = (props) => {
     const { currentMessage } = props;
-    const { metadata } = currentMessage;
+    
 
     const backgroundColor =
       currentMessage.type === "info"

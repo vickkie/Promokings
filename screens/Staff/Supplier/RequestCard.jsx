@@ -1,11 +1,11 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { COLORS, SIZES } from "../../../constants";
-import { Ionicons } from "@expo/vector-icons";
+import "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import usePost from "../../../hook/usePost";
+import "../../../hook/usePost";
 import { AuthContext } from "../../../components/auth/AuthContext";
-import Toast from "react-native-toast-message";
+import "react-native-toast-message";
 import * as FileSystem from "expo-file-system";
 import Icon from "../../../constants/icons";
 import SupplierBid from "../../../components/bottomsheets/SupplierBid";
@@ -28,14 +28,14 @@ const cacheImage = async (uri) => {
     }
 
     return fileUri;
-  } catch (error) {
+  } catch (_error) {
     // console.warn("❌ Failed to cache image:", uri, error.message);
     return null;
   }
 };
 
 const RequestCard = ({ item, isGridView }) => {
-  const navigation = useNavigation();
+  useNavigation();
   const [imageUri, setImageUri] = useState(false);
   const [bidAccepted, setBidAccepted] = useState(false);
   const [bidCompleted, setBidCompleted] = useState(false);

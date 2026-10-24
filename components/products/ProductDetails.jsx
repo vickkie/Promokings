@@ -6,7 +6,7 @@ import { COLORS } from "../../constants";
 import styles from "./productdetails.style";
 // import Animated from "react-native-reanimated";
 import Icon from "../../constants/icons";
-import usePost from "../../hook/usePost";
+import "../../hook/usePost";
 import { AuthContext } from "../auth/AuthContext";
 import useFetch from "../../hook/useFetch";
 import Toast from "react-native-toast-message";
@@ -15,17 +15,17 @@ import { useCart } from "../../contexts/CartContext";
 import { useWish } from "../../contexts/WishContext";
 const ProductDetails = ({ navigation }) => {
   const { addToCart, cart } = useCart();
-  const { wishlist, wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
+  const { wishlist,  addToWishlist, removeFromWishlist } = useWish();
 
   const route = useRoute();
   const { item, imageUri } = route.params;
   const [isWished, setIsWished] = useState(false);
-  const [count, setCount] = useState(1);
+  const [count, ] = useState(1);
   const [selectedSize, setSelectedSize] = useState("M");
   const [isExpanded, setIsExpanded] = useState(false);
-  const [feedback, setFeedback] = useState(null);
-  const [isAdded, setisAdded] = useState(false);
-  const [isLoadingCart, setisLoadingCart] = useState(false);
+  const [feedback, ] = useState(null);
+  const [, setisAdded] = useState(false);
+  const [isLoadingCart, ] = useState(false);
 
   const sizes = ["XS", "S", "M", "L", "XL"];
 
@@ -41,11 +41,11 @@ const ProductDetails = ({ navigation }) => {
     typeof price === "number" ? price : price != null ? parseFloat(String(price).replace(/[^0-9.-]+/g, "")) : 0;
 
   const [shortDescription, setShortDescription] = useState("");
-  const [quantity, setQuantity] = useState(10);
+  const [, setQuantity] = useState(10);
 
   const [itemDescription, setItemDescription] = useState(item.description || ".");
   const { userData, userLogin } = useContext(AuthContext);
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
   const { data, refetch } = useFetch(`products/${item._id}`);
 
   useEffect(() => {

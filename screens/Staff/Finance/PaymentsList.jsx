@@ -64,7 +64,7 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
       setHasMore(newOrders.length === limit);
       setOffset((prev) => (reset ? limit : prev + limit));
       setError(null);
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to fetch orders.");
     } finally {
       setLoading(false);

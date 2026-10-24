@@ -6,7 +6,7 @@ const usePost = (endpoint) => {
   const [updateStatus, setUpdateStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage, ] = useState(null);
   const [data, setData] = useState(null);
 
   const updateData = async () => {

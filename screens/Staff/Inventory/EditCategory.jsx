@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, {  useState, useCallback } from "react";
 import {
   StyleSheet,
   View,
@@ -6,7 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  Switch,
+  
   Alert,
   ActivityIndicator,
   RefreshControl,
@@ -32,7 +32,7 @@ const EditCategory = () => {
   const product = item;
 
   const [title, setTitle] = useState(product?.title || "");
-  const [availability, setAvailability] = useState(product?.availability || false);
+  const [, setAvailability] = useState(product?.availability || false);
   const [description, setDescription] = useState(product?.description || "");
 
   const [imageUrl, setImageUrl] = useState(product?.imageUrl || "https://i.postimg.cc/j56q20rB/images.jpg");
@@ -52,7 +52,7 @@ const EditCategory = () => {
 
       setImage(null);
       setDescription(product?.description || "");
-    } catch (error) {
+    } catch (_error) {
       console.log("refresh failed");
     } finally {
       setTimeout(() => {

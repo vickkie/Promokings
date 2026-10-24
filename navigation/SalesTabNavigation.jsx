@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { OrdersSales, SalesDashboard, SalesOverview, SalesData, SalesShipments, SalesSettings } from "../screens";
+import { OrdersSales, SalesDashboard, SalesOverview,  SalesShipments, SalesSettings } from "../screens";
 
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
@@ -123,4 +123,4 @@ const SalesTabNavigation = () => {
 
 export default SalesTabNavigation;
 
-const styles = StyleSheet.create({});
+StyleSheet.create({});

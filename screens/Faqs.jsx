@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, ScrollView } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity,  ScrollView } from "react-native";
 import Collapsible from "react-native-collapsible";
 import Icon from "../constants/icons";
 import { SIZES, COLORS } from "../constants";

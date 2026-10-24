@@ -1,5 +1,5 @@
 import { TouchableOpacity, Text, View, Image, Alert } from "react-native";
-import React, { useState, useEffect, useContext, memo } from "react";
+import React, { useState,  useContext, memo } from "react";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./favouritescardview.style";
 import Icon from "../../constants/icons";
@@ -11,18 +11,17 @@ import { useWish } from "../../contexts/WishContext";
 const FavouritesCardView = memo(function FavouritesCardView({ item, handleRefetch }) {
   const navigation = useNavigation();
   const { userData } = useContext(AuthContext);
-  const { cart, cartCount, addToCart, removeFromCart, clearCart } = useCart();
-  const { wishlist, wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
+  const {   addToCart } = useCart();
+  const {    removeFromWishlist } = useWish();
 
-  const userId = userData ? userData._id : null;
 
-  const { quantity, size, id, title, price, imageUrl } = item || {};
+  const {  size, id, title, price, imageUrl } = item || {};
   // console.log(item);
 
   const parsedPrice =
     typeof price === "number" ? price : price != null ? parseFloat(String(price).replace(/[^0-9.-]+/g, "")) : 0;
 
-  const [feedback, setFeedback] = useState("");
+  const [, setFeedback] = useState("");
 
   if (!id) return null; // Return null if favouriteItem is null or undefined
 
@@ -54,7 +53,7 @@ const FavouritesCardView = memo(function FavouritesCardView({ item, handleRefetc
     try {
       addToCart(item);
       showToast("success", "Added to Cart", `${item.title} added to cart ❤️`);
-    } catch (error) {
+    } catch (_error) {
       setFeedback({ status: "error", message: "Failed to add to cart" });
       showToast("error", "Error occurred", "Failed to add to cart");
     } finally {

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Button, Alert, Linking } from "react-native";
+import  { useEffect, useState } from "react";
+import {    Alert, Linking } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Application from "expo-application";
 import NetInfo from "@react-native-community/netinfo";
@@ -30,9 +30,9 @@ const isAllowedUpdateUrl = (url) => {
 
 export default function UpdateCheck() {
   const [updateUrl, setUpdateUrl] = useState("");
-  const [isForced, setIsForced] = useState(false);
+  const [, setIsForced] = useState(false);
   const [latestVersion, setLatestVersion] = useState(null);
-  const [isChecking, setIsChecking] = useState(false);
+  const [, setIsChecking] = useState(false);
 
   // Get current app version
   const currentVersion = Application.nativeApplicationVersion || "dev";

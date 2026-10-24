@@ -42,7 +42,7 @@ const AuthProvider = ({ children }) => {
         return null;
       }
       return decoded;
-    } catch (error) {
+    } catch (_error) {
       return null;
     }
   };

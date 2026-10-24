@@ -1,30 +1,30 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
+import { View, Text,  TextInput, StyleSheet, TouchableOpacity, ScrollView, Image } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import useDelete from "../../../hook/useDelete2";
-import { BACKEND_PORT } from "@env";
-import axios from "axios";
+import "../../../hook/useDelete2";
+import "@env";
+import "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
 
 const OrderDispatchDetails = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { products, totals, orderId, item } = route.params;
+  const { products,  orderId, item } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
 
   // console.log(products, orderId, item);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorState, setErrorState] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [success, setSuccess] = useState(null);
+  const [, ] = useState(false);
+  const [, ] = useState(false);
+  const [, ] = useState(null);
+  const [, ] = useState(null);
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
 
   useEffect(() => {
     if (!userLogin) {
@@ -37,26 +37,19 @@ const OrderDispatchDetails = () => {
     }
   }, [userLogin, userData]);
 
-  const [step, setStep] = useState(1);
-  const [address, setAddress] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [city, setCity] = useState(userData ? userData.location : "");
-  const [email, setEmail] = useState(userData ? userData.email : "");
+  const [, ] = useState(1);
+  const [, ] = useState("");
+  const [, ] = useState("");
+  const [, ] = useState(userData ? userData.location : "");
+  const [, ] = useState(userData ? userData.email : "");
 
-  const [phoneError, setPhoneError] = useState("");
+  const [, ] = useState("");
 
   useEffect(() => {
     // console.log(item.status);
   });
 
-  const handleEmailPress = () => {
-    Linking.openURL("mailto:support@promokings.co.ke");
-  };
 
-  const handleCallPress = () => {
-    const phoneNumber = "+254706676569";
-    Linking.openURL(`tel:${phoneNumber}`);
-  };
 
   const DeliveryMethodComponent = ({ item }) => {
     const DeliveryMethod = item?.orderType || "shipping";

@@ -8,7 +8,7 @@ import { useRoute, useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "../../../constants/icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import RNPickerSelect from "react-native-picker-select";
+import "react-native-picker-select";
 import { SIZES, COLORS } from "../../../constants";
 import { BACKEND_PORT } from "@env";
 import Toast from "react-native-toast-message";
@@ -21,10 +21,10 @@ const BACKEND_ORIGIN = (BACKEND_PORT || "").replace(/(https?:\/\/[^/]+).*/, "$1"
 const onlinelogo = "https://res.cloudinary.com/drsuclnkw/image/upload/v1741609689/Promokings/promoking-logo_h3hu4v.png";
 
 const FinanceReportScreen = () => {
-  const route = useRoute();
+  useRoute();
 
   const [pdfUri, setPdfUri] = useState(null);
-  const [isLoading2, setIsLoading2] = useState(false);
+  const [, setIsLoading2] = useState(false);
   const [data, setData] = useState(null);
   const navigation = useNavigation();
 

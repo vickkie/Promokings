@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Alert , ActivityIndicator } from "react-native";
+import { View, Text,  TextInput, StyleSheet, TouchableOpacity, ScrollView,  Alert , ActivityIndicator } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
@@ -8,7 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
 import { BACKEND_PORT } from "@env";
-import axios from "axios";
+import "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import useFetch from "../../../hook/useFetch";
 import Routes from "../../../navigation/routes";
@@ -16,26 +16,23 @@ import Routes from "../../../navigation/routes";
 const EditShipmentDriver = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { shipmentId, order, shipment } = route.params;
-  const { userData, userLogin } = useContext(AuthContext);
+  const { shipmentId,  shipment } = route.params;
+  useContext(AuthContext);
   console.log("i", shipment?.orderId?._id);
 
   const {
     data: delivery,
     isLoading: deliveryLoading,
-    error: deliveryError,
-    refetch: deliveryRefetch,
-    errorMessage: deliveryErrorMessage,
   } = useFetch(`orders/${shipment?.orderId?._id}`);
   //   console.log(shipment?.orderId?._id);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [, ] = useState(false);
 
   const [item, setItem] = useState(shipment);
-  const [deliveryData, setDeliveryData] = useState(null);
-  const [assignedDriver, setAssignedDriver] = useState(null);
-  const [isAssigning, setIsAssigning] = useState(false);
-  const [isApproving, setIsApproving] = useState(false);
+  const [, setDeliveryData] = useState(null);
+  const [, setAssignedDriver] = useState(null);
+  const [, setIsAssigning] = useState(false);
+  const [, ] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploading2, setUploading2] = useState(false);
   const [driverNotes, setDriverNotes] = useState(shipment?.driverNotes);

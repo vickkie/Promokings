@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
-import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet, RefreshControl } from "react-native";
+import { Text, TouchableOpacity, View, ScrollView,  StatusBar, StyleSheet, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
@@ -7,8 +7,8 @@ import { AuthContext } from "../../../components/auth/AuthContext";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
-import LatestOrders from "./LatestOrders";
-import SalesChart from "./SalesChart";
+import "./LatestOrders";
+import "./SalesChart";
 
 const zeroData = {
   totalProducts: 0,
@@ -22,11 +22,11 @@ const SalesDashboard = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("orders/summary");
+  const { data, isLoading,    refetch } = useFetch("orders/summary");
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
   const [quantities, setQuanties] = useState(null);
-  const [refreshList, setRefreshList] = useState(false);
+  const [, setRefreshList] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
@@ -65,24 +65,9 @@ const SalesDashboard = () => {
     refetch();
   }, [refreshing]);
 
-  const renderProfilePicture = () => {
-    if (!userLogin) {
-      return <Icon name="user" size={24} color="#000" />;
-    }
-    if (userData && userData.profilePicture) {
-      return <Image source={{ uri: `${userData.profilePicture}` }} style={styles.profilePicture} />;
-    }
-
-    return <Image source={require("../../../assets/images/userDefault.webp")} style={styles.profilePicture} />;
-  };
 
   const BottomSheetRef = useRef(null);
 
-  const openMenu = () => {
-    // if (BottomSheetRef.current) {
-    //   BottomSheetRef.current.present();
-    // }
-  };
 
   useEffect(() => {
     if (!isLoading && data) {

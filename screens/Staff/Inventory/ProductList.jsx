@@ -51,7 +51,7 @@ const EditProductList = () => {
     try {
       navigation.setParams({ refreshList: undefined, products: "products?skip=true" }); // Clear params
       refetch();
-    } catch (error) {
+    } catch (_error) {
       // Handle error
     } finally {
       setRefreshing(false);
@@ -86,11 +86,6 @@ const EditProductList = () => {
 
   const BottomSheetRef = React.useRef(null);
 
-  const openMenu = () => {
-    if (BottomSheetRef.current) {
-      BottomSheetRef.current.present();
-    }
-  };
 
   useEffect(() => {
     if (data.length > 0) {

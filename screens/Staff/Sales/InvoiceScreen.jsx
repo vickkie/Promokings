@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Button, Alert, Text, StyleSheet, Platform , TouchableOpacity, ScrollView } from "react-native";
+import { View,  Alert, Text, StyleSheet, Platform , TouchableOpacity, ScrollView } from "react-native";
 import * as Print from "expo-print";
 import * as FileSystem from "expo-file-system";
 

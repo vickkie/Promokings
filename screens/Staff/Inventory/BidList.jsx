@@ -12,7 +12,7 @@ import React, { useRef, useState, useCallback, useEffect } from "react";
 import { COLORS, SIZES, SHADOWS } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ProductListCard from "./ProductListCard";
+import "./ProductListCard";
 import { Ionicons } from "@expo/vector-icons";
 import Icon from "../../../constants/icons";
 import { useNavigation, useRoute , useFocusEffect } from "@react-navigation/native";
@@ -25,8 +25,6 @@ import BidListCard from "./BIdListCard";
 const BidList = () => {
   const route = useRoute();
 
-  const categoryTitle = route.params?.categoryTitle || "";
-  const products = route.params?.products ? route.params.products : "products";
 
   // console.log(route.params);
 
@@ -52,7 +50,7 @@ const BidList = () => {
     try {
       refetch();
       navigation.setParams({ refreshList: undefined, products: "products" }); // Clear params
-    } catch (error) {
+    } catch (_error) {
       // Handle error
     } finally {
       setRefreshing(false);
@@ -75,11 +73,6 @@ const BidList = () => {
 
   const BottomSheetRef = React.useRef(null);
 
-  const openMenu = () => {
-    if (BottomSheetRef.current) {
-      BottomSheetRef.current.present();
-    }
-  };
 
   useEffect(() => {
     if (data.length > 0) {

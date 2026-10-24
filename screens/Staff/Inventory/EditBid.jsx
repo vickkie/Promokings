@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, {  useState, useCallback } from "react";
 import {
   StyleSheet,
   View,
@@ -6,7 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  Alert,
+  
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
@@ -19,8 +19,8 @@ import axios from "axios";
 import Toast from "react-native-toast-message";
 import { COLORS, SIZES } from "../../../constants";
 import { ScrollView } from "react-native-gesture-handler";
-import { Picker } from "@react-native-picker/picker";
-import DatePicker from "react-native-date-picker";
+import "@react-native-picker/picker";
+import "react-native-date-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { BACKEND_PORT } from "@env";
 import Routes from "../../../navigation/routes";
@@ -34,21 +34,21 @@ const EditBid = () => {
 
   // Use product details as initial values if available, or fallback to empty/default values
   const [productName, setProductName] = useState(product?.productName || "");
-  const [inventoryId, setInventoryId] = useState(product?._id || null);
+  const [inventoryId, ] = useState(product?._id || null);
   const [expectedPrice, setExpectedPrice] = useState(product?.expectedPrice);
   const [quantity, setQuantity] = useState(product?.quantity || "");
   const [bidDescription, setBidDescription] = useState(product?.bidDescription || "");
   const [imageUrl, setImageUrl] = useState(product?.imageUrl || "https://i.postimg.cc/j56q20rB/images.jpg");
 
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(product?.imageUrl || "");
+  const [imagePreview, ] = useState(product?.imageUrl || "");
   const [loader, setLoader] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [deadline, setDeadline] = useState(product?.deadline ? new Date(product.deadline) : new Date());
 
-  const [open, setOpen] = useState(false); // Controls DatePicker modal
+  const [, setOpen] = useState(false); // Controls DatePicker modal
 
   console.log(product?.expectedPrice);
 
@@ -83,7 +83,7 @@ const EditBid = () => {
       setBidDescription("");
       setQuantity(0);
       setDeadline(new Date());
-    } catch (error) {
+    } catch (_error) {
       console.log("refresh failed");
     } finally {
       setTimeout(() => {

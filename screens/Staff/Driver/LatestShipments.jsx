@@ -18,7 +18,7 @@ import { AuthContext } from "../../../components/auth/AuthContext";
 import LottieView from "lottie-react-native";
 
 const LatestShipments = ({ refreshList, setRefreshing, limit, offset, status, search }) => {
-  const { hasRole, userData } = useContext(AuthContext);
+  const {  userData } = useContext(AuthContext);
   const navigation = useNavigation();
   const { data, isLoading, error, refetch } = useFetch(
     `shipment/driver/${userData?._id}?limit=${limit}&offset=${offset}` +
@@ -26,7 +26,7 @@ const LatestShipments = ({ refreshList, setRefreshing, limit, offset, status, se
       (search ? `&search=${search}` : "")
   );
 
-  const [deliveries, setDeliveries] = useState([]);
+  const [, ] = useState([]);
 
   // Ensure data is an array and sort by creation date
   const dataArray = Array.isArray(data.deliveries) ? data.deliveries : [];

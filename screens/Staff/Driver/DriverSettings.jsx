@@ -27,7 +27,7 @@ const clearCache = async () => {
       text1: "Cache cleared",
       text2: "All cached data has been removed.",
     });
-  } catch (error) {
+  } catch (_error) {
     // console.error("Failed to clear cache", error);
     Toast.show({
       type: "error",
@@ -135,7 +135,7 @@ const ProfileScreen = ({ profileImageUrl }) => {
 const DriverSettings = () => {
   const navigation = useNavigation();
   const { userData, hasRole, userLogout, userLogin } = useContext(AuthContext);
-  const { deleteStatus, isDeleting, errorStatus, redelete } = useDelete(`user/`);
+  const {    redelete } = useDelete(`user/`);
 
   const [userId, setUserId] = useState(null);
 

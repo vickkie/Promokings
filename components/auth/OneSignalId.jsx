@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useRef } from "react";
+import  { useEffect, useContext, useRef } from "react";
 import Constants from "expo-constants";
 import { OneSignal } from "react-native-onesignal";
 import axios from "axios";

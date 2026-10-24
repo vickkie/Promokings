@@ -1,27 +1,27 @@
 import React, { useRef, useEffect, useState, useContext } from "react";
-import { View, FlatList, Text, TouchableOpacity, TextInput, Image, StyleSheet } from "react-native";
+import { View,   TouchableOpacity, TextInput, Image, StyleSheet } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, SIZES } from "../../../constants";
 
-import axios from "axios";
+import "axios";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import SearchTile from "../../../components/products/SearchTile";
+import "../../../components/products/SearchTile";
 import { AuthContext } from "../../../components/auth/AuthContext";
 
-import { BACKEND_PORT } from "@env";
+import "@env";
 import LatestShipments from "./LatestShipments";
 
 const ShipmentSearch = () => {
-  const { userLogin, hasRole, userData, userLogout } = useContext(AuthContext);
+  useContext(AuthContext);
   const inputRef = useRef(null); // Create a ref for the TextInput
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState("");
-  const [searchResults, setSearchResults] = useState("");
-  const [noData, setNodata] = useState(false);
+  const [, ] = useState("");
+  const [, ] = useState(false);
   const [refreshList, setRefreshList] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
+  const [, setRefreshing] = useState(false);
 
   useEffect(() => {
     // Check if the component has just been mounted then focus from home search

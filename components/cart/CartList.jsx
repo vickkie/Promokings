@@ -1,7 +1,7 @@
 import { FlatList, Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { COLORS, SIZES } from "../../constants";
+import {  SIZES } from "../../constants";
 import styles from "./cartlist.style";
 import CartCardVIew from "./CartCardVIew";
 import { useNavigation } from "@react-navigation/native";
@@ -10,7 +10,7 @@ import LottieView from "lottie-react-native";
 const CartList = ({ cart }) => {
   const navigation = useNavigation();
   const [totals, setTotals] = useState({ subtotal: 0 });
-  const [additionalFees, setAdditionalFees] = useState(0);
+  const [additionalFees, ] = useState(0);
   const estimatedAmount = totals.subtotal + additionalFees;
 
   const calculateTotals = (cartItems) => {

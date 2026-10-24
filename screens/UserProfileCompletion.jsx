@@ -1,9 +1,9 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useContext, useState,  useRef } from "react";
+import { View, Text,  TouchableOpacity,    StyleSheet } from "react-native";
+import "react-native-safe-area-context";
 import { COLORS, SIZES } from "../constants";
 import Icon from "../constants/icons";
-import { useNavigation } from "@react-navigation/native";
+import "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
 import { ProfileCompletionContext } from "../components/auth/ProfileCompletionContext";
 
@@ -11,17 +11,17 @@ import CustomerCompleteProfile from "../components/bottomsheets/CustomerComplete
 
 
 const UserProfileCompletion = () => {
-  const { userData, userLogin, updateUserData, userLogout, hasRole } = useContext(AuthContext);
+  const {  userLogin } = useContext(AuthContext);
   const {
     completionPercentage,
-    missingFields,
-    refreshProfileCompletion,
-    syncProfileCompletionFromServer,
+    
+    
+    
     message,
     isComplete,
   } = useContext(ProfileCompletionContext);
 
-  const [showBanner, setShowBanner] = useState(true);
+  const [showBanner, ] = useState(true);
 
   const BottomSheetRef = useRef(null);
 

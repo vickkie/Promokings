@@ -1,5 +1,5 @@
-import { FlatList, Text, View, SafeAreaView, ActivityIndicator, TouchableOpacity } from "react-native";
-import React, { useEffect, useCallback, memo } from "react";
+import { FlatList, Text, View,  ActivityIndicator, TouchableOpacity } from "react-native";
+import React, { useEffect, useCallback } from "react";
 import { COLORS, SIZES } from "../../constants";
 import styles from "./productsRow.style";
 import ProductsCardView from "./ProductsCardView";

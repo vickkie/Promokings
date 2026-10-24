@@ -14,7 +14,7 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
     (skipCache = false) => {
       setIsLoading(true);
       setError(null); // Reset error state before fetching data
-      const startTime = Date.now(); // Start time for response time logging
+      Date.now(); // Start time for response time logging
 
       const url = `${BACKEND_PORT}/api/${endpoint}`;
 
@@ -31,8 +31,8 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
       axios
         .get(url, { headers })
         .then((response) => {
-          const endTime = Date.now(); // End time for response time logging
-          const responseTime = endTime - startTime; // Calculate response time
+          Date.now(); // End time for response time logging
+ // Calculate response time
 
           setData(response.data); // Save the fetched data
           setStatusCode(response?.status);

@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator, FlatList, Image, TextInput, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity,  FlatList, Image, TextInput, StyleSheet } from "react-native";
 import { AuthContext } from "../components/auth/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import { COLORS, SIZES } from "../constants";
 import Icon from "../constants/icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
+import "expo-status-bar";
 import LottieView from "lottie-react-native";
 import { db } from "../components/auth/firebase";
 import { ref, onValue } from "firebase/database";

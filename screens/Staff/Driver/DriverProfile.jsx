@@ -29,11 +29,9 @@ const DriverProfile = () => {
 
   const {
     completionPercentage,
-    missingFields,
-    message,
+    
+    
     isComplete,
-    refreshProfileCompletion,
-    syncProfileCompletionFromServer,
   } = useContext(ProfileCompletionContext);
 
   const navigation = useNavigation();
@@ -41,7 +39,7 @@ const DriverProfile = () => {
   const [profilePicture, setProfilePicture] = useState(userData?.profilePicture || null);
   const [vehicle, setVehicle] = useState("");
   const [localProfilePicture, setLocalProfilePicture] = useState(null); // New state variable for local image URI
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
   const [showPasswordFields, setShowPasswordFields] = useState(false); // State for toggling password fields
   useEffect(() => {
     if (!userData) {

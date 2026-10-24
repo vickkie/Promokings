@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, StyleSheet } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert,  StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, SIZES } from "../../../constants";
 import Icon from "../../../constants/icons";
@@ -11,7 +11,7 @@ import axios from "axios";
 import axiosRetry from "axios-retry";
 
 import { BACKEND_PORT } from "@env";
-import * as ImagePicker from "expo-image-picker";
+import "expo-image-picker";
 import ButtonMain from "../../../components/ButtonMain";
 import Toast from "react-native-toast-message";
 import ProfileCompletion from "../ProfileCompletion";
@@ -27,22 +27,20 @@ const CompanyProfile = () => {
   const { userData, userLogin, updateUserData, userLogout, hasRole } = useContext(AuthContext);
   const {
     completionPercentage,
-    missingFields,
-    message,
+    
+    
     isComplete,
-    refreshProfileCompletion,
-    syncProfileCompletionFromServer,
   } = useContext(ProfileCompletionContext);
 
   const navigation = useNavigation();
   const [loader, setLoader] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [profilePicture, setProfilePicture] = useState(userData?.profilePicture || null);
-  const [localProfilePicture, setLocalProfilePicture] = useState(null); // New state variable for local image URI
-  const [userId, setUserId] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [, setProfilePicture] = useState(userData?.profilePicture || null);
+  const [, setLocalProfilePicture] = useState(null); // New state variable for local image URI
+  const [, setUserId] = useState(null);
+  const [, setLoading] = useState(false);
   const [fallBack, setFallback] = useState(null);
-  const [showPasswordFields, setShowPasswordFields] = useState(false); // State for toggling password fields
+  const [showPasswordFields, ] = useState(false); // State for toggling password fields
 
   useEffect(() => {
     if (!userData) {
@@ -89,7 +87,6 @@ const CompanyProfile = () => {
   const updateCompanyProfile = async (values) => {
     setLoader(true);
     try {
-      let profilePictureUrl = null;
 
       const userUpdateData = {
         name: values.name || undefined,
@@ -166,26 +163,6 @@ const CompanyProfile = () => {
   }, []);
   console.log(fallBack?.name);
 
-  const pickImage = async () => {
-    let result = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (result.granted === false) {
-      alert("Permission to access gallery is required!");
-      return;
-    }
-
-    let pickerResult = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!pickerResult.canceled && pickerResult.assets && pickerResult.assets.length > 0) {
-      const pickedUri = pickerResult.assets[0].uri;
-      setLocalProfilePicture(pickedUri);
-      // console.log(pickedUri);
-    }
-  };
 
   // Dynamic validation schema
   const getValidationSchema = (showPasswordFields) => {

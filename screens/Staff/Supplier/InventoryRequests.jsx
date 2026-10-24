@@ -25,7 +25,6 @@ const InventoryRequests = () => {
   const route = useRoute();
 
   const categoryTitle = route.params?.categoryTitle || "";
-  const products = route.params?.products ? route.params.products : "products";
 
   // console.log(route.params);
 
@@ -51,7 +50,7 @@ const InventoryRequests = () => {
     try {
       refetch();
       navigation.setParams({ refreshList: undefined, products: "products" }); // Clear params
-    } catch (error) {
+    } catch (_error) {
       // Handle error
     } finally {
       setRefreshing(false);
@@ -86,11 +85,6 @@ const InventoryRequests = () => {
 
   const BottomSheetRef = React.useRef(null);
 
-  const openMenu = () => {
-    if (BottomSheetRef.current) {
-      BottomSheetRef.current.present();
-    }
-  };
 
   useEffect(() => {
     if (data.length > 0) {

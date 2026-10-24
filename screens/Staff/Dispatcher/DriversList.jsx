@@ -118,10 +118,10 @@ const DriverList = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("staff/drivers");
+  const { data, isLoading,    refetch } = useFetch("staff/drivers");
 
-  const [userId, setUserId] = useState(null);
-  const [refreshList, setRefreshList] = useState(false);
+  const [, setUserId] = useState(null);
+  const [, setRefreshList] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [drivers, setDrivers] = useState([]);
   const [pressedId, setPressedId] = useState(null);

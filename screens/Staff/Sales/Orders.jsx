@@ -1,9 +1,9 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState } from "react";
 
 import { COLORS, SIZES } from "../../../constants";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text,  TouchableOpacity } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import OrdersList from "./OrdersList";
@@ -13,10 +13,10 @@ const OrdersSales = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { refresh } = route.params || false;
-  const { refreshin } = route.params || false;
+  
 
-  const [refreshList, setRefreshList] = useState(refresh);
-  const [refreshing, setRefreshing] = useState(false);
+  const [, ] = useState(refresh);
+  const [, ] = useState(false);
   const [irefresh, setiRefresh] = useState(refresh);
   const [pending, setPending] = useState([]);
 

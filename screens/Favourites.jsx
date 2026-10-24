@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import Icon from "../constants/icons";
@@ -11,7 +11,7 @@ import { COLORS, SIZES } from "../constants";
 
 const Favourites = () => {
   const navigation = useNavigation();
-  const { userLogin, userData } = useContext(AuthContext);
+  useContext(AuthContext);
   const { cartCount } = useCart();
   const { wishCount, wishlist } = useWish();
 

@@ -40,8 +40,8 @@ const SalesShipments = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [ordersData, setOrdersData] = useState([]);
-  const [products, setProducts] = useState("");
-  const [orderItems, setOrderItems] = useState("");
+  const [, setProducts] = useState("");
+  const [, setOrderItems] = useState("");
   const [refetch, setRefetch] = useState(false);
 
   const [sortedOrdersData, setSortedOrdersData] = useState([]);
@@ -151,9 +151,8 @@ const SalesShipments = () => {
 
           shipment.orderId.products.forEach((product) => {
             // console.log(product);
-            const items = product._id;
 
-            const { _id, title, price, imageUrl, description } = product._id || {};
+            
 
             setProducts();
 
@@ -239,8 +238,7 @@ const SalesShipments = () => {
   };
 
   const SearchResultCard = ({ deliveryDriver, deliveryId, orderId, item, products, status, icon, color, totals }) => {
-    const titles =
-      Array.isArray(products) &&
+    Array.isArray(products) &&
       products
         .map((product, index) => {
           const { title } = product._id || {};
@@ -250,7 +248,6 @@ const SalesShipments = () => {
         })
         .filter(({ title }) => Boolean(title)); // Filter out undefined titles, in case some products don't have titles
 
-    const titlesString = orderId[1];
 
     // console.log("titles", deliveryId);
 

@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useRef, forwardRef, useContext, useState, 
 import { StyleSheet, Text, View, TouchableOpacity, Image, Alert, FlatList } from "react-native";
 import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { COLORS, SIZES } from "../../constants";
-import Icon from "../../constants/icons";
+import "../../constants/icons";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../auth/AuthContext";
 import Toast from "react-native-toast-message";
@@ -17,23 +17,23 @@ const BidToInventory = forwardRef(function BidToInventory(props, ref) {
   const navigation = useNavigation();
   const { userData, userLogin } = useContext(AuthContext);
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [offset, setOffset] = useState(0);
-  const [limit, setLimit] = useState(2100);
+  const [limit, ] = useState(2100);
   const [bidData, setBidData] = useState(item);
-  const [refreshing, setRefreshing2] = useState(false);
-  const [haveBid, setHaveBid] = useState(false);
+  const [, setRefreshing2] = useState(false);
+  const [, ] = useState(false);
 
-  const [error, setError] = useState(null);
+  const [, setError] = useState(null);
 
   const filteredBids =
     !loading && bidData?.bids.filter((bid) => bid.supplier !== null && typeof bid.supplier === "object");
 
   useEffect(() => {
     if (!loading && bidData) {
-      const foundBid = filteredBids.find((bid) => bid.supplier?._id === bid?.selectedSupplier);
+      filteredBids.find((bid) => bid.supplier?._id === bid?.selectedSupplier);
       // setHaveBid(foundBid ? true : false);
     }
   }, [loading, bidData]);
@@ -86,7 +86,7 @@ const BidToInventory = forwardRef(function BidToInventory(props, ref) {
       setOffset((prev) => (reset ? limit : prev + limit));
 
       setError(null);
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to fetch products.");
     } finally {
       setLoading(false);
@@ -112,7 +112,7 @@ const BidToInventory = forwardRef(function BidToInventory(props, ref) {
       setOffset((prev) => (reset ? limit : prev + limit));
 
       setError(null);
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to fetch bids.");
     } finally {
       setLoading(false);

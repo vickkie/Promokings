@@ -6,9 +6,9 @@ import Icon from "../../../constants/icons";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
 import { COLORS, SIZES } from "../../../constants";
-import LatestProducts from "./LatestProducts";
+import "./LatestProducts";
 import useFetch from "../../../hook/useFetch";
-import LatestOrders from "../Sales/LatestOrders";
+import "../Sales/LatestOrders";
 import LatestShipments from "./LatestShipments";
 
 const DriverDashboard = () => {
@@ -16,14 +16,14 @@ const DriverDashboard = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch(
+  const { data, isLoading,    refetch } = useFetch(
     `shipment/myDeliveries/${userData?._id}/status/pending`,
     true,
     userData?.TOKEN
   );
 
-  const [userId, setUserId] = useState(null);
-  const [quantities, setQuanties] = useState(null);
+  const [, setUserId] = useState(null);
+  const [, ] = useState(null);
   const [deliveries, setDeliveries] = useState(null);
   const [refreshList, setRefreshList] = useState(false);
   const [refreshing, setRefreshing] = useState(false);

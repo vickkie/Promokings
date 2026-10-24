@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Alert , ActivityIndicator } from "react-native";
+import { View, Text,  TextInput, StyleSheet, TouchableOpacity, ScrollView,  Alert , ActivityIndicator } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
@@ -16,25 +16,25 @@ import Routes from "../../../navigation/routes";
 const EditDispatchOrder = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { products, totals, orderId, item: order } = route.params;
-  const { userData, userLogin } = useContext(AuthContext);
+  const {   orderId, item: order } = route.params;
+  const { userData } = useContext(AuthContext);
 
   const {
     data: alldrivers,
     isLoading: driverLoading,
-    error,
-    refetch,
+    
+    
     errorMessage: driverError,
   } = useFetch("staff/drivers");
   const {
     data: delivery,
     isLoading: deliveryLoading,
-    error: deliveryError,
-    refetch: deliveryRefetch,
+    
+    
     errorMessage: deliveryErrorMessage,
   } = useFetch(`orders/delivery/${orderId}`);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [, ] = useState(false);
   const [drivers, setDrivers] = useState(null);
   const [item, setItem] = useState(order);
   const [deliveryData, setDeliveryData] = useState(null);

@@ -8,7 +8,7 @@ import {
   Image,
   RefreshControl,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
 import { Ionicons } from "@expo/vector-icons";
@@ -16,10 +16,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 const SupplierPaymentTracker = ({ refreshList, setRefreshing, setRefreshList, userData, paymentId }) => {
-  const navigation = useNavigation();
+  useNavigation();
   let token = userData?.TOKEN;
 
-  const { data, isLoading, error, refetch } = useFetch(`v3/payments/payout/${paymentId}`, true, token);
+  const { data, isLoading,  refetch } = useFetch(`v3/payments/payout/${paymentId}`, true, token);
 
   console.log(data);
 

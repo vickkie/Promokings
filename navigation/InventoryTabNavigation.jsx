@@ -3,10 +3,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   InventoryDashboard,
   EditProductList,
-  AddProduct,
+  
   StaffSettings,
   EditCategoriesList,
-  EditCategory,
+  
   MainCenter,
 } from "../screens";
 
@@ -131,4 +131,4 @@ const InventoryTabNavigation = () => {
 
 export default InventoryTabNavigation;
 
-const styles = StyleSheet.create({});
+StyleSheet.create({});

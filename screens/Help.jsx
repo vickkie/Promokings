@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo, useRef } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import { StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text , Animated, Easing } from "react-native";
 
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
@@ -21,8 +21,8 @@ const Help = () => {
   // const [userId, setUserId] = useState(null);
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
   const [imageFromRoute, setImageFromRoute] = useState(false);
-  const [itemId, setItemId] = useState(null);
-  const [itemName, setItemName] = useState("");
+  const [, setItemId] = useState(null);
+  const [, setItemName] = useState("");
   const [itemImage, setItemImage] = useState(null);
   const [isSending, setIsSending] = useState(false);
 

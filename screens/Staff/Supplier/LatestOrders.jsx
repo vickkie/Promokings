@@ -6,25 +6,24 @@ import {
   TouchableOpacity,
   RefreshControl,
   StyleSheet,
-  TextInput,
 } from "react-native";
 import React, { useRef, useState, useCallback, useEffect, useContext } from "react";
-import { COLORS, SIZES, SHADOWS } from "../../../constants";
+import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
-import { SafeAreaView } from "react-native-safe-area-context";
+import "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import Icon from "../../../constants/icons";
+import "../../../constants/icons";
 import { useNavigation, useRoute , useFocusEffect } from "@react-navigation/native";
 import InventoryAdd from "../../../components/bottomsheets/InventoryAdd";
 
 
-import { Picker } from "@react-native-picker/picker";
+import "@react-native-picker/picker";
 import RequestCard from "./RequestCard";
 import { AuthContext } from "../../../components/auth/AuthContext";
 
 const LatestOrders = () => {
   const route = useRoute();
-  const { userData, userLogin } = useContext(AuthContext);
+  const { userData } = useContext(AuthContext);
   const categoryTitle = route.params?.categoryTitle || "";
 
   const { data, isLoading, error, refetch } = useFetch(
@@ -34,16 +33,16 @@ const LatestOrders = () => {
   const [refreshList, setRefreshList] = useState(false);
 
   const [refreshing, setRefreshing] = useState(false);
-  const [isGridView, setIsGridView] = useState(false);
-  const [statuses, setstatuses] = useState(["Pending", "Accepted", "Rejected"]);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [searching, setIsSearching] = useState(false);
-  const [searchText, setSearchText] = useState("");
+  const [isGridView, ] = useState(false);
+  const [, setstatuses] = useState(["Pending", "Accepted", "Rejected"]);
+  const [, setSelectedCategory] = useState("");
+  const [, ] = useState(false);
+  const [searchText, ] = useState("");
 
   const navigation = useNavigation();
   const scrollRef = useRef(null);
-  const [showScrollTopButton, setShowScrollTopButton] = useState(false);
-  const inputRef = useRef(null);
+  const [, setShowScrollTopButton] = useState(false);
+  useRef(null);
 
   //refetch on update
   useFocusEffect(
@@ -74,11 +73,6 @@ const LatestOrders = () => {
 
   const BottomSheetRef = React.useRef(null);
 
-  const openMenu = () => {
-    if (BottomSheetRef.current) {
-      BottomSheetRef.current.present();
-    }
-  };
 
   useEffect(() => {
     if (data.length > 0) {
@@ -92,7 +86,7 @@ const LatestOrders = () => {
     try {
       refetch();
       navigation.setParams({ refreshList: undefined, products: "products" }); // Clear params
-    } catch (error) {
+    } catch (_error) {
       // Handle error
     } finally {
       setRefreshing(false);
@@ -104,28 +98,14 @@ const LatestOrders = () => {
     setShowScrollTopButton(offsetY > 100);
   };
 
-  const scrollTop = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollToOffset({ offset: 0, animated: true });
-    }
-  };
 
-  const toggleViewMode = () => {
-    setIsGridView(!isGridView);
-  };
 
-  const toggleSearching = () => {
-    setIsSearching(!searching);
-  };
 
-  const handleSearch = () => {
-    inputRef.current?.blur(); // Dismiss keyboard on search
-  };
 
   // Filter products based on selected category, selected and search text
   const filteredData = data.filter((item) => item.productName.toLowerCase().includes(searchText.toLowerCase()));
 
-  const now = new Date();
+  new Date();
 
   const flatListKey = isGridView ? "grid" : "list"; // Key for FlatList
 

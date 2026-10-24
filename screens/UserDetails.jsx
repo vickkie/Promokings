@@ -15,7 +15,7 @@ import * as ImagePicker from "expo-image-picker";
 import ButtonMain from "../components/ButtonMain";
 import Toast from "react-native-toast-message";
 import { ProfileCompletionContext } from "../components/auth/ProfileCompletionContext";
-import ProfileCompletion from "./Staff/ProfileCompletion";
+import "./Staff/ProfileCompletion";
 import UserProfileCompletion from "./UserProfileCompletion";
 import Routes from "../navigation/routes";
 
@@ -33,11 +33,9 @@ const UserDetails = () => {
   const { userData, userLogin, updateUserData, userLogout } = useContext(AuthContext);
   const {
     completionPercentage,
-    missingFields,
-    message,
+    
+    
     isComplete,
-    refreshProfileCompletion,
-    syncProfileCompletionFromServer,
   } = useContext(ProfileCompletionContext);
 
   const [showPasswordFields, setShowPasswordFields] = useState(false); // State for toggling password fields

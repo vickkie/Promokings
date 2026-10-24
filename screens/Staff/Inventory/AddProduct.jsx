@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Switch,
-  Alert,
+  
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
@@ -43,7 +43,7 @@ const AddProduct = () => {
 
   const [productId, setProductId] = useState(() => generateProductId());
   const [image, setImage] = useState(null);
-  const [loader, setLoader] = useState(false);
+  const [, setLoader] = useState(false);
   const [category, setCategory] = useState("");
   const [quantity, setQuantity] = useState(initialProduct?.quantity || 0);
   const [supplier, setSupplier] = useState("");
@@ -54,7 +54,7 @@ const AddProduct = () => {
   const [uploading, setUploading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [suppliers, setSuppliers] = useState([]);
-  const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
+  const { data: categories } = useFetch("category");
 
   const { data: supplierData, isLoading: isSuppliersLoading, error: supplierError } = useFetch("v2/supplier/names");
 
@@ -117,7 +117,7 @@ const AddProduct = () => {
       setDescription("");
       setQuantity(0);
       setFeatured(false);
-    } catch (error) {
+    } catch (_error) {
       console.log("refresh failed");
     } finally {
       setTimeout(() => {

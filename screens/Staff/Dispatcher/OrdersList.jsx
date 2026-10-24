@@ -5,7 +5,7 @@ import {
   View,
   ActivityIndicator,
   TouchableOpacity,
-  Image,
+  
   RefreshControl,
 } from "react-native";
 import React, { useEffect, useState, useCallback, useContext } from "react";
@@ -53,7 +53,7 @@ const OrdersDispatchList = ({ refreshList, setRefreshing, setiRefresh, irefresh,
       setOffset((prev) => (reset ? limit : prev + limit));
 
       setError(null);
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to fetch products.");
     } finally {
       setLoading(false);

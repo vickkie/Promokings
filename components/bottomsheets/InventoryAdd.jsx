@@ -1,9 +1,9 @@
 // InventoryAdd.js
 import React, { useMemo, useCallback, useRef, forwardRef, useContext, useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { COLORS, SIZES } from "../../constants";
-import Icon from "../../constants/icons";
+import "../../constants/icons";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../auth/AuthContext";
 import Toast from "react-native-toast-message";
@@ -14,9 +14,9 @@ const InventoryAdd = forwardRef(function InventoryAdd(props, ref) {
   const { item } = props; // product details object
   const snapPoints = useMemo(() => [460, 570], []);
   const navigation = useNavigation();
-  const { userData, userLogout, userLogin } = useContext(AuthContext);
+  const { userData,  userLogin } = useContext(AuthContext);
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
 
   useEffect(() => {
     if (!userLogin) {
@@ -35,10 +35,6 @@ const InventoryAdd = forwardRef(function InventoryAdd(props, ref) {
     []
   );
 
-  const handleNavigation = (screen) => {
-    navigation.navigate(screen);
-    bottomSheetRef.current?.dismiss(); // Dismiss the bottom sheet
-  };
 
   const showToast = (type, text1, text2) => {
     Toast.show({

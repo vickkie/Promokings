@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   View,
   Text,
-  Button,
+  
   TextInput,
   StyleSheet,
   TouchableOpacity,
@@ -18,7 +18,7 @@ import { SIZES, COLORS } from "../../../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import useFetch from "../../../hook/useFetch";
 
-import useDelete from "../../../hook/useDelete2";
+import "../../../hook/useDelete2";
 import { BACKEND_PORT } from "@env";
 import axios from "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
@@ -34,7 +34,7 @@ const BidDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoading2, setIsLoading2] = useState(false);
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
 
   useEffect(() => {
     if (!userLogin) {
@@ -52,19 +52,19 @@ const BidDetails = () => {
   const {
     data,
     isLoading: supplierLoading,
-    error,
-    errorMessage: supplierError,
+    
+    
     refetch,
   } = useFetch(datapath, true, userData?.TOKEN);
 
-  const [step, setStep] = useState(1);
-  const [address, setAddress] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [city, setCity] = useState(userData ? userData.location : "");
-  const [email, setEmail] = useState(userData ? userData.email : "");
+  const [, ] = useState(1);
+  const [, ] = useState("");
+  const [, ] = useState("");
+  const [, ] = useState(userData ? userData.location : "");
+  const [, ] = useState(userData ? userData.email : "");
   const [supplierData, setSupplierData] = useState("");
 
-  const [phoneError, setPhoneError] = useState("");
+  const [, ] = useState("");
 
   useEffect(() => {
     if (!supplierLoading && data?.success) {

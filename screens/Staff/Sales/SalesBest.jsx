@@ -61,7 +61,7 @@ const BestProductList = () => {
     try {
       refetch();
       navigation.setParams({ refreshList: undefined, products: "stats/getStats/best-sellingc/7" }); // Clear params
-    } catch (error) {
+    } catch (_error) {
       // Handle error
     } finally {
       setRefreshing(false);
@@ -96,11 +96,6 @@ const BestProductList = () => {
 
   const BottomSheetRef = React.useRef(null);
 
-  const openMenu = () => {
-    if (BottomSheetRef.current) {
-      BottomSheetRef.current.present();
-    }
-  };
 
   useEffect(() => {
     if (data.length > 0) {

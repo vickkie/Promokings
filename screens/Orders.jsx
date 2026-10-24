@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { COLORS, SIZES } from "../constants";
 import Icon from "../constants/icons";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
 import LottieView from "lottie-react-native";
 import { BACKEND_PORT } from "@env";
@@ -41,8 +41,8 @@ const Orders = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [ordersData, setOrdersData] = useState([]);
-  const [products, setProducts] = useState("");
-  const [orderItems, setOrderItems] = useState("");
+  const [, setProducts] = useState("");
+  const [, setOrderItems] = useState("");
 
   const [sortedOrdersData, setSortedOrdersData] = useState([]);
   const [last3orders, setlast3orders] = useState([]);
@@ -158,9 +158,8 @@ const Orders = () => {
 
           order.products.forEach((product) => {
             // console.log(product);
-            const items = product._id;
 
-            const { _id, title, price, imageUrl, description } = product._id || {};
+            
 
             setProducts();
 

@@ -3,7 +3,7 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ActivityIndicator,
+  
   Image,
   TextInput,
   SectionList,

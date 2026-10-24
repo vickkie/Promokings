@@ -1,35 +1,35 @@
-import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
+import React, { useState, useContext } from "react";
 import {
   Text,
   TouchableOpacity,
   View,
   ScrollView,
   Image,
-  StatusBar,
+  
   StyleSheet,
-  RefreshControl,
-  Animated,
-  FlatList,
+  
+  
+  
   TextInput,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/native";
+import { useNavigation,  useRoute } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { AuthContext } from "../../../components/auth/AuthContext";
-import HomeMenu from "../../../components/bottomsheets/HomeMenu";
+import "../../../components/bottomsheets/HomeMenu";
 import { COLORS, SIZES } from "../../../constants";
 import { Formik } from "formik";
-import useFetch from "../../../hook/useFetch";
-import LottieView from "lottie-react-native";
+import "../../../hook/useFetch";
+import "lottie-react-native";
 
 const DriverDetails = () => {
-  const { userData, userLogin, updateUserData, userLogout, hasRole } = useContext(AuthContext);
+  const {  userLogin } = useContext(AuthContext);
   const navigation = useNavigation();
   const route = useRoute();
   const driver = route.params?.driver;
   // console.log(driver);
 
-  const [refreshList, setRefreshList] = useState(false);
+  const [, ] = useState(false);
 
   const renderProfilePicture = () => {
     if (driver && driver?.profilePicture) {

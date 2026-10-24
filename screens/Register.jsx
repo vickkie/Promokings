@@ -3,13 +3,13 @@ import React, { useEffect, useState, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackBtn from "../components/BackBtn";
 import Button from "../components/Button";
-import { Formik, validateYupSchema } from "formik";
+import { Formik } from "formik";
 import * as Yup from "yup";
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../constants";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
-import Toast from "react-native-toast-message";
+import "react-native-toast-message";
 import usePost2 from "../hook/usePost2";
 import IntlPhoneInput from "react-native-intl-phone-input";
 import { FlatList } from "react-native-gesture-handler";
@@ -37,7 +37,7 @@ const Register = ({ navigation }) => {
   const [phoneError, setPhoneError] = useState("");
   const [allcountries, setallCountries] = useState([]);
   const [filteredCountries, setFilteredCountries] = useState(allcountries);
-  const { responseData, setUpdateStatus, updateStatus, isLoading, error, errorMessage, postData } =
+  const {  setUpdateStatus } =
     usePost2("auth/register");
 
   useEffect(() => {

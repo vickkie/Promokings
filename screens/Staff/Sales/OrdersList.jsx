@@ -25,7 +25,7 @@ const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPend
   const [refreshing, setRefreshing2] = useState(false);
   const [endReached, setEndReached] = useState(false);
   const [error, setError] = useState(null);
-  const [limit, setLimit] = useState(2100);
+  const [limit, ] = useState(2100);
 
   // Fetch products from API
   const fetchData = async (reset = false) => {
@@ -47,7 +47,7 @@ const OrdersList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPend
       setOffset((prev) => (reset ? limit : prev + limit));
 
       setError(null);
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to fetch products.");
     } finally {
       setLoading(false);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Alert , ActivityIndicator } from "react-native";
+import { View, Text,  TextInput, StyleSheet, TouchableOpacity, ScrollView,  Alert , ActivityIndicator } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
@@ -15,33 +15,33 @@ import Routes from "../../../navigation/routes";
 const EditSalesOrder = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { products, totals, orderId, item: order } = route.params;
-  const { userData, userLogin } = useContext(AuthContext);
+  const {   orderId, item: order } = route.params;
+  const { userData } = useContext(AuthContext);
 
   const {
     data: alldrivers,
     isLoading: driverLoading,
-    error,
-    refetch,
+    
+    
     errorMessage: driverError,
   } = useFetch("staff/drivers");
   const {
     data: delivery,
     isLoading: deliveryLoading,
-    error: deliveryError,
-    refetch: deliveryRefetch,
+    
+    
     errorMessage: deliveryErrorMessage,
   } = useFetch(`orders/delivery/${orderId}`);
 
   const [isLoading, setIsLoading] = useState(false);
   const [drivers, setDrivers] = useState(null);
-  const [item, setItem] = useState(order);
-  const [deliveryData, setDeliveryData] = useState(null);
+  const [item, ] = useState(order);
+  const [, setDeliveryData] = useState(null);
   const [assignedDriver, setAssignedDriver] = useState(null);
   const [isAssigning, setIsAssigning] = useState(false);
-  const [isApproving, setIsApproving] = useState(false);
+  const [isApproving, ] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [uploading2, setUploading2] = useState(false);
+  const [, ] = useState(false);
 
   useEffect(() => {
     if (!driverLoading && alldrivers && !driverError) {
@@ -339,26 +339,6 @@ const EditSalesOrder = () => {
     ]);
   };
 
-  const DriverDetails = () => {
-    if (!(isApproving || isAssigning || deliveryLoading)) {
-      return (
-        <View>
-          <View style={{ paddingHorizontal: 10 }}>
-            <Text>Assigned Driver : {deliveryData ? deliveryData?.driver?.fullName : "Unassigned"}</Text>
-          </View>
-          <View style={{ paddingHorizontal: 10 }}>
-            <Text>Assigned Time : {deliveryData ? deliveryData?.assignedAt : "Unassigned"}</Text>
-          </View>
-          <View style={{ paddingHorizontal: 10 }}>
-            <Text>Vehicle Registration: {deliveryData ? deliveryData?.driver?.numberPlate : "Unassigned"}</Text>
-          </View>
-          <View style={{ paddingHorizontal: 10 }}>
-            <Text>Phone Number: {deliveryData ? deliveryData?.driver?.phoneNumber : "Unassigned"}</Text>
-          </View>
-        </View>
-      );
-    }
-  };
 
   return (
     <SafeAreaView style={styles.container}>
