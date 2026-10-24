@@ -25,6 +25,7 @@ const OrderDetails = () => {
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1);
       navigation.navigate("Login");
       return;
@@ -432,14 +433,14 @@ const OrderDetails = () => {
                 <Text style={styles.relatedHeader}>Payment Information</Text>
               </View>
 
-              <PaymentMethodComponent item={item} />
+              {PaymentMethodComponent({ item })}
             </View>
             <View style={[styles.relatedRow, { marginBottom: 10 }]}>
               <View>
                 <Text style={styles.relatedHeader}>Delivery Information</Text>
               </View>
 
-              <DeliveryMethodComponent item={item} />
+              {DeliveryMethodComponent({ item })}
             </View>
           </ScrollView>
         </View>

@@ -8,6 +8,7 @@ import { ref, onValue, set, update } from "firebase/database";
 import * as ImagePicker from "expo-image-picker";
 import Icon from "../constants/icons";
 import { COLORS, SIZES } from "../constants";
+import { BACKEND_PORT } from "@env";
 
 import "react-native-get-random-values";
 import uuid from "react-native-uuid";
@@ -184,7 +185,7 @@ const ChatScreen = () => {
   });
   MemoizedBubble.displayName = "MemoizedBubble";
 
-  const spinAnim = useRef(new Animated.Value(0)).current;
+  const [spinAnim] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
     if (!isSending) {

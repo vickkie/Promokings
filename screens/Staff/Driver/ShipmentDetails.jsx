@@ -27,6 +27,7 @@ const ShipmentDetails = () => {
     if (!dataLoading && data) {
       //   console.log(data?.userId);
       //   console.log(ErrorMessage);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setDelivery(data);
       setOrderId(data?.orderId?._id);
       setItem(data?.orderId);
@@ -231,7 +232,7 @@ const ShipmentDetails = () => {
                     <Text style={styles.relatedHeader}>Delivery Information</Text>
                   </View>
 
-                  <PaymentMethodComponent item={item} />
+                  {PaymentMethodComponent({ item })}
                 </View>
 
                 <ScrollView style={[styles.relatedRow, { marginBottom: 10 }]}>

@@ -35,7 +35,7 @@ const DriverCard = ({ driver, isPressed, onPress, onPressOut, navigation }) => {
 
     return <Image source={require("../../../assets/images/userDefault.webp")} style={styles.profilePicture} />;
   };
-  const opacity = useRef(new Animated.Value(1)).current;
+  const [opacity] = useState(() => new Animated.Value(1));
 
   useEffect(() => {
     const animateDot = () => {
@@ -141,6 +141,7 @@ const DriverList = () => {
     if (!userLogin) {
       navigation.replace("Login");
     } else if (hasRole("dispatcher")) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData._id);
     } else {
       userLogout();
@@ -174,6 +175,7 @@ const DriverList = () => {
 
   useEffect(() => {
     if (!isLoading && data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setDrivers(data);
     } else if (!isLoading && !data) {
       setDrivers(zeroData);

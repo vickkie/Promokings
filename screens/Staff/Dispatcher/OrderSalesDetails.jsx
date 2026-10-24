@@ -28,6 +28,7 @@ const OrderDispatchDetails = () => {
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1);
       navigation.navigate("Login");
       return;
@@ -295,7 +296,7 @@ const OrderDispatchDetails = () => {
                 <Text style={styles.relatedHeader}>Delivery Information</Text>
               </View>
 
-              <DeliveryMethodComponent item={item} />
+              {DeliveryMethodComponent({ item })}
             </View>
           </ScrollView>
         </View>

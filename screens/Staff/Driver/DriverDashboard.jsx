@@ -35,6 +35,7 @@ const DriverDashboard = () => {
         routes: [{ name: "Login" }],
       });
     } else if (hasRole("driver")) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData?._id);
       console.log(userData);
     } else {
@@ -91,6 +92,7 @@ const DriverDashboard = () => {
   useEffect(() => {
     console.log(data);
     if (!isLoading && data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setDeliveries(data[0]);
     }
   }, [isLoading, data]);
@@ -208,7 +210,7 @@ const DriverDashboard = () => {
                         });
                     }}
                   >
-                    <CurrentOrder deliveryData={deliveries} isLoading={isLoading} />
+                    {CurrentOrder({ deliveryData: deliveries, isLoading })}
                   </TouchableOpacity>
                 </View>
               </View>

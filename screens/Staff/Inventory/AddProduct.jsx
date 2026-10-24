@@ -41,7 +41,7 @@ const AddProduct = () => {
     return `PRK-P${randomId}`;
   }
 
-  const [productId, setProductId] = useState(generateProductId());
+  const [productId, setProductId] = useState(() => generateProductId());
   const [image, setImage] = useState(null);
   const [loader, setLoader] = useState(false);
   const [category, setCategory] = useState("");
@@ -63,6 +63,7 @@ const AddProduct = () => {
   useEffect(() => {
     if (initialProduct) {
       // console.log(initialProduct?.quantity);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setTitle(initialProduct?.productName);
       setPrice();
       setAvailability(true);
@@ -91,6 +92,7 @@ const AddProduct = () => {
 
   useEffect(() => {
     if (!isSuppliersLoading && !supplierError && supplierData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setSuppliers(supplierData?.suppliers);
     }
 

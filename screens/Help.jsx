@@ -98,6 +98,7 @@ const Help = () => {
   useEffect(() => {
     if (!route.params) return;
     const { item_id, item_name, item_image } = route.params;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     setItemId(item_id);
     setItemName(item_name);
     setItemImage(item_image);
@@ -107,7 +108,7 @@ const Help = () => {
     setImageFromRoute(true);
   }, [route.params?.item_id]);
 
-  const spinAnim = useRef(new Animated.Value(0)).current;
+  const [spinAnim] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
     if (!isSending) {

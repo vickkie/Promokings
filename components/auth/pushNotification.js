@@ -28,7 +28,7 @@ export default function PushNotification() {
   // State for in-app notification banner
   const [notification, setNotification] = useState(null);
 
-  const slideAnim = useRef(new Animated.Value(-100)).current; // Initial position
+  const [slideAnim] = useState(() => new Animated.Value(-100)); // Initial position
 
   useEffect(() => {
     if (!userData || !userData._id) return;

@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, StyleSheet , Image , Modal } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackBtn from "../../../components/BackBtn";
 import Button from "../../../components/Button";
@@ -22,6 +22,7 @@ import { parsePhoneNumberFromString } from "libphonenumber-js/min";
 
 const SupplierPaymentProfile = () => {
   const [loader, setLoader] = useState(false);
+  const phoneInputRef = useRef(null);
   const [Rsuccess, setRsuccess] = useState(false);
   const [obsecureText, setObsecureText] = useState(true);
   const [step, setStep] = useState(1);
@@ -204,7 +205,7 @@ const SupplierPaymentProfile = () => {
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => {
-                this.phoneInput.hideModal();
+                phoneInputRef.current?.hideModal?.();
                 setFilteredCountries(countries);
               }}
             >
@@ -375,7 +376,7 @@ const SupplierPaymentProfile = () => {
                     <View style={!phoneError ? styles.noError : styles.focused}>
                       <IntlPhoneInput
                         placeholder={getPhoneMeta(values?.mobileMoney?.mpesaNumber)?.nationalNumber || ""}
-                        ref={(ref) => (phoneInput = ref)}
+                        ref={phoneInputRef}
                         customModal={renderCustomModal}
                         defaultCountry={getPhoneMeta(values?.mobileMoney.mpesaNumber)?.country || ""}
                         lang="EN"

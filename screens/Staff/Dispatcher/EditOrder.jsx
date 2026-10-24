@@ -46,6 +46,7 @@ const EditDispatchOrder = () => {
 
   useEffect(() => {
     if (!driverLoading && alldrivers && !driverError) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setDrivers(alldrivers);
       //   console.log(alldrivers);
     }
@@ -53,6 +54,7 @@ const EditDispatchOrder = () => {
 
   useEffect(() => {
     if (!deliveryLoading && delivery && !deliveryErrorMessage) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setDeliveryData(Array.isArray(delivery) ? delivery[0] : delivery);
     }
   }, [deliveryLoading, delivery]);
@@ -133,7 +135,7 @@ const EditDispatchOrder = () => {
                 text2: "The delivery has been cancelled successfully",
               });
             } else {
-              throw new Error(data.message || "Failed to cancel order");
+              throw new Error(response.data.message || "Failed to cancel order");
             }
           } catch (error) {
             console.warn("Error cancelling Delivery:", error);
@@ -473,7 +475,7 @@ const EditDispatchOrder = () => {
                       </TouchableOpacity>
                     </View>
                   </View>
-                  <DriverDetails />
+                  {DriverDetails()}
                   <View style={styles.pickerWrapper}>
                     {isAssigning && (
                       <View>

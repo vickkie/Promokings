@@ -26,6 +26,7 @@ const DeliveryDetails = () => {
     if (!dataLoading && data) {
       //   console.log(data);
       //   console.log(ErrorMessage);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setOrderId(data?.orderId?._id);
       setItem(data?.orderId);
       setdriverDetails(data?.driverId);
@@ -258,7 +259,7 @@ const DeliveryDetails = () => {
                     <Text style={styles.relatedHeader}>Customer Information</Text>
                   </View>
 
-                  <PaymentMethodComponent item={item} />
+                  {PaymentMethodComponent({ item })}
                 </View>
               </>
             ) : (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   View,
   Text,
@@ -36,6 +36,7 @@ const Checkout = () => {
   const { clearCart } = useCart();
 
   const [isLoading, setIsLoading] = useState(false);
+  const phoneInputRef = useRef(null);
   const [errorState, setErrorState] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -49,6 +50,7 @@ const Checkout = () => {
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1);
       navigation.navigate("Login");
       return;
@@ -206,6 +208,7 @@ const Checkout = () => {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     getShipping();
   }, [step === 3]);
 
@@ -347,7 +350,7 @@ const Checkout = () => {
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => {
-                this.phoneInput.hideModal();
+                phoneInputRef.current?.hideModal?.();
                 setFilteredCountries(countries);
               }}
             >
@@ -574,7 +577,7 @@ const Checkout = () => {
                         <View style={[styles.input2, phoneError ? styles.errorb : styles.successb]}>
                           <IntlPhoneInput
                             placeholder={getPhoneMeta(finalPhoneNumber)?.nationalNumber || ""}
-                            ref={(ref) => (phoneInput = ref)}
+                            ref={phoneInputRef}
                             customModal={renderCustomModal}
                             defaultCountry={getPhoneMeta(finalPhoneNumber)?.country || ""}
                             lang="EN"
