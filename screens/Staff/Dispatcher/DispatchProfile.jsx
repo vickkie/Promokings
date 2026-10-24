@@ -16,6 +16,7 @@ import ButtonMain from "../../../components/ButtonMain";
 import Toast from "react-native-toast-message";
 import ProfileCompletion from "../ProfileCompletion";
 import { ProfileCompletionContext } from "../../../components/auth/ProfileCompletionContext";
+import Routes from "../../../navigation/routes";
 
 // Dedicated instance: mutating the shared axios default would
 // silently replay order/payment POSTs app-wide (MB-SEC-008).
@@ -231,7 +232,7 @@ const DispatcherProfile = () => {
             // Reset the navigation stack
             navigation.reset({
               index: 0,
-              routes: [{ name: "Bottom Navigation" }],
+              routes: [{ name: Routes.BottomNavigation }],
             });
             userLogout();
           },

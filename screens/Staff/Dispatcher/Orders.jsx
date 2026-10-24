@@ -7,6 +7,7 @@ import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from "react-nati
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import OrdersDispatchList from "./OrdersList";
+import Routes from "../../../navigation/routes";
 
 const OrdersDispatch = () => {
   const navigation = useNavigation();
@@ -30,7 +31,7 @@ const OrdersDispatch = () => {
           <TouchableOpacity
             style={styles.buttonWrap}
             onPress={() => {
-              pending.length > 0 && navigation.navigate("Dispatcher Navigation");
+              pending.length > 0 && navigation.navigate(Routes.DispatchShipments);
             }}
           >
             <View style={styles.numbers}>

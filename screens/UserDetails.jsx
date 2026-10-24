@@ -17,6 +17,7 @@ import Toast from "react-native-toast-message";
 import { ProfileCompletionContext } from "../components/auth/ProfileCompletionContext";
 import ProfileCompletion from "./Staff/ProfileCompletion";
 import UserProfileCompletion from "./UserProfileCompletion";
+import Routes from "../navigation/routes";
 
 // Dedicated instance: mutating the shared axios default would
 // silently replay order/payment POSTs app-wide (MB-SEC-008).
@@ -148,8 +149,8 @@ const UserDetails = () => {
         successUpdate();
         setLocalProfilePicture(null);
 
-        navigation.navigate("Bottom Navigation", {
-          screen: "UserDetails",
+        navigation.navigate(Routes.BottomNavigation, {
+          screen: Routes.UserDetails,
         });
       }
     } catch (err) {
@@ -224,7 +225,7 @@ const UserDetails = () => {
             // Reset the navigation stack
             navigation.reset({
               index: 0,
-              routes: [{ name: "Bottom Navigation" }],
+              routes: [{ name: Routes.BottomNavigation }],
             });
             userLogout();
           },

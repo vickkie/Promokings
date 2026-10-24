@@ -1,18 +1,16 @@
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
-import Constants from "expo-constants";
 import { Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BACKEND_PORT, EAS_PROJECT_ID } from "@env";
-import axios from "axios";
-import axiosRetry from "axios-retry";
 
-// Dedicated instance: retrying the shared axios default would silently
-// replay order/payment POSTs elsewhere in the app (MB-SEC-008).
-const retryClient = axios.create();
-axiosRetry(retryClient, { retries: 3 });
+// Push identity now registers with the backend as OneSignal subscription
+// ids via /api/notification/updateOneSignal (OneSignalId.jsx). The expo
+// push-token POST to /api/notification/updatePushToken is retired so the
+// same device can no longer double-register. What remains is the OS
+// permission request plus the Android channel the in-app foreground
+// banner still relies on.
 
-export async function registerForPushNotificationsAsync(userId) {
+export async function ensureNotificationPermission() {
   if (!Device.isDevice) {
     console.log("Must use a physical device for push notifications");
     return;
@@ -23,7 +21,6 @@ export async function registerForPushNotificationsAsync(userId) {
   const CHECK_INTERVAL = 60000;
 
   if (lastCheck && now - parseInt(lastCheck) < CHECK_INTERVAL) {
-    console.log("Skipping permission check: Checked recently.");
     return;
   }
 
@@ -47,39 +44,14 @@ export async function registerForPushNotificationsAsync(userId) {
   }
 
   if (status !== "granted") {
-    console.log("Failed to get push token for push notification");
+    console.log("Notification permission not granted");
     return;
   }
-
-  console.log("Notification permission granted:", status);
 
   await AsyncStorage.setItem("lastNotificationPermissionCheck", now.toString());
-
-  const projectId = Constants.expoConfig?.extra?.eas?.projectId ?? EAS_PROJECT_ID;
-  if (!projectId) {
-    console.error("Missing EAS Project ID! Push notifications may fail.");
-    return;
-  }
-
-  const token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
-
-  try {
-    // Pick up the global Bearer header set by AuthContext on login.
-    const authHeader = axios.defaults.headers.common["Authorization"];
-    await retryClient.post(
-      `${BACKEND_PORT}/api/notification/updatePushToken`,
-      {
-        userId,
-        expoPushToken: token,
-      },
-      authHeader ? { headers: { Authorization: authHeader } } : undefined
-    );
-  } catch (err) {
-    console.error("Error updating push token:", err);
-  }
 }
 
-export function startPermissionCheck(userId) {
+export function startPermissionCheck() {
   const interval = setInterval(async () => {
     console.log("Checking notification permission...");
 
@@ -88,7 +60,7 @@ export function startPermissionCheck(userId) {
     if (status === "granted") {
       console.log("Permission granted, stopping checks.");
       clearInterval(interval);
-      registerForPushNotificationsAsync(userId);
+      ensureNotificationPermission();
     } else if (status === "denied") {
       console.log("Permission denied. User needs to enable manually.");
     } else {

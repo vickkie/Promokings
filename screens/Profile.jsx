@@ -19,6 +19,7 @@ import COLOR_THIEF_SOURCE from "../constants/colorThiefSource";
 import { LinearGradient } from "expo-linear-gradient";
 import axios from "axios";
 import LottieView from "lottie-react-native";
+import Routes from "../navigation/routes";
 
 const ProfileScreen = ({ profileImageUrl }) => {
   const [gradientColors, setGradientColors] = useState(["rgb(43,58,68)", "rgb(177,196,199)"]);
@@ -210,7 +211,7 @@ const Profile = () => {
         // Reset the navigation stack
         navigation.reset({
           index: 0,
-          routes: [{ name: "Bottom Navigation" }],
+          routes: [{ name: Routes.BottomNavigation }],
         });
         showToast("success", response?.data?.message, response?.data?.message2);
         setDEleting(false);

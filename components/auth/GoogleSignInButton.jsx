@@ -7,6 +7,7 @@ import * as Google from "expo-auth-session/providers/google";
 import { AuthContext } from "./AuthContext";
 import { COLORS, SIZES } from "../../constants";
 import { BACKEND_PORT, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_ID_ANDROID, GOOGLE_CLIENT_ID_IOS } from "@env";
+import Routes from "../../navigation/routes";
 
 // Required so the system browser auth session can deliver the OAuth redirect
 // back into the app on Android (also closes the popup on web).
@@ -79,7 +80,7 @@ const GoogleSignInButton = ({ navigation }) => {
 
       navigation.reset({
         index: 0,
-        routes: [{ name: "Bottom Navigation", params: { screen: "Home" } }],
+        routes: [{ name: Routes.BottomNavigation, params: { screen: Routes.Home } }],
       });
     } catch (error) {
       const status = error.response?.status;

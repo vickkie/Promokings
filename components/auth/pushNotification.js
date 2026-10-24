@@ -1,7 +1,7 @@
 import { useEffect, useContext, useRef, useState } from "react";
 import { Animated } from "react-native";
 import * as Notifications from "expo-notifications";
-import { registerForPushNotificationsAsync } from "./registerPushNotification";
+import { ensureNotificationPermission } from "./registerPushNotification";
 import { AuthContext } from "./AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import { View, Text, TouchableOpacity, Image, Vibration } from "react-native";
@@ -34,7 +34,7 @@ export default function PushNotification() {
   useEffect(() => {
     if (!userData || !userData._id) return;
 
-    registerForPushNotificationsAsync(userData._id);
+    ensureNotificationPermission();
 
     // Foreground notification handling
     if (!notificationListenerRef.current) {

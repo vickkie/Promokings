@@ -20,6 +20,7 @@ import { COLORS, SIZES } from "../constants";
 import { BACKEND_PORT } from "@env";
 import Icon from "../constants/icons";
 import { StatusBar } from "react-native";
+import Routes, { ROLE_ROUTES } from "../navigation/routes";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
@@ -35,7 +36,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const LoginPage = ({ navigation }) => {
-  const { login, getRole, hasRole } = useContext(AuthContext);
+  const { login, getRole } = useContext(AuthContext);
   const [loader, setLoader] = useState(false);
   const [userType, setUserType] = useState("customer");
   const [obsecureText, setObsecureText] = useState(true);
@@ -97,33 +98,18 @@ const LoginPage = ({ navigation }) => {
       // Store login data
       await login(response.data);
 
-      // Get role from AuthContext
+      // Single role-routing path: the decoded-token `role` claim picks the
+      // staff navigator; customers and unknown roles land on the shopper
+      // tabs (MB-DEAD-006).
       const role = getRole(response.data);
+      const destination = ROLE_ROUTES[role];
 
-      // Role-based navigation
-      const roleRoutes = {
-        admin: "Admin Navigation",
-        inventory: "Inventory Navigation",
-        sales: "Sales Navigation",
-        finance: "Finance Navigation",
-        customer: "Bottom Navigation",
-        driver: "Driver Navigation",
-        dispatcher: "Dispatch Navigation",
-        supplier: "Supplier Navigation",
-      };
-
-      //!TEMPORARY FIX
       navigation.reset({
         index: 0,
-        routes: [{ name: "Bottom Navigation", params: { screen: "Home" } }],
+        routes: destination
+          ? [{ name: destination }]
+          : [{ name: Routes.BottomNavigation, params: { screen: Routes.Home } }],
       });
-
-      // if (role in roleRoutes) {
-      //   // console.log("Navigating to:", roleRoutes[role]);
-      //   navigation.replace(roleRoutes[role]);
-      // } else {
-      //   navigation.replace("Bottom Navigation");
-      // }
     } catch (error) {
       // Pull the error message from the response
       const errorMsg = error.response?.data?.message || "Oops! Error logging in. Please try again.";
@@ -146,7 +132,7 @@ const LoginPage = ({ navigation }) => {
               } else {
                 navigation.reset({
                   index: 0,
-                  routes: [{ name: "Bottom Navigation", params: { screen: "Home" } }],
+                  routes: [{ name: Routes.BottomNavigation, params: { screen: Routes.Home } }],
                 });
               }
             }}

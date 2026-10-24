@@ -22,6 +22,7 @@ import { COLORS, SIZES } from "../../../constants";
 import { ScrollView } from "react-native-gesture-handler";
 
 import { BACKEND_PORT } from "@env";
+import Routes from "../../../navigation/routes";
 
 const EditCategory = () => {
   const navigation = useNavigation();
@@ -93,7 +94,7 @@ const EditCategory = () => {
 
       if (response.status === 200 || response.status === 204) {
         showToast("success", "Category deleted successfully!");
-        navigation.navigate("Inventory Navigation");
+        navigation.navigate(Routes.InventoryNavigation);
       }
     } catch (error) {
       showToast("error", "Category deletion failed!", `${error}`);
@@ -129,7 +130,7 @@ const EditCategory = () => {
       if (response.status === 200) {
         showToast("success", "Product updated successfully!");
         navigation.navigate("EditProductsList", { refreshList: true });
-        navigation.navigate("Inventory Navigation");
+        navigation.navigate(Routes.InventoryNavigation);
       }
     } catch (error) {
       showToast("error", "Product update failed", error.message);
