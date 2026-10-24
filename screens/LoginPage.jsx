@@ -37,7 +37,7 @@ const LoginPage = ({ navigation }) => {
   const { login, getRole, hasRole } = useContext(AuthContext);
   const [loader, setLoader] = useState(false);
   const [userType, setUserType] = useState("customer");
-  const [obsecureText, setObsecureText] = useState(false);
+  const [obsecureText, setObsecureText] = useState(true);
 
   React.useEffect(() => {
     // console.log("Navigated to LoginPage");
