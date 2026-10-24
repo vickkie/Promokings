@@ -1,6 +1,7 @@
 import React, { useEffect, useContext } from "react";
 import Constants from "expo-constants";
 import { OneSignal } from "react-native-onesignal";
+import axios from "axios";
 import { BACKEND_PORT, ONESIGNAL_APP_ID } from "@env";
 import { AuthContext } from "./AuthContext";
 
@@ -37,16 +38,12 @@ export default function OneSignalId() {
             return;
           }
 
-          console.log("OneSignal Player ID:", playerId);
-
-          // Update backend with player ID
-          fetch(`${BACKEND_PORT}/api/notification/updateOneSignal`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId: userData._id, onesignalId: playerId }),
-          })
-            .then((res) => res.json())
-            .then((data) => console.log("Updated OneSignal ID:", data))
+          // Update backend with player ID (axios carries the global Bearer header)
+          axios
+            .post(`${BACKEND_PORT}/api/notification/updateOneSignal`, {
+              userId: userData._id,
+              onesignalId: playerId,
+            })
             .catch((err) => console.error("Error updating OneSignal ID:", err));
         })
         .catch((err) => {
