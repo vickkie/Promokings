@@ -4,6 +4,7 @@
     "slug": "promokings",
     "version": "1.4.7",
     "orientation": "portrait",
+    "scheme": ["promokings", "com.uzitrake.promokings"],
     "icon": "./assets/icon-home.png",
     "userInterfaceStyle": "light",
     "splash": {
@@ -42,14 +43,13 @@
     },
     "owner": "killoy",
     "plugins": [
-     [
-      "onesignal-expo-plugin",
-      {
-      "mode": "development"
-      }
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "development"
+        }
+      ],
+      "expo-secure-store"
     ]
-   ]
-
-
   }
 }

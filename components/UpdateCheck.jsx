@@ -9,6 +9,25 @@ const CHECK_UPDATE_URL = `${BACKEND_PORT}/api/version/latest`;
 const SKIPPED_VERSION_KEY = "skipped_version";
 const CHECK_INTERVAL = 120000;
 
+// Server-supplied downloadUrl may only be https and only point at our own
+// release hosts / backend domain (MB-SEC-012).
+const ALLOWED_UPDATE_HOSTS = (() => {
+  const hosts = ["github.com", "play.google.com"];
+  const match = (BACKEND_PORT || "").match(/^https?:\/\/([^/?#]+)/);
+  if (match) {
+    hosts.push(match[1].toLowerCase());
+  }
+  return hosts;
+})();
+
+const isAllowedUpdateUrl = (url) => {
+  if (typeof url !== "string") {
+    return false;
+  }
+  const match = url.match(/^https:\/\/([^/?#]+)/i);
+  return Boolean(match) && ALLOWED_UPDATE_HOSTS.includes(match[1].toLowerCase());
+};
+
 export default function UpdateCheck() {
   const [updateUrl, setUpdateUrl] = useState("");
   const [isForced, setIsForced] = useState(false);
@@ -97,6 +116,10 @@ export default function UpdateCheck() {
   };
 
   const openStore = async (url) => {
+    if (!isAllowedUpdateUrl(url)) {
+      Alert.alert("Error", "Unable to open the update link.");
+      return;
+    }
     const canOpen = await Linking.canOpenURL(url);
     if (canOpen) {
       Linking.openURL(url);

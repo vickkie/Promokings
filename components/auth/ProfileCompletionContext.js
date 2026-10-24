@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "./AuthContext";
+import axios from "axios";
 import { BACKEND_PORT } from "@env";
 
 const ProfileCompletionContext = createContext();
@@ -97,18 +98,15 @@ const ProfileCompletionProvider = ({ children }) => {
     // console.log(userData?._id);
     if (staffRoles.includes(userData.position)) {
       endpoint = `${BACKEND_PORT}/api/staff/v1/incomplete/${userData._id}`;
-
-      console.log(endpoint);
     } else {
       endpoint = `${BACKEND_PORT}/api/user/v1/incomplete/${userData._id}`;
     }
 
     try {
-      const response = await fetch(endpoint);
-      // console.log(response.status);
+      // axios so the request inherits the global Authorization Bearer header (X-SEC-004)
+      const response = await axios.get(endpoint);
       if (response.status === 200) {
-        const data = await response.json();
-        // console.log(data);
+        const data = response.data;
         setCompletionPercentage(data.completionPercentage);
         setMissingFields(data.incompleteFields);
         setMessage(data.message);

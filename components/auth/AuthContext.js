@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
@@ -10,6 +11,10 @@ global.atob = (input) => Buffer.from(input, "base64").toString("utf-8");
 global.btoa = (input) => Buffer.from(input, "utf-8").toString("base64");
 
 const AuthContext = createContext();
+
+// Bearer JWT lives in SecureStore (Keystore/Keychain-backed); only the
+// non-secret profile blob stays in AsyncStorage (MB-SEC-001).
+const TOKEN_KEY = "auth.token";
 
 const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
@@ -25,49 +30,126 @@ const AuthProvider = ({ children }) => {
     }
   }, [userData]);
 
-  // console.log("data", AsyncStorage.getItem("id"));
+  // Drop the session when the backend rejects our bearer token (MB-SEC-010).
+  useEffect(() => {
+    const interceptorId = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error?.response?.status === 401 && userData?.TOKEN) {
+          logout();
+        }
+        return Promise.reject(error);
+      }
+    );
+    return () => axios.interceptors.response.eject(interceptorId);
+  }, [userData]);
+
+  const clearStoredSession = async (userId) => {
+    delete axios.defaults.headers.common["Authorization"];
+    try {
+      await SecureStore.deleteItemAsync(TOKEN_KEY);
+    } catch (error) {
+      console.error("Failed to delete auth token:", error);
+    }
+    await AsyncStorage.removeItem("id");
+    if (userId) {
+      await AsyncStorage.removeItem(userId);
+    }
+  };
+
+  // Returns the decoded token, or null when undecodable/expired (MB-SEC-010).
+  const decodeValidToken = (token) => {
+    try {
+      const decoded = jwtDecode(token);
+      if (!decoded?.exp || decoded.exp * 1000 <= Date.now()) {
+        return null;
+      }
+      return decoded;
+    } catch (error) {
+      return null;
+    }
+  };
 
   const checkExistingUser = async () => {
     try {
       const id = await AsyncStorage.getItem("id");
-      if (id) {
-        const userId = `user${JSON.parse(id)}`;
-        const currentUser = await AsyncStorage.getItem(userId);
-        if (currentUser) {
-          const parsedData = JSON.parse(currentUser);
-          setUserData(parsedData);
-          setUserLogin(true);
+      if (!id) {
+        return;
+      }
 
-          axios.defaults.headers.common["Authorization"] = `Bearer ${parsedData?.TOKEN}`;
-        } else {
-          console.log("User data not available");
+      const userId = `user${JSON.parse(id)}`;
+      const currentUser = await AsyncStorage.getItem(userId);
+      if (!currentUser) {
+        console.log("User data not available");
+        return;
+      }
+
+      let parsedData = JSON.parse(currentUser);
+      let token = await SecureStore.getItemAsync(TOKEN_KEY);
+
+      // One-time migration: legacy builds stored the TOKEN inside the
+      // AsyncStorage user blob. Move it to SecureStore, then strip it
+      // from the plaintext profile.
+      if (!token && parsedData?.TOKEN) {
+        token = parsedData.TOKEN;
+        try {
+          await SecureStore.setItemAsync(TOKEN_KEY, token);
+        } catch (error) {
+          console.error("Failed to migrate auth token to SecureStore:", error);
         }
       }
+
+      if (parsedData?.TOKEN) {
+        const { TOKEN: _stripped, ...profile } = parsedData;
+        parsedData = profile;
+        await AsyncStorage.setItem(userId, JSON.stringify(profile));
+      }
+
+      if (!token) {
+        // No credential to resume the session with.
+        await clearStoredSession(userId);
+        return;
+      }
+
+      if (!decodeValidToken(token)) {
+        // Stale/forged token: drop it instead of re-sending it on every call.
+        await clearStoredSession(userId);
+        setUserData(null);
+        setUserLogin(false);
+        return;
+      }
+
+      setUserData({ ...parsedData, TOKEN: token });
+      setUserLogin(true);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     } catch (error) {
       console.log("Error retrieving data:", error);
     }
   };
 
-  // AsyncStorage.clear();
   const login = async (data) => {
-    await AsyncStorage.removeItem("id");
+    const { TOKEN, ...profile } = data || {};
 
     setUserData(data);
     setUserLogin(true);
 
-    axios.defaults.headers.common["Authorization"] = `Bearer ${data?.TOKEN}`;
+    if (TOKEN) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${TOKEN}`;
+      try {
+        await SecureStore.setItemAsync(TOKEN_KEY, TOKEN);
+      } catch (error) {
+        console.error("Failed to store auth token securely:", error);
+      }
+    }
 
     await AsyncStorage.setItem("id", JSON.stringify(data?._id));
-
-    await AsyncStorage.setItem(`user${data?._id}`, JSON.stringify(data));
+    await AsyncStorage.setItem(`user${data?._id}`, JSON.stringify(profile));
   };
+
   const logout = async () => {
     setUserData(null);
     setUserLogin(false);
-
-    delete axios.defaults.headers.common["Authorization"];
-    await AsyncStorage.removeItem("id");
-    await AsyncStorage.removeItem(`user${userData?._id}`);
+    await clearStoredSession(`user${userData?._id}`);
   };
 
   const userLogout = () => {
@@ -80,11 +162,13 @@ const AuthProvider = ({ children }) => {
       return;
     }
 
-    setUserData(updatedData);
+    // Keep the in-memory token if the caller did not supply one.
+    const merged = updatedData.TOKEN ? updatedData : { ...updatedData, TOKEN: userData?.TOKEN };
+    setUserData(merged);
 
     try {
-      const stringifiedData = JSON.stringify(updatedData);
-      await AsyncStorage.setItem(`user${updatedData._id}`, stringifiedData);
+      const { TOKEN: _stripped, ...profile } = merged;
+      await AsyncStorage.setItem(`user${updatedData._id}`, JSON.stringify(profile));
     } catch (error) {
       console.error("Error saving user data to AsyncStorage:", error);
     }
@@ -108,18 +192,18 @@ const AuthProvider = ({ children }) => {
   };
 
   const getRole = (data) => {
-    if (!data) {
-      console.log("no user data");
+    if (!data?.TOKEN) {
       return "customer";
     }
 
-    const decodedToken = jwtDecode(data?.TOKEN);
-
-    // const userRole = decodedToken.role || "customer";
-    // return userRole;
-
-    const userRole = decodedToken.position || "customer";
-    return userRole;
+    try {
+      const decodedToken = jwtDecode(data.TOKEN);
+      // Backend signs the `role` claim (MB-SEC-013 / X-SEC-005).
+      return decodedToken?.role || "customer";
+    } catch (error) {
+      console.error("Invalid token, cannot decode:", error);
+      return "customer";
+    }
   };
 
   const authContextValue = {

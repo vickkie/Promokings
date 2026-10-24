@@ -18,8 +18,10 @@ import { ProfileCompletionContext } from "../components/auth/ProfileCompletionCo
 import ProfileCompletion from "./Staff/ProfileCompletion";
 import UserProfileCompletion from "./UserProfileCompletion";
 
-// Global axios-retry
-axiosRetry(axios, { retries: 3 });
+// Dedicated instance: mutating the shared axios default would
+// silently replay order/payment POSTs app-wide (MB-SEC-008).
+const retryClient = axios.create();
+axiosRetry(retryClient, { retries: 3 });
 
 const UserDetails = () => {
   const navigation = useNavigation();
@@ -82,7 +84,7 @@ const UserDetails = () => {
     });
 
     try {
-      const response = await axios.post(`${BACKEND_PORT}/upload`, formData, {
+      const response = await retryClient.post(`${BACKEND_PORT}/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -128,7 +130,7 @@ const UserDetails = () => {
 
       const endpoint = `${BACKEND_PORT}/api/user/updateDetails/${userData?._id}`;
 
-      const response = await axios.put(endpoint, userUpdateData, {
+      const response = await retryClient.put(endpoint, userUpdateData, {
         headers: {
           "Content-Type": "application/json",
         },
