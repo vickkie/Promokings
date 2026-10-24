@@ -106,9 +106,9 @@ to SecureStore automatically. The token is validated on load (decode +
 any `401`. See `components/auth/AuthContext.js`.
 
 **JWT contract.** Tokens are HS256 signed with the backend `JWT_SEC` and
-carry `{id, userType, role, staffId?}` — role checks read the `role` claim.
+carry `{id, userType, role, staffId?}` - role checks read the `role` claim.
 Token lifetime is set server-side (7 days for customers/staff); there is no
-refresh token — an expired session just requires re-login.
+refresh token - an expired session just requires re-login.
 
 **Google sign-in (customers only).** `LoginPage` probes
 `GET {BACKEND_PORT}/api/auth/capabilities` once on mount and renders
@@ -120,22 +120,22 @@ path as password login.
 
 To enable it:
 
-1. Create OAuth clients in Google Cloud Console — an **Android** client for
-   package `com.uzitrake.promokings` + your signing SHA-1 with "Custom URI
+1. Create OAuth clients in Google Cloud Console - an **Android** client for
+   package `com.uzitrake.promokings` and your signing SHA-1 with "Custom URI
    scheme" enabled (and an **iOS** client for the same bundle id if
-   shipping iOS). Client ids are public — never put the OAuth client
+   shipping iOS). Client ids are public - never put the OAuth client
    secret in the app.
 2. Set `GOOGLE_CLIENT_ID_ANDROID` / `GOOGLE_CLIENT_ID_IOS` in `.env`
    (`GOOGLE_CLIENT_ID` is the shared fallback; see `.env.example`).
 3. **Rebuild the dev client / produce a new EAS build.** `expo-secure-store`,
    `expo-auth-session`, `expo-crypto` and `expo-web-browser` are native
-   modules and the `app.json` `scheme` change alters the manifest — an older
+   modules and the `app.json` `scheme` change alters the manifest - an older
    `dev-client.apk` or an OTA update cannot run this flow.
 
-Env values are inlined into the bundle at build time — everything in `.env`
+Env values are inlined into the bundle at build time - everything in `.env`
 is public. Server secrets (e.g. the OneSignal REST API key) must never be
 added to it. Detailed audit/security docs live under `docs_local/audit/`
-(local-only, gitignored — not shipped or committed).
+(local-only, gitignored - not shipped or committed).
 
 ### Contributing
 

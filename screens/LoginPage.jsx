@@ -43,7 +43,7 @@ const LoginPage = ({ navigation }) => {
 
   // The Google button is shown only when the backend advertises it
   // (GET /api/auth/capabilities) AND a Google client id is configured
-  // in the app .env. Google sign-in is customer-only — staff/supplier
+  // in the app .env. Google sign-in is customer-only - staff/supplier
   // accounts keep using the password form.
   useEffect(() => {
     if (!isGoogleSignInConfigured()) {
@@ -58,7 +58,7 @@ const LoginPage = ({ navigation }) => {
         }
       })
       .catch(() => {
-        // Probe is best-effort — button stays hidden on failure.
+        // Probe is best-effort - button stays hidden on failure.
       });
     return () => {
       isMounted = false;

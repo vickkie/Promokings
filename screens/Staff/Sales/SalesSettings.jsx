@@ -47,7 +47,7 @@ const ProfileScreen = ({ profileImageUrl }) => {
 
   const webviewRef = useRef(null);
 
-  // Page script receives the image URL via postMessage — user-controlled data
+  // Page script receives the image URL via postMessage - user-controlled data
   // is never interpolated into executable code (MB-SEC-005). ColorThief is
   // vendored locally; no remote script is fetched.
   const webviewHtml = `

@@ -15,19 +15,19 @@ WebBrowser.maybeCompleteAuthSession();
 // Platform-specific Google OAuth client id. GOOGLE_CLIENT_ID is the shared
 // fallback; GOOGLE_CLIENT_ID_ANDROID / GOOGLE_CLIENT_ID_IOS override it per
 // platform when set. For dev-client/production builds these must be
-// native-type OAuth clients (Android client needs package name + SHA-1).
+// native-type OAuth clients (Android client needs package name and SHA-1).
 const GOOGLE_PLATFORM_CLIENT_ID = Platform.select({
   android: GOOGLE_CLIENT_ID_ANDROID || GOOGLE_CLIENT_ID,
   ios: GOOGLE_CLIENT_ID_IOS || GOOGLE_CLIENT_ID,
   default: GOOGLE_CLIENT_ID,
 });
 
-// Callers should render <GoogleSignInButton /> only when this returns true —
+// Callers should render <GoogleSignInButton /> only when this returns true -
 // the hook below requires a truthy client id.
 export const isGoogleSignInConfigured = () => Boolean(GOOGLE_PLATFORM_CLIENT_ID);
 
 // Customer-only Google sign-in. Staff/supplier accounts must use the password
-// form — the backend rejects Google tokens for those audiences anyway.
+// form - the backend rejects Google tokens for those audiences anyway.
 const GoogleSignInButton = ({ navigation }) => {
   const { login } = useContext(AuthContext);
   const [busy, setBusy] = useState(false);
@@ -56,7 +56,7 @@ const GoogleSignInButton = ({ navigation }) => {
       setBusy(false);
       Alert.alert("Login Failure", response.error?.message || "Google sign-in failed. Please try again.");
     } else {
-      // 'cancel' / 'dismiss' / 'locked' — user backed out of the browser.
+      // 'cancel' / 'dismiss' / 'locked' - user backed out of the browser.
       setBusy(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -73,8 +73,8 @@ const GoogleSignInButton = ({ navigation }) => {
         return;
       }
 
-      // Same {...userData, TOKEN} shape as password login — the shared login
-      // path persists SecureStore + AsyncStorage and sets axios defaults.
+      // Same {...userData, TOKEN} shape as password login - the shared login
+      // path persists SecureStore and AsyncStorage and sets axios defaults.
       await login(res.data);
 
       navigation.reset({
