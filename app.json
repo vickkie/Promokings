@@ -42,14 +42,13 @@
     },
     "owner": "killoy",
     "plugins": [
-     [
-      "onesignal-expo-plugin",
-      {
-      "mode": "development"
-      }
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "development"
+        }
+      ],
+      "expo-secure-store"
     ]
-   ]
-
-
   }
 }
