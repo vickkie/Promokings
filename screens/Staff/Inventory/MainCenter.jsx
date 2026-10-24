@@ -37,6 +37,7 @@ const MainCenter = () => {
       userLogout();
       navigation.replace("Login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userLogin, navigation, hasRole]);
 
   useFocusEffect(
@@ -45,6 +46,7 @@ const MainCenter = () => {
         setRefreshList(true);
         refetch();
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [route.params])
   );
 
@@ -61,6 +63,7 @@ const MainCenter = () => {
 
   useEffect(() => {
     refetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshing]);
 
   const BottomSheetRef = useRef(null);

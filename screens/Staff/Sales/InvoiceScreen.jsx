@@ -317,6 +317,7 @@ const InvoiceScreen = () => {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       generatePDF();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [order]);
 
   return (

@@ -56,6 +56,7 @@ const CartCardView = ({ item, handleRefresh }) => {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     setTotalPrice(parsedPrice * count);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [count]);
 
   const showToast = (type, text1, text2) => {

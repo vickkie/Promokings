@@ -47,6 +47,7 @@ const PreviewProduct = ({ navigation }) => {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     processDescription();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [itemDescription]);
 
   const showToast = (type, text1, text2) => {
@@ -68,11 +69,13 @@ const PreviewProduct = ({ navigation }) => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              userLogin
-                ? navigation.navigate("EditProduct", {
+              if (userLogin) {
+                navigation.navigate("EditProduct", {
                     item: item,
-                  })
-                : showToast("error", "Oops!", "Please log in to continue ");
+                  });
+              } else {
+                showToast("error", "Oops!", "Please log in to continue ");
+              }
             }}
           >
             <Ionicons name="heart" size={32} color={COLORS.primary} />
@@ -98,11 +101,13 @@ const PreviewProduct = ({ navigation }) => {
               <View>
                 <TouchableOpacity
                   onPress={() => {
-                    userLogin
-                      ? navigation.navigate("EditProduct", {
+                    if (userLogin) {
+                      navigation.navigate("EditProduct", {
                           item: item,
-                        })
-                      : showToast("error", "Oops!", "Please log in to continue ");
+                        });
+                    } else {
+                      showToast("error", "Oops!", "Please log in to continue ");
+                    }
                   }}
                   style={styles.helpBtn}
                 >

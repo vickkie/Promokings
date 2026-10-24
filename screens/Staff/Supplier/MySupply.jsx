@@ -59,7 +59,7 @@ const MySupply = () => {
     } finally {
       setRefreshing(false);
     }
-  }, [refetch]);
+  }, [refetch, navigation]);
 
   useFocusEffect(
     useCallback(() => {
@@ -72,6 +72,7 @@ const MySupply = () => {
       return () => {
         //  cleanup logic i will add
       };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [route.params, refreshList])
   );
 

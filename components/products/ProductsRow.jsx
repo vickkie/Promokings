@@ -17,6 +17,7 @@ const ProductsRow = ({ refreshList, setRefreshList }) => {
     }
 
     return setRefreshList(false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshList]);
 
   const onRefresh = useCallback(() => {

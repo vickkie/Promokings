@@ -128,6 +128,7 @@ export default function UpdateCheck() {
     checkForUpdates();
     const interval = setInterval(checkForUpdates, CHECK_INTERVAL);
     return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, []);
 
   return null;

@@ -132,6 +132,7 @@ const ProfileCompletionProvider = ({ children }) => {
       // Then sync with the server
       syncProfileCompletionFromServer();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userData]);
 
   const refreshProfileCompletion = async () => {

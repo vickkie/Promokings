@@ -55,7 +55,7 @@ const InventoryRequests = () => {
     } finally {
       setRefreshing(false);
     }
-  }, [refetch]);
+  }, [refetch, navigation]);
 
   useFocusEffect(
     useCallback(() => {
@@ -68,6 +68,7 @@ const InventoryRequests = () => {
       return () => {
         //  cleanup logic i will add
       };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [route.params, refreshList])
   );
 

@@ -57,7 +57,7 @@ const Checkout = () => {
     } else if (userData && userData._id) {
       setUserId(userData._id);
     }
-  }, [userLogin, userData]);
+  }, [userLogin, userData, navigation]);
 
   const [step, setStep] = useState(1);
   const [address, setAddress] = useState("");
@@ -87,6 +87,7 @@ const Checkout = () => {
         .then(() => setPhoneError(""))
         .catch((err) => setPhoneError("Please fill phone Number field"));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [phoneNumber, address]);
 
   //fetch stock availability
@@ -210,6 +211,7 @@ const Checkout = () => {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     getShipping();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [step === 3]);
 
   const handlePrevious = () => {

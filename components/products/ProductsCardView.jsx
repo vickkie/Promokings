@@ -53,7 +53,7 @@ const ProductsCardView = ({ item, refetch }) => {
     loadImage();
   }, [item.imageUrl]);
 
-  const { _id: id,  price } = item || {};
+  const { _id: id } = item || {};
 
   // console.log(imageUri);
 
@@ -61,9 +61,8 @@ const ProductsCardView = ({ item, refetch }) => {
     const found = wishlist.some((wishItem) => wishItem.id === item._id && wishItem.size === selectedSize);
     // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     setIsWished(found);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [wishlist, item]);
-
-  typeof price === "number" ? price : price != null ? parseFloat(String(price).replace(/[^0-9.-]+/g, "")) : 0;
 
   const toggleWishlist = () => {
     const product = { id: id, title: item.title, imageUrl: item.imageUrl, size: selectedSize, price: item.price };

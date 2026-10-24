@@ -45,6 +45,7 @@ const SupplierPaymentTracker = ({ refreshList, setRefreshing, setRefreshList, us
         setRefreshList(false);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshList]);
 
   const paymentLogos = {

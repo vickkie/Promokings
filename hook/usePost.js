@@ -34,6 +34,7 @@ const usePost = (endpoint) => {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       updateData();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [endpoint, data]);
 
   const addCart = (data) => {

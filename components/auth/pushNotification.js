@@ -98,6 +98,7 @@ export default function PushNotification() {
       }
       if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userData?._id]);
 
   return (

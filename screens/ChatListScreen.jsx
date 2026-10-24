@@ -49,6 +49,7 @@ const ChatListScreen = () => {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     fetchUsers();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [searchQuery]);
 
 

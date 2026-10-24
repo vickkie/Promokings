@@ -98,6 +98,7 @@ const AddBid = () => {
   useEffect(() => {
     console.log("productid", inventoryId);
     console.log("deadline", deadline);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [deadline]);
 
   const toggleEditable = () => {

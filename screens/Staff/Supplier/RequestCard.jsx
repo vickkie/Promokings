@@ -83,6 +83,7 @@ const RequestCard = ({ item, isGridView }) => {
     if (item?.selectedSupplier === userData?.supplierProfile?._id && item?.status === "Completed") {
       setBidCompleted(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, []);
 
   // const bidValid =

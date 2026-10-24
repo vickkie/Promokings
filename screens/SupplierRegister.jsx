@@ -153,14 +153,14 @@ const SupplierRegister = ({ navigation }) => {
       console.log("Auto-advanced to step 4 after success");
     }
   }, [Rsuccess, loader, step]);
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     if (step > 1 && step !== 4) {
       setStep(step - 1);
     } else if (step === 4) {
       setStep(4);
       navigation.navigate("Login");
     }
-  };
+  }, [step, navigation]);
 
   const handleSignUp = async (values) => {
     setLoader(true);
@@ -255,6 +255,7 @@ const SupplierRegister = ({ navigation }) => {
         .then(() => setPhoneError(""))
         .catch((err) => setPhoneError(err.errors[0]));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [finalPhoneNumber]);
 
   useEffect(() => {
@@ -269,6 +270,7 @@ const SupplierRegister = ({ navigation }) => {
           console.log(err);
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [finalMpesaNumber]);
 
   const initialValues = {

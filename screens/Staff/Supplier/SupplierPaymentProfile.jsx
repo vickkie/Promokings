@@ -23,7 +23,7 @@ import { parsePhoneNumberFromString } from "libphonenumber-js/min";
 const SupplierPaymentProfile = () => {
   const [, setLoader] = useState(false);
   const phoneInputRef = useRef(null);
-  const [Rsuccess, setRsuccess] = useState(false);
+  const [, setRsuccess] = useState(false);
   const [, ] = useState(true);
   const [, ] = useState(1);
 
@@ -228,6 +228,7 @@ const SupplierPaymentProfile = () => {
           setPhoneError(err.errors[0]);
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [finalPhoneNumber]);
 
   const PaymentDetailsScreen = () => {
@@ -283,7 +284,7 @@ const SupplierPaymentProfile = () => {
       } else {
         setLoading(false);
       }
-    }, [userData?.supplierProfile?._id, userData?.TOKEN, Rsuccess]);
+    }, []);
 
     // Merge fetched data with defaults (fetched values take precedence)
     const mergedInitialValues = {

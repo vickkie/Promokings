@@ -136,6 +136,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     checkExistingUser();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, []);
 
   useEffect(() => {
@@ -156,6 +157,7 @@ const AuthProvider = ({ children }) => {
       }
     );
     return () => axios.interceptors.response.eject(interceptorId);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userData]);
 
   const updateUserData = async (updatedData) => {

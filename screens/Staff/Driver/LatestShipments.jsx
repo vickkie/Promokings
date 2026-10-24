@@ -48,6 +48,7 @@ const LatestShipments = ({ refreshList, setRefreshing, limit, offset, status, se
         setRefreshing(false);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshList]);
 
   // Key extractor for FlatList

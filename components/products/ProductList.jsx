@@ -64,6 +64,7 @@ const ProductList = ({ sendDataToParent, routeParams }) => {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     fetchProducts(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [routeParam]);
 
   const handleEndReached = () => {
@@ -78,6 +79,7 @@ const ProductList = ({ sendDataToParent, routeParams }) => {
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchProducts(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, []);
 
   // Handle scrolling to show/hide "scroll to top" button

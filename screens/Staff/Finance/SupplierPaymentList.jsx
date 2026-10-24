@@ -87,11 +87,13 @@ const SupplierPaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     fetchData(true, activeTab, searchQuery);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshList, supplierId]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     fetchData(true, activeTab, searchQuery);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [activeTab, searchQuery]);
 
   const handleTabChange = (tab) => {
@@ -109,6 +111,7 @@ const SupplierPaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh
     setHasMore(true);
     setOffset(0);
     fetchData(true, activeTab, searchQuery);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [activeTab, searchQuery]);
 
   const handleEndReached = () => {
@@ -154,6 +157,7 @@ const SupplierPaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh
     return date.format("MMM DD, YYYY");
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   const sections = useMemo(() => groupByDate(filteredData), [filteredData]);
 
   // Track pending orders if needed

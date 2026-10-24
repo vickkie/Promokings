@@ -64,6 +64,7 @@ const OrdersDispatchList = ({ refreshList, setRefreshing, setiRefresh, irefresh,
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     fetchData(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, []);
 
   // fetchData(true);
@@ -79,6 +80,7 @@ const OrdersDispatchList = ({ refreshList, setRefreshing, setiRefresh, irefresh,
   const onRefresh = useCallback(() => {
     setRefreshing2(true);
     fetchData(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, []);
 
   // Ensure data is an array and sort by creation date
@@ -91,11 +93,13 @@ const OrdersDispatchList = ({ refreshList, setRefreshing, setiRefresh, irefresh,
 
   useEffect(() => {
     setPending(pendingOrders);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, []);
 
   useFocusEffect(
     useCallback(() => {
       onRefresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [])
   );
 

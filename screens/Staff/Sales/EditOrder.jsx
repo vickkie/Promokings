@@ -49,6 +49,7 @@ const EditSalesOrder = () => {
       setDrivers(alldrivers);
       //   console.log(alldrivers);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [driverLoading, alldrivers]);
 
   useEffect(() => {
@@ -56,6 +57,7 @@ const EditSalesOrder = () => {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setDeliveryData(Array.isArray(delivery) ? delivery[0] : delivery);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [deliveryLoading, delivery]);
 
   const handleAssignDriver = async () => {

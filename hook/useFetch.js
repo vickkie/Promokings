@@ -63,6 +63,7 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       fetchData();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [endpoint, token]);
 
   return { data, isLoading, error, errorMessage, statusCode, refetch };

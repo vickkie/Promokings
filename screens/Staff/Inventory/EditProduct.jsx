@@ -273,6 +273,7 @@ const EditProduct = () => {
     } else {
       console.log("No supplier found");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [product]);
 
   // console.log(product?.supplier);

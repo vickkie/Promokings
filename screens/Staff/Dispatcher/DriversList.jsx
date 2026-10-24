@@ -60,7 +60,7 @@ const DriverCard = ({ driver, isPressed, onPress, onPressOut, navigation }) => {
     if (driver?.driverStatus === "available" || driver?.driverStatus === "transit") {
       animateDot();
     }
-  }, [driver?.driverStatus]);
+  }, [driver?.driverStatus, opacity]);
   return (
     <TouchableOpacity
       style={[styles.driverCard, isPressed ? styles.pressed : styles.nopress]}
@@ -133,10 +133,6 @@ const DriverList = () => {
     });
   };
 
-  const handlePressOut = () => {
-    setPressedId(null);
-  };
-
   useEffect(() => {
     if (!userLogin) {
       navigation.replace("Login");
@@ -147,6 +143,7 @@ const DriverList = () => {
       userLogout();
       navigation.replace("Login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userLogin, navigation, hasRole]);
 
   useFocusEffect(
@@ -155,6 +152,7 @@ const DriverList = () => {
         setRefreshList(true);
         refetch();
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [route.params])
   );
 
@@ -169,6 +167,7 @@ const DriverList = () => {
 
   useEffect(() => {
     refetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshing]);
 
   const BottomSheetRef = useRef(null);
@@ -248,7 +247,7 @@ const DriverList = () => {
                 isPressed={pressedId === item._id}
                 onPress={() => handlePress(item._id, item)}
                 onPressOut={() => {
-                  handlePressOut;
+                  
                 }}
                 navigation={navigation}
               />

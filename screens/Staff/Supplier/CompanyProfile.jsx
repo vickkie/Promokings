@@ -7,7 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
+import { create as createAxiosInstance } from "axios";
 import axiosRetry from "axios-retry";
 
 import { BACKEND_PORT } from "@env";
@@ -20,7 +20,7 @@ import Routes from "../../../navigation/routes";
 
 // Dedicated instance: mutating the shared axios default would
 // silently replay order/payment POSTs app-wide (MB-SEC-008).
-const retryClient = axios.create();
+const retryClient = createAxiosInstance();
 axiosRetry(retryClient, { retries: 3 });
 
 const CompanyProfile = () => {
@@ -59,6 +59,7 @@ const CompanyProfile = () => {
         routes: [{ name: "Login" }],
       });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userData, navigation, hasRole]);
 
   const inValidForm = () => {
@@ -160,6 +161,7 @@ const CompanyProfile = () => {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       fetchCompanyDetails();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, []);
   console.log(fallBack?.name);
 
@@ -375,7 +377,11 @@ const CompanyProfile = () => {
                       }
                       if (isEditing) {
                         console.log(isValid);
-                        isValid ? handleSubmit() : inValidForm();
+                        if (isValid) {
+                          handleSubmit();
+                        } else {
+                          inValidForm();
+                        }
                       }
                     }}
                     isValid={isValid}

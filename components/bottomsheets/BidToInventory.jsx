@@ -36,6 +36,7 @@ const BidToInventory = forwardRef(function BidToInventory(props, ref) {
       filteredBids.find((bid) => bid.supplier?._id === bid?.selectedSupplier);
       // setHaveBid(foundBid ? true : false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [loading, bidData]);
 
   useEffect(() => {
@@ -123,6 +124,7 @@ const BidToInventory = forwardRef(function BidToInventory(props, ref) {
   // Initial fetch
   useEffect(() => {
     fetchData(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, []);
 
   // Handler for accepting a bid
@@ -305,9 +307,11 @@ const BidToInventory = forwardRef(function BidToInventory(props, ref) {
             style={styles.actionButton}
             onPress={() => {
               bottomSheetRef.current?.dismiss();
-              userLogin
-                ? navigation.navigate("EditProduct", { item, productold: product })
-                : showToast("error", "Oops!", "Please log in to continue ");
+              if (userLogin) {
+                navigation.navigate("EditProduct", { item, productold: product });
+              } else {
+                showToast("error", "Oops!", "Please log in to continue ");
+              }
             }}
           >
             <Text style={styles.actionButtonText}>Edit Product</Text>

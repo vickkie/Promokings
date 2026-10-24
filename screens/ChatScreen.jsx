@@ -77,6 +77,7 @@ const ChatScreen = () => {
         console.error("Error updating read status:", error)
       );
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [messages, conversationRef, userData._id]);
 
   // Allow users to pick an image
@@ -200,7 +201,7 @@ const ChatScreen = () => {
     } else {
       spinAnim.stopAnimation();
     }
-  }, [isSending]);
+  }, [isSending, spinAnim]);
 
   const spin = spinAnim.interpolate({
     inputRange: [0, 1],

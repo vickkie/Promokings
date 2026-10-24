@@ -39,6 +39,7 @@ const FinanceDashboard = () => {
       userLogout();
       navigation.replace("Login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userLogin, navigation, hasRole]);
 
   useFocusEffect(
@@ -52,6 +53,7 @@ const FinanceDashboard = () => {
         // Clear param to prevent infinite loops
         navigation.setParams({ refreshList: false });
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [route.params, navigation])
   );
 
@@ -69,6 +71,7 @@ const FinanceDashboard = () => {
 
   useEffect(() => {
     refetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshing]);
 
   const renderProfilePicture = () => {

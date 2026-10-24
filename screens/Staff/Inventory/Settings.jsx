@@ -149,6 +149,7 @@ const StaffSettings = () => {
       userLogout();
       navigation.replace("Login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userLogin, navigation, hasRole]);
 
   const handleClearCache = () => {

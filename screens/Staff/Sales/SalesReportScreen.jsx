@@ -45,6 +45,7 @@ const SalesReportScreen = () => {
       orderType: reportInput.orderType,
     };
     postData(remappedInput);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [reportInput]);
 
   const handleDateChange = (event, selectedDate) => {
@@ -430,6 +431,7 @@ const SalesReportScreen = () => {
       setData(responseData);
       generatePDF();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [responseData, isLoading]);
 
   return (

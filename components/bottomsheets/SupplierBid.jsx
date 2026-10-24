@@ -183,6 +183,7 @@ const SupplierBid = forwardRef(function SupplierBid(props, ref) {
   // Initial fetch
   useEffect(() => {
     fetchData(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, []);
 
   const deadlineDate = new Date(item?.deadline);
@@ -198,6 +199,7 @@ const SupplierBid = forwardRef(function SupplierBid(props, ref) {
       ? "Due today"
       : "Deadline passed";
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   useEffect(() => {
     if (daysRemaining < 0) {
       setBidclosed(true);
@@ -208,14 +210,15 @@ const SupplierBid = forwardRef(function SupplierBid(props, ref) {
     !loading && bidData && bidData[0]?.bids ? bidData[0].bids.filter((bid) => bid.supplier !== null) : [];
 
   useEffect(() => {
-    !loading && bidData && userData?.supplierProfile?._id
-      ? filteredBids.find((bid) => {
+    if (!loading && bidData && userData?.supplierProfile?._id) {
+      filteredBids.find((bid) => {
           if (bid.supplier._id === userData.supplierProfile._id) {
             setHaveBid(true);
             setOldBid(bid?.bidPrice);
           }
-        })
-      : null;
+        });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [loading, bidData]);
 
   // console.log(haveBid);

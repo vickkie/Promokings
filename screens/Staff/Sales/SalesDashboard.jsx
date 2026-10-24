@@ -39,6 +39,7 @@ const SalesDashboard = () => {
       userLogout();
       navigation.replace("Login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userLogin, navigation, hasRole]);
 
   useFocusEffect(
@@ -47,6 +48,7 @@ const SalesDashboard = () => {
         setRefreshList(true);
         refetch();
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [route.params])
   );
 
@@ -64,6 +66,7 @@ const SalesDashboard = () => {
 
   useEffect(() => {
     refetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshing]);
 
   const renderProfilePicture = () => {

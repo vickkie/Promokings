@@ -45,6 +45,7 @@ const DriverDashboard = () => {
         routes: [{ name: "Login" }],
       });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userLogin, navigation, hasRole]);
 
   useFocusEffect(
@@ -53,6 +54,7 @@ const DriverDashboard = () => {
         setRefreshList(true);
         refetch();
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [route.params])
   );
 
@@ -68,6 +70,7 @@ const DriverDashboard = () => {
 
   useEffect(() => {
     refetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshing]);
 
   const renderProfilePicture = () => {

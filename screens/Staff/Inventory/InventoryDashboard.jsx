@@ -38,6 +38,7 @@ const InventoryDashboard = () => {
       userLogout();
       navigation.replace("Login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userLogin, navigation, hasRole]);
 
   useFocusEffect(
@@ -46,6 +47,7 @@ const InventoryDashboard = () => {
         setRefreshList(true);
         refetch();
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [route.params])
   );
 
@@ -62,6 +64,7 @@ const InventoryDashboard = () => {
 
   useEffect(() => {
     refetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshing]);
 
   const renderProfilePicture = () => {

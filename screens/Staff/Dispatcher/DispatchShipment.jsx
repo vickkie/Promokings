@@ -35,6 +35,7 @@ const DispatchShipments = () => {
       userLogout();
       navigation.replace("Login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userLogin, navigation, hasRole, userLogout]);
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -61,7 +62,7 @@ const DispatchShipments = () => {
     } else if (userData && userData._id) {
       setUserId(userData._id);
     }
-  }, [userLogin, userData]);
+  }, [userLogin, userData, navigation]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -313,7 +314,7 @@ const DispatchShipments = () => {
         shippingId={item.shippingId}
       />
     ),
-    [data]
+    []
   );
 
   return (
@@ -417,7 +418,7 @@ const DispatchShipments = () => {
                 />
               )}
 
-              {!isLoading && filteredOrders.length == 0 && (
+              {!isLoading && filteredOrders.length === 0 && (
                 <View style={styles.containLottie}>
                   <View style={styles.animationWrapper}>
                     <LottieView

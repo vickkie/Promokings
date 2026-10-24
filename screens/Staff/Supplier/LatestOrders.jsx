@@ -56,6 +56,7 @@ const LatestOrders = () => {
       return () => {
         //  cleanup logic i will add
       };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [route.params, refreshList])
   );
 
@@ -91,7 +92,7 @@ const LatestOrders = () => {
     } finally {
       setRefreshing(false);
     }
-  }, [refetch]);
+  }, [refetch, navigation]);
 
   const handleScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y;

@@ -92,6 +92,7 @@ const Help = () => {
         unsubscribeReply();
       };
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userData]);
 
 
@@ -106,6 +107,7 @@ const Help = () => {
     setPrefilledMessage(`Inquiring about item:\n${item_name}\n(Ref: ${item_id})`);
     setIsPreviewVisible(true);
     setImageFromRoute(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [route.params?.item_id]);
 
   const [spinAnim] = useState(() => new Animated.Value(0));
@@ -123,7 +125,7 @@ const Help = () => {
     } else {
       spinAnim.stopAnimation();
     }
-  }, [isSending]);
+  }, [isSending, spinAnim]);
 
   const spin = spinAnim.interpolate({
     inputRange: [0, 1],

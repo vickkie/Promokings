@@ -87,6 +87,7 @@ const HelpAgentChatScreen = () => {
       unsubSent();
       unsubReceived();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [customerId]);
 
   const [spinAnim] = useState(() => new Animated.Value(0));
@@ -104,7 +105,7 @@ const HelpAgentChatScreen = () => {
     } else {
       spinAnim.stopAnimation();
     }
-  }, [isSending]);
+  }, [isSending, spinAnim]);
 
   const spin = spinAnim.interpolate({
     inputRange: [0, 1],

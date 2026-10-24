@@ -76,6 +76,7 @@ const ProductDetails = ({ navigation }) => {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     processDescription();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [itemDescription]);
 
   const handleAddToCart = () => {
@@ -179,13 +180,15 @@ const ProductDetails = ({ navigation }) => {
               <View>
                 <TouchableOpacity
                   onPress={() => {
-                    userLogin
-                      ? navigation.navigate("Help", {
+                    if (userLogin) {
+                      navigation.navigate("Help", {
                           item_id: item._id,
                           item_name: item.title,
                           item_image: item.imageUrl,
-                        })
-                      : showToast("error", "Oops!", "Please log in to continue your inquiry.");
+                        });
+                    } else {
+                      showToast("error", "Oops!", "Please log in to continue your inquiry.");
+                    }
                   }}
                   style={styles.helpBtn}
                 >
@@ -274,13 +277,15 @@ const ProductDetails = ({ navigation }) => {
               <View style={styles.cartRow}>
                 <TouchableOpacity
                   onPress={() => {
-                    userLogin
-                      ? navigation.navigate("Help", {
+                    if (userLogin) {
+                      navigation.navigate("Help", {
                           item_id: item._id,
                           item_name: item.title,
                           item_image: item.imageUrl,
-                        })
-                      : showToast("error", "Oops!", "Please log in to continue your inquiry.");
+                        });
+                    } else {
+                      showToast("error", "Oops!", "Please log in to continue your inquiry.");
+                    }
                   }}
                   style={styles.cartBtn2}
                 >
@@ -289,13 +294,15 @@ const ProductDetails = ({ navigation }) => {
 
                 <TouchableOpacity
                   onPress={() => {
-                    userLogin
-                      ? navigation.navigate("Help", {
+                    if (userLogin) {
+                      navigation.navigate("Help", {
                           item_id: item._id,
                           item_name: item.title,
                           item_image: item.imageUrl,
-                        })
-                      : showToast("error", "Oops!", "Please log in to continue your inquiry.");
+                        });
+                    } else {
+                      showToast("error", "Oops!", "Please log in to continue your inquiry.");
+                    }
                   }}
                   style={styles.addBtn2}
                 >

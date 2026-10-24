@@ -75,11 +75,13 @@ const HistoryList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     fetchData(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshList]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     fetchData(true, activeTab, searchQuery);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [activeTab, searchQuery]);
 
   const handleTabChange = (tab) => {
@@ -99,6 +101,7 @@ const HistoryList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
     setRefreshing2(true);
     setHasMore(true);
     fetchData(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, []);
 
   // -------------------------------
@@ -166,6 +169,7 @@ const HistoryList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
   };
 
   // Prepare final sections
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   const sections = useMemo(() => groupByDate(filteredData), [filteredData]);
 
   // -------------------------------

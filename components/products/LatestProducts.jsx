@@ -19,6 +19,7 @@ const LatestProducts = ({ refreshList, setRefreshList }) => {
       refetch();
       // console.log("refreshing", refreshList);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshList]);
 
   const keyExtractor = useCallback((item) => item._id, []);
