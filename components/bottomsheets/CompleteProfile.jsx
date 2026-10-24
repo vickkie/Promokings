@@ -9,7 +9,6 @@ import { ProfileCompletionContext } from "../auth/ProfileCompletionContext";
 import { AuthContext } from "../auth/AuthContext";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import axiosRetry from "axios-retry";
 import axios from "axios";
 
 import { BACKEND_PORT } from "@env";
