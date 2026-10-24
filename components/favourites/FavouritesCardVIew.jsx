@@ -8,7 +8,7 @@ import Toast from "react-native-toast-message";
 import { useCart } from "../../contexts/CartContext";
 import { useWish } from "../../contexts/WishContext";
 
-const FavouritesCardView = memo(({ item, handleRefetch }) => {
+const FavouritesCardView = memo(function FavouritesCardView({ item, handleRefetch }) {
   const navigation = useNavigation();
   const { userData } = useContext(AuthContext);
   const { cart, cartCount, addToCart, removeFromCart, clearCart } = useCart();
@@ -19,12 +19,12 @@ const FavouritesCardView = memo(({ item, handleRefetch }) => {
   const { quantity, size, id, title, price, imageUrl } = item || {};
   // console.log(item);
 
-  if (!id) return null; // Return null if favouriteItem is null or undefined
-
   const parsedPrice =
     typeof price === "number" ? price : price != null ? parseFloat(String(price).replace(/[^0-9.-]+/g, "")) : 0;
 
   const [feedback, setFeedback] = useState("");
+
+  if (!id) return null; // Return null if favouriteItem is null or undefined
 
   const deleteItem = (item) => {
     Alert.alert(

@@ -8,7 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../auth/AuthContext";
 import Toast from "react-native-toast-message";
 
-const EditSupply = forwardRef((props, ref) => {
+const EditSupply = forwardRef(function EditSupply(props, ref) {
   const snapPoints = useMemo(() => [190, 245], []);
   const { item } = props;
   const navigation = useNavigation();
@@ -25,7 +25,8 @@ const EditSupply = forwardRef((props, ref) => {
   }, [userLogin, userData]);
 
   // Create a ref for the BottomSheetModal if not provided
-  const bottomSheetRef = ref || useRef(null);
+  const fallbackRef = useRef(null);
+  const bottomSheetRef = ref || fallbackRef;
 
   const renderBackdrop = useCallback(
     (props) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} opacity={0.3} />,

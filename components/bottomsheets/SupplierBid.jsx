@@ -22,7 +22,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { BACKEND_PORT } from "@env";
 
-const SupplierBid = forwardRef((props, ref) => {
+const SupplierBid = forwardRef(function SupplierBid(props, ref) {
   // Assuming product details are passed in props.item
   const { item, lostBid, bidAccepted } = props; // product details object
 
@@ -59,7 +59,8 @@ const SupplierBid = forwardRef((props, ref) => {
   }, [userLogin, userData]);
 
   // Create a ref for the BottomSheetModal if not provided
-  const bottomSheetRef = ref || useRef(null);
+  const fallbackRef = useRef(null);
+  const bottomSheetRef = ref || fallbackRef;
 
   const renderBackdrop = useCallback(
     (props) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} opacity={0.3} />,

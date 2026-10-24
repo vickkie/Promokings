@@ -9,7 +9,7 @@ import { AuthContext } from "../auth/AuthContext";
 import Toast from "react-native-toast-message";
 import { ScrollView } from "react-native-gesture-handler";
 
-const InventoryAdd = forwardRef((props, ref) => {
+const InventoryAdd = forwardRef(function InventoryAdd(props, ref) {
   // Assuming product details are passed in props.item
   const { item } = props; // product details object
   const snapPoints = useMemo(() => [460, 570], []);
@@ -27,7 +27,8 @@ const InventoryAdd = forwardRef((props, ref) => {
   }, [userLogin, userData]);
 
   // Create a ref for the BottomSheetModal if not provided
-  const bottomSheetRef = ref || useRef(null);
+  const fallbackRef = useRef(null);
+  const bottomSheetRef = ref || fallbackRef;
 
   const renderBackdrop = useCallback(
     (props) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} opacity={0.3} />,
