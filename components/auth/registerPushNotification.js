@@ -7,7 +7,10 @@ import { BACKEND_PORT, EAS_PROJECT_ID } from "@env";
 import axios from "axios";
 import axiosRetry from "axios-retry";
 
-axiosRetry(axios, { retries: 3 });
+// Dedicated instance: retrying the shared axios default would silently
+// replay order/payment POSTs elsewhere in the app (MB-SEC-008).
+const retryClient = axios.create();
+axiosRetry(retryClient, { retries: 3 });
 
 export async function registerForPushNotificationsAsync(userId) {
   if (!Device.isDevice) {
@@ -61,10 +64,16 @@ export async function registerForPushNotificationsAsync(userId) {
   const token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
 
   try {
-    await axios.post(`${BACKEND_PORT}/api/notification/updatePushToken`, {
-      userId,
-      expoPushToken: token,
-    });
+    // Pick up the global Bearer header set by AuthContext on login.
+    const authHeader = axios.defaults.headers.common["Authorization"];
+    await retryClient.post(
+      `${BACKEND_PORT}/api/notification/updatePushToken`,
+      {
+        userId,
+        expoPushToken: token,
+      },
+      authHeader ? { headers: { Authorization: authHeader } } : undefined
+    );
   } catch (err) {
     console.error("Error updating push token:", err);
   }
