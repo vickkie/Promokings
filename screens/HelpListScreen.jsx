@@ -259,7 +259,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themey,
   },
   cartWrapper: {
-    zIndex: 11,
     backgroundColor: COLORS.themey,
     justifyContent: "center",
     padding: 10,
@@ -268,13 +267,6 @@ const styles = StyleSheet.create({
     right: 40,
     top: 4,
     zIndex: 77,
-    alignItems: "center",
-  },
-  buttonWrap: {
-    backgroundColor: COLORS.hyperlight,
-    padding: 15,
-    borderRadius: 100,
-    justifyContent: "center",
     alignItems: "center",
   },
   buttonWrap2: {

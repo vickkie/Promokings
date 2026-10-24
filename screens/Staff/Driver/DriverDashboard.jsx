@@ -273,7 +273,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themey,
   },
   cartWrapper: {
-    zIndex: 11,
     backgroundColor: COLORS.themey,
     justifyContent: "center",
     padding: 10,
@@ -450,12 +449,6 @@ const styles = StyleSheet.create({
     fontSize: SIZES.large,
     color: COLORS.themew,
     marginBottom: 10,
-  },
-  statusContainer: {
-    fontFamily: "semibold",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
   },
   statusCircle: {
     width: 19,

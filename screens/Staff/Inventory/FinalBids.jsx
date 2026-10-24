@@ -396,10 +396,6 @@ const styles = StyleSheet.create({
     minHeight: SIZES.height - 22,
   },
   viewToggleContainer: {
-    marginBottom: 10,
-    alignItems: "center",
-  },
-  viewToggleContainer: {
     flexDirection: "row",
     padding: 10,
     display: "flex",
@@ -422,7 +418,6 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   toggleViewMode: {
-    padding: 10,
     borderRadius: 100,
     padding: 6,
     height: 50,
@@ -444,7 +439,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   searchBtn: {
-    padding: 10,
     borderRadius: 100,
     padding: 6,
     height: 50,

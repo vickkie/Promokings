@@ -481,7 +481,6 @@ const styles = StyleSheet.create({
   },
   imageurlContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
     gap: 10,
     alignItems: "center",
     justifyContent: "center",

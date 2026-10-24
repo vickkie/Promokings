@@ -240,7 +240,6 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   toggleViewMode: {
-    padding: 10,
     borderRadius: 100,
     padding: 6,
     height: 50,
@@ -262,7 +261,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   searchBtn: {
-    padding: 10,
     borderRadius: 100,
     padding: 6,
     height: 50,

@@ -431,8 +431,6 @@ const styles = StyleSheet.create({
   },
   latestProductCards: {
     paddingHorizontal: 10,
-    backgroundColor: COLORS.themeg,
-    borderRadius: SIZES.medium,
     flexDirection: "row",
     alignItems: "center",
     gap: 6,

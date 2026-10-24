@@ -1022,17 +1022,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: COLORS.themeb,
   },
-  animationWrapper: {
-    width: 200,
-    height: 200,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  animation: {
-    width: "100%",
-    height: "100%",
-  },
   detailsWrapper: {
     alignItems: "center",
   },

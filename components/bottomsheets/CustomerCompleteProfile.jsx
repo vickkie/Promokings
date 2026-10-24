@@ -219,12 +219,6 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.medium,
     alignItems: "center",
   },
-  errorMessage: {
-    color: COLORS.red,
-    fontSize: 12,
-    marginBottom: 10,
-    marginStart: SIZES.large,
-  },
   completeButtonText: {
     color: COLORS.white,
     fontSize: 16,

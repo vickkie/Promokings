@@ -117,7 +117,6 @@ const styles = StyleSheet.create({
   },
   upperButtons: {
     width: SIZES.width - 20,
-    marginHorizontal: SIZES.xSmall,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

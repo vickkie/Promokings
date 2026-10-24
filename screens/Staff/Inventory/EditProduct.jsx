@@ -337,7 +337,6 @@ const EditProduct = () => {
               <View
                 style={{
                   flexDirection: "row",
-                  justifyContent: "space-between",
                   gap: 10,
                   alignItems: "center",
                   justifyContent: "center",

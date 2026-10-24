@@ -417,12 +417,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: COLORS.primary,
   },
-  productDescription: {
-    fontSize: 14,
-    color: COLORS.black,
-    marginTop: 10,
-    lineHeight: 20,
-  },
   bidsContainer: {
     marginVertical: 10,
   },

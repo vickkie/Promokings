@@ -166,7 +166,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themey,
   },
   cartWrapper: {
-    zIndex: 11,
     backgroundColor: COLORS.themey,
     justifyContent: "center",
     padding: 10,

@@ -594,7 +594,6 @@ const styles = StyleSheet.create({
   },
   upperButtons: {
     width: SIZES.width - 20,
-    marginHorizontal: SIZES.xSmall,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -707,7 +706,6 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     width: SIZES.width - 20,
-    justifyContent: "center",
     justifyContent: "center",
     alignItems: "center",
     padding: SIZES.medium,

@@ -79,7 +79,6 @@ export default CategoriesListBox;
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    paddingTop: SIZES.xxSmall,
     width: SIZES.width,
     paddingTop: 67,
     paddingHorizontal: 2,

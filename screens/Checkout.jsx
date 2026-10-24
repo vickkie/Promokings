@@ -787,13 +787,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   stepContainerInner: { justifyContent: "center", alignItems: "center", padding: 20 },
-  input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-  },
   nextText: {
     fontFamily: "semibold",
     textAlign: "center",
@@ -938,12 +931,6 @@ const styles = StyleSheet.create({
   input22: {
     backgroundColor: COLORS.themeg,
     borderRadius: SIZES.medium,
-  },
-  label: {
-    fontSize: SIZES.small,
-    marginBottom: SIZES.xSmall,
-    color: COLORS.gray,
-    marginStart: SIZES.large,
   },
   shippingContainer: {
     minHeight: SIZES.height / 2,

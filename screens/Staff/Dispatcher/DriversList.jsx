@@ -302,7 +302,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themey,
   },
   cartWrapper: {
-    zIndex: 11,
     backgroundColor: COLORS.themey,
     justifyContent: "center",
     padding: 10,
@@ -396,7 +395,6 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     display: "flex",
-    alignItems: "center",
     // backgroundColor: "red",
     alignItems: "center",
     height: "100%",
@@ -428,13 +426,10 @@ const styles = StyleSheet.create({
   driverCard: {
     flex: 1,
     display: "flex",
-    flexDirection: "column",
     margin: 5,
     minHeight: 140,
     backgroundColor: COLORS.themew,
-    borderRadius: 10,
 
-    alignItems: "center",
     flexDirection: "row",
     alignItems: "center",
     padding: 4,

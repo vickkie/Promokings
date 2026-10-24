@@ -218,8 +218,6 @@ const styles = StyleSheet.create({
   },
   latestProductCards: {
     paddingHorizontal: 10,
-    backgroundColor: COLORS.themeg,
-    borderRadius: SIZES.medium,
     flexDirection: "row",
     alignorders: "center",
     gap: 6,
@@ -237,7 +235,6 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     display: "flex",
-    alignItems: "center",
     // backgroundColor: "red",
     alignItems: "center",
     height: "100%",
