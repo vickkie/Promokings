@@ -248,7 +248,7 @@ const SupplierSettings = () => {
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-                <Text style={styles.regText}>Don't have an account? Register</Text>
+                <Text style={styles.regText}>Don&apos;t have an account? Register</Text>
               </TouchableOpacity>
             </View>
           )}

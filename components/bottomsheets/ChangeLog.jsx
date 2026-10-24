@@ -37,7 +37,7 @@ const ChangeLogMenu = forwardRef((props, ref) => {
       </Text>
       {item.whatsNew.length > 0 && (
         <View>
-          <Text style={styles.subheading}>What's New</Text>
+          <Text style={styles.subheading}>What&apos;s New</Text>
           {item.whatsNew.map((newItem, index) => (
             <Text key={index} style={styles.itemText}>
               - {newItem}

@@ -46,7 +46,7 @@ const CartList = ({ cart }) => {
           </View>
           <View style={{ marginTop: 0, paddingBottom: 10 }}>
             <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>
-              "Oops, your cart is empty. Let's fix that!
+              &quot;Oops, your cart is empty. Let&apos;s fix that!
             </Text>
           </View>
         </View>

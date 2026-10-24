@@ -7,7 +7,7 @@ const ErrorFallback = ({ error, resetError }) => (
   <View style={styles.container}>
     <View style={styles.innerContainer}>
       <Text style={styles.title}>Oops!</Text>
-      <Text style={styles.subtitle}>There's an error</Text>
+      <Text style={styles.subtitle}>There&apos;s an error</Text>
       <Text style={styles.errorText}>{error.toString()}</Text>
 
       <TouchableOpacity onPress={resetError} style={styles.button}>

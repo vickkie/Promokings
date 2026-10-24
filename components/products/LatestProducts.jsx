@@ -31,7 +31,7 @@ const LatestProducts = ({ refreshList, setRefreshList }) => {
         <ActivityIndicator size={SIZES.xxLarge} color={COLORS.primary} />
       ) : error ? (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorMessage}>Looks like you're offline</Text>
+          <Text style={styles.errorMessage}>Looks like you&apos;re offline</Text>
           <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
             <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
             <Text style={styles.retryButtonText}>Retry Loading</Text>

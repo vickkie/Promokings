@@ -127,7 +127,7 @@ const LatestShipments = ({ refreshList, setRefreshing, limit, offset, status, se
         <ActivityIndicator size={SIZES.xxLarge} color={COLORS.primary} />
       ) : error ? (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorMessage}>Looks like you're offline</Text>
+          <Text style={styles.errorMessage}>Looks like you&apos;re offline</Text>
           <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
             <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
             <Text style={styles.retryButtonText}>Retry Fetch</Text>
@@ -153,7 +153,7 @@ const LatestShipments = ({ refreshList, setRefreshing, limit, offset, status, se
                   />
                 </View>
                 <View style={{ marginTop: 0, paddingBottom: 10 }}>
-                  <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Oops, No shipments here!</Text>
+                  <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>&quot;Oops, No shipments here!</Text>
                 </View>
               </View>
             </View>

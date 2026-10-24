@@ -227,7 +227,7 @@ const DriverList = () => {
                     />
                   </View>
                   <View style={{ marginTop: 0, paddingBottom: 10 }}>
-                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Oops, No drivers available!</Text>
+                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>&quot;Oops, No drivers available!</Text>
                   </View>
                 </View>
               </View>

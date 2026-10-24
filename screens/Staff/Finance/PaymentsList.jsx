@@ -318,7 +318,7 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
 
       {error ? (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorMessage}>Looks like you're offline</Text>
+          <Text style={styles.errorMessage}>Looks like you&apos;re offline</Text>
           <TouchableOpacity onPress={onRefresh} style={styles.retryButton}>
             <Ionicons size={24} name="reload-circle" color={COLORS.white} />
             <Text style={styles.retryButtonText}>Retry Fetch</Text>
@@ -348,7 +348,7 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
                     />
                   </View>
                   <View style={{ marginTop: 0, paddingBottom: 20 }}>
-                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Loading!</Text>
+                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>&quot;Loading!</Text>
                   </View>
                 </View>
               </View>
@@ -364,7 +364,7 @@ const PaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh, setPen
                     />
                   </View>
                   <View style={{ marginTop: 0, paddingBottom: 20 }}>
-                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Oops, No Payments here!</Text>
+                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>&quot;Oops, No Payments here!</Text>
                   </View>
                 </View>
               </View>

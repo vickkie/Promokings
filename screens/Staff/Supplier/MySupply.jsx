@@ -223,7 +223,7 @@ const MySupply = () => {
                 />
               </View>
               <View style={{ marginTop: 0, paddingBottom: 20 }}>
-                <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Loading!</Text>
+                <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>&quot;Loading!</Text>
               </View>
             </View>
           </View>
@@ -265,7 +265,7 @@ const MySupply = () => {
                     />
                   </View>
                   <View style={{ marginTop: 0, paddingBottom: 20 }}>
-                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Oops, Nothing here!</Text>
+                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>&quot;Oops, Nothing here!</Text>
                     <TouchableOpacity onPress={refetch} style={styles.retryButton}>
                       <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
                       <Text style={styles.retryButtonText}>Retry Again</Text>
