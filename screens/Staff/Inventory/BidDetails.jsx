@@ -34,6 +34,8 @@ const BidDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoading2, setIsLoading2] = useState(false);
 
+  const [userId, setUserId] = useState(null);
+
   useEffect(() => {
     if (!userLogin) {
       setUserId(1);
@@ -61,7 +63,6 @@ const BidDetails = () => {
   const [email, setEmail] = useState(userData ? userData.email : "");
   const [supplierData, setSupplierData] = useState("");
 
-  const [userId, setUserId] = useState(null);
   const [phoneError, setPhoneError] = useState("");
 
   useEffect(() => {

@@ -27,6 +27,13 @@ const HelpListScreen = () => {
   const { userData } = useContext(AuthContext);
   const navigation = useNavigation();
 
+  const formatSectionHeader = (dateStr) => {
+    const date = moment(dateStr);
+    if (date.isSame(moment(), "day")) return "Today";
+    if (date.isSame(moment().subtract(1, "day"), "day")) return "Yesterday";
+    return date.format("MMM DD, YYYY");
+  };
+
   useEffect(() => {
     const messagesRef = ref(db, "messages-query");
     const unsubscribers = [];
@@ -101,12 +108,6 @@ const HelpListScreen = () => {
     };
   }, [searchQuery]);
 
-  const formatSectionHeader = (dateStr) => {
-    const date = moment(dateStr);
-    if (date.isSame(moment(), "day")) return "Today";
-    if (date.isSame(moment().subtract(1, "day"), "day")) return "Yesterday";
-    return date.format("MMM DD, YYYY");
-  };
 
   const startChat = (user) => {
     navigation.navigate("HelpAgentChatScreen", {

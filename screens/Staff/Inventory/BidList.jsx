@@ -47,6 +47,18 @@ const BidList = () => {
   const inputRef = useRef(null);
 
   //refetch on update
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    try {
+      refetch();
+      navigation.setParams({ refreshList: undefined, products: "products" }); // Clear params
+    } catch (error) {
+      // Handle error
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch]);
+
   useFocusEffect(
     useCallback(() => {
       if (route.params?.refreshList && !refreshList) {
@@ -76,17 +88,6 @@ const BidList = () => {
     }
   }, [data]);
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    try {
-      refetch();
-      navigation.setParams({ refreshList: undefined, products: "products" }); // Clear params
-    } catch (error) {
-      // Handle error
-    } finally {
-      setRefreshing(false);
-    }
-  }, [refetch]);
 
   const handleScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y;

@@ -45,6 +45,8 @@ const Checkout = () => {
   const [error, setError] = useState(null);
 
   //user loggin chexks
+  const [userId, setUserId] = useState(null);
+
   useEffect(() => {
     if (!userLogin) {
       setUserId(1);
@@ -66,7 +68,6 @@ const Checkout = () => {
   const [deliveryMethod, setDeliveryMethod] = useState(null);
   const [stores, setStores] = useState([]);
   const [pickupStore, setPickupStore] = useState([]);
-  const [userId, setUserId] = useState(null);
   const [phoneError, setPhoneError] = useState("");
 
   //phone number check on checkout

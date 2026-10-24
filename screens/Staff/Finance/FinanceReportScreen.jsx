@@ -58,13 +58,6 @@ const FinanceReportScreen = () => {
     setShowPicker({ show: false, type: "" });
   };
 
-  useEffect(() => {
-    if (responseData) {
-      //   console.log("📦 Got report data:", responseData);
-      setData(responseData);
-      generatePDF();
-    }
-  }, [responseData, isLoading]);
 
   useEffect(() => {
     // console.log(data, "now");
@@ -386,6 +379,14 @@ const FinanceReportScreen = () => {
     borderColor: "#ccc",
     borderWidth: 1,
   };
+
+  useEffect(() => {
+    if (responseData) {
+      //   console.log("📦 Got report data:", responseData);
+      setData(responseData);
+      generatePDF();
+    }
+  }, [responseData, isLoading]);
 
   return (
     <SafeAreaView style={styles.container}>

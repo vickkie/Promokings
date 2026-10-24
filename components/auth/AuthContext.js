@@ -21,30 +21,6 @@ const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
 
-  useEffect(() => {
-    checkExistingUser();
-  }, []);
-
-  useEffect(() => {
-    if (userData?._id) {
-      startPermissionCheck();
-    }
-  }, [userData]);
-
-  // Drop the session when the backend rejects our bearer token (MB-SEC-010).
-  useEffect(() => {
-    const interceptorId = axios.interceptors.response.use(
-      (response) => response,
-      (error) => {
-        if (error?.response?.status === 401 && userData?.TOKEN) {
-          logout();
-        }
-        return Promise.reject(error);
-      }
-    );
-    return () => axios.interceptors.response.eject(interceptorId);
-  }, [userData]);
-
   const clearStoredSession = async (userId) => {
     delete axios.defaults.headers.common["Authorization"];
     try {
@@ -156,6 +132,30 @@ const AuthProvider = ({ children }) => {
   const userLogout = () => {
     logout();
   };
+
+  useEffect(() => {
+    checkExistingUser();
+  }, []);
+
+  useEffect(() => {
+    if (userData?._id) {
+      startPermissionCheck();
+    }
+  }, [userData]);
+
+  // Drop the session when the backend rejects our bearer token (MB-SEC-010).
+  useEffect(() => {
+    const interceptorId = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error?.response?.status === 401 && userData?.TOKEN) {
+          logout();
+        }
+        return Promise.reject(error);
+      }
+    );
+    return () => axios.interceptors.response.eject(interceptorId);
+  }, [userData]);
 
   const updateUserData = async (updatedData) => {
     if (!updatedData || typeof updatedData !== "object") {

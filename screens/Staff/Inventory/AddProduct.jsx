@@ -36,6 +36,11 @@ const AddProduct = () => {
   const [price, setPrice] = useState("");
   const [availability, setAvailability] = useState(false);
   const [imageUrl, setImageUrl] = useState("https://i.postimg.cc/j56q20rB/images.jpg");
+  function generateProductId() {
+    const randomId = Math.random().toString(36).substr(2, 7).toUpperCase();
+    return `PRK-P${randomId}`;
+  }
+
   const [productId, setProductId] = useState(generateProductId());
   const [image, setImage] = useState(null);
   const [loader, setLoader] = useState(false);
@@ -119,10 +124,6 @@ const AddProduct = () => {
     }
   }, []);
 
-  function generateProductId() {
-    const randomId = Math.random().toString(36).substr(2, 7).toUpperCase();
-    return `PRK-P${randomId}`;
-  }
   const toggleEditable = () => {
     setIsEditable(!isEditable);
   };

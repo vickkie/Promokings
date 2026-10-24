@@ -24,14 +24,39 @@ const HelpAgentChatScreen = () => {
   const customerId = route.params?.chatWith?._id;
   const chatWith = route.params?.chatWith;
 
-  if (!customerId) {
-    return <Text>No customer selected</Text>;
-  }
 
   const sentRef = useMemo(() => ref(db, `messages-query/${customerId}/sent`), [customerId]);
   const receivedRef = useMemo(() => ref(db, `messages-query/${customerId}/received`), [customerId]);
 
+  const markSentMessagesAsRead = async () => {
+    const snapshot = await new Promise((resolve) => {
+      onValue(
+        sentRef,
+        (snap) => {
+          resolve(snap);
+        },
+        { onlyOnce: true }
+      );
+    });
+
+    const data = snapshot.val();
+    if (!data) return;
+
+    const updates = {};
+    Object.entries(data).forEach(([key, message]) => {
+      if (message.read === false) {
+        updates[`${key}/read`] = true;
+      }
+    });
+
+    if (Object.keys(updates).length > 0) {
+      await update(sentRef, updates);
+    }
+  };
+
   useEffect(() => {
+    if (!customerId) return;
+
     const handleDataChange = (snapshot, type) => {
       const data = snapshot.val();
       const newMessages = data
@@ -64,33 +89,7 @@ const HelpAgentChatScreen = () => {
     };
   }, [customerId]);
 
-  const markSentMessagesAsRead = async () => {
-    const snapshot = await new Promise((resolve) => {
-      onValue(
-        sentRef,
-        (snap) => {
-          resolve(snap);
-        },
-        { onlyOnce: true }
-      );
-    });
-
-    const data = snapshot.val();
-    if (!data) return;
-
-    const updates = {};
-    Object.entries(data).forEach(([key, message]) => {
-      if (message.read === false) {
-        updates[`${key}/read`] = true;
-      }
-    });
-
-    if (Object.keys(updates).length > 0) {
-      await update(sentRef, updates);
-    }
-  };
-
-  const spinAnim = useRef(new Animated.Value(0)).current;
+  const [spinAnim] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
     if (!isSending) {
@@ -186,6 +185,10 @@ const HelpAgentChatScreen = () => {
     setSelectedImage(null);
     setIsSending(false);
   };
+
+  if (!customerId) {
+    return <Text>No customer selected</Text>;
+  }
 
   return (
     <View style={styles.container}>

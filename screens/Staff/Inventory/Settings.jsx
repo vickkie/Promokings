@@ -235,8 +235,9 @@ const StaffSettings = () => {
     });
   };
 
+  const [loading, setLoading] = useState(true);
+
   const renderProfilePicture = () => {
-    const [loading, setLoading] = useState(true);
 
     if (!userLogin) {
       // User not logged in, show default image

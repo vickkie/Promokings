@@ -58,13 +58,6 @@ const SalesReportScreen = () => {
     setShowPicker({ show: false, type: "" });
   };
 
-  useEffect(() => {
-    if (responseData) {
-      // console.log("📦 Got report data:", responseData);
-      setData(responseData);
-      generatePDF();
-    }
-  }, [responseData, isLoading]);
 
   useEffect(() => {
     // console.log(data, "now");
@@ -429,6 +422,14 @@ const SalesReportScreen = () => {
     borderColor: "#ccc",
     borderWidth: 1,
   };
+
+  useEffect(() => {
+    if (responseData) {
+      // console.log("📦 Got report data:", responseData);
+      setData(responseData);
+      generatePDF();
+    }
+  }, [responseData, isLoading]);
 
   return (
     <SafeAreaView style={styles.container}>

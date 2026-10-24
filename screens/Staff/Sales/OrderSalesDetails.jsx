@@ -24,6 +24,8 @@ const OrderSalesDetails = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [success, setSuccess] = useState(null);
 
+  const [userId, setUserId] = useState(null);
+
   useEffect(() => {
     if (!userLogin) {
       setUserId(1);
@@ -40,7 +42,6 @@ const OrderSalesDetails = () => {
   const [city, setCity] = useState(userData ? userData.location : "");
   const [email, setEmail] = useState(userData ? userData.email : "");
 
-  const [userId, setUserId] = useState(null);
   const [phoneError, setPhoneError] = useState("");
 
   useEffect(() => {

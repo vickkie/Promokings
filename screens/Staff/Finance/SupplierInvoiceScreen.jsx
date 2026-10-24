@@ -22,10 +22,6 @@ const TransactionReceiptScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
-  if (!transaction) {
-    navigation.goBack();
-    return null;
-  }
 
   const showToast = (type, text1, text2) => {
     Toast.show({
@@ -36,7 +32,7 @@ const TransactionReceiptScreen = () => {
     });
   };
 
-  const currentSupply = transaction.inventoryRequest.bids.find(
+  const currentSupply = transaction?.inventoryRequest?.bids?.find(
     (bid) => bid.supplier.toString() === transaction.inventoryRequest.selectedSupplier.toString()
   );
 
@@ -286,6 +282,11 @@ const TransactionReceiptScreen = () => {
       generatePDF();
     }
   }, [transaction]);
+
+  if (!transaction) {
+    navigation.goBack();
+    return null;
+  }
 
   return (
     <SafeAreaView style={styles.container}>

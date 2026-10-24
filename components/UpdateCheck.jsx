@@ -38,24 +38,6 @@ export default function UpdateCheck() {
   const currentVersion = Application.nativeApplicationVersion || "dev";
   const applicationName = Application.applicationName;
 
-  useEffect(() => {
-    checkForUpdates();
-    const interval = setInterval(checkForUpdates, CHECK_INTERVAL);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Function to compare versions
-  const isNewerVersion = (current, latest) => {
-    const parseVersion = (ver) => ver.split(".").map(Number);
-    const [cMajor, cMinor, cPatch] = parseVersion(current);
-    const [lMajor, lMinor, lPatch] = parseVersion(latest);
-
-    if (lMajor > cMajor) return true;
-    if (lMajor === cMajor && lMinor > cMinor) return true;
-    if (lMajor === cMajor && lMinor === cMinor && lPatch > cPatch) return true;
-    return false;
-  };
-
   const checkForUpdates = async () => {
     setIsChecking(true);
     try {
@@ -95,6 +77,19 @@ export default function UpdateCheck() {
     }
   };
 
+  // Function to compare versions
+  const isNewerVersion = (current, latest) => {
+    const parseVersion = (ver) => ver.split(".").map(Number);
+    const [cMajor, cMinor, cPatch] = parseVersion(current);
+    const [lMajor, lMinor, lPatch] = parseVersion(latest);
+
+    if (lMajor > cMajor) return true;
+    if (lMajor === cMajor && lMinor > cMinor) return true;
+    if (lMajor === cMajor && lMinor === cMinor && lPatch > cPatch) return true;
+    return false;
+  };
+
+
   const showUpdateAlert = (force, newVersion) => {
     const allowSkip = currentVersion === "dev" || !force; // Skip allowed in dev or if not forced
 
@@ -127,6 +122,12 @@ export default function UpdateCheck() {
       Alert.alert("Error", "Unable to open the update link.");
     }
   };
+
+  useEffect(() => {
+    checkForUpdates();
+    const interval = setInterval(checkForUpdates, CHECK_INTERVAL);
+    return () => clearInterval(interval);
+  }, []);
 
   return null;
 }

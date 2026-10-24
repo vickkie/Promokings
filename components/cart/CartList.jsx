@@ -13,14 +13,15 @@ const CartList = ({ cart }) => {
   const [additionalFees, setAdditionalFees] = useState(0);
   const estimatedAmount = totals.subtotal + additionalFees;
 
-  useEffect(() => {
-    calculateTotals(cart);
-  }, [cart]);
-
   const calculateTotals = (cartItems) => {
     const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
     setTotals({ subtotal });
   };
+
+  useEffect(() => {
+    calculateTotals(cart);
+  }, [cart]);
+
 
   const handleRefetch = async () => {
     try {

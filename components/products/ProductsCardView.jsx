@@ -57,9 +57,6 @@ const ProductsCardView = ({ item, refetch }) => {
 
   // console.log(imageUri);
 
-  if (!item._id) return null;
-  // return null;
-
   useEffect(() => {
     const found = wishlist.some((wishItem) => wishItem.id === item._id && wishItem.size === selectedSize);
     setIsWished(found);
@@ -94,7 +91,9 @@ const ProductsCardView = ({ item, refetch }) => {
   const transitionTag = item._id ? `${item._id}` : null;
 
   if (item) {
-    return (
+    if (!item._id) return null;
+
+  return (
       <TouchableOpacity
         onPress={() => {
           navigation.navigate("ProductDetails", {

@@ -22,6 +22,8 @@ const OrderPaymentDetails = () => {
   const [success, setSuccess] = useState(null);
   const [customerDetails, setcustomerDetails] = useState(item?.userId);
 
+  const [userId, setUserId] = useState(null);
+
   useEffect(() => {
     if (!userLogin) {
       setUserId(1);
@@ -38,7 +40,6 @@ const OrderPaymentDetails = () => {
   const [city, setCity] = useState(userData ? userData.location : "");
   const [email, setEmail] = useState(userData ? userData.email : "");
 
-  const [userId, setUserId] = useState(null);
   const [phoneError, setPhoneError] = useState("");
 
   useEffect(() => {

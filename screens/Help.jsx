@@ -32,6 +32,32 @@ const Help = () => {
   const sentRef = useMemo(() => ref(db, `messages-query/${userId}/sent`), [userId]);
   const receivedRef = useMemo(() => ref(db, `messages-query/${userId}/received`), [userId]);
 
+  const markReceivedMessagesAsRead = async () => {
+    const snapshot = await new Promise((resolve) => {
+      onValue(
+        receivedRef,
+        (snap) => {
+          resolve(snap);
+        },
+        { onlyOnce: true }
+      );
+    });
+
+    const data = snapshot.val();
+    if (!data) return;
+
+    const updates = {};
+    Object.entries(data).forEach(([key, message]) => {
+      if (message.read === false) {
+        updates[`${key}/read`] = true;
+      }
+    });
+
+    if (Object.keys(updates).length > 0) {
+      await update(receivedRef, updates);
+    }
+  };
+
   useEffect(() => {
     if (userData && userData._id && userData?.TOKEN) {
       const handleDataChange = (snapshot, type) => {
@@ -68,31 +94,6 @@ const Help = () => {
     }
   }, [userData]);
 
-  const markReceivedMessagesAsRead = async () => {
-    const snapshot = await new Promise((resolve) => {
-      onValue(
-        receivedRef,
-        (snap) => {
-          resolve(snap);
-        },
-        { onlyOnce: true }
-      );
-    });
-
-    const data = snapshot.val();
-    if (!data) return;
-
-    const updates = {};
-    Object.entries(data).forEach(([key, message]) => {
-      if (message.read === false) {
-        updates[`${key}/read`] = true;
-      }
-    });
-
-    if (Object.keys(updates).length > 0) {
-      await update(receivedRef, updates);
-    }
-  };
 
   useEffect(() => {
     if (!route.params) return;

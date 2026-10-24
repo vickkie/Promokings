@@ -46,6 +46,18 @@ const EditProductList = () => {
   const inputRef = useRef(null);
 
   //refetch on update
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    try {
+      navigation.setParams({ refreshList: undefined, products: "products?skip=true" }); // Clear params
+      refetch();
+    } catch (error) {
+      // Handle error
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch]);
+
   useFocusEffect(
     useCallback(() => {
       if (route.params?.refreshList && !refreshList) {
@@ -87,17 +99,6 @@ const EditProductList = () => {
     }
   }, [data]);
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    try {
-      navigation.setParams({ refreshList: undefined, products: "products?skip=true" }); // Clear params
-      refetch();
-    } catch (error) {
-      // Handle error
-    } finally {
-      setRefreshing(false);
-    }
-  }, [refetch]);
 
   const handleScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y;

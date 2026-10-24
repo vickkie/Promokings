@@ -22,10 +22,6 @@ const ChatListScreen = () => {
   const [unreadCounts, setUnreadCounts] = useState({}); // New state for unread counts
   const navigation = useNavigation();
 
-  useEffect(() => {
-    fetchUsers();
-  }, [searchQuery]);
-
   const fetchUsers = async () => {
     try {
       const userRole = userData?.position || userData?.role || "customer";
@@ -49,6 +45,11 @@ const ChatListScreen = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchUsers();
+  }, [searchQuery]);
+
 
   // For each chat conversation, listen for unread messages in Firebase
   useEffect(() => {
