@@ -10,6 +10,7 @@ import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
 import { BACKEND_PORT } from "@env";
 import Toast from "react-native-toast-message";
+import { escapeHtml } from "../../../utils/htmlEscape";
 
 // Inline invoice/receipt HTML needs no JS and may only navigate to the
 // backend origin (MB-SEC-006).
@@ -37,6 +38,8 @@ const TransactionReceiptScreen = () => {
   );
 
   // Function to generate the HTML receipt using transaction data
+  const esc = escapeHtml;
+
   const generateHTMLInvoice = (showWatermark = true) => {
     return `
 <html>
@@ -129,18 +132,18 @@ const TransactionReceiptScreen = () => {
     <!-- Supplier Info repurposed for BILL TO -->
     <div class="section">
       <div class="bold">BILL TO:</div>
-      <div>${transaction.supplier.name}</div>
-      <div>${transaction.supplier.address}</div>
-      <div>${transaction.supplier.email}</div>
-      <div>${transaction.supplier.phoneNumber}</div>
+      <div>${esc(transaction.supplier.name)}</div>
+      <div>${esc(transaction.supplier.address)}</div>
+      <div>${esc(transaction.supplier.email)}</div>
+      <div>${esc(transaction.supplier.phoneNumber)}</div>
     </div>
 
     <!-- Transaction Info Section -->
     <div class="section">
       <div class="bold">RECEIPT</div>
-      <div>Receipt Number: ${transaction.TransactionId}</div>
+      <div>Receipt Number: ${esc(transaction.TransactionId)}</div>
       <div>Transaction Date: ${new Date(transaction.createdAt).toLocaleString()}</div>
-      <div>Payment Method: ${transaction.method}</div>
+      <div>Payment Method: ${esc(transaction.method)}</div>
     </div>
 
     <!-- Inventory Request / Product Table -->
@@ -152,7 +155,7 @@ const TransactionReceiptScreen = () => {
         <th>Total</th>
       </tr>
       <tr>
-        <td>${transaction.inventoryRequest.productName}</td>
+        <td>${esc(transaction.inventoryRequest.productName)}</td>
         <td>KSh ${currentSupply.bidPrice}</td>
         <td>${transaction.inventoryRequest.quantity}</td>
         <td>KSh ${currentSupply.bidPrice * transaction.inventoryRequest.quantity}</td>
