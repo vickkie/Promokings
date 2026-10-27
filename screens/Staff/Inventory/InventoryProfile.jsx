@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { COLORS, SIZES } from "../../../constants";
+import { COLORS, SIZES, ROLES } from "../../../constants";
 import Icon from "../../../constants/icons";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../../components/auth/AuthContext";
@@ -35,7 +35,7 @@ const InventoryProfile = () => {
         index: 0,
         routes: [{ name: "Login" }],
       });
-    } else if (hasRole("inventory")) {
+    } else if (hasRole(ROLES.INVENTORY)) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData._id);
     } else {

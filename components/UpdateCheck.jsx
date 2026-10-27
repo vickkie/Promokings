@@ -4,9 +4,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Application from "expo-application";
 import NetInfo from "@react-native-community/netinfo";
 import { BACKEND_PORT } from "@env";
+import { STORAGE_KEYS } from "../constants";
 
 const CHECK_UPDATE_URL = `${BACKEND_PORT}/api/version/latest`;
-const SKIPPED_VERSION_KEY = "skipped_version";
+const SKIPPED_VERSION_KEY = STORAGE_KEYS.SKIPPED_VERSION;
 const CHECK_INTERVAL = 120000;
 
 // Server-supplied downloadUrl may only be https and only point at our own

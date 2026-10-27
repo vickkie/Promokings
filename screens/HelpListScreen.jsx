@@ -12,7 +12,7 @@ import {
 import moment from "moment";
 import { AuthContext } from "../components/auth/AuthContext";
 import { useNavigation } from "@react-navigation/native";
-import { COLORS, SIZES } from "../constants";
+import { COLORS, SIZES, ROLES } from "../constants";
 import Icon from "../constants/icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LottieView from "lottie-react-native";
@@ -115,7 +115,7 @@ const HelpListScreen = () => {
         _id: user.userId,
         fullname: user.name,
         profilePicture: user.avatar,
-        role: user?.role || "customer",
+        role: user?.role || ROLES.CUSTOMER,
       },
       userData,
     });

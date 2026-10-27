@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity,  ScrollView } from "react-native";
 import Collapsible from "react-native-collapsible";
 import Icon from "../constants/icons";
-import { SIZES, COLORS } from "../constants";
+import { SIZES, COLORS, STORAGE_KEYS } from "../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import useFetch from "../hook/useFetch";
 import LottieView from "lottie-react-native";
@@ -27,11 +27,11 @@ const Faqs = ({ navigation }) => {
         // We're online, use fresh data + save to cache
         if (data && Array.isArray(data)) {
           setFaqs(data);
-          await AsyncStorage.setItem("cachedFaqs", JSON.stringify(data));
+          await AsyncStorage.setItem(STORAGE_KEYS.CACHED_FAQS, JSON.stringify(data));
         }
       } else {
         // Offline? Load from cache
-        const cached = await AsyncStorage.getItem("cachedFaqs");
+        const cached = await AsyncStorage.getItem(STORAGE_KEYS.CACHED_FAQS);
         if (cached) {
           setFaqs(JSON.parse(cached));
           console.log("📴 Offline: FAQs loaded from cache.");

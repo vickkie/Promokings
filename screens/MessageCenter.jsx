@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "../constants/icons";
-import { SIZES, COLORS } from "../constants";
+import { SIZES, COLORS, ROLES } from "../constants";
 import { AuthContext } from "../components/auth/AuthContext";
 
 const MessageCenter = ({ navigation }) => {
@@ -99,7 +99,7 @@ const MessageCenter = ({ navigation }) => {
               </>
             )}
 
-            {["sales", "customer support"].includes(userData?.position) && (
+            {[ROLES.SALES, "customer support"].includes(userData?.position) && (
               <TouchableOpacity onPress={() => navigation.navigate("HelpListScreen")}>
                 <View style={styles.menuItem(0.5)}>
                   <View style={styles.itswrap}>

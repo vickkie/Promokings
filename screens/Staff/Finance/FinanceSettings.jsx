@@ -1,11 +1,11 @@
 import React from "react";
 import StaffProfileSettings from "../StaffProfileSettings";
 import Icon from "../../../constants/icons";
-import { COLORS } from "../../../constants";
+import { COLORS, ROLES } from "../../../constants";
 
 const FinanceSettings = () => (
   <StaffProfileSettings
-    role="finance"
+    role={ROLES.FINANCE}
     profileRoute="FinanceProfile"
     bottomItems={[
       {

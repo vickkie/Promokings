@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback, useRef, forwardRef, useContext, useState } from "react";
 import { StyleSheet, TextInput, Text, View, TouchableOpacity, ScrollView } from "react-native";
 import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
-import { COLORS, SIZES } from "../../constants";
+import { COLORS, SIZES, ROLES } from "../../constants";
 import Icon from "../../constants/icons";
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
@@ -72,7 +72,7 @@ const CompleteProfile = forwardRef(function CompleteProfile(props, ref) {
 
       let endpoint;
 
-      if (userData?.position === "supplier" || userData?.role === "supplier") {
+      if (userData?.position === ROLES.SUPPLIER || userData?.role === ROLES.SUPPLIER) {
         endpoint = `${BACKEND_PORT}/api/staff/updateDetails/supplier/${userData._id}`;
       } else {
         endpoint = `${BACKEND_PORT}/api/staff/updateDetails/${userData._id}`;

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import {  setItem, getItem } from "../utils/storage";
 import logger from "../utils/logger";
+import { STORAGE_KEYS } from "../constants";
 
 const WishContext = createContext();
 
@@ -11,7 +12,7 @@ export const WishProvider = ({ children }) => {
   useEffect(() => {
     const loadWishlist = async () => {
       try {
-        const savedWishlist = await getItem("wishlist");
+        const savedWishlist = await getItem(STORAGE_KEYS.WISHLIST);
         setWishlist(savedWishlist ? JSON.parse(savedWishlist) : []); // 🛠️ Parse stored data
       } catch (error) {
         logger.error("Failed to load wishlist:", error);
@@ -23,7 +24,7 @@ export const WishProvider = ({ children }) => {
   // Save wishlist to AsyncStorage when it changes (debounced)
   useEffect(() => {
     const saveWishlist = setTimeout(() => {
-      setItem("wishlist", JSON.stringify(wishlist));
+      setItem(STORAGE_KEYS.WISHLIST, JSON.stringify(wishlist));
     }, 200); // Debounce writes to avoid excessive calls
 
     return () => clearTimeout(saveWishlist);

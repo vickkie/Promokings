@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 import { setItem, getItem } from "../utils/storage";
 import logger from "../utils/logger";
+import { STORAGE_KEYS } from "../constants";
 
 const CartContext = createContext();
 
@@ -11,7 +12,7 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     const loadCart = async () => {
       try {
-        const savedCart = await getItem("cart");
+        const savedCart = await getItem(STORAGE_KEYS.CART);
         if (savedCart) {
           const parsedCart = JSON.parse(savedCart);
           if (Array.isArray(parsedCart)) {
@@ -29,7 +30,7 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     if (saveTimeout.current) clearTimeout(saveTimeout.current);
     saveTimeout.current = setTimeout(() => {
-      setItem("cart", JSON.stringify(cart));
+      setItem(STORAGE_KEYS.CART, JSON.stringify(cart));
     }, 300); // debounce delay
   }, [cart]);
 

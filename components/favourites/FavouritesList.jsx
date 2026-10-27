@@ -1,6 +1,6 @@
 import { FlatList, Text, View } from "react-native";
 import React, { useContext, useState, useEffect } from "react";
-import {  SIZES } from "../../constants";
+import {  SIZES, STORAGE_KEYS } from "../../constants";
 import styles from "./favourtiteslist.style";
 import FavouritesCardVIew from "./FavouritesCardVIew";
 import { AuthContext } from "../auth/AuthContext";
@@ -62,7 +62,7 @@ const FavouritesList = ({ wishlist = [] }) => {
 
   const handleRefetch = async () => {
     try {
-      const storedWish = await AsyncStorage.getItem("wishlist");
+      const storedWish = await AsyncStorage.getItem(STORAGE_KEYS.WISHLIST);
       const parsedWish = storedWish ? JSON.parse(storedWish) : [];
       calculateTotals(parsedWish);
     } catch (error) {

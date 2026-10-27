@@ -2,11 +2,14 @@
 import React, { createContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
-import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 import { Buffer } from "buffer";
 import { startPermissionCheck } from "./registerPushNotification";
+import { api, setAuthToken } from "../../utils/api";
+import { STORAGE_KEYS, userProfileKey } from "../../constants/storageKeys";
+import { ROLES } from "../../constants/roles";
+import logger from "../../utils/logger";
 
 global.atob = (input) => Buffer.from(input, "base64").toString("utf-8");
 global.btoa = (input) => Buffer.from(input, "utf-8").toString("base64");
@@ -21,16 +24,16 @@ const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
 
-  const clearStoredSession = async (userId) => {
-    delete axios.defaults.headers.common["Authorization"];
+  const clearStoredSession = async (userProfileStorageKey) => {
+    setAuthToken(null);
     try {
       await SecureStore.deleteItemAsync(TOKEN_KEY);
     } catch (error) {
-      console.error("Failed to delete auth token:", error);
+      logger.error("Failed to delete auth token:", error);
     }
-    await AsyncStorage.removeItem("id");
-    if (userId) {
-      await AsyncStorage.removeItem(userId);
+    await AsyncStorage.removeItem(STORAGE_KEYS.USER_ID);
+    if (userProfileStorageKey) {
+      await AsyncStorage.removeItem(userProfileStorageKey);
     }
   };
 
@@ -49,15 +52,15 @@ const AuthProvider = ({ children }) => {
 
   const checkExistingUser = async () => {
     try {
-      const id = await AsyncStorage.getItem("id");
+      const id = await AsyncStorage.getItem(STORAGE_KEYS.USER_ID);
       if (!id) {
         return;
       }
 
-      const userId = `user${JSON.parse(id)}`;
+      const userId = userProfileKey(JSON.parse(id));
       const currentUser = await AsyncStorage.getItem(userId);
       if (!currentUser) {
-        console.log("User data not available");
+        logger.log("User data not available");
         return;
       }
 
@@ -72,7 +75,7 @@ const AuthProvider = ({ children }) => {
         try {
           await SecureStore.setItemAsync(TOKEN_KEY, token);
         } catch (error) {
-          console.error("Failed to migrate auth token to SecureStore:", error);
+          logger.error("Failed to migrate auth token to SecureStore:", error);
         }
       }
 
@@ -98,9 +101,9 @@ const AuthProvider = ({ children }) => {
 
       setUserData({ ...parsedData, TOKEN: token });
       setUserLogin(true);
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      setAuthToken(token);
     } catch (error) {
-      console.log("Error retrieving data:", error);
+      logger.error("Error retrieving data:", error);
     }
   };
 
@@ -111,22 +114,22 @@ const AuthProvider = ({ children }) => {
     setUserLogin(true);
 
     if (TOKEN) {
-      axios.defaults.headers.common["Authorization"] = `Bearer ${TOKEN}`;
+      setAuthToken(TOKEN);
       try {
         await SecureStore.setItemAsync(TOKEN_KEY, TOKEN);
       } catch (error) {
-        console.error("Failed to store auth token securely:", error);
+        logger.error("Failed to store auth token securely:", error);
       }
     }
 
-    await AsyncStorage.setItem("id", JSON.stringify(data?._id));
-    await AsyncStorage.setItem(`user${data?._id}`, JSON.stringify(profile));
+    await AsyncStorage.setItem(STORAGE_KEYS.USER_ID, JSON.stringify(data?._id));
+    await AsyncStorage.setItem(userProfileKey(data?._id), JSON.stringify(profile));
   };
 
   const logout = async () => {
     setUserData(null);
     setUserLogin(false);
-    await clearStoredSession(`user${userData?._id}`);
+    await clearStoredSession(userProfileKey(userData?._id));
   };
 
   const userLogout = () => {
@@ -147,7 +150,7 @@ const AuthProvider = ({ children }) => {
 
   // Drop the session when the backend rejects our bearer token (MB-SEC-010).
   useEffect(() => {
-    const interceptorId = axios.interceptors.response.use(
+    const interceptorId = api.interceptors.response.use(
       (response) => response,
       (error) => {
         if (error?.response?.status === 401 && userData?.TOKEN) {
@@ -156,13 +159,13 @@ const AuthProvider = ({ children }) => {
         return Promise.reject(error);
       }
     );
-    return () => axios.interceptors.response.eject(interceptorId);
+    return () => api.interceptors.response.eject(interceptorId);
   // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userData]);
 
   const updateUserData = async (updatedData) => {
     if (!updatedData || typeof updatedData !== "object") {
-      console.error("Invalid user data:", updatedData);
+      logger.error("Invalid user data:", updatedData);
       return;
     }
 
@@ -172,9 +175,9 @@ const AuthProvider = ({ children }) => {
 
     try {
       const { TOKEN: _stripped, ...profile } = merged;
-      await AsyncStorage.setItem(`user${updatedData._id}`, JSON.stringify(profile));
+      await AsyncStorage.setItem(userProfileKey(updatedData._id), JSON.stringify(profile));
     } catch (error) {
-      console.error("Error saving user data to AsyncStorage:", error);
+      logger.error("Error saving user data to AsyncStorage:", error);
     }
   };
 
@@ -186,27 +189,27 @@ const AuthProvider = ({ children }) => {
 
     try {
       const decodedToken = jwtDecode(userData.TOKEN);
-      const userRole = decodedToken?.role || "customer";
+      const userRole = decodedToken?.role || ROLES.CUSTOMER;
 
       return userRole === requiredRole;
     } catch (error) {
-      console.error("Invalid token, cannot decode:", error);
+      logger.error("Invalid token, cannot decode:", error);
       return false;
     }
   };
 
   const getRole = (data) => {
     if (!data?.TOKEN) {
-      return "customer";
+      return ROLES.CUSTOMER;
     }
 
     try {
       const decodedToken = jwtDecode(data.TOKEN);
       // Backend signs the `role` claim (MB-SEC-013 / X-SEC-005).
-      return decodedToken?.role || "customer";
+      return decodedToken?.role || ROLES.CUSTOMER;
     } catch (error) {
-      console.error("Invalid token, cannot decode:", error);
-      return "customer";
+      logger.error("Invalid token, cannot decode:", error);
+      return ROLES.CUSTOMER;
     }
   };
 

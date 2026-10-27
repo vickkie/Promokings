@@ -13,7 +13,7 @@ import GoogleSignInButton, { isGoogleSignInConfigured } from "../components/auth
 import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
 
-import { COLORS, SIZES } from "../constants";
+import { COLORS, SIZES, ROLES } from "../constants";
 import { BACKEND_PORT } from "@env";
 import Icon from "../constants/icons";
 import Routes, { ROLE_ROUTES } from "../navigation/routes";
@@ -37,7 +37,7 @@ const validationSchema = Yup.object().shape({
 const LoginPage = ({ navigation }) => {
   const { login, getRole } = useContext(AuthContext);
   const [loader, setLoader] = useState(false);
-  const [userType, setUserType] = useState("customer");
+  const [userType, setUserType] = useState(ROLES.CUSTOMER);
   const [obsecureText, setObsecureText] = useState(true);
   const [googleEnabled, setGoogleEnabled] = useState(false);
 
@@ -162,14 +162,14 @@ const LoginPage = ({ navigation }) => {
                   <TouchableOpacity
                     style={[styles.chooseUser, styles.chooseBox]}
                     onPress={() => {
-                      setUserType("customer");
+                      setUserType(ROLES.CUSTOMER);
                       handleReset();
                     }}
                   >
                     <View>
                       <Text style={styles.choiceText}>Customer</Text>
                     </View>
-                    <Icon name={userType === "customer" ? "check" : "checkempty"} size={18} />
+                    <Icon name={userType === ROLES.CUSTOMER ? "check" : "checkempty"} size={18} />
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[styles.chooseStaff, styles.chooseBox]}
@@ -272,7 +272,7 @@ const LoginPage = ({ navigation }) => {
                   isValid={isValid}
                 />
 
-                {googleEnabled && userType === "customer" && <GoogleSignInButton navigation={navigation} />}
+                {googleEnabled && userType === ROLES.CUSTOMER && <GoogleSignInButton navigation={navigation} />}
 
                 <Text style={styles.registration} onPress={() => navigation.navigate("Register")}>
                   Create an Account

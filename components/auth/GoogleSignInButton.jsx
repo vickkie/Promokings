@@ -5,7 +5,7 @@ import axios from "axios";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import { AuthContext } from "./AuthContext";
-import { COLORS, SIZES } from "../../constants";
+import { COLORS, SIZES, ROLES } from "../../constants";
 import { BACKEND_PORT, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_ID_ANDROID, GOOGLE_CLIENT_ID_IOS } from "@env";
 import Routes from "../../navigation/routes";
 
@@ -42,7 +42,7 @@ const GoogleSignInButton = ({ navigation }) => {
     setBusy(true);
     try {
       const endpoint = `${BACKEND_PORT}/api/auth/google`;
-      const res = await axios.post(endpoint, { idToken, audience: "customer" });
+      const res = await axios.post(endpoint, { idToken, audience: ROLES.CUSTOMER });
 
       if (res.status !== 200 || !res.data || !res.data.TOKEN) {
         Alert.alert("Login Failure", "Unexpected response. Please try again.");

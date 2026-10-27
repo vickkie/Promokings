@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../constants/icons";
-import { SIZES, COLORS } from "../constants";
+import { SIZES, COLORS, STORAGE_KEYS } from "../constants";
 import { useCart } from "../contexts/CartContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../components/auth/AuthContext";
@@ -187,14 +187,14 @@ const Checkout = () => {
   };
 
   const saveShipping = async (data) => {
-    await AsyncStorage.setItem("shippingdata", JSON.stringify(data));
+    await AsyncStorage.setItem(STORAGE_KEYS.SHIPPING_DATA, JSON.stringify(data));
   };
 
   //try geting stored saved data
   async function getShipping() {
     let shipping = {};
 
-    shipping = await AsyncStorage.getItem("shippingdata");
+    shipping = await AsyncStorage.getItem(STORAGE_KEYS.SHIPPING_DATA);
 
     if (shipping) {
       const addressing = JSON.parse(shipping);

@@ -1,3 +1,5 @@
+import { ROLES } from "../constants/roles";
+
 // Central route-name constants (MB-QUAL-009). Every Stack.Screen registered
 // in App.js plus every nested tab-screen name used as a navigate() target
 // lives here so call sites compile against one table instead of literals.
@@ -139,12 +141,12 @@ const Routes = {
 // through to BottomNavigation by design; `admin` intentionally has no entry
 // (admin users live in the separate admin app).
 export const ROLE_ROUTES = {
-  inventory: Routes.InventoryNavigation,
-  sales: Routes.SalesNavigation,
-  finance: Routes.FinanceNavigation,
-  driver: Routes.DriverNavigation,
-  dispatcher: Routes.DispatchNavigation,
-  supplier: Routes.SupplierNavigation,
+  [ROLES.INVENTORY]: Routes.InventoryNavigation,
+  [ROLES.SALES]: Routes.SalesNavigation,
+  [ROLES.FINANCE]: Routes.FinanceNavigation,
+  [ROLES.DRIVER]: Routes.DriverNavigation,
+  [ROLES.DISPATCHER]: Routes.DispatchNavigation,
+  [ROLES.SUPPLIER]: Routes.SupplierNavigation,
 };
 
 export default Routes;

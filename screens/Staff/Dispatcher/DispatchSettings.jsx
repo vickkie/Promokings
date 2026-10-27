@@ -1,7 +1,8 @@
 import StaffProfileSettings from "../StaffProfileSettings";
+import { ROLES } from "../../../constants";
 
 const DispatcherSettings = () => (
-  <StaffProfileSettings role="dispatcher" profileRoute="DispatcherProfile" messageRoute="ChatListScreen" />
+  <StaffProfileSettings role={ROLES.DISPATCHER} profileRoute="DispatcherProfile" messageRoute="ChatListScreen" />
 );
 
 export default DispatcherSettings;

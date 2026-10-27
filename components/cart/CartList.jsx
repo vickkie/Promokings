@@ -1,7 +1,7 @@
 import { FlatList, Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {  SIZES } from "../../constants";
+import {  SIZES, STORAGE_KEYS } from "../../constants";
 import styles from "./cartlist.style";
 import CartCardVIew from "./CartCardVIew";
 import { useNavigation } from "@react-navigation/native";
@@ -26,7 +26,7 @@ const CartList = ({ cart }) => {
 
   const handleRefetch = async () => {
     try {
-      const storedCart = await AsyncStorage.getItem("cart");
+      const storedCart = await AsyncStorage.getItem(STORAGE_KEYS.CART);
       const parsedCart = storedCart ? JSON.parse(storedCart) : [];
       calculateTotals(parsedCart);
     } catch (error) {

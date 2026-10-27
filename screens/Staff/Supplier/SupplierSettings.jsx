@@ -1,12 +1,12 @@
 import React from "react";
 import StaffProfileSettings from "../StaffProfileSettings";
 import Icon from "../../../constants/icons";
-import { COLORS } from "../../../constants";
+import { COLORS, ROLES } from "../../../constants";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const SupplierSettings = () => (
   <StaffProfileSettings
-    role="supplier"
+    role={ROLES.SUPPLIER}
     profileRoute="SupplierProfile"
     messageRoute="ChatListScreen"
     messageIcon={<Icon name="discuss" size={28} color={COLORS.primary} />}

@@ -2,6 +2,7 @@ import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { STORAGE_KEYS } from "../../constants";
 
 // Push identity now registers with the backend as OneSignal subscription
 // ids via /api/notification/updateOneSignal (OneSignalId.jsx). The expo
@@ -16,7 +17,7 @@ export async function ensureNotificationPermission() {
     return;
   }
 
-  const lastCheck = await AsyncStorage.getItem("lastNotificationPermissionCheck");
+  const lastCheck = await AsyncStorage.getItem(STORAGE_KEYS.LAST_NOTIFICATION_PERMISSION_CHECK);
   const now = Date.now();
   const CHECK_INTERVAL = 60000;
 
@@ -48,7 +49,7 @@ export async function ensureNotificationPermission() {
     return;
   }
 
-  await AsyncStorage.setItem("lastNotificationPermissionCheck", now.toString());
+  await AsyncStorage.setItem(STORAGE_KEYS.LAST_NOTIFICATION_PERMISSION_CHECK, now.toString());
 }
 
 export function startPermissionCheck() {

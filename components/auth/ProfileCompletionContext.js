@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "./AuthContext";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
+import { STORAGE_KEYS, ROLES, STAFF_ROLES } from "../../constants";
 
 const ProfileCompletionContext = createContext();
 
@@ -11,7 +12,7 @@ const staffRequiredFields = ["username", "email", "password", "position", "fullN
 const staffPositionSpecificFields = {
   driver: ["vehicle", "numberPlate"],
 };
-const staffRoles = ["inventory", "finance", "admin", "driver", "sales", "supplier", "dispatcher", "customerservice"];
+const staffRoles = STAFF_ROLES;
 
 const customerRequiredFields = ["username", "email", "password", "location", "phoneNumber", "firstname", "lastname"];
 
@@ -29,7 +30,7 @@ const ProfileCompletionProvider = ({ children }) => {
     let completedCount = 0;
     let missing = [];
 
-    if (user.position === "supplier") {
+    if (user.position === ROLES.SUPPLIER) {
       supplierRequiredFields.forEach((field) => {
         if (!user[field]) {
           missing.push(field);
@@ -58,7 +59,7 @@ const ProfileCompletionProvider = ({ children }) => {
     }
 
     const totalFields =
-      user.position === "supplier"
+      user.position === ROLES.SUPPLIER
         ? supplierRequiredFields.length
         : staffRequiredFields.length + (staffPositionSpecificFields[user.position]?.length || 0);
     const completion = ((completedCount / totalFields) * 100).toFixed(2);
@@ -66,7 +67,7 @@ const ProfileCompletionProvider = ({ children }) => {
     setCompletionPercentage(completion);
     setMissingFields(missing);
     setIsComplete(missing.length === 0);
-    await AsyncStorage.setItem("profileCompletion", JSON.stringify({ completion, missing }));
+    await AsyncStorage.setItem(STORAGE_KEYS.PROFILE_COMPLETION, JSON.stringify({ completion, missing }));
   };
 
   // Local calculation for customer
@@ -87,7 +88,7 @@ const ProfileCompletionProvider = ({ children }) => {
 
     setCompletionPercentage(completion);
     setMissingFields(missing);
-    await AsyncStorage.setItem("profileCompletion", JSON.stringify({ completion, missing }));
+    await AsyncStorage.setItem(STORAGE_KEYS.PROFILE_COMPLETION, JSON.stringify({ completion, missing }));
   };
 
   // API call to sync profile completion from the backend
@@ -111,7 +112,7 @@ const ProfileCompletionProvider = ({ children }) => {
         setMissingFields(data.incompleteFields);
         setMessage(data.message);
         setIsComplete(data.isComplete);
-        await AsyncStorage.setItem("profileCompletion", JSON.stringify(data));
+        await AsyncStorage.setItem(STORAGE_KEYS.PROFILE_COMPLETION, JSON.stringify(data));
       } else {
         console.error("Failed to fetch profile completion from server");
       }
@@ -136,7 +137,7 @@ const ProfileCompletionProvider = ({ children }) => {
   }, [userData]);
 
   const refreshProfileCompletion = async () => {
-    const storedCompletion = await AsyncStorage.getItem("profileCompletion");
+    const storedCompletion = await AsyncStorage.getItem(STORAGE_KEYS.PROFILE_COMPLETION);
     if (storedCompletion) {
       const { completion, missing } = JSON.parse(storedCompletion);
       setCompletionPercentage(completion);

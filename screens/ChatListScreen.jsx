@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { View, Text, TouchableOpacity,  FlatList, Image, TextInput, StyleSheet } from "react-native";
 import { AuthContext } from "../components/auth/AuthContext";
 import { useNavigation } from "@react-navigation/native";
-import { COLORS, SIZES } from "../constants";
+import { COLORS, SIZES, ROLES } from "../constants";
 import Icon from "../constants/icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import "expo-status-bar";
@@ -24,7 +24,7 @@ const ChatListScreen = () => {
 
   const fetchUsers = async () => {
     try {
-      const userRole = userData?.position || userData?.role || "customer";
+      const userRole = userData?.position || userData?.role || ROLES.CUSTOMER;
       const datapoint = `${BACKEND_URL}/api/chat/chat-users`;
       // console.log(datapoint);
 
@@ -99,9 +99,9 @@ const ChatListScreen = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           senderId: userData._id,
-          senderRole: userData.position ? "staff" : "customer", // Default to "customer"
+          senderRole: userData.position ? "staff" : ROLES.CUSTOMER, // Default to "customer"
           receiverId: user._id,
-          receiverRole: user.position ? "staff" : "customer",
+          receiverRole: user.position ? "staff" : ROLES.CUSTOMER,
         }),
       });
 
@@ -190,7 +190,7 @@ const ChatListScreen = () => {
 
                       <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
                         <Text style={styles.username}>
-                          {capitalize(item?.fullname || item?.username)} ({capitalize(item?.position || "customer")})
+                          {capitalize(item?.fullname || item?.username)} ({capitalize(item?.position || ROLES.CUSTOMER)})
                         </Text>
                         {unreadCount > 0 && (
                           <View style={styles.unreadBadge}>
