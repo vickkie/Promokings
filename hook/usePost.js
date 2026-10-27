@@ -1,33 +1,58 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { BACKEND_PORT } from "@env"; // Import the env variable in react native defined in babel.conf
+import { BACKEND_PORT } from "@env";
 import logger from "../utils/logger";
 
-const usePost = (endpoint) => {
+const usePost = (endpoint, requiresAuth = false, token = null) => {
   const [updateStatus, setUpdateStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [errorMessage, ] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [data, setData] = useState(null);
+  const [responseData, setResponseData] = useState(null);
 
-  const updateData = async () => {
+  const handleApiCall = () => {
+    const url = `${BACKEND_PORT}/api/${endpoint}`;
+    const headers = {};
+
+    if (requiresAuth && token) {
+      headers.Authorization = `Bearer ${token}`;
+    } else if (requiresAuth) {
+      logger.warn("Authorization is required but no token was provided.");
+    }
+
+    return axios.post(url, data, {
+      headers,
+      validateStatus: (status) => status >= 200 && status < 300,
+    });
+  };
+
+  const handleSuccess = (response) => {
+    setUpdateStatus(response.status);
+    setResponseData(response.data);
+    const message = response?.data?.message || response.message;
+    setErrorMessage(message);
+  };
+
+  const handleError = (error) => {
+    setError(true);
+    const message = error.response?.data?.message || error.message || "An error occurred";
+    setErrorMessage(message);
+    setUpdateStatus(null);
+    logger.error(error);
+  };
+
+  const updateData = () => {
     if (!data) return;
 
     setIsLoading(true);
-    setError(null); // Reset error state before updating data
+    setError(false);
+    setErrorMessage(null);
 
-    try {
-      const response = await axios.post(`${BACKEND_PORT}/api/${endpoint}`, data);
-      logger.log(`${BACKEND_PORT}/api/${endpoint}`);
-      setUpdateStatus(response.status);
-    } catch (error) {
-      logger.error(error);
-      setError(true);
-      setError(errorMessage.message);
-      setUpdateStatus(null); // Reset updateStatus in case of error
-    } finally {
-      setIsLoading(false);
-    }
+    handleApiCall()
+      .then(handleSuccess)
+      .catch(handleError)
+      .finally(() => setIsLoading(false));
   };
 
   useEffect(() => {
@@ -38,16 +63,11 @@ const usePost = (endpoint) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [endpoint, data]);
 
-  const addCart = (data) => {
-    setData(data);
-    updateData();
-  };
   const postData = (data) => {
     setData(data);
-    updateData();
   };
 
-  return { updateStatus, isLoading, error, errorMessage, addCart, postData, data };
+  return { responseData, updateStatus, setUpdateStatus, isLoading, error, errorMessage, postData };
 };
 
 export default usePost;

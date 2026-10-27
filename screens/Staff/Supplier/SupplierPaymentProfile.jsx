@@ -10,7 +10,6 @@ import { COLORS, SIZES } from "../../../constants";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
 import Toast from "react-native-toast-message";
-import "../../../hook/usePost2";
 import IntlPhoneInput from "react-native-intl-phone-input";
 import { FlatList } from "react-native-gesture-handler";
 import Icon from "../../../constants/icons";

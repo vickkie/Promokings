@@ -10,7 +10,7 @@ import { COLORS, SIZES } from "../constants";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
 import "react-native-toast-message";
-import usePost2 from "../hook/usePost2";
+import usePost from "../hook/usePost";
 import IntlPhoneInput from "react-native-intl-phone-input";
 import { FlatList } from "react-native-gesture-handler";
 
@@ -38,7 +38,7 @@ const Register = ({ navigation }) => {
   const [allcountries, setallCountries] = useState([]);
   const [filteredCountries, setFilteredCountries] = useState(allcountries);
   const {  setUpdateStatus } =
-    usePost2("auth/register");
+    usePost("auth/register");
 
   useEffect(() => {
     const fetchSupplierRegistrationStatus = async () => {

@@ -12,7 +12,7 @@ import RNPickerSelect from "react-native-picker-select";
 import { SIZES, COLORS } from "../../../constants";
 import { BACKEND_PORT } from "@env";
 import Toast from "react-native-toast-message";
-import usePost2 from "../../../hook/usePost2";
+import usePost from "../../../hook/usePost";
 
 // Inline invoice/receipt HTML needs no JS and may only navigate to the
 // backend origin (MB-SEC-006).
@@ -36,7 +36,7 @@ const SalesReportScreen = () => {
 
   const [showPicker, setShowPicker] = useState({ show: false, type: "start" });
 
-  const { responseData, postData, isLoading } = usePost2("orders/salesReport");
+  const { responseData, postData, isLoading } = usePost("orders/salesReport");
 
   useEffect(() => {
     const remappedInput = {

@@ -6,7 +6,6 @@ import { SIZES, COLORS } from "../constants";
 import "../contexts/CartContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../components/auth/AuthContext";
-import "../hook/useDelete";
 import "@env";
 import "axios";
 

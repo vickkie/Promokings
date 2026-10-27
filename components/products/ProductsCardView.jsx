@@ -4,7 +4,6 @@ import { COLORS } from "../../constants";
 import styles from "./productcardview.style";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import "../../hook/usePost";
 import { AuthContext } from "../auth/AuthContext";
 import Toast from "react-native-toast-message";
 import * as FileSystem from "expo-file-system";

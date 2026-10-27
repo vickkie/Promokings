@@ -10,7 +10,7 @@ import { AuthContext } from "../../components/auth/AuthContext";
 import Toast from "react-native-toast-message";
 import Icon from "../../constants/icons";
 import * as FileSystem from "expo-file-system";
-import useDelete from "../../hook/useDelete2";
+import useDelete from "../../hook/useDelete";
 import { VERSION_LONG, VERSION_SHORT } from "@env";
 import WebView from "react-native-webview";
 import COLOR_THIEF_SOURCE from "../../constants/colorThiefSource";

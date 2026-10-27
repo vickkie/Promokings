@@ -6,7 +6,6 @@ import { COLORS } from "../../constants";
 import styles from "./productdetails.style";
 // import Animated from "react-native-reanimated";
 import Icon from "../../constants/icons";
-import "../../hook/usePost";
 import { AuthContext } from "../auth/AuthContext";
 import useFetch from "../../hook/useFetch";
 import Toast from "react-native-toast-message";

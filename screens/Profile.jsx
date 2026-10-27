@@ -10,7 +10,7 @@ import Toast from "react-native-toast-message";
 import Icon from "../constants/icons";
 import * as FileSystem from "expo-file-system";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import useDelete from "../hook/useDelete2";
+import useDelete from "../hook/useDelete";
 import { VERSION_LONG, VERSION_SHORT, BACKEND_PORT } from "@env";
 import { useCart } from "../contexts/CartContext";
 import { useWish } from "../contexts/WishContext";
