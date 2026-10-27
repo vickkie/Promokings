@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { BACKEND_PORT } from "@env"; // Import the env variable in react native defined in babel.conf
+import logger from "../utils/logger";
 
 const usePost = (endpoint) => {
   const [updateStatus, setUpdateStatus] = useState(null);
@@ -17,10 +18,10 @@ const usePost = (endpoint) => {
 
     try {
       const response = await axios.post(`${BACKEND_PORT}/api/${endpoint}`, data);
-      console.log(`${BACKEND_PORT}/api/${endpoint}`);
+      logger.log(`${BACKEND_PORT}/api/${endpoint}`);
       setUpdateStatus(response.status);
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       setError(true);
       setError(errorMessage.message);
       setUpdateStatus(null); // Reset updateStatus in case of error

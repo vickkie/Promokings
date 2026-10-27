@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import {  setItem, getItem } from "../utils/storage";
+import logger from "../utils/logger";
 
 const WishContext = createContext();
 
@@ -13,7 +14,7 @@ export const WishProvider = ({ children }) => {
         const savedWishlist = await getItem("wishlist");
         setWishlist(savedWishlist ? JSON.parse(savedWishlist) : []); // 🛠️ Parse stored data
       } catch (error) {
-        console.error("Failed to load wishlist:", error);
+        logger.error("Failed to load wishlist:", error);
       }
     };
     loadWishlist();
@@ -31,7 +32,7 @@ export const WishProvider = ({ children }) => {
   // ✅ Prevents duplicates, only adds if not already in the wishlist
   const addToWishlist = (product) => {
     if (!product || typeof product !== "object" || !product.id) {
-      console.error("Invalid product added to wishlist:", product);
+      logger.error("Invalid product added to wishlist:", product);
       return;
     }
 

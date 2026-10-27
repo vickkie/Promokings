@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 import { setItem, getItem } from "../utils/storage";
+import logger from "../utils/logger";
 
 const CartContext = createContext();
 
@@ -18,7 +19,7 @@ export const CartProvider = ({ children }) => {
           }
         }
       } catch (error) {
-        console.error("Failed to load cart:", error);
+        logger.error("Failed to load cart:", error);
       }
     };
 
@@ -34,7 +35,7 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = (product) => {
     if (!product || !product.id) {
-      console.error("Invalid product:", product);
+      logger.error("Invalid product:", product);
       return;
     }
 
