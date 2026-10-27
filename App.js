@@ -285,7 +285,7 @@ export default function App() {
                         />
                       ))}
                     </Stack.Navigator>
-                    <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
+                    <Toast config={toastConfig} />
                   </NavigationContainer>
                 </WishProvider>
               </CartProvider>
