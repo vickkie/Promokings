@@ -124,9 +124,11 @@ import DispatcherTabNavigation from "./navigation/DispatcherTabNavigation";
 
 import PushNotification from "./components/auth/pushNotification";
 import OneSignalId from "./components/auth/OneSignalId";
+import SessionRoleRedirect from "./components/auth/SessionRoleRedirect";
 import NoAccessScreen from "./components/auth/NoAccessScreen";
 import { requireRole } from "./components/auth/RoleGuard";
 import Routes from "./navigation/routes";
+import { navigationRef } from "./navigation/navigationRef";
 import { ROLES } from "./constants";
 
 enableScreens();
@@ -272,9 +274,10 @@ export default function App() {
             <ProfileCompletionProvider>
               <CartProvider>
                 <WishProvider>
-                  <NavigationContainer>
+                  <NavigationContainer ref={navigationRef}>
                     <PushNotification />
                     <OneSignalId />
+                    <SessionRoleRedirect />
                     <Stack.Navigator initialRouteName={Routes.BottomNavigation}>
                       {screens.map((screen, index) => (
                         <Stack.Screen
