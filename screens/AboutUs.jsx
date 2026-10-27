@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity, StatusBar, Image, Linking } from "react-native";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef } from "react";
 import Icon from "../constants/icons";
 import { COLORS, SIZES, SHADOWS } from "../constants";
 import { ScrollView } from "react-native-gesture-handler";

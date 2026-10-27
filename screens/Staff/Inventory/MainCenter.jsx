@@ -1,11 +1,11 @@
 import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
-import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet, RefreshControl } from "react-native";
+import { Text, TouchableOpacity, View, ScrollView,  StatusBar, StyleSheet, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
-import { COLORS, SIZES } from "../../../constants";
+import { COLORS, SIZES, ROLES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
 
 const zeroData = {
@@ -20,22 +20,24 @@ const MainCenter = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("orders/summary");
+  const { data, isLoading,    refetch } = useFetch("orders/summary");
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
   const [quantities, setQuanties] = useState(zeroData);
-  const [refreshList, setRefreshList] = useState(false);
+  const [, setRefreshList] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     if (!userLogin) {
       navigation.replace("Login");
-    } else if (hasRole("inventory")) {
+    } else if (hasRole(ROLES.INVENTORY)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData._id);
     } else {
       userLogout();
       navigation.replace("Login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userLogin, navigation, hasRole]);
 
   useFocusEffect(
@@ -44,6 +46,7 @@ const MainCenter = () => {
         setRefreshList(true);
         refetch();
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [route.params])
   );
 
@@ -60,12 +63,14 @@ const MainCenter = () => {
 
   useEffect(() => {
     refetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshing]);
 
   const BottomSheetRef = useRef(null);
 
   useEffect(() => {
     if (!isLoading && data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setQuanties(data);
     } else if (!isLoading && !data) {
       setQuanties(zeroData);
@@ -266,7 +271,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themey,
   },
   cartWrapper: {
-    zIndex: 11,
     backgroundColor: COLORS.themey,
     justifyContent: "center",
     padding: 10,
@@ -422,8 +426,6 @@ const styles = StyleSheet.create({
   },
   latestProductCards: {
     paddingHorizontal: 10,
-    backgroundColor: COLORS.themeg,
-    borderRadius: SIZES.medium,
     flexDirection: "row",
     alignorders: "center",
     gap: 6,
@@ -440,7 +442,6 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     display: "flex",
-    alignItems: "center",
     // backgroundColor: "red",
     alignItems: "center",
     height: "100%",

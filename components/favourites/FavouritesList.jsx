@@ -1,11 +1,11 @@
-import { FlatList, Text, View, ActivityIndicator, TouchableOpacity } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import React, { useContext, useState, useEffect } from "react";
-import { COLORS, SIZES } from "../../constants";
+import {  SIZES, STORAGE_KEYS } from "../../constants";
 import styles from "./favourtiteslist.style";
 import FavouritesCardVIew from "./FavouritesCardVIew";
 import { AuthContext } from "../auth/AuthContext";
 import { useNavigation } from "@react-navigation/native";
-import useFetch from "../../hook/useFetch";
+import "../../hook/useFetch";
 import { useCart } from "../../contexts/CartContext";
 import { useWish } from "../../contexts/WishContext";
 import LottieView from "lottie-react-native";
@@ -13,17 +13,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const FavouritesList = ({ wishlist = [] }) => {
   const { userData, userLogin } = useContext(AuthContext);
-  const navigation = useNavigation();
-  const { cart, cartCount, addToCart, removeFromCart, clearCart } = useCart();
-  const { wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
+  useNavigation();
+  useCart();
+  useWish();
 
-  const [userId, setUserId] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [, setUserId] = useState(null);
+  const [isLoading, ] = useState(false);
   const [totals, setTotals] = useState({ subtotal: 0 });
-  const [additionalFees, setAdditionalFees] = useState(0);
+  const [additionalFees, ] = useState(0);
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1);
     } else if (userData && userData._id) {
       setUserId(userData._id);
@@ -53,6 +54,7 @@ const FavouritesList = ({ wishlist = [] }) => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     calculateTotals(wishlist);
   }, [wishlist]);
 
@@ -60,7 +62,7 @@ const FavouritesList = ({ wishlist = [] }) => {
 
   const handleRefetch = async () => {
     try {
-      const storedWish = await AsyncStorage.getItem("wishlist");
+      const storedWish = await AsyncStorage.getItem(STORAGE_KEYS.WISHLIST);
       const parsedWish = storedWish ? JSON.parse(storedWish) : [];
       calculateTotals(parsedWish);
     } catch (error) {

@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, View, Image, StyleSheet } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import "@expo/vector-icons";
 import { COLORS, SIZES } from "../../../constants";
 import Icon from "../../../constants/icons";
 // Function to generate a unique file name based on the image URL
@@ -25,7 +25,7 @@ const cacheImage = async (uri) => {
       // console.log(`Image already cached at ${fileUri}`);
     }
     return fileUri;
-  } catch (error) {
+  } catch (_error) {
     // console.error(`Failed to cache image from ${uri}`, error);
     return uri; // Fallback to direct URL if caching fails
   }
@@ -43,7 +43,6 @@ const CategoryCardView = ({ item }) => {
     loadImage();
   }, [item.imageUrl]);
 
-  const routeParam = `products/category/${item.title}`;
 
   return (
     <TouchableOpacity

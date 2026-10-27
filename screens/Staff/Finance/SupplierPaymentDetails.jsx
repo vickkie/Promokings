@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
+import { View, Text,  TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
 
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
@@ -19,11 +19,11 @@ const OrderPaymentDetails = () => {
   const { bid, bidId, item } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorState, setErrorState] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [success, setSuccess] = useState(null);
-  const [supplierDetails, setsupplierDetails] = useState(item?.supplier);
+  const [, ] = useState(false);
+  const [, ] = useState(false);
+  const [, ] = useState(null);
+  const [, ] = useState(null);
+  const [supplierDetails, ] = useState(item?.supplier);
 
   useEffect(() => {
     if (!userLogin) {
@@ -33,16 +33,16 @@ const OrderPaymentDetails = () => {
     } else if (userData && userData._id) {
       setUserId(userData._id);
     }
-  }, [userLogin, userData]);
+  }, [userLogin, userData, navigation]);
 
-  const [step, setStep] = useState(1);
-  const [address, setAddress] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [city, setCity] = useState(userData ? userData.location : "");
-  const [email, setEmail] = useState(userData ? userData.email : "");
+  const [, ] = useState(1);
+  const [, ] = useState("");
+  const [, ] = useState("");
+  const [, ] = useState(userData ? userData.location : "");
+  const [, ] = useState(userData ? userData.email : "");
 
-  const [userId, setUserId] = useState(null);
-  const [phoneError, setPhoneError] = useState("");
+  const [, setUserId] = useState(null);
+  const [, ] = useState("");
 
   useEffect(() => {
     // console.log(item?.status);
@@ -58,9 +58,6 @@ const OrderPaymentDetails = () => {
     Linking.openURL(`tel:${phoneNumber}`);
   };
 
-  const formatCardNumber = (cardNumber) => {
-    return cardNumber.replace(/\d{4}(?=\d)/g, "$& "); // Adds space every 4 digits
-  };
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -98,7 +95,7 @@ const OrderPaymentDetails = () => {
       } else {
         setLoading(false);
       }
-    }, [item?.inventoryRequest?.selectedSupplier, userData?.TOKEN]);
+    }, [item?.inventoryRequest?.selectedSupplier]);
 
     const payment = paymentDetails;
     const preferred = payment?.preferredMethod;
@@ -386,7 +383,7 @@ const OrderPaymentDetails = () => {
                   <TouchableOpacity
                     style={styles.reachWrapper}
                     onPress={() => {
-                      supplierDetails ? handleEmailPress(supplierDetails?.email) : "";
+                      if (supplierDetails) handleEmailPress(supplierDetails?.email);
                     }}
                   >
                     <Icon name="email" size={20} />

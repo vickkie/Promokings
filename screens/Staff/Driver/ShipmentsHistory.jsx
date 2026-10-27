@@ -3,31 +3,31 @@ import {
   StyleSheet,
   View,
   Text,
-  TextInput,
+  
   TouchableOpacity,
-  Image,
+  
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
-import * as Yup from "yup";
-import * as ImagePicker from "expo-image-picker";
-import axios from "axios";
-import Toast from "react-native-toast-message";
+import "yup";
+import "expo-image-picker";
+import "axios";
+import "react-native-toast-message";
 import { COLORS, SIZES } from "../../../constants";
 import { ScrollView } from "react-native-gesture-handler";
 import useFetch from "../../../hook/useFetch";
-import { BACKEND_PORT } from "@env";
+import "@env";
 import Icon from "../../../constants/icons";
 import LatestShipments from "./LatestShipments";
 
 const ShipmentHistory = () => {
   const navigation = useNavigation();
 
-  const [refreshList, setRefreshList] = useState(false);
+  const [refreshList, ] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
+  useFetch("category");
 
   const onRefresh = useCallback(() => {}, []);
 
@@ -216,7 +216,6 @@ const styles = StyleSheet.create({
   },
   imageUrlContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
     gap: 10,
     alignItems: "center",
     justifyContent: "center",

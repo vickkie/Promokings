@@ -7,7 +7,7 @@ const ErrorFallback = ({ error, resetError }) => (
   <View style={styles.container}>
     <View style={styles.innerContainer}>
       <Text style={styles.title}>Oops!</Text>
-      <Text style={styles.subtitle}>There's an error</Text>
+      <Text style={styles.subtitle}>There&apos;s an error</Text>
       <Text style={styles.errorText}>{error.toString()}</Text>
 
       <TouchableOpacity onPress={resetError} style={styles.button}>
@@ -19,6 +19,17 @@ const ErrorFallback = ({ error, resetError }) => (
 
 const ErrorBoundary2 = ({ children }) => {
   return <ErrorBoundary FallbackComponent={ErrorFallback}>{children}</ErrorBoundary>;
+};
+
+// Wraps a screen component so a render crash is contained inside a scoped
+// fallback instead of unmounting the whole navigation container.
+export const withErrorBoundary = (Component) => {
+  const Wrapped = (props) => (
+    <ErrorBoundary2>
+      <Component {...props} />
+    </ErrorBoundary2>
+  );
+  return Wrapped;
 };
 
 const styles = StyleSheet.create({

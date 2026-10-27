@@ -7,7 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
+import { create as createAxiosInstance } from "axios";
 import axiosRetry from "axios-retry";
 
 import { BACKEND_PORT } from "@env";
@@ -15,12 +15,13 @@ import * as ImagePicker from "expo-image-picker";
 import ButtonMain from "../components/ButtonMain";
 import Toast from "react-native-toast-message";
 import { ProfileCompletionContext } from "../components/auth/ProfileCompletionContext";
-import ProfileCompletion from "./Staff/ProfileCompletion";
+import "./Staff/ProfileCompletion";
 import UserProfileCompletion from "./UserProfileCompletion";
+import Routes from "../navigation/routes";
 
 // Dedicated instance: mutating the shared axios default would
 // silently replay order/payment POSTs app-wide (MB-SEC-008).
-const retryClient = axios.create();
+const retryClient = createAxiosInstance();
 axiosRetry(retryClient, { retries: 3 });
 
 const UserDetails = () => {
@@ -32,17 +33,16 @@ const UserDetails = () => {
   const { userData, userLogin, updateUserData, userLogout } = useContext(AuthContext);
   const {
     completionPercentage,
-    missingFields,
-    message,
+    
+    
     isComplete,
-    refreshProfileCompletion,
-    syncProfileCompletionFromServer,
   } = useContext(ProfileCompletionContext);
 
   const [showPasswordFields, setShowPasswordFields] = useState(false); // State for toggling password fields
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1);
       // navigation.navigate("Login");
       return;
@@ -148,8 +148,8 @@ const UserDetails = () => {
         successUpdate();
         setLocalProfilePicture(null);
 
-        navigation.navigate("Bottom Navigation", {
-          screen: "UserDetails",
+        navigation.navigate(Routes.BottomNavigation, {
+          screen: Routes.UserDetails,
         });
       }
     } catch (err) {
@@ -224,7 +224,7 @@ const UserDetails = () => {
             // Reset the navigation stack
             navigation.reset({
               index: 0,
-              routes: [{ name: "Bottom Navigation" }],
+              routes: [{ name: Routes.BottomNavigation }],
             });
             userLogout();
           },
@@ -507,7 +507,6 @@ const styles = StyleSheet.create({
   },
   upperButtons: {
     width: SIZES.width - 20,
-    marginHorizontal: SIZES.xSmall,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -620,7 +619,6 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     width: SIZES.width - 20,
-    justifyContent: "center",
     justifyContent: "center",
     alignItems: "center",
     padding: SIZES.medium,

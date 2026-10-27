@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, TextInput,  StyleSheet, TouchableOpacity, Image } from "react-native";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { COLORS, SIZES } from "../constants";

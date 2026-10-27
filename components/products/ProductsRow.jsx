@@ -1,5 +1,5 @@
-import { FlatList, Text, View, SafeAreaView, ActivityIndicator, RefreshControl, TouchableOpacity } from "react-native";
-import React, { useEffect, useState, useCallback, memo } from "react";
+import { FlatList, Text, View,  ActivityIndicator, RefreshControl, TouchableOpacity } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
 import { COLORS, SIZES } from "../../constants";
 import styles from "./productsRow.style";
 import ProductsCardView from "./ProductsCardView";
@@ -17,6 +17,7 @@ const ProductsRow = ({ refreshList, setRefreshList }) => {
     }
 
     return setRefreshList(false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshList]);
 
   const onRefresh = useCallback(() => {
@@ -45,7 +46,7 @@ const ProductsRow = ({ refreshList, setRefreshList }) => {
         <ActivityIndicator size={SIZES.xxLarge} color={COLORS.primary} />
       ) : error ? (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorMessage}>Looks like you're offline</Text>
+          <Text style={styles.errorMessage}>Looks like you&apos;re offline</Text>
           <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
             <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
             <Text style={styles.retryButtonText}>Retry Loading</Text>

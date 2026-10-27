@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text,  TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
@@ -7,7 +7,6 @@ import LottieView from "lottie-react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import useFetch from "../../../hook/useFetch";
-import { ErrorMessage } from "formik";
 
 const DeliveryDetails = () => {
   const route = useRoute();
@@ -15,10 +14,10 @@ const DeliveryDetails = () => {
   const { deliveryId } = route.params;
   //   console.log("id", deliveryId);
 
-  const { data, isLoading: dataLoading, refetch } = useFetch(`shipment/delivery/${deliveryId}`);
+  const { data, isLoading: dataLoading } = useFetch(`shipment/delivery/${deliveryId}`);
 
   const [products, setProducts] = useState([]);
-  const [orderId, setOrderId] = useState(null);
+  const [, setOrderId] = useState(null);
   const [item, setItem] = useState(null);
   const [driverDetails, setdriverDetails] = useState(null);
 
@@ -26,12 +25,13 @@ const DeliveryDetails = () => {
     if (!dataLoading && data) {
       //   console.log(data);
       //   console.log(ErrorMessage);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setOrderId(data?.orderId?._id);
       setItem(data?.orderId);
       setdriverDetails(data?.driverId);
       setProducts(data?.orderId?.products);
     }
-  }, [data, dataLoading, ErrorMessage]);
+  }, [data, dataLoading]);
 
   const handleEmailPress = (email) => {
     Linking.openURL(`mailto:${email}`);
@@ -236,7 +236,7 @@ const DeliveryDetails = () => {
                       <TouchableOpacity
                         style={styles.reachWrapper}
                         onPress={() => {
-                          driverDetails ? handleEmailPress(driverDetails?.email) : "";
+                          if (driverDetails) handleEmailPress(driverDetails?.email);
                         }}
                       >
                         <Icon name="email" size={20} />
@@ -244,7 +244,7 @@ const DeliveryDetails = () => {
                       <TouchableOpacity
                         style={styles.reachWrapper}
                         onPress={() => {
-                          driverDetails ? handleCallPress(driverDetails?.phoneNumber) : "";
+                          if (driverDetails) handleCallPress(driverDetails?.phoneNumber);
                         }}
                       >
                         <Icon name="call" size={20} />
@@ -258,7 +258,7 @@ const DeliveryDetails = () => {
                     <Text style={styles.relatedHeader}>Customer Information</Text>
                   </View>
 
-                  <PaymentMethodComponent item={item} />
+                  {PaymentMethodComponent({ item })}
                 </View>
               </>
             ) : (

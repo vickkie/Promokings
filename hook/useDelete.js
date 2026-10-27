@@ -1,22 +1,17 @@
 import { useState } from "react";
-import axios from "axios";
-import { BACKEND_PORT } from "@env"; // Import the env variable in react native defined in babel.conf
-
-
+import { api, apiUrl } from "../utils/api";
 
 const useDelete = (baseEndpoint) => {
   const [deleteStatus, setDeleteStatus] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [errorStatus, setErrorStatus] = useState(null);
 
-  // In useDelete.js
   const deleteData = async (id, onSuccessCallback) => {
     setIsDeleting(true);
     setErrorStatus(null); // Reset error state before updating data
 
     try {
-      // console.log(`${baseEndpoint}/${id}`);
-      const response = await axios.delete(`${BACKEND_PORT}/api/${baseEndpoint}/${id}`); // Use the environment variable
+      const response = await api.delete(apiUrl(`${baseEndpoint}${id}`));
 
       setDeleteStatus(response.status);
       if (onSuccessCallback) {
@@ -30,8 +25,8 @@ const useDelete = (baseEndpoint) => {
     }
   };
 
-  const redelete = (id) => {
-    deleteData(id);
+  const redelete = (id, onSuccessCallback) => {
+    deleteData(id, onSuccessCallback);
   };
 
   return { deleteStatus, isDeleting, errorStatus, redelete };

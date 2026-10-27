@@ -8,7 +8,7 @@ import {
   Image,
   RefreshControl,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
 import { Ionicons } from "@expo/vector-icons";
@@ -43,6 +43,7 @@ const LatestProducts = ({ refreshList, setRefreshing }) => {
         setRefreshing(false);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshList]);
 
   //Parse the price to currency
@@ -104,7 +105,7 @@ const LatestProducts = ({ refreshList, setRefreshing }) => {
         <ActivityIndicator size={SIZES.xxLarge} color={COLORS.primary} />
       ) : error ? (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorMessage}>Looks like you're offline</Text>
+          <Text style={styles.errorMessage}>Looks like you&apos;re offline</Text>
           <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
             <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
             <Text style={styles.retryButtonText}>Retry Fetch</Text>
@@ -183,8 +184,6 @@ const styles = StyleSheet.create({
   },
   latestProductCards: {
     paddingHorizontal: 10,
-    backgroundColor: COLORS.themeg,
-    borderRadius: SIZES.medium,
     flexDirection: "row",
     alignItems: "center",
     gap: 6,

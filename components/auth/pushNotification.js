@@ -1,10 +1,9 @@
 import { useEffect, useContext, useRef, useState } from "react";
-import { Animated } from "react-native";
+import { Animated , View, Text, TouchableOpacity, Image, Vibration } from "react-native";
 import * as Notifications from "expo-notifications";
-import { registerForPushNotificationsAsync } from "./registerPushNotification";
+import { ensureNotificationPermission } from "./registerPushNotification";
 import { AuthContext } from "./AuthContext";
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, TouchableOpacity, Image, Vibration } from "react-native";
 import * as Haptics from "expo-haptics";
 
 // Ensure notifications are handled correctly
@@ -29,12 +28,12 @@ export default function PushNotification() {
   // State for in-app notification banner
   const [notification, setNotification] = useState(null);
 
-  const slideAnim = useRef(new Animated.Value(-100)).current; // Initial position
+  const [slideAnim] = useState(() => new Animated.Value(-100)); // Initial position
 
   useEffect(() => {
     if (!userData || !userData._id) return;
 
-    registerForPushNotificationsAsync(userData._id);
+    ensureNotificationPermission();
 
     // Foreground notification handling
     if (!notificationListenerRef.current) {
@@ -99,6 +98,7 @@ export default function PushNotification() {
       }
       if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userData?._id]);
 
   return (

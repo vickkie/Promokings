@@ -1,7 +1,7 @@
-import React, { useMemo, useCallback, useRef, forwardRef, useContext, useState, useEffect } from "react";
+import React, { useMemo, useCallback, useRef, forwardRef, useContext, useState } from "react";
 import { StyleSheet, TextInput, Text, View, TouchableOpacity, ScrollView } from "react-native";
 import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
-import { COLORS, SIZES } from "../../constants";
+import { COLORS, SIZES, ROLES } from "../../constants";
 import Icon from "../../constants/icons";
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
@@ -13,24 +13,25 @@ import axios from "axios";
 
 import { BACKEND_PORT } from "@env";
 
-const CompleteProfile = forwardRef((props, ref) => {
+const CompleteProfile = forwardRef(function CompleteProfile(props, ref) {
   const snapPoints = useMemo(() => [370, 425], []);
-  const navigation = useNavigation();
+  useNavigation();
   const {
-    completionPercentage,
+    
     missingFields,
-    message,
-    isComplete,
-    refreshProfileCompletion,
+    
+    
+    
     syncProfileCompletionFromServer,
   } = useContext(ProfileCompletionContext);
-  const { userData, userLogin, updateUserData, userLogout, hasRole } = useContext(AuthContext);
-  const [showBanner, setShowBanner] = useState(true);
+  const { userData,  updateUserData } = useContext(AuthContext);
+  const [, ] = useState(true);
 
-  const [loader, setLoader] = useState(false);
+  const [, ] = useState(false);
 
   // Create a ref for the BottomSheetModal if not provided
-  const bottomSheetRef = ref || useRef(null);
+  const fallbackRef = useRef(null);
+  const bottomSheetRef = ref || fallbackRef;
 
   const renderBackdrop = useCallback(
     (props) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} opacity={0.3} />,
@@ -71,7 +72,7 @@ const CompleteProfile = forwardRef((props, ref) => {
 
       let endpoint;
 
-      if (userData?.position === "supplier" || userData?.role === "supplier") {
+      if (userData?.position === ROLES.SUPPLIER || userData?.role === ROLES.SUPPLIER) {
         endpoint = `${BACKEND_PORT}/api/staff/updateDetails/supplier/${userData._id}`;
       } else {
         endpoint = `${BACKEND_PORT}/api/staff/updateDetails/${userData._id}`;
@@ -226,12 +227,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: SIZES.medium,
     alignItems: "center",
-  },
-  errorMessage: {
-    color: COLORS.red,
-    fontSize: 12,
-    marginBottom: 10,
-    marginStart: SIZES.large,
   },
   completeButtonText: {
     color: COLORS.white,

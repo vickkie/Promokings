@@ -7,10 +7,11 @@ import changelog from "../../assets/data/changelog.json";
 
 import { ScrollView, FlatList } from "react-native-gesture-handler";
 
-const ChangeLogMenu = forwardRef((props, ref) => {
+const ChangeLogMenu = forwardRef(function ChangeLogMenu(props, ref) {
   const snapPoints = useMemo(() => ["70%", "75%", "80%"], []);
-  const navigation = useNavigation();
-  const bottomSheetRef = ref || useRef(null);
+  useNavigation();
+  const fallbackRef = useRef(null);
+  const bottomSheetRef = ref || fallbackRef;
 
   const [changelogData, setChangelogData] = useState([]);
 
@@ -24,10 +25,6 @@ const ChangeLogMenu = forwardRef((props, ref) => {
     []
   );
 
-  const handleNavigation = (screen) => {
-    navigation.navigate(screen);
-    bottomSheetRef.current?.dismiss();
-  };
 
   const renderItem = ({ item }) => (
     <View style={styles.listContainer}>
@@ -37,7 +34,7 @@ const ChangeLogMenu = forwardRef((props, ref) => {
       </Text>
       {item.whatsNew.length > 0 && (
         <View>
-          <Text style={styles.subheading}>What's New</Text>
+          <Text style={styles.subheading}>What&apos;s New</Text>
           {item.whatsNew.map((newItem, index) => (
             <Text key={index} style={styles.itemText}>
               - {newItem}

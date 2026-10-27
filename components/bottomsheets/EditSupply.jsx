@@ -1,20 +1,20 @@
 // HomeMenu.js
 import React, { useMemo, useCallback, useRef, forwardRef, useContext, useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { COLORS, SIZES } from "../../constants";
 import Icon from "../../constants/icons";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../auth/AuthContext";
-import Toast from "react-native-toast-message";
+import "react-native-toast-message";
 
-const EditSupply = forwardRef((props, ref) => {
+const EditSupply = forwardRef(function EditSupply(props, ref) {
   const snapPoints = useMemo(() => [190, 245], []);
   const { item } = props;
   const navigation = useNavigation();
-  const { userData, userLogout, userLogin } = useContext(AuthContext);
+  const { userData,  userLogin } = useContext(AuthContext);
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
 
   useEffect(() => {
     if (!userLogin) {
@@ -25,7 +25,8 @@ const EditSupply = forwardRef((props, ref) => {
   }, [userLogin, userData]);
 
   // Create a ref for the BottomSheetModal if not provided
-  const bottomSheetRef = ref || useRef(null);
+  const fallbackRef = useRef(null);
+  const bottomSheetRef = ref || fallbackRef;
 
   const renderBackdrop = useCallback(
     (props) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} opacity={0.3} />,
@@ -37,36 +38,7 @@ const EditSupply = forwardRef((props, ref) => {
     bottomSheetRef.current?.dismiss();
   };
 
-  const showToast = (type, text1, text2) => {
-    Toast.show({
-      type: type,
-      text1: text1,
-      text2: text2 ? text2 : "",
-      visibilityTime: 3000,
-    });
-  };
 
-  const logout = () => {
-    Alert.alert(
-      "Logout",
-      "Are you sure you want to logout?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => {},
-          style: "cancel",
-        },
-        {
-          text: "Continue",
-          onPress: () => {
-            userLogout();
-            showToast("success", "You have been logged out", "Thank you for being with us");
-          },
-        },
-      ],
-      { cancelable: true }
-    );
-  };
 
   return (
     <BottomSheetModal

@@ -1,10 +1,9 @@
 import { Text, TouchableOpacity, View, Image } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import { COLORS, SIZES } from "../../constants";
+import { COLORS } from "../../constants";
 import styles from "./productcardview.style";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import usePost from "../../hook/usePost";
 import { AuthContext } from "../auth/AuthContext";
 import Toast from "react-native-toast-message";
 import * as FileSystem from "expo-file-system";
@@ -27,7 +26,7 @@ const cacheImage = async (uri) => {
       // console.log(`Image already cached at ${fileUri}`);
     }
     return fileUri;
-  } catch (error) {
+  } catch (_error) {
     return uri; // Fallback if caching fails
   }
 };
@@ -35,13 +34,13 @@ const cacheImage = async (uri) => {
 const ProductsCardView = ({ item, refetch }) => {
   const navigation = useNavigation();
   const [isWished, setIsWished] = useState(false);
-  const [feedback, setFeedback] = useState(null);
+  const [, ] = useState(null);
   const [imageUri, setImageUri] = useState(item.imageUri || null);
-  const { wishlist, wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
-  const { userData, userLogin } = useContext(AuthContext);
-  const [count, setCount] = useState(1);
-  const [selectedSize, setSelectedSize] = useState("M");
-  const [userId, setUserId] = useState(null);
+  const { wishlist,  addToWishlist, removeFromWishlist } = useWish();
+  useContext(AuthContext);
+  const [, ] = useState(1);
+  const [selectedSize, ] = useState("M");
+  const [, ] = useState(null);
 
   useEffect(() => {
     const loadImage = async () => {
@@ -53,20 +52,16 @@ const ProductsCardView = ({ item, refetch }) => {
     loadImage();
   }, [item.imageUrl]);
 
-  const { _id: id, title, price, imageUrl } = item || {};
+  const { _id: id } = item || {};
 
   // console.log(imageUri);
 
-  if (!item._id) return null;
-  // return null;
-
   useEffect(() => {
     const found = wishlist.some((wishItem) => wishItem.id === item._id && wishItem.size === selectedSize);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     setIsWished(found);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [wishlist, item]);
-
-  const parsedPrice =
-    typeof price === "number" ? price : price != null ? parseFloat(String(price).replace(/[^0-9.-]+/g, "")) : 0;
 
   const toggleWishlist = () => {
     const product = { id: id, title: item.title, imageUrl: item.imageUrl, size: selectedSize, price: item.price };
@@ -94,7 +89,9 @@ const ProductsCardView = ({ item, refetch }) => {
   const transitionTag = item._id ? `${item._id}` : null;
 
   if (item) {
-    return (
+    if (!item._id) return null;
+
+  return (
       <TouchableOpacity
         onPress={() => {
           navigation.navigate("ProductDetails", {

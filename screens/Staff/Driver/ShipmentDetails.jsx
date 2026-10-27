@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text,  TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
@@ -7,7 +7,6 @@ import LottieView from "lottie-react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import useFetch from "../../../hook/useFetch";
-import { ErrorMessage } from "formik";
 
 const ShipmentDetails = () => {
   const route = useRoute();
@@ -15,10 +14,10 @@ const ShipmentDetails = () => {
   const { deliveryId } = route.params;
   //   console.log("id", deliveryId);
 
-  const { data, isLoading: dataLoading, refetch } = useFetch(`shipment/delivery/${deliveryId}`);
+  const { data, isLoading: dataLoading } = useFetch(`shipment/delivery/${deliveryId}`);
 
   const [products, setProducts] = useState([]);
-  const [orderId, setOrderId] = useState(null);
+  const [, setOrderId] = useState(null);
   const [item, setItem] = useState(null);
   const [delivery, setDelivery] = useState(null);
   const [customerDetails, setcustomerDetails] = useState(null);
@@ -27,13 +26,14 @@ const ShipmentDetails = () => {
     if (!dataLoading && data) {
       //   console.log(data?.userId);
       //   console.log(ErrorMessage);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setDelivery(data);
       setOrderId(data?.orderId?._id);
       setItem(data?.orderId);
       setcustomerDetails(data?.orderId?.userId);
       setProducts(data?.orderId?.products);
     }
-  }, [data, dataLoading, ErrorMessage]);
+  }, [data, dataLoading]);
 
   const handleEmailPress = (email) => {
     Linking.openURL(`mailto:${email}`);
@@ -206,7 +206,7 @@ const ShipmentDetails = () => {
                       <TouchableOpacity
                         style={styles.reachWrapper}
                         onPress={() => {
-                          customerDetails ? handleEmailPress(customerDetails?.email) : "";
+                          if (customerDetails) handleEmailPress(customerDetails?.email);
                         }}
                       >
                         <Icon name="email" size={20} />
@@ -231,7 +231,7 @@ const ShipmentDetails = () => {
                     <Text style={styles.relatedHeader}>Delivery Information</Text>
                   </View>
 
-                  <PaymentMethodComponent item={item} />
+                  {PaymentMethodComponent({ item })}
                 </View>
 
                 <ScrollView style={[styles.relatedRow, { marginBottom: 10 }]}>

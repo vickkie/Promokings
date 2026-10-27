@@ -5,8 +5,9 @@ import axios from "axios";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import { AuthContext } from "./AuthContext";
-import { COLORS, SIZES } from "../../constants";
+import { COLORS, SIZES, ROLES } from "../../constants";
 import { BACKEND_PORT, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_ID_ANDROID, GOOGLE_CLIENT_ID_IOS } from "@env";
+import Routes from "../../navigation/routes";
 
 // Required so the system browser auth session can deliver the OAuth redirect
 // back into the app on Android (also closes the popup on web).
@@ -37,36 +38,11 @@ const GoogleSignInButton = ({ navigation }) => {
     selectAccount: true,
   });
 
-  useEffect(() => {
-    if (!response) {
-      return;
-    }
-
-    if (response.type === "success") {
-      // On native the code flow auto-exchanges via PKCE and exposes
-      // authentication.idToken (params.id_token is also populated).
-      const idToken = response.authentication?.idToken || response.params?.id_token;
-      if (idToken) {
-        exchangeIdToken(idToken);
-      } else {
-        setBusy(false);
-        Alert.alert("Login Failure", "Google sign-in did not return a credential. Please try again.");
-      }
-    } else if (response.type === "error") {
-      setBusy(false);
-      Alert.alert("Login Failure", response.error?.message || "Google sign-in failed. Please try again.");
-    } else {
-      // 'cancel' / 'dismiss' / 'locked' - user backed out of the browser.
-      setBusy(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [response]);
-
   const exchangeIdToken = async (idToken) => {
     setBusy(true);
     try {
       const endpoint = `${BACKEND_PORT}/api/auth/google`;
-      const res = await axios.post(endpoint, { idToken, audience: "customer" });
+      const res = await axios.post(endpoint, { idToken, audience: ROLES.CUSTOMER });
 
       if (res.status !== 200 || !res.data || !res.data.TOKEN) {
         Alert.alert("Login Failure", "Unexpected response. Please try again.");
@@ -79,7 +55,7 @@ const GoogleSignInButton = ({ navigation }) => {
 
       navigation.reset({
         index: 0,
-        routes: [{ name: "Bottom Navigation", params: { screen: "Home" } }],
+        routes: [{ name: Routes.BottomNavigation, params: { screen: Routes.Home } }],
       });
     } catch (error) {
       const status = error.response?.status;
@@ -100,6 +76,33 @@ const GoogleSignInButton = ({ navigation }) => {
       setBusy(false);
     }
   };
+
+  useEffect(() => {
+    if (!response) {
+      return;
+    }
+
+    if (response.type === "success") {
+      // On native the code flow auto-exchanges via PKCE and exposes
+      // authentication.idToken (params.id_token is also populated).
+      const idToken = response.authentication?.idToken || response.params?.id_token;
+      if (idToken) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
+        exchangeIdToken(idToken);
+      } else {
+        setBusy(false);
+        Alert.alert("Login Failure", "Google sign-in did not return a credential. Please try again.");
+      }
+    } else if (response.type === "error") {
+      setBusy(false);
+      Alert.alert("Login Failure", response.error?.message || "Google sign-in failed. Please try again.");
+    } else {
+      // 'cancel' / 'dismiss' / 'locked' - user backed out of the browser.
+      setBusy(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [response]);
+
 
   const handlePress = () => {
     if (!request || busy) {

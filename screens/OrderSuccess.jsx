@@ -7,6 +7,7 @@ import { COLORS, SIZES } from "../constants";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Icon from "../constants/icons";
 import * as Clipboard from "expo-clipboard";
+import Routes from "../navigation/routes";
 
 const OrderSuccess = () => {
   const currentDate = new Date().toLocaleString();
@@ -16,8 +17,8 @@ const OrderSuccess = () => {
 
   useEffect(() => {
     const handleBackPress = () => {
-      navigation.navigate("Bottom Navigation", {
-        screen: "Home",
+      navigation.navigate(Routes.BottomNavigation, {
+        screen: Routes.Home,
         params: { refreshList: true },
       });
 
@@ -30,7 +31,7 @@ const OrderSuccess = () => {
     return () => {
       BackHandler.removeEventListener("hardwareBackPress", handleBackPress);
     };
-  }, []);
+  }, [navigation]);
 
   const handleCopy = async () => {
     await Clipboard.setStringAsync(orderId);
@@ -88,8 +89,8 @@ const OrderSuccess = () => {
               <TouchableOpacity
                 style={styles.button}
                 onPress={() =>
-                  navigation.navigate("Bottom Navigation", {
-                    screen: "Home",
+                  navigation.navigate(Routes.BottomNavigation, {
+                    screen: Routes.Home,
                     params: { refreshList: true },
                   })
                 }

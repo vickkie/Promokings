@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator, FlatList, Image, TextInput, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity,  FlatList, Image, TextInput, StyleSheet } from "react-native";
 import { AuthContext } from "../components/auth/AuthContext";
 import { useNavigation } from "@react-navigation/native";
-import { COLORS, SIZES } from "../constants";
+import { COLORS, SIZES, ROLES } from "../constants";
 import Icon from "../constants/icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
+import "expo-status-bar";
 import LottieView from "lottie-react-native";
 import { db } from "../components/auth/firebase";
 import { ref, onValue } from "firebase/database";
@@ -22,13 +22,9 @@ const ChatListScreen = () => {
   const [unreadCounts, setUnreadCounts] = useState({}); // New state for unread counts
   const navigation = useNavigation();
 
-  useEffect(() => {
-    fetchUsers();
-  }, [searchQuery]);
-
   const fetchUsers = async () => {
     try {
-      const userRole = userData?.position || userData?.role || "customer";
+      const userRole = userData?.position || userData?.role || ROLES.CUSTOMER;
       const datapoint = `${BACKEND_URL}/api/chat/chat-users`;
       // console.log(datapoint);
 
@@ -49,6 +45,13 @@ const ChatListScreen = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
+    fetchUsers();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
+  }, [searchQuery]);
+
 
   // For each chat conversation, listen for unread messages in Firebase
   useEffect(() => {
@@ -96,9 +99,9 @@ const ChatListScreen = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           senderId: userData._id,
-          senderRole: userData.position ? "staff" : "customer", // Default to "customer"
+          senderRole: userData.position ? "staff" : ROLES.CUSTOMER, // Default to "customer"
           receiverId: user._id,
-          receiverRole: user.position ? "staff" : "customer",
+          receiverRole: user.position ? "staff" : ROLES.CUSTOMER,
         }),
       });
 
@@ -187,7 +190,7 @@ const ChatListScreen = () => {
 
                       <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
                         <Text style={styles.username}>
-                          {capitalize(item?.fullname || item?.username)} ({capitalize(item?.position || "customer")})
+                          {capitalize(item?.fullname || item?.username)} ({capitalize(item?.position || ROLES.CUSTOMER)})
                         </Text>
                         {unreadCount > 0 && (
                           <View style={styles.unreadBadge}>
@@ -265,7 +268,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themey,
   },
   cartWrapper: {
-    zIndex: 11,
     backgroundColor: COLORS.themey,
     justifyContent: "center",
     padding: 10,
@@ -274,13 +276,6 @@ const styles = StyleSheet.create({
     right: 40,
     top: 4,
     zIndex: 77,
-    alignItems: "center",
-  },
-  buttonWrap: {
-    backgroundColor: COLORS.hyperlight,
-    padding: 15,
-    borderRadius: 100,
-    justifyContent: "center",
     alignItems: "center",
   },
   buttonWrap2: {

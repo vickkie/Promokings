@@ -1,7 +1,7 @@
 import { FlatList, Text, View, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { COLORS, SIZES } from "../../constants";
+import {  SIZES, STORAGE_KEYS } from "../../constants";
 import styles from "./cartlist.style";
 import CartCardVIew from "./CartCardVIew";
 import { useNavigation } from "@react-navigation/native";
@@ -10,21 +10,23 @@ import LottieView from "lottie-react-native";
 const CartList = ({ cart }) => {
   const navigation = useNavigation();
   const [totals, setTotals] = useState({ subtotal: 0 });
-  const [additionalFees, setAdditionalFees] = useState(0);
+  const [additionalFees, ] = useState(0);
   const estimatedAmount = totals.subtotal + additionalFees;
-
-  useEffect(() => {
-    calculateTotals(cart);
-  }, [cart]);
 
   const calculateTotals = (cartItems) => {
     const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
     setTotals({ subtotal });
   };
 
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
+    calculateTotals(cart);
+  }, [cart]);
+
+
   const handleRefetch = async () => {
     try {
-      const storedCart = await AsyncStorage.getItem("cart");
+      const storedCart = await AsyncStorage.getItem(STORAGE_KEYS.CART);
       const parsedCart = storedCart ? JSON.parse(storedCart) : [];
       calculateTotals(parsedCart);
     } catch (error) {
@@ -46,7 +48,7 @@ const CartList = ({ cart }) => {
           </View>
           <View style={{ marginTop: 0, paddingBottom: 10 }}>
             <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>
-              "Oops, your cart is empty. Let's fix that!
+              &quot;Oops, your cart is empty. Let&apos;s fix that!
             </Text>
           </View>
         </View>

@@ -1,32 +1,30 @@
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, StyleSheet } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, StyleSheet , Image , Modal } from "react-native";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import BackBtn from "../../../components/BackBtn";
-import { Image } from "react-native";
+import "../../../components/BackBtn";
 import Button from "../../../components/Button";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import "@expo/vector-icons";
 import { COLORS, SIZES } from "../../../constants";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
 import Toast from "react-native-toast-message";
-import usePost2 from "../../../hook/usePost2";
 import IntlPhoneInput from "react-native-intl-phone-input";
-import { Modal } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import Icon from "../../../constants/icons";
 
 import LottieView from "lottie-react-native";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import {  useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import { parsePhoneNumberFromString } from "libphonenumber-js/min";
 
 const SupplierPaymentProfile = () => {
-  const [loader, setLoader] = useState(false);
-  const [Rsuccess, setRsuccess] = useState(false);
-  const [obsecureText, setObsecureText] = useState(true);
-  const [step, setStep] = useState(1);
+  const [, setLoader] = useState(false);
+  const phoneInputRef = useRef(null);
+  const [, setRsuccess] = useState(false);
+  const [, ] = useState(true);
+  const [, ] = useState(1);
 
   const navigation = useNavigation();
   const { userData } = useContext(AuthContext);
@@ -206,7 +204,7 @@ const SupplierPaymentProfile = () => {
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => {
-                this.phoneInput.hideModal();
+                phoneInputRef.current?.hideModal?.();
                 setFilteredCountries(countries);
               }}
             >
@@ -229,6 +227,7 @@ const SupplierPaymentProfile = () => {
           setPhoneError(err.errors[0]);
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [finalPhoneNumber]);
 
   const PaymentDetailsScreen = () => {
@@ -284,7 +283,7 @@ const SupplierPaymentProfile = () => {
       } else {
         setLoading(false);
       }
-    }, [userData?.supplierProfile?._id, userData?.TOKEN, Rsuccess]);
+    }, []);
 
     // Merge fetched data with defaults (fetched values take precedence)
     const mergedInitialValues = {
@@ -377,7 +376,7 @@ const SupplierPaymentProfile = () => {
                     <View style={!phoneError ? styles.noError : styles.focused}>
                       <IntlPhoneInput
                         placeholder={getPhoneMeta(values?.mobileMoney?.mpesaNumber)?.nationalNumber || ""}
-                        ref={(ref) => (phoneInput = ref)}
+                        ref={phoneInputRef}
                         customModal={renderCustomModal}
                         defaultCountry={getPhoneMeta(values?.mobileMoney.mpesaNumber)?.country || ""}
                         lang="EN"
@@ -590,7 +589,7 @@ const SupplierPaymentProfile = () => {
 
                   if (!selected) return null;
 
-                  const [method, { label, imagePath }] = selected;
+                  const [, {  imagePath }] = selected;
 
                   return (
                     <TouchableOpacity style={[styles.paymentMethodButton, styles.selectedPaymentMethod]}>
@@ -1023,17 +1022,6 @@ const styles = StyleSheet.create({
     fontSize: SIZES.xLarge,
     fontWeight: "bold",
     color: COLORS.themeb,
-  },
-  animationWrapper: {
-    width: 200,
-    height: 200,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  animation: {
-    width: "100%",
-    height: "100%",
   },
   detailsWrapper: {
     alignItems: "center",

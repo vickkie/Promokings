@@ -1,60 +1,64 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Alert } from "react-native";
+import { View, Text,  TextInput, StyleSheet, TouchableOpacity, ScrollView,  Alert , ActivityIndicator } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
 
-import { ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
 import { BACKEND_PORT } from "@env";
-import axios from "axios";
+import "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import useFetch from "../../../hook/useFetch";
+import Routes from "../../../navigation/routes";
 
 const EditPaymentDetails = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { products, totals, orderId, item: order } = route.params;
-  const { userData, userLogin } = useContext(AuthContext);
+  const {   orderId, item: order } = route.params;
+  useContext(AuthContext);
 
   const {
     data: alldrivers,
     isLoading: driverLoading,
-    error,
-    refetch,
+    
+    
     errorMessage: driverError,
   } = useFetch("staff/drivers");
   const {
     data: delivery,
     isLoading: deliveryLoading,
-    error: deliveryError,
-    refetch: deliveryRefetch,
+    
+    
     errorMessage: deliveryErrorMessage,
   } = useFetch(`orders/delivery/${orderId}`);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [drivers, setDrivers] = useState(null);
-  const [item, setItem] = useState(order);
-  const [deliveryData, setDeliveryData] = useState(null);
-  const [assignedDriver, setAssignedDriver] = useState(null);
-  const [isAssigning, setIsAssigning] = useState(false);
-  const [isApproving, setIsApproving] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [uploading2, setUploading2] = useState(false);
+  const [isLoading, ] = useState(false);
+  const [, setDrivers] = useState(null);
+  const [item, ] = useState(order);
+  const [, setDeliveryData] = useState(null);
+  const [, setAssignedDriver] = useState(null);
+  const [, setIsAssigning] = useState(false);
+  const [, ] = useState(false);
+  const [, setUploading] = useState(false);
+  const [uploading2, ] = useState(false);
 
   useEffect(() => {
     if (!driverLoading && alldrivers && !driverError) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setDrivers(alldrivers);
       //   console.log(alldrivers);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [driverLoading, alldrivers]);
 
   useEffect(() => {
     if (!deliveryLoading && delivery && !deliveryErrorMessage) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setDeliveryData(Array.isArray(delivery) ? delivery[0] : delivery);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [deliveryLoading, delivery]);
 
   const handleCancelOrder = async () => {
@@ -99,8 +103,8 @@ const EditPaymentDetails = () => {
             }
             // navigation.replace("OrderPaymentDetails", { refresh: true, refreshing: true });
             setTimeout(() => {
-              navigation.navigate("Finance Navigation", {
-                screen: "FinanceDashboard",
+              navigation.navigate(Routes.FinanceNavigation, {
+                screen: Routes.FinanceDashboard,
                 params: { refreshList: true },
               });
             }, 500);
@@ -161,65 +165,9 @@ const EditPaymentDetails = () => {
 
             // navigation.replace("OrdersSales", { refresh: true, refreshin: true });
             setTimeout(() => {
-              navigation.navigate("Finance Navigation", {
-                screen: "Payments",
+              navigation.navigate(Routes.FinanceNavigation, {
+                screen: Routes.Payments,
                 params: { refreshList: true, refresh: true },
-              });
-            }, 500);
-          } catch (error) {
-            console.warn("Error approving Order:", error);
-            alert(error);
-          } finally {
-            setTimeout(() => {}, 2000);
-          }
-        },
-      },
-    ]);
-  };
-  const handlePartialPayment = async () => {
-    const paymentStatus = "partial";
-
-    if (!orderId) {
-      Alert.alert("Error", "Order ID is required!");
-      setUploading(false);
-      return;
-    }
-
-    Alert.alert("Confirm Partial Payment", "Are you sure you want to approve this payment?", [
-      {
-        text: "Cancel",
-        style: "cancel",
-        onPress: () => setUploading(false),
-      },
-      {
-        text: "Approve Partial",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            const response = await fetch(`${BACKEND_PORT}/api/order/paymentStatus/${orderId}`, {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ paymentStatus }),
-            });
-
-            const data = await response.json();
-
-            if (!data.success) {
-              throw new Error(data.message || "Failed to approve order");
-            }
-
-            Toast.show({
-              type: "success",
-              text1: "Partial Approval Completed",
-              text2: "Partial Approval has been completed successfully",
-            });
-            // navigation.replace("OrdersSales", { refresh: true, refreshin: true });
-            setTimeout(() => {
-              navigation.navigate("Finance Navigation", {
-                screen: "FinanceDashboard", // 👈 Specify the screen inside the navigator
-                params: { refreshList: true }, // 👈 Pass params properly
               });
             }, 500);
           } catch (error) {

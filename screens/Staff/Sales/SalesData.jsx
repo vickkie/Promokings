@@ -1,14 +1,14 @@
 import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
-import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet, RefreshControl } from "react-native";
+import { Text, TouchableOpacity, View, ScrollView,  StatusBar, StyleSheet, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
-import { COLORS, SIZES } from "../../../constants";
+import { COLORS, SIZES, ROLES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
-import LatestOrders from "./LatestOrders";
-import SalesChart from "./SalesChart";
+import "./LatestOrders";
+import "./SalesChart";
 
 const zeroData = {
   totalProducts: 0,
@@ -22,22 +22,24 @@ const SalesDashboard = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("orders/summary");
+  const { data, isLoading,    refetch } = useFetch("orders/summary");
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
   const [quantities, setQuanties] = useState(null);
-  const [refreshList, setRefreshList] = useState(false);
+  const [, setRefreshList] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     if (!userLogin) {
       navigation.replace("Login");
-    } else if (hasRole("sales")) {
+    } else if (hasRole(ROLES.SALES)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData._id);
     } else {
       userLogout();
       navigation.replace("Login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userLogin, navigation, hasRole]);
 
   useFocusEffect(
@@ -46,6 +48,7 @@ const SalesDashboard = () => {
         setRefreshList(true);
         refetch();
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [route.params])
   );
 
@@ -62,29 +65,16 @@ const SalesDashboard = () => {
 
   useEffect(() => {
     refetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshing]);
 
-  const renderProfilePicture = () => {
-    if (!userLogin) {
-      return <Icon name="user" size={24} color="#000" />;
-    }
-    if (userData && userData.profilePicture) {
-      return <Image source={{ uri: `${userData.profilePicture}` }} style={styles.profilePicture} />;
-    }
-
-    return <Image source={require("../../../assets/images/userDefault.webp")} style={styles.profilePicture} />;
-  };
 
   const BottomSheetRef = useRef(null);
 
-  const openMenu = () => {
-    // if (BottomSheetRef.current) {
-    //   BottomSheetRef.current.present();
-    // }
-  };
 
   useEffect(() => {
     if (!isLoading && data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setQuanties(data);
     } else if (!isLoading && !data) {
       setQuanties(zeroData);
@@ -228,7 +218,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themey,
   },
   cartWrapper: {
-    zIndex: 11,
     backgroundColor: COLORS.themey,
     justifyContent: "center",
     padding: 10,

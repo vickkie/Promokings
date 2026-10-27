@@ -8,7 +8,7 @@ import {
   Image,
   RefreshControl,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
 import { Ionicons } from "@expo/vector-icons";
@@ -16,10 +16,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 const SupplierPaymentTracker = ({ refreshList, setRefreshing, setRefreshList, userData, paymentId }) => {
-  const navigation = useNavigation();
+  useNavigation();
   let token = userData?.TOKEN;
 
-  const { data, isLoading, error, refetch } = useFetch(`v3/payments/payout/${paymentId}`, true, token);
+  const { data, isLoading,  refetch } = useFetch(`v3/payments/payout/${paymentId}`, true, token);
 
   // Ensure data is an array and sort by creation date
   const dataArray = Array.isArray(data.payouts) ? data.payouts : [];
@@ -43,6 +43,7 @@ const SupplierPaymentTracker = ({ refreshList, setRefreshing, setRefreshList, us
         setRefreshList(false);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshList]);
 
   const paymentLogos = {
@@ -202,8 +203,6 @@ const styles = StyleSheet.create({
   },
   latestProductCards: {
     paddingHorizontal: 10,
-    backgroundColor: COLORS.themeg,
-    borderRadius: SIZES.medium,
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
@@ -222,7 +221,6 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     display: "flex",
-    alignItems: "center",
     // backgroundColor: "red",
     alignItems: "center",
     height: "100%",

@@ -1,29 +1,25 @@
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, StyleSheet , Image , Modal , BackHandler } from "react-native";
+import React, { useEffect, useState , useCallback, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import BackBtn from "../components/BackBtn";
-import { Image } from "react-native";
+import "../components/BackBtn";
 import Button from "../components/Button";
-import { Formik, useFormik, validateYupSchema } from "formik";
+import { Formik } from "formik";
 import * as Yup from "yup";
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../constants";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
-import Toast from "react-native-toast-message";
-import usePost2 from "../hook/usePost2";
+import "react-native-toast-message";
 import IntlPhoneInput from "react-native-intl-phone-input";
-import { Modal } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import Icon from "../constants/icons";
 
 import LottieView from "lottie-react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { BackHandler } from "react-native";
-import { useCallback } from "react";
 
 const SupplierRegister = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
+  const phoneInputRef = useRef(null);
   const [obsecureText, setObsecureText] = useState(true);
   const [step, setStep] = useState(1);
   const [Rsuccess, setRsuccess] = useState(false);
@@ -151,18 +147,19 @@ const SupplierRegister = ({ navigation }) => {
 
   useEffect(() => {
     if (step === 3 && Rsuccess && !loader) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setStep(4);
       console.log("Auto-advanced to step 4 after success");
     }
   }, [Rsuccess, loader, step]);
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     if (step > 1 && step !== 4) {
       setStep(step - 1);
     } else if (step === 4) {
       setStep(4);
       navigation.navigate("Login");
     }
-  };
+  }, [step, navigation]);
 
   const handleSignUp = async (values) => {
     setLoader(true);
@@ -238,7 +235,7 @@ const SupplierRegister = ({ navigation }) => {
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => {
-                this.phoneInput.hideModal();
+                phoneInputRef.current?.hideModal?.();
                 setFilteredCountries(countries);
               }}
             >
@@ -257,6 +254,7 @@ const SupplierRegister = ({ navigation }) => {
         .then(() => setPhoneError(""))
         .catch((err) => setPhoneError(err.errors[0]));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [finalPhoneNumber]);
 
   useEffect(() => {
@@ -271,6 +269,7 @@ const SupplierRegister = ({ navigation }) => {
           console.log(err);
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [finalMpesaNumber]);
 
   const initialValues = {
@@ -454,7 +453,7 @@ const SupplierRegister = ({ navigation }) => {
                   <Text style={styles.label}>Phone Number</Text>
                   <View style={[styles.input2, phoneError ? styles.errorb : styles.successb]}>
                     <IntlPhoneInput
-                      ref={(ref) => (phoneInput = ref)}
+                      ref={phoneInputRef}
                       customModal={renderCustomModal}
                       defaultCountry="KE"
                       lang="EN"
@@ -721,7 +720,7 @@ const SupplierRegister = ({ navigation }) => {
                           <Text style={styles.label}>Mpesa Number</Text>
 
                           <IntlPhoneInput
-                            ref={(ref) => (phoneInput = ref)}
+                            ref={phoneInputRef}
                             customModal={renderCustomModal}
                             defaultCountry="KE"
                             lang="EN"

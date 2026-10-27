@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
+import { View, Text,  TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking  } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
@@ -12,7 +12,6 @@ import { BACKEND_PORT } from "@env";
 import axios from "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import BidToInventory from "../../../components/bottomsheets/BidToInventory";
-import { Alert } from "react-native";
 import SupplierPaymentTracker from "./SupplierPaymentTracker";
 
 const SupplyDetails = () => {
@@ -29,27 +28,27 @@ const SupplyDetails = () => {
     } else if (userData && userData._id) {
       setUserId(userData._id);
     }
-  }, [userLogin, userData]);
+  }, [userLogin, userData, navigation]);
 
   const datapath = `v2/supplier/${bid?.selectedSupplier}`;
 
   const {
     data,
     isLoading: supplierLoading,
-    error,
-    errorMessage: supplierError,
+    
+    
     refetch,
   } = useFetch(datapath, true, userData?.TOKEN);
 
-  const [step, setStep] = useState(1);
-  const [address, setAddress] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [city, setCity] = useState(userData ? userData.location : "");
-  const [email, setEmail] = useState(userData ? userData.email : "");
-  const [supplierData, setSupplierData] = useState("");
+  const [, ] = useState(1);
+  const [, ] = useState("");
+  const [, ] = useState("");
+  const [, ] = useState(userData ? userData.location : "");
+  const [, ] = useState(userData ? userData.email : "");
+  const [, setSupplierData] = useState("");
 
-  const [userId, setUserId] = useState(null);
-  const [phoneError, setPhoneError] = useState("");
+  const [, setUserId] = useState(null);
+  const [, ] = useState("");
 
   useEffect(() => {
     if (!supplierLoading && data?.success) {
@@ -60,7 +59,6 @@ const SupplyDetails = () => {
 
   const BottomSheetRef = useRef(null);
 
-  const openMenu = () => BottomSheetRef.current?.present();
 
   const handleEmailPress = () => {
     Linking.openURL("mailto:inventory@promokings.co.ke");
@@ -106,7 +104,7 @@ const SupplyDetails = () => {
       } else {
         setLoading(false);
       }
-    }, [item?.inventoryRequest?.selectedSupplier, userData?.token]);
+    }, [item?.inventoryRequest?.selectedSupplier]);
 
     const payment = paymentDetails;
     const preferred = payment?.preferredMethod;

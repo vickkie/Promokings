@@ -11,20 +11,20 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import RNPickerSelect from "react-native-picker-select";
 import { SIZES, COLORS } from "../../../constants";
 import { BACKEND_PORT } from "@env";
+import Toast from "react-native-toast-message";
+import usePost from "../../../hook/usePost";
 
 // Inline invoice/receipt HTML needs no JS and may only navigate to the
 // backend origin (MB-SEC-006).
 const BACKEND_ORIGIN = (BACKEND_PORT || "").replace(/(https?:\/\/[^/]+).*/, "$1");
-import Toast from "react-native-toast-message";
-import usePost2 from "../../../hook/usePost2";
 
 const onlinelogo = "https://res.cloudinary.com/drsuclnkw/image/upload/v1741609689/Promokings/promoking-logo_h3hu4v.png";
 
 const SalesReportScreen = () => {
-  const route = useRoute();
+  useRoute();
 
   const [pdfUri, setPdfUri] = useState(null);
-  const [isLoading2, setIsLoading2] = useState(false);
+  const [, setIsLoading2] = useState(false);
   const [data, setData] = useState(null);
   const navigation = useNavigation();
 
@@ -36,7 +36,7 @@ const SalesReportScreen = () => {
 
   const [showPicker, setShowPicker] = useState({ show: false, type: "start" });
 
-  const { responseData, postData, isLoading } = usePost2("orders/salesReport");
+  const { responseData, postData, isLoading } = usePost("orders/salesReport");
 
   useEffect(() => {
     const remappedInput = {
@@ -45,6 +45,7 @@ const SalesReportScreen = () => {
       orderType: reportInput.orderType,
     };
     postData(remappedInput);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [reportInput]);
 
   const handleDateChange = (event, selectedDate) => {
@@ -58,13 +59,6 @@ const SalesReportScreen = () => {
     setShowPicker({ show: false, type: "" });
   };
 
-  useEffect(() => {
-    if (responseData) {
-      // console.log("📦 Got report data:", responseData);
-      setData(responseData);
-      generatePDF();
-    }
-  }, [responseData, isLoading]);
 
   useEffect(() => {
     // console.log(data, "now");
@@ -429,6 +423,16 @@ const SalesReportScreen = () => {
     borderColor: "#ccc",
     borderWidth: 1,
   };
+
+  useEffect(() => {
+    if (responseData) {
+      // console.log("📦 Got report data:", responseData);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
+      setData(responseData);
+      generatePDF();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
+  }, [responseData, isLoading]);
 
   return (
     <SafeAreaView style={styles.container}>

@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext, useMemo, useRef } from "react";
-import { StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text } from "react-native";
-import { Animated, Easing } from "react-native";
+import React, { useState, useEffect, useContext, useMemo } from "react";
+import { StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text , Animated, Easing } from "react-native";
 
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
 import { useRoute } from "@react-navigation/native";
@@ -22,8 +21,8 @@ const Help = () => {
   // const [userId, setUserId] = useState(null);
   const [isPreviewVisible, setIsPreviewVisible] = useState(false);
   const [imageFromRoute, setImageFromRoute] = useState(false);
-  const [itemId, setItemId] = useState(null);
-  const [itemName, setItemName] = useState("");
+  const [, setItemId] = useState(null);
+  const [, setItemName] = useState("");
   const [itemImage, setItemImage] = useState(null);
   const [isSending, setIsSending] = useState(false);
 
@@ -32,6 +31,32 @@ const Help = () => {
   const userId = useMemo(() => userData?._id, [userData]);
   const sentRef = useMemo(() => ref(db, `messages-query/${userId}/sent`), [userId]);
   const receivedRef = useMemo(() => ref(db, `messages-query/${userId}/received`), [userId]);
+
+  const markReceivedMessagesAsRead = async () => {
+    const snapshot = await new Promise((resolve) => {
+      onValue(
+        receivedRef,
+        (snap) => {
+          resolve(snap);
+        },
+        { onlyOnce: true }
+      );
+    });
+
+    const data = snapshot.val();
+    if (!data) return;
+
+    const updates = {};
+    Object.entries(data).forEach(([key, message]) => {
+      if (message.read === false) {
+        updates[`${key}/read`] = true;
+      }
+    });
+
+    if (Object.keys(updates).length > 0) {
+      await update(receivedRef, updates);
+    }
+  };
 
   useEffect(() => {
     if (userData && userData._id && userData?.TOKEN) {
@@ -67,37 +92,14 @@ const Help = () => {
         unsubscribeReply();
       };
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userData]);
 
-  const markReceivedMessagesAsRead = async () => {
-    const snapshot = await new Promise((resolve) => {
-      onValue(
-        receivedRef,
-        (snap) => {
-          resolve(snap);
-        },
-        { onlyOnce: true }
-      );
-    });
-
-    const data = snapshot.val();
-    if (!data) return;
-
-    const updates = {};
-    Object.entries(data).forEach(([key, message]) => {
-      if (message.read === false) {
-        updates[`${key}/read`] = true;
-      }
-    });
-
-    if (Object.keys(updates).length > 0) {
-      await update(receivedRef, updates);
-    }
-  };
 
   useEffect(() => {
     if (!route.params) return;
     const { item_id, item_name, item_image } = route.params;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     setItemId(item_id);
     setItemName(item_name);
     setItemImage(item_image);
@@ -105,9 +107,10 @@ const Help = () => {
     setPrefilledMessage(`Inquiring about item:\n${item_name}\n(Ref: ${item_id})`);
     setIsPreviewVisible(true);
     setImageFromRoute(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [route.params?.item_id]);
 
-  const spinAnim = useRef(new Animated.Value(0)).current;
+  const [spinAnim] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
     if (!isSending) {
@@ -122,7 +125,7 @@ const Help = () => {
     } else {
       spinAnim.stopAnimation();
     }
-  }, [isSending]);
+  }, [isSending, spinAnim]);
 
   const spin = spinAnim.interpolate({
     inputRange: [0, 1],

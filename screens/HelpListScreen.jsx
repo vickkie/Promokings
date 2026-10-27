@@ -3,7 +3,7 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ActivityIndicator,
+  
   Image,
   TextInput,
   SectionList,
@@ -12,7 +12,7 @@ import {
 import moment from "moment";
 import { AuthContext } from "../components/auth/AuthContext";
 import { useNavigation } from "@react-navigation/native";
-import { COLORS, SIZES } from "../constants";
+import { COLORS, SIZES, ROLES } from "../constants";
 import Icon from "../constants/icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import LottieView from "lottie-react-native";
@@ -26,6 +26,13 @@ const HelpListScreen = () => {
   const [loading, setLoading] = useState(true);
   const { userData } = useContext(AuthContext);
   const navigation = useNavigation();
+
+  const formatSectionHeader = (dateStr) => {
+    const date = moment(dateStr);
+    if (date.isSame(moment(), "day")) return "Today";
+    if (date.isSame(moment().subtract(1, "day"), "day")) return "Yesterday";
+    return date.format("MMM DD, YYYY");
+  };
 
   useEffect(() => {
     const messagesRef = ref(db, "messages-query");
@@ -101,12 +108,6 @@ const HelpListScreen = () => {
     };
   }, [searchQuery]);
 
-  const formatSectionHeader = (dateStr) => {
-    const date = moment(dateStr);
-    if (date.isSame(moment(), "day")) return "Today";
-    if (date.isSame(moment().subtract(1, "day"), "day")) return "Yesterday";
-    return date.format("MMM DD, YYYY");
-  };
 
   const startChat = (user) => {
     navigation.navigate("HelpAgentChatScreen", {
@@ -114,7 +115,7 @@ const HelpListScreen = () => {
         _id: user.userId,
         fullname: user.name,
         profilePicture: user.avatar,
-        role: user?.role || "customer",
+        role: user?.role || ROLES.CUSTOMER,
       },
       userData,
     });
@@ -259,7 +260,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themey,
   },
   cartWrapper: {
-    zIndex: 11,
     backgroundColor: COLORS.themey,
     justifyContent: "center",
     padding: 10,
@@ -268,13 +268,6 @@ const styles = StyleSheet.create({
     right: 40,
     top: 4,
     zIndex: 77,
-    alignItems: "center",
-  },
-  buttonWrap: {
-    backgroundColor: COLORS.hyperlight,
-    padding: 15,
-    borderRadius: 100,
-    justifyContent: "center",
     alignItems: "center",
   },
   buttonWrap2: {

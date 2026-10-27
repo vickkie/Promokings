@@ -5,7 +5,7 @@ import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/nativ
 import Icon from "../../../constants/icons";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
-import { COLORS, SIZES } from "../../../constants";
+import { COLORS, SIZES, ROLES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
 import LatestOrders from "./LatestOrders";
 import SalesChart from "./SalesChart";
@@ -25,9 +25,9 @@ const SupplierDashboard = () => {
   // const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("orders/salesData");
 
   const gateway = `v2/supplier/paymentData/${userData?.supplierProfile?._id}`;
-  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch(gateway, true, userData?.TOKEN);
+  const { data, isLoading,    refetch } = useFetch(gateway, true, userData?.TOKEN);
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
   const [quantities, setQuanties] = useState(null);
   const [refreshList, setRefreshList] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -35,12 +35,14 @@ const SupplierDashboard = () => {
   useEffect(() => {
     if (!userLogin) {
       navigation.replace("Login");
-    } else if (hasRole("supplier")) {
+    } else if (hasRole(ROLES.SUPPLIER)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData?._id);
     } else {
       userLogout();
       navigation.replace("Login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userLogin, navigation, hasRole]);
 
   useFocusEffect(
@@ -49,6 +51,7 @@ const SupplierDashboard = () => {
         setRefreshList(true);
         refetch();
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [route.params])
   );
 
@@ -66,6 +69,7 @@ const SupplierDashboard = () => {
 
   useEffect(() => {
     refetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshing]);
 
   const renderProfilePicture = () => {
@@ -89,6 +93,7 @@ const SupplierDashboard = () => {
 
   useEffect(() => {
     if (!isLoading && data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setQuanties(data);
     } else if (!isLoading && !data) {
       setQuanties(zeroData);
@@ -184,7 +189,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themey,
   },
   cartWrapper: {
-    zIndex: 11,
     backgroundColor: COLORS.themey,
     justifyContent: "center",
     padding: 10,

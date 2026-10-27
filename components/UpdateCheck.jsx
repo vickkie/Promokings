@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Button, Alert, Linking } from "react-native";
+import  { useEffect, useState } from "react";
+import {    Alert, Linking } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Application from "expo-application";
 import NetInfo from "@react-native-community/netinfo";
 import { BACKEND_PORT } from "@env";
+import { STORAGE_KEYS } from "../constants";
 
 const CHECK_UPDATE_URL = `${BACKEND_PORT}/api/version/latest`;
-const SKIPPED_VERSION_KEY = "skipped_version";
+const SKIPPED_VERSION_KEY = STORAGE_KEYS.SKIPPED_VERSION;
 const CHECK_INTERVAL = 120000;
 
 // Server-supplied downloadUrl may only be https and only point at our own
@@ -30,31 +31,13 @@ const isAllowedUpdateUrl = (url) => {
 
 export default function UpdateCheck() {
   const [updateUrl, setUpdateUrl] = useState("");
-  const [isForced, setIsForced] = useState(false);
+  const [, setIsForced] = useState(false);
   const [latestVersion, setLatestVersion] = useState(null);
-  const [isChecking, setIsChecking] = useState(false);
+  const [, setIsChecking] = useState(false);
 
   // Get current app version
   const currentVersion = Application.nativeApplicationVersion || "dev";
   const applicationName = Application.applicationName;
-
-  useEffect(() => {
-    checkForUpdates();
-    const interval = setInterval(checkForUpdates, CHECK_INTERVAL);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Function to compare versions
-  const isNewerVersion = (current, latest) => {
-    const parseVersion = (ver) => ver.split(".").map(Number);
-    const [cMajor, cMinor, cPatch] = parseVersion(current);
-    const [lMajor, lMinor, lPatch] = parseVersion(latest);
-
-    if (lMajor > cMajor) return true;
-    if (lMajor === cMajor && lMinor > cMinor) return true;
-    if (lMajor === cMajor && lMinor === cMinor && lPatch > cPatch) return true;
-    return false;
-  };
 
   const checkForUpdates = async () => {
     setIsChecking(true);
@@ -95,6 +78,19 @@ export default function UpdateCheck() {
     }
   };
 
+  // Function to compare versions
+  const isNewerVersion = (current, latest) => {
+    const parseVersion = (ver) => ver.split(".").map(Number);
+    const [cMajor, cMinor, cPatch] = parseVersion(current);
+    const [lMajor, lMinor, lPatch] = parseVersion(latest);
+
+    if (lMajor > cMajor) return true;
+    if (lMajor === cMajor && lMinor > cMinor) return true;
+    if (lMajor === cMajor && lMinor === cMinor && lPatch > cPatch) return true;
+    return false;
+  };
+
+
   const showUpdateAlert = (force, newVersion) => {
     const allowSkip = currentVersion === "dev" || !force; // Skip allowed in dev or if not forced
 
@@ -127,6 +123,14 @@ export default function UpdateCheck() {
       Alert.alert("Error", "Unable to open the update link.");
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
+    checkForUpdates();
+    const interval = setInterval(checkForUpdates, CHECK_INTERVAL);
+    return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
+  }, []);
 
   return null;
 }
