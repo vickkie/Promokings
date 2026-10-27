@@ -6,12 +6,12 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  Alert,
+  
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation , useRoute } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import * as Yup from "yup";
 import * as ImagePicker from "expo-image-picker";
@@ -19,12 +19,12 @@ import axios from "axios";
 import Toast from "react-native-toast-message";
 import { COLORS, SIZES } from "../../../constants";
 import { ScrollView } from "react-native-gesture-handler";
-import { Picker } from "@react-native-picker/picker";
-import DatePicker from "react-native-date-picker";
+import "@react-native-picker/picker";
+import "react-native-date-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { BACKEND_PORT } from "@env";
-import { useRoute } from "@react-navigation/native";
 import { AuthContext } from "../../../components/auth/AuthContext";
+import Routes from "../../../navigation/routes";
 
 const AddBid = () => {
   const navigation = useNavigation();
@@ -35,14 +35,14 @@ const AddBid = () => {
 
   // Use product details as initial values if available, or fallback to empty/default values
   const [productName, setProductName] = useState(product?.title || "");
-  const [inventoryId, setInventoryId] = useState(product?._id || null);
+  const [inventoryId, ] = useState(product?._id || null);
   const [expectedPrice, setExpectedPrice] = useState(product?.price || "");
   const [quantity, setQuantity] = useState(0);
   const [bidDescription, setBidDescription] = useState("");
   const [imageUrl, setImageUrl] = useState(product?.imageUrl || "https://i.postimg.cc/j56q20rB/images.jpg");
 
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(product?.imageUrl || "");
+  const [imagePreview, ] = useState(product?.imageUrl || "");
   const [loader, setLoader] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -53,7 +53,7 @@ const AddBid = () => {
     return endOfDay;
   });
 
-  const [open, setOpen] = useState(false); // Controls DatePicker modal
+  const [, setOpen] = useState(false); // Controls DatePicker modal
 
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
@@ -86,7 +86,7 @@ const AddBid = () => {
       setBidDescription("");
       setQuantity(0);
       setDeadline(new Date());
-    } catch (error) {
+    } catch (_error) {
       console.log("refresh failed");
     } finally {
       setTimeout(() => {
@@ -98,6 +98,7 @@ const AddBid = () => {
   useEffect(() => {
     console.log("productid", inventoryId);
     console.log("deadline", deadline);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [deadline]);
 
   const toggleEditable = () => {
@@ -159,8 +160,8 @@ const AddBid = () => {
         setDeadline(new Date());
 
         // Navigate back to inventory dashboard
-        navigation.navigate("Inventory Navigation", {
-          screen: "BidList",
+        navigation.navigate(Routes.InventoryNavigation, {
+          screen: Routes.BidList,
           params: { refreshList: true },
         });
       }
@@ -501,7 +502,6 @@ const styles = StyleSheet.create({
   },
   imageurlContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
     gap: 10,
     alignItems: "center",
     justifyContent: "center",

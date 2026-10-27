@@ -1,5 +1,5 @@
 import { TouchableOpacity, Text, View, Image, Alert } from "react-native";
-import React, { useState, useEffect, useContext, memo } from "react";
+import React, { useState,  useContext, memo } from "react";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./favouritescardview.style";
 import Icon from "../../constants/icons";
@@ -8,23 +8,22 @@ import Toast from "react-native-toast-message";
 import { useCart } from "../../contexts/CartContext";
 import { useWish } from "../../contexts/WishContext";
 
-const FavouritesCardView = memo(({ item, handleRefetch }) => {
+const FavouritesCardView = memo(function FavouritesCardView({ item, handleRefetch }) {
   const navigation = useNavigation();
   const { userData } = useContext(AuthContext);
-  const { cart, cartCount, addToCart, removeFromCart, clearCart } = useCart();
-  const { wishlist, wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
+  const {   addToCart } = useCart();
+  const {    removeFromWishlist } = useWish();
 
-  const userId = userData ? userData._id : null;
 
-  const { quantity, size, id, title, price, imageUrl } = item || {};
+  const {  size, id, title, price, imageUrl } = item || {};
   // console.log(item);
-
-  if (!id) return null; // Return null if favouriteItem is null or undefined
 
   const parsedPrice =
     typeof price === "number" ? price : price != null ? parseFloat(String(price).replace(/[^0-9.-]+/g, "")) : 0;
 
-  const [feedback, setFeedback] = useState("");
+  const [, setFeedback] = useState("");
+
+  if (!id) return null; // Return null if favouriteItem is null or undefined
 
   const deleteItem = (item) => {
     Alert.alert(
@@ -54,7 +53,7 @@ const FavouritesCardView = memo(({ item, handleRefetch }) => {
     try {
       addToCart(item);
       showToast("success", "Added to Cart", `${item.title} added to cart ❤️`);
-    } catch (error) {
+    } catch (_error) {
       setFeedback({ status: "error", message: "Failed to add to cart" });
       showToast("error", "Error occurred", "Failed to add to cart");
     } finally {
@@ -106,13 +105,15 @@ const FavouritesCardView = memo(({ item, handleRefetch }) => {
               <TouchableOpacity
                 style={styles.lovebuttons}
                 onPress={() => {
-                  userData
-                    ? navigation.navigate("Help", {
+                  if (userData) {
+                    navigation.navigate("Help", {
                         item_id: item._id,
                         item_name: item.title,
                         item_image: item.imageUrl,
-                      })
-                    : showToast("error", "Oops!", "Please log in to continue your inquiry.");
+                      });
+                  } else {
+                    showToast("error", "Oops!", "Please log in to continue your inquiry.");
+                  }
                 }}
               >
                 <Icon name="call" size={18} />

@@ -1,4 +1,4 @@
-import { FlatList, Text, View, ActivityIndicator, TouchableOpacity, RefreshControl, StyleSheet } from "react-native";
+import { FlatList, Text, View,  TouchableOpacity, RefreshControl, StyleSheet } from "react-native";
 import React, { useCallback, useState } from "react";
 import { COLORS, SIZES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
@@ -14,7 +14,7 @@ const CategoriesListBox = () => {
     setRefreshing(true);
     try {
       refetch();
-    } catch (error) {
+    } catch (_error) {
       // console.error("Failed to refresh data", error);
     } finally {
       setRefreshing(false);
@@ -79,7 +79,6 @@ export default CategoriesListBox;
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    paddingTop: SIZES.xxSmall,
     width: SIZES.width,
     paddingTop: 67,
     paddingHorizontal: 2,

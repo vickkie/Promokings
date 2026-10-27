@@ -32,7 +32,7 @@ const AddCategory = () => {
   const [uploading, setUploading] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
+  useFetch("category");
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -41,7 +41,7 @@ const AddCategory = () => {
       setImageUrl("https://i.postimg.cc/j56q20rB/images.jpg");
       setImage(null);
       setDescription("");
-    } catch (error) {
+    } catch (_error) {
       console.log("refresh failed");
     } finally {
       setTimeout(() => {
@@ -370,7 +370,6 @@ const styles = StyleSheet.create({
   },
   imageUrlContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
     gap: 10,
     alignItems: "center",
     justifyContent: "center",

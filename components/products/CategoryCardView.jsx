@@ -25,7 +25,7 @@ const cacheImage = async (uri) => {
       // console.log(`Image already cached at ${fileUri}`);
     }
     return fileUri;
-  } catch (error) {
+  } catch (_error) {
     // console.error(`Failed to cache image from ${uri}`, error);
     return uri; // Fallback to direct URL if caching fails
   }

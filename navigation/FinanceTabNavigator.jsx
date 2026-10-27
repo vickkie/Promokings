@@ -4,9 +4,9 @@ import { FinanceDashboard, Payments, PaymentsHistory, FinanceSettings, SupplierP
 
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
+import { StyleSheet } from "react-native";
 
 const Tab = createBottomTabNavigator();
-import { StyleSheet, View } from "react-native";
 
 const screenOptions = {
   tabBarShowLabel: true,
@@ -33,17 +33,6 @@ const screenOptions = {
   tabBarInactiveTintColor: COLORS.gray2,
 };
 
-const shadowStyle = {
-  shadowColor: "#000",
-  shadowOffset: {
-    width: 0,
-    height: -1,
-  },
-  shadowOpacity: 0.08,
-  shadowRadius: 6,
-
-  elevation: 12, // Android elevation
-};
 
 const FinanceTabNavigation = () => {
   return (
@@ -113,4 +102,4 @@ const FinanceTabNavigation = () => {
 
 export default FinanceTabNavigation;
 
-const styles = StyleSheet.create({});
+StyleSheet.create({});

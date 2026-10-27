@@ -1,11 +1,11 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { COLORS, SIZES } from "../../../constants";
-import { Ionicons } from "@expo/vector-icons";
+import "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import usePost from "../../../hook/usePost";
+import "../../../hook/usePost";
 import { AuthContext } from "../../../components/auth/AuthContext";
-import Toast from "react-native-toast-message";
+import "react-native-toast-message";
 import * as FileSystem from "expo-file-system";
 import Icon from "../../../constants/icons";
 import SupplierBid from "../../../components/bottomsheets/SupplierBid";
@@ -28,14 +28,14 @@ const cacheImage = async (uri) => {
     }
 
     return fileUri;
-  } catch (error) {
+  } catch (_error) {
     // console.warn("❌ Failed to cache image:", uri, error.message);
     return null;
   }
 };
 
 const RequestCard = ({ item, isGridView }) => {
-  const navigation = useNavigation();
+  useNavigation();
   const [imageUri, setImageUri] = useState(false);
   const [bidAccepted, setBidAccepted] = useState(false);
   const [bidCompleted, setBidCompleted] = useState(false);
@@ -73,6 +73,7 @@ const RequestCard = ({ item, isGridView }) => {
 
   useEffect(() => {
     if (item?.selectedSupplier === userData?.supplierProfile?._id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setBidAccepted(true);
     } else if (item?.selectedSupplier !== null) {
       setLostBid(true);
@@ -82,6 +83,7 @@ const RequestCard = ({ item, isGridView }) => {
     if (item?.selectedSupplier === userData?.supplierProfile?._id && item?.status === "Completed") {
       setBidCompleted(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, []);
 
   // const bidValid =

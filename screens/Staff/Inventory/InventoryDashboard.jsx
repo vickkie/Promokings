@@ -5,7 +5,7 @@ import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/nativ
 import Icon from "../../../constants/icons";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
-import { COLORS, SIZES } from "../../../constants";
+import { COLORS, SIZES, ROLES } from "../../../constants";
 import LatestProducts from "./LatestProducts";
 import useFetch from "../../../hook/useFetch";
 
@@ -21,9 +21,9 @@ const InventoryDashboard = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("products/stock-summary");
+  const { data, isLoading,    refetch } = useFetch("products/stock-summary");
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
   const [quantities, setQuanties] = useState(null);
   const [refreshList, setRefreshList] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -31,12 +31,14 @@ const InventoryDashboard = () => {
   useEffect(() => {
     if (!userLogin) {
       navigation.replace("Login");
-    } else if (hasRole("inventory")) {
+    } else if (hasRole(ROLES.INVENTORY)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData._id);
     } else {
       userLogout();
       navigation.replace("Login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userLogin, navigation, hasRole]);
 
   useFocusEffect(
@@ -45,6 +47,7 @@ const InventoryDashboard = () => {
         setRefreshList(true);
         refetch();
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [route.params])
   );
 
@@ -61,6 +64,7 @@ const InventoryDashboard = () => {
 
   useEffect(() => {
     refetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshing]);
 
   const renderProfilePicture = () => {
@@ -84,6 +88,7 @@ const InventoryDashboard = () => {
 
   useEffect(() => {
     if (!isLoading && data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setQuanties(data);
     } else if (!isLoading && !data) {
       setQuanties(zeroData);
@@ -238,7 +243,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themey,
   },
   cartWrapper: {
-    zIndex: 11,
     backgroundColor: COLORS.themey,
     justifyContent: "center",
     padding: 10,

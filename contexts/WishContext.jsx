@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { storage, setItem, getItem } from "../utils/storage";
+import {  setItem, getItem } from "../utils/storage";
+import logger from "../utils/logger";
+import { STORAGE_KEYS } from "../constants";
 
 const WishContext = createContext();
 
@@ -10,10 +12,10 @@ export const WishProvider = ({ children }) => {
   useEffect(() => {
     const loadWishlist = async () => {
       try {
-        const savedWishlist = await getItem("wishlist");
+        const savedWishlist = await getItem(STORAGE_KEYS.WISHLIST);
         setWishlist(savedWishlist ? JSON.parse(savedWishlist) : []); // 🛠️ Parse stored data
       } catch (error) {
-        console.error("Failed to load wishlist:", error);
+        logger.error("Failed to load wishlist:", error);
       }
     };
     loadWishlist();
@@ -22,7 +24,7 @@ export const WishProvider = ({ children }) => {
   // Save wishlist to AsyncStorage when it changes (debounced)
   useEffect(() => {
     const saveWishlist = setTimeout(() => {
-      setItem("wishlist", JSON.stringify(wishlist));
+      setItem(STORAGE_KEYS.WISHLIST, JSON.stringify(wishlist));
     }, 200); // Debounce writes to avoid excessive calls
 
     return () => clearTimeout(saveWishlist);
@@ -31,7 +33,7 @@ export const WishProvider = ({ children }) => {
   // ✅ Prevents duplicates, only adds if not already in the wishlist
   const addToWishlist = (product) => {
     if (!product || typeof product !== "object" || !product.id) {
-      console.error("Invalid product added to wishlist:", product);
+      logger.error("Invalid product added to wishlist:", product);
       return;
     }
 

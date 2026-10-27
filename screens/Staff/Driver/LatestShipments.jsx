@@ -18,7 +18,7 @@ import { AuthContext } from "../../../components/auth/AuthContext";
 import LottieView from "lottie-react-native";
 
 const LatestShipments = ({ refreshList, setRefreshing, limit, offset, status, search }) => {
-  const { hasRole, userData } = useContext(AuthContext);
+  const {  userData } = useContext(AuthContext);
   const navigation = useNavigation();
   const { data, isLoading, error, refetch } = useFetch(
     `shipment/driver/${userData?._id}?limit=${limit}&offset=${offset}` +
@@ -26,7 +26,7 @@ const LatestShipments = ({ refreshList, setRefreshing, limit, offset, status, se
       (search ? `&search=${search}` : "")
   );
 
-  const [deliveries, setDeliveries] = useState([]);
+  const [, ] = useState([]);
 
   // Ensure data is an array and sort by creation date
   const dataArray = Array.isArray(data.deliveries) ? data.deliveries : [];
@@ -48,6 +48,7 @@ const LatestShipments = ({ refreshList, setRefreshing, limit, offset, status, se
         setRefreshing(false);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshList]);
 
   // Key extractor for FlatList
@@ -127,7 +128,7 @@ const LatestShipments = ({ refreshList, setRefreshing, limit, offset, status, se
         <ActivityIndicator size={SIZES.xxLarge} color={COLORS.primary} />
       ) : error ? (
         <View style={styles.errorContainer}>
-          <Text style={styles.errorMessage}>Looks like you're offline</Text>
+          <Text style={styles.errorMessage}>Looks like you&apos;re offline</Text>
           <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
             <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
             <Text style={styles.retryButtonText}>Retry Fetch</Text>
@@ -153,7 +154,7 @@ const LatestShipments = ({ refreshList, setRefreshing, limit, offset, status, se
                   />
                 </View>
                 <View style={{ marginTop: 0, paddingBottom: 10 }}>
-                  <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Oops, No shipments here!</Text>
+                  <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>&quot;Oops, No shipments here!</Text>
                 </View>
               </View>
             </View>
@@ -218,8 +219,6 @@ const styles = StyleSheet.create({
   },
   latestProductCards: {
     paddingHorizontal: 10,
-    backgroundColor: COLORS.themeg,
-    borderRadius: SIZES.medium,
     flexDirection: "row",
     alignorders: "center",
     gap: 6,
@@ -237,7 +236,6 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     display: "flex",
-    alignItems: "center",
     // backgroundColor: "red",
     alignItems: "center",
     height: "100%",

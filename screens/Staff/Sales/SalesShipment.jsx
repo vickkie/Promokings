@@ -10,7 +10,7 @@ import {
   SafeAreaView,
   ScrollView,
 } from "react-native";
-import { COLORS, SIZES } from "../../../constants";
+import { COLORS, SIZES, ROLES } from "../../../constants";
 import Icon from "../../../constants/icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../../../components/auth/AuthContext";
@@ -28,19 +28,21 @@ const SalesShipments = () => {
   useEffect(() => {
     if (!userLogin) {
       navigation.replace("Login");
-    } else if (hasRole("sales")) {
+    } else if (hasRole(ROLES.SALES)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData._id);
     } else {
       userLogout();
       navigation.replace("Login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userLogin, navigation, hasRole, userLogout]);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [ordersData, setOrdersData] = useState([]);
-  const [products, setProducts] = useState("");
-  const [orderItems, setOrderItems] = useState("");
+  const [, setProducts] = useState("");
+  const [, setOrderItems] = useState("");
   const [refetch, setRefetch] = useState(false);
 
   const [sortedOrdersData, setSortedOrdersData] = useState([]);
@@ -53,13 +55,14 @@ const SalesShipments = () => {
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1); // Consider handling this differently, maybe redirecting to login immediately
       navigation.navigate("Login");
       return;
     } else if (userData && userData._id) {
       setUserId(userData._id);
     }
-  }, [userLogin, userData]);
+  }, [userLogin, userData, navigation]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,6 +102,7 @@ const SalesShipments = () => {
     if (!isLoading && !error && data && data.length !== 0) {
       // Destructure orders from data
       const shipments = data || [];
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setOrdersData(shipments);
 
       // Sort orders
@@ -148,9 +152,8 @@ const SalesShipments = () => {
 
           shipment.orderId.products.forEach((product) => {
             // console.log(product);
-            const items = product._id;
 
-            const { _id, title, price, imageUrl, description } = product._id || {};
+            
 
             setProducts();
 
@@ -236,8 +239,7 @@ const SalesShipments = () => {
   };
 
   const SearchResultCard = ({ deliveryDriver, deliveryId, orderId, item, products, status, icon, color, totals }) => {
-    const titles =
-      Array.isArray(products) &&
+    Array.isArray(products) &&
       products
         .map((product, index) => {
           const { title } = product._id || {};
@@ -247,7 +249,6 @@ const SalesShipments = () => {
         })
         .filter(({ title }) => Boolean(title)); // Filter out undefined titles, in case some products don't have titles
 
-    const titlesString = orderId[1];
 
     // console.log("titles", deliveryId);
 
@@ -313,7 +314,7 @@ const SalesShipments = () => {
         shippingId={item.shippingId}
       />
     ),
-    [data]
+    []
   );
 
   return (
@@ -415,7 +416,7 @@ const SalesShipments = () => {
                 />
               )}
 
-              {!isLoading && filteredOrders.length == 0 && (
+              {!isLoading && filteredOrders.length === 0 && (
                 <View style={styles.containLottie}>
                   <View style={styles.animationWrapper}>
                     <LottieView

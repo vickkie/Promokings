@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useContext, useRef } from "react";
+import React, { useState, useEffect, useMemo, useContext } from "react";
 import { Animated, Easing, StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text } from "react-native";
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -8,6 +8,7 @@ import { ref, onValue, set, update } from "firebase/database";
 import * as ImagePicker from "expo-image-picker";
 import Icon from "../constants/icons";
 import { COLORS, SIZES } from "../constants";
+import { BACKEND_PORT } from "@env";
 
 import "react-native-get-random-values";
 import uuid from "react-native-uuid";
@@ -76,6 +77,7 @@ const ChatScreen = () => {
         console.error("Error updating read status:", error)
       );
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [messages, conversationRef, userData._id]);
 
   // Allow users to pick an image
@@ -184,7 +186,7 @@ const ChatScreen = () => {
   });
   MemoizedBubble.displayName = "MemoizedBubble";
 
-  const spinAnim = useRef(new Animated.Value(0)).current;
+  const [spinAnim] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
     if (!isSending) {
@@ -199,7 +201,7 @@ const ChatScreen = () => {
     } else {
       spinAnim.stopAnimation();
     }
-  }, [isSending]);
+  }, [isSending, spinAnim]);
 
   const spin = spinAnim.interpolate({
     inputRange: [0, 1],

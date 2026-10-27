@@ -1,13 +1,13 @@
 import React, { useContext, useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { COLORS, SIZES } from "../../../constants";
+import { COLORS, SIZES, ROLES } from "../../../constants";
 import Icon from "../../../constants/icons";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
+import { create as createAxiosInstance } from "axios";
 import axiosRetry from "axios-retry";
 
 import { BACKEND_PORT } from "@env";
@@ -16,28 +16,27 @@ import ButtonMain from "../../../components/ButtonMain";
 import Toast from "react-native-toast-message";
 import ProfileCompletion from "../ProfileCompletion";
 import { ProfileCompletionContext } from "../../../components/auth/ProfileCompletionContext";
+import Routes from "../../../navigation/routes";
 
 // Dedicated instance: mutating the shared axios default would
 // silently replay order/payment POSTs app-wide (MB-SEC-008).
-const retryClient = axios.create();
+const retryClient = createAxiosInstance();
 axiosRetry(retryClient, { retries: 3 });
 
 const DispatcherProfile = () => {
   const { userData, userLogin, updateUserData, userLogout, hasRole } = useContext(AuthContext);
   const {
     completionPercentage,
-    missingFields,
-    message,
+    
+    
     isComplete,
-    refreshProfileCompletion,
-    syncProfileCompletionFromServer,
   } = useContext(ProfileCompletionContext);
 
   const navigation = useNavigation();
   const [loader, setLoader] = useState(false);
   const [profilePicture, setProfilePicture] = useState(userData?.profilePicture || null);
   const [localProfilePicture, setLocalProfilePicture] = useState(null); // New state variable for local image URI
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
   const [showPasswordFields, setShowPasswordFields] = useState(false); // State for toggling password fields
 
   useEffect(() => {
@@ -47,7 +46,8 @@ const DispatcherProfile = () => {
         routes: [{ name: "Login" }],
       });
       // console.log(userData);
-    } else if (hasRole("dispatcher")) {
+    } else if (hasRole(ROLES.DISPATCHER)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData._id);
     } else {
       userLogout();
@@ -56,6 +56,7 @@ const DispatcherProfile = () => {
         routes: [{ name: "Login" }],
       });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userData, navigation, hasRole]);
 
   const inValidForm = () => {
@@ -231,7 +232,7 @@ const DispatcherProfile = () => {
             // Reset the navigation stack
             navigation.reset({
               index: 0,
-              routes: [{ name: "Bottom Navigation" }],
+              routes: [{ name: Routes.BottomNavigation }],
             });
             userLogout();
           },
@@ -516,7 +517,6 @@ const styles = StyleSheet.create({
   },
   upperButtons: {
     width: SIZES.width - 20,
-    marginHorizontal: SIZES.xSmall,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -629,7 +629,6 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     width: SIZES.width - 20,
-    justifyContent: "center",
     justifyContent: "center",
     alignItems: "center",
     padding: SIZES.medium,

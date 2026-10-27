@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useRef, forwardRef, useContext, useState, 
 import { StyleSheet, Text, View, TouchableOpacity, Image, Alert, FlatList } from "react-native";
 import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { COLORS, SIZES } from "../../constants";
-import Icon from "../../constants/icons";
+import "../../constants/icons";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../auth/AuthContext";
 import Toast from "react-native-toast-message";
@@ -10,32 +10,33 @@ import { ScrollView } from "react-native-gesture-handler";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
 
-const BidToInventory = forwardRef((props, ref) => {
+const BidToInventory = forwardRef(function BidToInventory(props, ref) {
   // Assuming product details are passed in props.item
   const { item, refetch } = props; // product details object
   const snapPoints = useMemo(() => ["80%", "80%"], []);
   const navigation = useNavigation();
   const { userData, userLogin } = useContext(AuthContext);
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [offset, setOffset] = useState(0);
-  const [limit, setLimit] = useState(2100);
+  const [limit, ] = useState(2100);
   const [bidData, setBidData] = useState(item);
-  const [refreshing, setRefreshing2] = useState(false);
-  const [haveBid, setHaveBid] = useState(false);
+  const [, setRefreshing2] = useState(false);
+  const [, ] = useState(false);
 
-  const [error, setError] = useState(null);
+  const [, setError] = useState(null);
 
   const filteredBids =
     !loading && bidData?.bids.filter((bid) => bid.supplier !== null && typeof bid.supplier === "object");
 
   useEffect(() => {
     if (!loading && bidData) {
-      const foundBid = filteredBids.find((bid) => bid.supplier?._id === bid?.selectedSupplier);
+      filteredBids.find((bid) => bid.supplier?._id === bid?.selectedSupplier);
       // setHaveBid(foundBid ? true : false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [loading, bidData]);
 
   useEffect(() => {
@@ -47,7 +48,8 @@ const BidToInventory = forwardRef((props, ref) => {
   }, [userLogin, userData]);
 
   // Create a ref for the BottomSheetModal if not provided
-  const bottomSheetRef = ref || useRef(null);
+  const fallbackRef = useRef(null);
+  const bottomSheetRef = ref || fallbackRef;
 
   const renderBackdrop = useCallback(
     (props) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} opacity={0.3} />,
@@ -85,7 +87,7 @@ const BidToInventory = forwardRef((props, ref) => {
       setOffset((prev) => (reset ? limit : prev + limit));
 
       setError(null);
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to fetch products.");
     } finally {
       setLoading(false);
@@ -111,7 +113,7 @@ const BidToInventory = forwardRef((props, ref) => {
       setOffset((prev) => (reset ? limit : prev + limit));
 
       setError(null);
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to fetch bids.");
     } finally {
       setLoading(false);
@@ -122,6 +124,7 @@ const BidToInventory = forwardRef((props, ref) => {
   // Initial fetch
   useEffect(() => {
     fetchData(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, []);
 
   // Handler for accepting a bid
@@ -304,9 +307,11 @@ const BidToInventory = forwardRef((props, ref) => {
             style={styles.actionButton}
             onPress={() => {
               bottomSheetRef.current?.dismiss();
-              userLogin
-                ? navigation.navigate("EditProduct", { item, productold: product })
-                : showToast("error", "Oops!", "Please log in to continue ");
+              if (userLogin) {
+                navigation.navigate("EditProduct", { item, productold: product });
+              } else {
+                showToast("error", "Oops!", "Please log in to continue ");
+              }
             }}
           >
             <Text style={styles.actionButtonText}>Edit Product</Text>

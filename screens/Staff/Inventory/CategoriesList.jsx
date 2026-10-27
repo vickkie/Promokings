@@ -1,8 +1,8 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, {   } from "react";
 
 import { COLORS, SIZES } from "../../../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text,  TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 

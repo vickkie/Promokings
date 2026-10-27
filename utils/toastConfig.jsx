@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
-import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
+import  { BaseToast, ErrorToast } from "react-native-toast-message";
 import { COLORS } from "../constants";
 
 const toastConfig = {

@@ -15,10 +15,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ProductListCard from "./SalesBestCard";
 import { Ionicons } from "@expo/vector-icons";
 import Icon from "../../../constants/icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute , useFocusEffect } from "@react-navigation/native";
 import InventoryAdd from "../../../components/bottomsheets/InventoryAdd";
 
-import { useFocusEffect } from "@react-navigation/native";
 
 import { Picker } from "@react-native-picker/picker";
 import { AuthContext } from "../../../components/auth/AuthContext";
@@ -51,11 +50,24 @@ const BestProductList = () => {
 
   useEffect(() => {
     if (!isLoading && selling.success && selling.topSelling) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setData(selling.topSelling);
     }
   }, [selling, isLoading]);
 
   //refetch on update
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    try {
+      refetch();
+      navigation.setParams({ refreshList: undefined, products: "stats/getStats/best-sellingc/7" }); // Clear params
+    } catch (_error) {
+      // Handle error
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch, navigation]);
+
   useFocusEffect(
     useCallback(() => {
       if (route.params?.refreshList && !refreshList) {
@@ -67,6 +79,7 @@ const BestProductList = () => {
       return () => {
         //  cleanup logic i will add
       };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [route.params, refreshList])
   );
 
@@ -84,30 +97,15 @@ const BestProductList = () => {
 
   const BottomSheetRef = React.useRef(null);
 
-  const openMenu = () => {
-    if (BottomSheetRef.current) {
-      BottomSheetRef.current.present();
-    }
-  };
 
   useEffect(() => {
     if (data.length > 0) {
       const uniqueCategories = [...new Set(data.map((item) => item.category))];
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setCategories(uniqueCategories);
     }
   }, [data]);
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    try {
-      refetch();
-      navigation.setParams({ refreshList: undefined, products: "stats/getStats/best-sellingc/7" }); // Clear params
-    } catch (error) {
-      // Handle error
-    } finally {
-      setRefreshing(false);
-    }
-  }, [refetch]);
 
   const handleScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y;
@@ -422,10 +420,6 @@ const styles = StyleSheet.create({
     minHeight: SIZES.height - 22,
   },
   viewToggleContainer: {
-    marginBottom: 10,
-    alignItems: "center",
-  },
-  viewToggleContainer: {
     flexDirection: "row",
     padding: 10,
     display: "flex",
@@ -448,7 +442,6 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   toggleViewMode: {
-    padding: 10,
     borderRadius: 100,
     padding: 6,
     height: 50,
@@ -470,7 +463,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   searchBtn: {
-    padding: 10,
     borderRadius: 100,
     padding: 6,
     height: 50,

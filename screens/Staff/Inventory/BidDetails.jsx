@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   View,
   Text,
-  Button,
+  
   TextInput,
   StyleSheet,
   TouchableOpacity,
@@ -10,7 +10,7 @@ import {
   Image,
   ActivityIndicator,
   Linking,
-} from "react-native";
+ Alert } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
@@ -18,12 +18,11 @@ import { SIZES, COLORS } from "../../../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import useFetch from "../../../hook/useFetch";
 
-import useDelete from "../../../hook/useDelete2";
 import { BACKEND_PORT } from "@env";
 import axios from "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import BidToInventory from "../../../components/bottomsheets/BidToInventory";
-import { Alert } from "react-native";
+import Routes from "../../../navigation/routes";
 
 const BidDetails = () => {
   const route = useRoute();
@@ -34,39 +33,42 @@ const BidDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoading2, setIsLoading2] = useState(false);
 
+  const [, setUserId] = useState(null);
+
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1);
       navigation.navigate("Login");
       return;
     } else if (userData && userData._id) {
       setUserId(userData._id);
     }
-  }, [userLogin, userData]);
+  }, [userLogin, userData, navigation]);
 
   const datapath = `v2/supplier/${bid?.selectedSupplier}`;
 
   const {
     data,
     isLoading: supplierLoading,
-    error,
-    errorMessage: supplierError,
+    
+    
     refetch,
   } = useFetch(datapath, true, userData?.TOKEN);
 
-  const [step, setStep] = useState(1);
-  const [address, setAddress] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [city, setCity] = useState(userData ? userData.location : "");
-  const [email, setEmail] = useState(userData ? userData.email : "");
+  const [, ] = useState(1);
+  const [, ] = useState("");
+  const [, ] = useState("");
+  const [, ] = useState(userData ? userData.location : "");
+  const [, ] = useState(userData ? userData.email : "");
   const [supplierData, setSupplierData] = useState("");
 
-  const [userId, setUserId] = useState(null);
-  const [phoneError, setPhoneError] = useState("");
+  const [, ] = useState("");
 
   useEffect(() => {
     if (!supplierLoading && data?.success) {
       //   console.log(data?.supplier);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setSupplierData(data?.supplier);
     }
   }, [data, supplierLoading]);
@@ -125,8 +127,8 @@ const BidDetails = () => {
             Alert.alert("Order completed");
 
             setTimeout(() => {
-              navigation.navigate("Inventory Navigation", {
-                screen: "EditProductList",
+              navigation.navigate(Routes.InventoryNavigation, {
+                screen: Routes.EditProductList,
                 params: {
                   refresh: true,
                   refreshin: true,

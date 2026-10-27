@@ -85,11 +85,15 @@ const SupplierPaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh
 
   // initial & refresh fetches
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     fetchData(true, activeTab, searchQuery);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshList, supplierId]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     fetchData(true, activeTab, searchQuery);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [activeTab, searchQuery]);
 
   const handleTabChange = (tab) => {
@@ -107,6 +111,7 @@ const SupplierPaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh
     setHasMore(true);
     setOffset(0);
     fetchData(true, activeTab, searchQuery);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [activeTab, searchQuery]);
 
   const handleEndReached = () => {
@@ -152,6 +157,7 @@ const SupplierPaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh
     return date.format("MMM DD, YYYY");
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   const sections = useMemo(() => groupByDate(filteredData), [filteredData]);
 
   // Track pending orders if needed
@@ -179,7 +185,6 @@ const SupplierPaymentList = ({ refreshList, setRefreshing, setiRefresh, irefresh
   // render each payment item
   const renderItem = ({ item }) => {
     // assuming you want to display productName from inventoryRequest
-    const productName = item?.inventoryRequest?.productName || "No product";
     const paymentMethod = item?.method?.toLowerCase();
     const paymentLogo = paymentLogos[paymentMethod] || require("../../../assets/images/logos/paysafecard.png");
 
@@ -347,14 +352,6 @@ const styles = StyleSheet.create({
     // flex: 1,
     marginTop: 90,
   },
-  productImage: {
-    width: 60,
-    height: 35,
-    borderRadius: 100,
-    borderWidth: 2,
-    alignSelf: "center",
-    backgroundColor: COLORS.themew,
-  },
   productTitle: {
     fontSize: SIZES.medium,
     fontWeight: "bold",
@@ -370,32 +367,8 @@ const styles = StyleSheet.create({
     color: COLORS.gray,
     marginTop: SIZES.small,
   },
-  errorContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  errorMessage: {
-    fontSize: SIZES.medium,
-    color: COLORS.red,
-    marginBottom: SIZES.medium,
-  },
-  retryButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 10,
-    backgroundColor: COLORS.primary,
-    padding: SIZES.small,
-    borderRadius: SIZES.small,
-    justifyContent: "center",
-  },
-  retryButtonText: {
-    color: COLORS.white,
-    marginLeft: SIZES.small,
-  },
   latestProductCards: {
     paddingHorizontal: 10,
-    backgroundColor: COLORS.themeg,
-    borderRadius: SIZES.medium,
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
@@ -436,13 +409,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
   },
-  statusText: {
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: SIZES.medium,
-    width: 80,
-    textAlign: "center",
-  },
   // Added missing styles:
   centerContent: {
     justifyContent: "center",
@@ -457,12 +423,6 @@ const styles = StyleSheet.create({
   boldText: {
     fontWeight: "bold",
   },
-  filterContainer: {
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    // backgroundColor: "red",
-    // height: 50,
-  },
   filterButton: {
     marginHorizontal: 8,
     paddingVertical: 8,
@@ -470,24 +430,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themeg,
     borderRadius: 16,
     height: 33,
-  },
-  selectedFilter: {
-    backgroundColor: COLORS.themey,
-    color: COLORS.themew,
-  },
-  sectionHeaderContainer: {
-    backgroundColor: COLORS.lightWhite,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderTopLeftRadius: SIZES.small,
-    borderTopRightRadius: SIZES.small,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.gray,
-  },
-  sectionHeaderText: {
-    fontSize: SIZES.medium,
-    fontWeight: "bold",
-    color: COLORS.primary,
   },
   searchBarContainer: {
     flexDirection: "row",

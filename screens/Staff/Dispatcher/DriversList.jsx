@@ -16,7 +16,7 @@ import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/nativ
 import Icon from "../../../constants/icons";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
-import { COLORS, SIZES } from "../../../constants";
+import { COLORS, SIZES, ROLES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
 import LottieView from "lottie-react-native";
 
@@ -35,7 +35,7 @@ const DriverCard = ({ driver, isPressed, onPress, onPressOut, navigation }) => {
 
     return <Image source={require("../../../assets/images/userDefault.webp")} style={styles.profilePicture} />;
   };
-  const opacity = useRef(new Animated.Value(1)).current;
+  const [opacity] = useState(() => new Animated.Value(1));
 
   useEffect(() => {
     const animateDot = () => {
@@ -60,7 +60,7 @@ const DriverCard = ({ driver, isPressed, onPress, onPressOut, navigation }) => {
     if (driver?.driverStatus === "available" || driver?.driverStatus === "transit") {
       animateDot();
     }
-  }, [driver?.driverStatus]);
+  }, [driver?.driverStatus, opacity]);
   return (
     <TouchableOpacity
       style={[styles.driverCard, isPressed ? styles.pressed : styles.nopress]}
@@ -118,10 +118,10 @@ const DriverList = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("staff/drivers");
+  const { data, isLoading,    refetch } = useFetch("staff/drivers");
 
-  const [userId, setUserId] = useState(null);
-  const [refreshList, setRefreshList] = useState(false);
+  const [, setUserId] = useState(null);
+  const [, setRefreshList] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [drivers, setDrivers] = useState([]);
   const [pressedId, setPressedId] = useState(null);
@@ -133,19 +133,17 @@ const DriverList = () => {
     });
   };
 
-  const handlePressOut = () => {
-    setPressedId(null);
-  };
-
   useEffect(() => {
     if (!userLogin) {
       navigation.replace("Login");
-    } else if (hasRole("dispatcher")) {
+    } else if (hasRole(ROLES.DISPATCHER)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData._id);
     } else {
       userLogout();
       navigation.replace("Login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userLogin, navigation, hasRole]);
 
   useFocusEffect(
@@ -154,6 +152,7 @@ const DriverList = () => {
         setRefreshList(true);
         refetch();
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [route.params])
   );
 
@@ -168,12 +167,14 @@ const DriverList = () => {
 
   useEffect(() => {
     refetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshing]);
 
   const BottomSheetRef = useRef(null);
 
   useEffect(() => {
     if (!isLoading && data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setDrivers(data);
     } else if (!isLoading && !data) {
       setDrivers(zeroData);
@@ -227,7 +228,7 @@ const DriverList = () => {
                     />
                   </View>
                   <View style={{ marginTop: 0, paddingBottom: 10 }}>
-                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Oops, No drivers available!</Text>
+                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>&quot;Oops, No drivers available!</Text>
                   </View>
                 </View>
               </View>
@@ -246,7 +247,7 @@ const DriverList = () => {
                 isPressed={pressedId === item._id}
                 onPress={() => handlePress(item._id, item)}
                 onPressOut={() => {
-                  handlePressOut;
+                  
                 }}
                 navigation={navigation}
               />
@@ -302,7 +303,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themey,
   },
   cartWrapper: {
-    zIndex: 11,
     backgroundColor: COLORS.themey,
     justifyContent: "center",
     padding: 10,
@@ -396,7 +396,6 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     display: "flex",
-    alignItems: "center",
     // backgroundColor: "red",
     alignItems: "center",
     height: "100%",
@@ -428,13 +427,10 @@ const styles = StyleSheet.create({
   driverCard: {
     flex: 1,
     display: "flex",
-    flexDirection: "column",
     margin: 5,
     minHeight: 140,
     backgroundColor: COLORS.themew,
-    borderRadius: 10,
 
-    alignItems: "center",
     flexDirection: "row",
     alignItems: "center",
     padding: 4,

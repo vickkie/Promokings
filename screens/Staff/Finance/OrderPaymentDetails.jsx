@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
+import { View, Text,  TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Linking } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
@@ -11,35 +11,37 @@ import { AuthContext } from "../../../components/auth/AuthContext";
 const OrderPaymentDetails = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { products, totals, orderId, item } = route.params;
+  const { products,  orderId, item } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
 
   // console.log(item);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorState, setErrorState] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [success, setSuccess] = useState(null);
-  const [customerDetails, setcustomerDetails] = useState(item?.userId);
+  const [, ] = useState(false);
+  const [, ] = useState(false);
+  const [, ] = useState(null);
+  const [, ] = useState(null);
+  const [customerDetails, ] = useState(item?.userId);
+
+  const [, setUserId] = useState(null);
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1);
       navigation.navigate("Login");
       return;
     } else if (userData && userData._id) {
       setUserId(userData._id);
     }
-  }, [userLogin, userData]);
+  }, [userLogin, userData, navigation]);
 
-  const [step, setStep] = useState(1);
-  const [address, setAddress] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [city, setCity] = useState(userData ? userData.location : "");
-  const [email, setEmail] = useState(userData ? userData.email : "");
+  const [, ] = useState(1);
+  const [, ] = useState("");
+  const [, ] = useState("");
+  const [, ] = useState(userData ? userData.location : "");
+  const [, ] = useState(userData ? userData.email : "");
 
-  const [userId, setUserId] = useState(null);
-  const [phoneError, setPhoneError] = useState("");
+  const [, ] = useState("");
 
   useEffect(() => {
     // console.log(item.status);
@@ -299,7 +301,7 @@ const OrderPaymentDetails = () => {
                 <Text style={styles.relatedHeader}>Payment Information</Text>
               </View>
 
-              <PaymentMethodComponent item={item} />
+              {PaymentMethodComponent({ item })}
             </View>
 
             <View style={[styles.relatedRow, { justifyContent: "center" }]}>
@@ -325,7 +327,7 @@ const OrderPaymentDetails = () => {
                   <TouchableOpacity
                     style={styles.reachWrapper}
                     onPress={() => {
-                      customerDetails ? handleEmailPress(customerDetails?.email) : "";
+                      if (customerDetails) handleEmailPress(customerDetails?.email);
                     }}
                   >
                     <Icon name="email" size={20} />

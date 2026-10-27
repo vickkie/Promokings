@@ -5,7 +5,7 @@ import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/nativ
 import Icon from "../../../constants/icons";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import HomeMenu from "../../../components/bottomsheets/HomeMenu";
-import { COLORS, SIZES } from "../../../constants";
+import { COLORS, SIZES, ROLES } from "../../../constants";
 import useFetch from "../../../hook/useFetch";
 import LatestPayments from "./LatestPayments";
 import SalesChart from "./SalesChart";
@@ -22,9 +22,9 @@ const FinanceDashboard = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { data, isLoading, error, errorMessage, statusCode, refetch } = useFetch("orders/salesData");
+  const { data, isLoading,    refetch } = useFetch("orders/salesData");
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
   const [quantities, setQuanties] = useState(null);
   const [refreshList, setRefreshList] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -32,12 +32,14 @@ const FinanceDashboard = () => {
   useEffect(() => {
     if (!userLogin) {
       navigation.replace("Login");
-    } else if (hasRole("finance")) {
+    } else if (hasRole(ROLES.FINANCE)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(userData?._id);
     } else {
       userLogout();
       navigation.replace("Login");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userLogin, navigation, hasRole]);
 
   useFocusEffect(
@@ -51,6 +53,7 @@ const FinanceDashboard = () => {
         // Clear param to prevent infinite loops
         navigation.setParams({ refreshList: false });
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [route.params, navigation])
   );
 
@@ -68,6 +71,7 @@ const FinanceDashboard = () => {
 
   useEffect(() => {
     refetch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [refreshing]);
 
   const renderProfilePicture = () => {
@@ -91,6 +95,7 @@ const FinanceDashboard = () => {
 
   useEffect(() => {
     if (!isLoading && data) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setQuanties(data);
     } else if (!isLoading && !data) {
       setQuanties(zeroData);
@@ -191,7 +196,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themey,
   },
   cartWrapper: {
-    zIndex: 11,
     backgroundColor: COLORS.themey,
     justifyContent: "center",
     padding: 10,

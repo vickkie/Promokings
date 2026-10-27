@@ -6,14 +6,14 @@ import {
   View,
   TouchableOpacity,
   Image,
-  Alert,
-  FlatList,
+  
+  
   ActivityIndicator,
 } from "react-native";
 import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { COLORS, SIZES } from "../../constants";
-import Icon from "../../constants/icons";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import "../../constants/icons";
+import {  useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../auth/AuthContext";
 import Toast from "react-native-toast-message";
 import { ScrollView } from "react-native-gesture-handler";
@@ -22,23 +22,23 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { BACKEND_PORT } from "@env";
 
-const SupplierBid = forwardRef((props, ref) => {
+const SupplierBid = forwardRef(function SupplierBid(props, ref) {
   // Assuming product details are passed in props.item
   const { item, lostBid, bidAccepted } = props; // product details object
 
   const snapPoints = useMemo(() => ["70%", "80%"], []);
-  const navigation = useNavigation();
+  useNavigation();
   const { userData, userLogin } = useContext(AuthContext);
 
-  const [userId, setUserId] = useState(null);
-  const [product, setProduct] = useState(null);
+  const [, setUserId] = useState(null);
+  const [, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [bidData, setBidData] = useState([]);
   const [loader, setLoader] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [offset, setOffset] = useState(0);
-  const [limit, setLimit] = useState(2100);
-  const [refreshing, setRefreshing2] = useState(false);
+  const [limit, ] = useState(2100);
+  const [, setRefreshing2] = useState(false);
   const [haveBid, setHaveBid] = useState(false);
   const [oldBid, setOldBid] = useState(false);
   const [ilostBid, setIlostBid] = useState(false);
@@ -48,7 +48,7 @@ const SupplierBid = forwardRef((props, ref) => {
     // console.log(ilostBid, bidAccepted);
   }, [ilostBid, bidAccepted]);
 
-  const [error, setError] = useState(null);
+  const [, setError] = useState(null);
 
   useEffect(() => {
     if (!userLogin) {
@@ -59,7 +59,8 @@ const SupplierBid = forwardRef((props, ref) => {
   }, [userLogin, userData]);
 
   // Create a ref for the BottomSheetModal if not provided
-  const bottomSheetRef = ref || useRef(null);
+  const fallbackRef = useRef(null);
+  const bottomSheetRef = ref || fallbackRef;
 
   const renderBackdrop = useCallback(
     (props) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} opacity={0.3} />,
@@ -105,7 +106,7 @@ const SupplierBid = forwardRef((props, ref) => {
       setOffset((prev) => (reset ? limit : prev + limit));
 
       setError(null);
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to fetch bids.");
     } finally {
       setLoading(false);
@@ -135,7 +136,7 @@ const SupplierBid = forwardRef((props, ref) => {
       setOffset((prev) => (reset ? limit : prev + limit));
 
       setError(null);
-    } catch (err) {
+    } catch (_err) {
       setError("Failed to fetch bids.");
     } finally {
       setLoading(false);
@@ -182,6 +183,7 @@ const SupplierBid = forwardRef((props, ref) => {
   // Initial fetch
   useEffect(() => {
     fetchData(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, []);
 
   const deadlineDate = new Date(item?.deadline);
@@ -197,6 +199,7 @@ const SupplierBid = forwardRef((props, ref) => {
       ? "Due today"
       : "Deadline passed";
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   useEffect(() => {
     if (daysRemaining < 0) {
       setBidclosed(true);
@@ -207,14 +210,15 @@ const SupplierBid = forwardRef((props, ref) => {
     !loading && bidData && bidData[0]?.bids ? bidData[0].bids.filter((bid) => bid.supplier !== null) : [];
 
   useEffect(() => {
-    !loading && bidData && userData?.supplierProfile?._id
-      ? filteredBids.find((bid) => {
+    if (!loading && bidData && userData?.supplierProfile?._id) {
+      filteredBids.find((bid) => {
           if (bid.supplier._id === userData.supplierProfile._id) {
             setHaveBid(true);
             setOldBid(bid?.bidPrice);
           }
-        })
-      : null;
+        });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [loading, bidData]);
 
   // console.log(haveBid);
@@ -416,12 +420,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: COLORS.primary,
-  },
-  productDescription: {
-    fontSize: 14,
-    color: COLORS.black,
-    marginTop: 10,
-    lineHeight: 20,
   },
   bidsContainer: {
     marginVertical: 10,

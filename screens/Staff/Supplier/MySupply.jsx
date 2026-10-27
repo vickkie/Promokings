@@ -2,7 +2,7 @@ import {
   FlatList,
   Text,
   View,
-  ActivityIndicator,
+  
   TouchableOpacity,
   RefreshControl,
   StyleSheet,
@@ -14,10 +14,9 @@ import useFetch from "../../../hook/useFetch";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Icon from "../../../constants/icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute , useFocusEffect } from "@react-navigation/native";
 import InventoryAdd from "../../../components/bottomsheets/InventoryAdd";
 
-import { useFocusEffect } from "@react-navigation/native";
 
 import { Picker } from "@react-native-picker/picker";
 import RequestCard from "./RequestCard";
@@ -50,6 +49,18 @@ const MySupply = () => {
   const inputRef = useRef(null);
 
   //refetch on update
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    try {
+      refetch();
+      navigation.setParams({ refreshList: undefined, products: "products" }); // Clear params
+    } catch (_error) {
+      // Handle error
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refetch, navigation]);
+
   useFocusEffect(
     useCallback(() => {
       if (route.params?.refreshList && !refreshList) {
@@ -61,6 +72,7 @@ const MySupply = () => {
       return () => {
         //  cleanup logic i will add
       };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
     }, [route.params, refreshList])
   );
 
@@ -78,30 +90,15 @@ const MySupply = () => {
 
   const BottomSheetRef = React.useRef(null);
 
-  const openMenu = () => {
-    if (BottomSheetRef.current) {
-      BottomSheetRef.current.present();
-    }
-  };
 
   useEffect(() => {
     if (data.length > 0) {
       const uniqueStatus = [...new Set(data.map((item) => item.status))];
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setstatuses(uniqueStatus);
     }
   }, [data]);
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    try {
-      refetch();
-      navigation.setParams({ refreshList: undefined, products: "products" }); // Clear params
-    } catch (error) {
-      // Handle error
-    } finally {
-      setRefreshing(false);
-    }
-  }, [refetch]);
 
   const handleScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y;
@@ -129,7 +126,7 @@ const MySupply = () => {
   // Filter products based on selected category, selected and search text
   const filteredData = data.filter((item) => item.productName.toLowerCase().includes(searchText.toLowerCase()));
 
-  const now = new Date();
+  new Date();
 
   const pendingSupplies = Array.isArray(filteredData)
     ? filteredData.filter((bid) => bid.status !== "Completed").length
@@ -224,7 +221,7 @@ const MySupply = () => {
                 />
               </View>
               <View style={{ marginTop: 0, paddingBottom: 20 }}>
-                <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Loading!</Text>
+                <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>&quot;Loading!</Text>
               </View>
             </View>
           </View>
@@ -266,7 +263,7 @@ const MySupply = () => {
                     />
                   </View>
                   <View style={{ marginTop: 0, paddingBottom: 20 }}>
-                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>"Oops, Nothing here!</Text>
+                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>&quot;Oops, Nothing here!</Text>
                     <TouchableOpacity onPress={refetch} style={styles.retryButton}>
                       <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
                       <Text style={styles.retryButtonText}>Retry Again</Text>
@@ -456,10 +453,6 @@ const styles = StyleSheet.create({
     minHeight: SIZES.height - 22,
   },
   viewToggleContainer: {
-    marginBottom: 10,
-    alignItems: "center",
-  },
-  viewToggleContainer: {
     flexDirection: "row",
     padding: 10,
     display: "flex",
@@ -482,7 +475,6 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   toggleViewMode: {
-    padding: 10,
     borderRadius: 100,
     padding: 6,
     height: 50,
@@ -504,7 +496,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   searchBtn: {
-    padding: 10,
     borderRadius: 100,
     padding: 6,
     height: 50,

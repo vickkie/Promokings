@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useRef, forwardRef, useContext, useState, useEffect } from "react";
+import React, { useMemo, useCallback, useRef, forwardRef, useContext, useState } from "react";
 import { StyleSheet, TextInput, Text, View, TouchableOpacity, ScrollView } from "react-native";
 import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { COLORS, SIZES } from "../../constants";
@@ -13,24 +13,25 @@ import axios from "axios";
 
 import { BACKEND_PORT } from "@env";
 
-const CustomerCompleteProfile = forwardRef((props, ref) => {
+const CustomerCompleteProfile = forwardRef(function CustomerCompleteProfile(props, ref) {
   const snapPoints = useMemo(() => [370, 425], []);
-  const navigation = useNavigation();
+  useNavigation();
   const {
-    completionPercentage,
+    
     missingFields,
-    message,
-    isComplete,
-    refreshProfileCompletion,
+    
+    
+    
     syncProfileCompletionFromServer,
   } = useContext(ProfileCompletionContext);
-  const { userData, userLogin, updateUserData, userLogout, hasRole } = useContext(AuthContext);
-  const [showBanner, setShowBanner] = useState(true);
+  const { userData,  updateUserData } = useContext(AuthContext);
+  const [, ] = useState(true);
 
-  const [loader, setLoader] = useState(false);
+  const [, ] = useState(false);
 
   // Create a ref for the BottomSheetModal if not provided
-  const bottomSheetRef = ref || useRef(null);
+  const fallbackRef = useRef(null);
+  const bottomSheetRef = ref || fallbackRef;
 
   const renderBackdrop = useCallback(
     (props) => <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} opacity={0.3} />,
@@ -218,12 +219,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: SIZES.medium,
     alignItems: "center",
-  },
-  errorMessage: {
-    color: COLORS.red,
-    fontSize: 12,
-    marginBottom: 10,
-    marginStart: SIZES.large,
   },
   completeButtonText: {
     color: COLORS.white,

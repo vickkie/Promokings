@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { COLORS, SIZES } from "../constants";
 import Icon from "../constants/icons";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
 import LottieView from "lottie-react-native";
 import { BACKEND_PORT } from "@env";
@@ -27,21 +27,22 @@ const Orders = () => {
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1);
       navigation.navigate("Login");
       return;
     } else if (userData && userData._id) {
       setUserId(userData._id);
     }
-  }, [userLogin, userData]);
+  }, [userLogin, userData, navigation]);
 
   // const { data, isLoading, error, refetch } = useFetch(`orders/user/${userId}`);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [ordersData, setOrdersData] = useState([]);
-  const [products, setProducts] = useState("");
-  const [orderItems, setOrderItems] = useState("");
+  const [, setProducts] = useState("");
+  const [, setOrderItems] = useState("");
 
   const [sortedOrdersData, setSortedOrdersData] = useState([]);
   const [last3orders, setlast3orders] = useState([]);
@@ -53,13 +54,14 @@ const Orders = () => {
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1); // Consider handling this differently, maybe redirecting to login immediately
       navigation.navigate("Login");
       return;
     } else if (userData && userData._id) {
       setUserId(userData._id);
     }
-  }, [userLogin, userData]);
+  }, [userLogin, userData, navigation]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -97,6 +99,7 @@ const Orders = () => {
     if (!isLoading && !error && data.orders && data.orders.length !== 0) {
       // Destructure orders from data
       const orders = data.orders || [];
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setOrdersData(orders);
 
       // Sort orders
@@ -155,9 +158,8 @@ const Orders = () => {
 
           order.products.forEach((product) => {
             // console.log(product);
-            const items = product._id;
 
-            const { _id, title, price, imageUrl, description } = product._id || {};
+            
 
             setProducts();
 
@@ -316,7 +318,7 @@ const Orders = () => {
         shippingId={item.shippingId}
       />
     ),
-    [data]
+    []
   );
 
   return (
@@ -416,7 +418,7 @@ const Orders = () => {
                 />
               )}
 
-              {!isLoading && filteredOrders.length == 0 && (
+              {!isLoading && filteredOrders.length === 0 && (
                 <View style={styles.containLottie}>
                   <View style={styles.animationWrapper}>
                     <LottieView

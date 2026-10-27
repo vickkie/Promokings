@@ -1,19 +1,17 @@
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, StyleSheet , Image , Modal } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackBtn from "../components/BackBtn";
-import { Image } from "react-native";
 import Button from "../components/Button";
-import { Formik, validateYupSchema } from "formik";
+import { Formik } from "formik";
 import * as Yup from "yup";
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../constants";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
-import Toast from "react-native-toast-message";
-import usePost2 from "../hook/usePost2";
+import "react-native-toast-message";
+import usePost from "../hook/usePost";
 import IntlPhoneInput from "react-native-intl-phone-input";
-import { Modal } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 
 const validationSchema = Yup.object().shape({
@@ -31,6 +29,7 @@ const validationSchema = Yup.object().shape({
 
 const Register = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
+  const phoneInputRef = useRef(null);
   const [allowSupplierRegister, setAllowSupplierRegister] = useState(false);
   const [obsecureText, setObsecureText] = useState(true);
 
@@ -38,8 +37,8 @@ const Register = ({ navigation }) => {
   const [phoneError, setPhoneError] = useState("");
   const [allcountries, setallCountries] = useState([]);
   const [filteredCountries, setFilteredCountries] = useState(allcountries);
-  const { responseData, setUpdateStatus, updateStatus, isLoading, error, errorMessage, postData } =
-    usePost2("auth/register");
+  const {  setUpdateStatus } =
+    usePost("auth/register");
 
   useEffect(() => {
     const fetchSupplierRegistrationStatus = async () => {
@@ -173,7 +172,7 @@ const Register = ({ navigation }) => {
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => {
-                this.phoneInput.hideModal();
+                phoneInputRef.current?.hideModal?.();
                 setFilteredCountries(countries);
               }}
             >
@@ -281,7 +280,7 @@ const Register = ({ navigation }) => {
 
                 <View style={[styles.input2, phoneError ? styles.errorb : styles.successb]}>
                   <IntlPhoneInput
-                    ref={(ref) => (phoneInput = ref)}
+                    ref={phoneInputRef}
                     customModal={renderCustomModal}
                     defaultCountry="KE"
                     lang="EN"

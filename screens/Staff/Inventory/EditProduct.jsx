@@ -24,6 +24,7 @@ import { Picker } from "@react-native-picker/picker";
 import useFetch from "../../../hook/useFetch";
 
 import { BACKEND_PORT } from "@env";
+import Routes from "../../../navigation/routes";
 
 const EditProduct = () => {
   const navigation = useNavigation();
@@ -57,12 +58,13 @@ const EditProduct = () => {
   const [uploading, setUploading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [suppliers, setSuppliers] = useState([]);
-  const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
+  const { data: categories } = useFetch("category");
 
   const { data: supplierData, isLoading: isSuppliersLoading, error: supplierError } = useFetch("v2/supplier/names");
 
   useEffect(() => {
     if (!isSuppliersLoading && !supplierError && supplierData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setSuppliers(supplierData?.suppliers);
     }
 
@@ -86,7 +88,7 @@ const EditProduct = () => {
       setDescription(product?.description || "");
       setQuantity(product?.quantity || 0);
       setFeatured(product?.featured);
-    } catch (error) {
+    } catch (_error) {
       console.log("refresh failed");
     } finally {
       setTimeout(() => {
@@ -132,7 +134,7 @@ const EditProduct = () => {
       if (response.status === 200 || response.status === 204) {
         showToast("success", "Product deleted successfully!");
 
-        navigation.navigate("Inventory Navigation", {
+        navigation.navigate(Routes.InventoryNavigation, {
           screen: {
             name: "InventoryDashboard",
             refreshList: true,
@@ -182,7 +184,7 @@ const EditProduct = () => {
       if (response.status === 200) {
         showToast("success", "Product updated successfully!");
 
-        navigation.navigate("Inventory Navigation", {
+        navigation.navigate(Routes.InventoryNavigation, {
           screen: {
             name: "EditProductsList",
             refreshList: true,
@@ -265,11 +267,13 @@ const EditProduct = () => {
 
     if (selectedSupplier) {
       // console.log("Found supplier:", selectedSupplier.name);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setSupplier(selectedSupplier.name);
       setCategory(product?.category);
     } else {
       console.log("No supplier found");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [product]);
 
   // console.log(product?.supplier);
@@ -336,7 +340,6 @@ const EditProduct = () => {
               <View
                 style={{
                   flexDirection: "row",
-                  justifyContent: "space-between",
                   gap: 10,
                   alignItems: "center",
                   justifyContent: "center",

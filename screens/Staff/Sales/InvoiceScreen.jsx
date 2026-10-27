@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { View, Button, Alert, Text, StyleSheet, Platform } from "react-native";
+import { View,  Alert, Text, StyleSheet, Platform , TouchableOpacity, ScrollView } from "react-native";
 import * as Print from "expo-print";
 import * as FileSystem from "expo-file-system";
 
 import { WebView } from "react-native-webview";
 import { shareAsync } from "expo-sharing";
 import { useRoute, useNavigation } from "@react-navigation/native";
-import { TouchableOpacity, ScrollView } from "react-native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
 import { BACKEND_PORT } from "@env";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
+import { escapeHtml } from "../../../utils/htmlEscape";
 
 // Inline invoice/receipt HTML needs no JS and may only navigate to the
 // backend origin (MB-SEC-006).
 const BACKEND_ORIGIN = (BACKEND_PORT || "").replace(/(https?:\/\/[^/]+).*/, "$1");
-import { SafeAreaView } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
 
 const onlinelogo = "https://res.cloudinary.com/drsuclnkw/image/upload/v1741609689/Promokings/promoking-logo_h3hu4v.png";
 
@@ -38,6 +38,8 @@ const InvoiceScreen = () => {
       visibilityTime: 3000,
     });
   };
+
+  const esc = escapeHtml;
 
   const generateHTMLInvoice = (showWatermark = true) => {
     return `
@@ -132,25 +134,25 @@ const InvoiceScreen = () => {
         
           <div class="bold">BILL TO:</div>
  
-        <div>${
+        <div>${esc(
           order?.userId?.fullname ||
           `${order?.userId?.firstname || ""} ${order?.userId?.lastname || ""}`.trim() ||
           `${order?.userId?.username}`
-        }</div>
+        )}</div>
 
           ${
             order?.shippingInfo
-              ? `<div>${order?.shippingInfo.address}</div>
+              ? `<div>${esc(order?.shippingInfo.address)}</div>
             
-            <div>${order?.shippingInfo.city}</div>`
+            <div>${esc(order?.shippingInfo.city)}</div>`
               : ""
           }
           ${
             order.pickupInfo
-              ? `<div>${order?.pickupInfo.locationId.name}</div>
-              <div>${order?.pickupInfo.locationId.address}</div>
-              <div>${order?.pickupInfo.locationId.city}</div>
-              <div>${order?.pickupInfo.locationId.phoneNumber}</div>
+              ? `<div>${esc(order?.pickupInfo.locationId.name)}</div>
+              <div>${esc(order?.pickupInfo.locationId.address)}</div>
+              <div>${esc(order?.pickupInfo.locationId.city)}</div>
+              <div>${esc(order?.pickupInfo.locationId.phoneNumber)}</div>
               `
               : ""
           }
@@ -159,9 +161,9 @@ const InvoiceScreen = () => {
         </div>
         <div class="section">
           <div class="bold">INVOICE</div>
-          <div>Invoice Number: ${order?.orderId}</div>
+          <div>Invoice Number: ${esc(order?.orderId)}</div>
           <div>Order Date: ${new Date(order?.createdAt).toLocaleString()}</div>
-          <div>Order Type: ${order?.orderType || "shipping"}</div>
+          <div>Order Type: ${esc(order?.orderType || "shipping")}</div>
         </div>
         <table class="table">
           <tr>
@@ -174,7 +176,7 @@ const InvoiceScreen = () => {
             ?.map(
               (product) => `
                 <tr>
-                  <td>${product?._id?.title}</td>
+                  <td>${esc(product?._id?.title)}</td>
                   <td>KSh ${product?._id?.price}</td>
                   <td>${product?.quantity}</td>
                   <td>KSh ${product?.quantity * product?._id?.price}</td>
@@ -315,8 +317,10 @@ const InvoiceScreen = () => {
 
   useEffect(() => {
     if (order) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       generatePDF();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [order]);
 
   return (

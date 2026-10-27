@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Alert } from "react-native";
+import { View, Text,  TextInput, StyleSheet, TouchableOpacity, ScrollView,  Alert , ActivityIndicator } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../../../constants/icons";
 import { SIZES, COLORS } from "../../../constants";
 import { Picker } from "@react-native-picker/picker";
-import { ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { BACKEND_PORT } from "@env";
@@ -12,29 +11,30 @@ import axios from "axios";
 import { AuthContext } from "../../../components/auth/AuthContext";
 import useFetch from "../../../hook/useFetch";
 import Toast from "react-native-toast-message";
+import Routes from "../../../navigation/routes";
 
 const EditDispatchOrder = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { products, totals, orderId, item: order } = route.params;
-  const { userData, userLogin } = useContext(AuthContext);
+  const {   orderId, item: order } = route.params;
+  const { userData } = useContext(AuthContext);
 
   const {
     data: alldrivers,
     isLoading: driverLoading,
-    error,
-    refetch,
+    
+    
     errorMessage: driverError,
   } = useFetch("staff/drivers");
   const {
     data: delivery,
     isLoading: deliveryLoading,
-    error: deliveryError,
-    refetch: deliveryRefetch,
+    
+    
     errorMessage: deliveryErrorMessage,
   } = useFetch(`orders/delivery/${orderId}`);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [, ] = useState(false);
   const [drivers, setDrivers] = useState(null);
   const [item, setItem] = useState(order);
   const [deliveryData, setDeliveryData] = useState(null);
@@ -46,15 +46,19 @@ const EditDispatchOrder = () => {
 
   useEffect(() => {
     if (!driverLoading && alldrivers && !driverError) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setDrivers(alldrivers);
       //   console.log(alldrivers);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [driverLoading, alldrivers]);
 
   useEffect(() => {
     if (!deliveryLoading && delivery && !deliveryErrorMessage) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setDeliveryData(Array.isArray(delivery) ? delivery[0] : delivery);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [deliveryLoading, delivery]);
   // console.log(deliveryData);
 
@@ -133,7 +137,7 @@ const EditDispatchOrder = () => {
                 text2: "The delivery has been cancelled successfully",
               });
             } else {
-              throw new Error(data.message || "Failed to cancel order");
+              throw new Error(response.data.message || "Failed to cancel order");
             }
           } catch (error) {
             console.warn("Error cancelling Delivery:", error);
@@ -302,7 +306,7 @@ const EditDispatchOrder = () => {
             if (setItem) setItem(orderData);
 
             setTimeout(() => {
-              navigation.navigate("Dispatcher Navigation", {});
+              navigation.navigate(Routes.DispatchNavigation, { screen: Routes.OrderDispatch });
             }, 3000);
           } catch (err) {
             console.warn("Order update error:", err);
@@ -473,7 +477,7 @@ const EditDispatchOrder = () => {
                       </TouchableOpacity>
                     </View>
                   </View>
-                  <DriverDetails />
+                  {DriverDetails()}
                   <View style={styles.pickerWrapper}>
                     {isAssigning && (
                       <View>

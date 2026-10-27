@@ -1,6 +1,5 @@
-import React, { useRef, useState, useEffect, useContext, useMemo } from "react";
-import { StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text } from "react-native";
-import { Animated, Easing } from "react-native";
+import React, {  useState, useEffect, useContext, useMemo } from "react";
+import { StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text , Animated, Easing } from "react-native";
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
@@ -25,14 +24,39 @@ const HelpAgentChatScreen = () => {
   const customerId = route.params?.chatWith?._id;
   const chatWith = route.params?.chatWith;
 
-  if (!customerId) {
-    return <Text>No customer selected</Text>;
-  }
 
   const sentRef = useMemo(() => ref(db, `messages-query/${customerId}/sent`), [customerId]);
   const receivedRef = useMemo(() => ref(db, `messages-query/${customerId}/received`), [customerId]);
 
+  const markSentMessagesAsRead = async () => {
+    const snapshot = await new Promise((resolve) => {
+      onValue(
+        sentRef,
+        (snap) => {
+          resolve(snap);
+        },
+        { onlyOnce: true }
+      );
+    });
+
+    const data = snapshot.val();
+    if (!data) return;
+
+    const updates = {};
+    Object.entries(data).forEach(([key, message]) => {
+      if (message.read === false) {
+        updates[`${key}/read`] = true;
+      }
+    });
+
+    if (Object.keys(updates).length > 0) {
+      await update(sentRef, updates);
+    }
+  };
+
   useEffect(() => {
+    if (!customerId) return;
+
     const handleDataChange = (snapshot, type) => {
       const data = snapshot.val();
       const newMessages = data
@@ -63,35 +87,10 @@ const HelpAgentChatScreen = () => {
       unsubSent();
       unsubReceived();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [customerId]);
 
-  const markSentMessagesAsRead = async () => {
-    const snapshot = await new Promise((resolve) => {
-      onValue(
-        sentRef,
-        (snap) => {
-          resolve(snap);
-        },
-        { onlyOnce: true }
-      );
-    });
-
-    const data = snapshot.val();
-    if (!data) return;
-
-    const updates = {};
-    Object.entries(data).forEach(([key, message]) => {
-      if (message.read === false) {
-        updates[`${key}/read`] = true;
-      }
-    });
-
-    if (Object.keys(updates).length > 0) {
-      await update(sentRef, updates);
-    }
-  };
-
-  const spinAnim = useRef(new Animated.Value(0)).current;
+  const [spinAnim] = useState(() => new Animated.Value(0));
 
   useEffect(() => {
     if (!isSending) {
@@ -106,7 +105,7 @@ const HelpAgentChatScreen = () => {
     } else {
       spinAnim.stopAnimation();
     }
-  }, [isSending]);
+  }, [isSending, spinAnim]);
 
   const spin = spinAnim.interpolate({
     inputRange: [0, 1],
@@ -188,6 +187,10 @@ const HelpAgentChatScreen = () => {
     setIsSending(false);
   };
 
+  if (!customerId) {
+    return <Text>No customer selected</Text>;
+  }
+
   return (
     <View style={styles.container}>
       {selectedImage && (
@@ -247,8 +250,8 @@ const HelpAgentChatScreen = () => {
             />
           )}
           renderBubble={(props) => {
-            const { currentMessage } = props;
-            const isReceived = currentMessage.type === "sent"; // customer messages on left
+            
+ // customer messages on left
             return (
               <Bubble
                 {...props}

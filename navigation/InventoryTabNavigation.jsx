@@ -3,19 +3,19 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   InventoryDashboard,
   EditProductList,
-  AddProduct,
+  
   StaffSettings,
   EditCategoriesList,
-  EditCategory,
+  
   MainCenter,
 } from "../screens";
 
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { StyleSheet, View } from "react-native";
 
 const Tab = createBottomTabNavigator();
-import { StyleSheet, View } from "react-native";
 
 const screenOptions = {
   tabBarShowLabel: true,
@@ -131,4 +131,4 @@ const InventoryTabNavigation = () => {
 
 export default InventoryTabNavigation;
 
-const styles = StyleSheet.create({});
+StyleSheet.create({});

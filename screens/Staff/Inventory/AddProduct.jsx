@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Switch,
-  Alert,
+  
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
@@ -24,6 +24,7 @@ import { Picker } from "@react-native-picker/picker";
 import useFetch from "../../../hook/useFetch";
 
 import { BACKEND_PORT } from "@env";
+import Routes from "../../../navigation/routes";
 
 const AddProduct = () => {
   const route = useRoute();
@@ -35,9 +36,14 @@ const AddProduct = () => {
   const [price, setPrice] = useState("");
   const [availability, setAvailability] = useState(false);
   const [imageUrl, setImageUrl] = useState("https://i.postimg.cc/j56q20rB/images.jpg");
-  const [productId, setProductId] = useState(generateProductId());
+  function generateProductId() {
+    const randomId = Math.random().toString(36).substr(2, 7).toUpperCase();
+    return `PRK-P${randomId}`;
+  }
+
+  const [productId, setProductId] = useState(() => generateProductId());
   const [image, setImage] = useState(null);
-  const [loader, setLoader] = useState(false);
+  const [, setLoader] = useState(false);
   const [category, setCategory] = useState("");
   const [quantity, setQuantity] = useState(initialProduct?.quantity || 0);
   const [supplier, setSupplier] = useState("");
@@ -48,7 +54,7 @@ const AddProduct = () => {
   const [uploading, setUploading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [suppliers, setSuppliers] = useState([]);
-  const { data: categories, isLoading: isCategoriesLoading, error: categoriesError } = useFetch("category");
+  const { data: categories } = useFetch("category");
 
   const { data: supplierData, isLoading: isSuppliersLoading, error: supplierError } = useFetch("v2/supplier/names");
 
@@ -57,6 +63,7 @@ const AddProduct = () => {
   useEffect(() => {
     if (initialProduct) {
       // console.log(initialProduct?.quantity);
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setTitle(initialProduct?.productName);
       setPrice();
       setAvailability(true);
@@ -85,6 +92,7 @@ const AddProduct = () => {
 
   useEffect(() => {
     if (!isSuppliersLoading && !supplierError && supplierData) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setSuppliers(supplierData?.suppliers);
     }
 
@@ -109,19 +117,16 @@ const AddProduct = () => {
       setDescription("");
       setQuantity(0);
       setFeatured(false);
-    } catch (error) {
+    } catch (_error) {
       console.log("refresh failed");
     } finally {
       setTimeout(() => {
         setRefreshing(false);
       }, 2000);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, []);
 
-  function generateProductId() {
-    const randomId = Math.random().toString(36).substr(2, 7).toUpperCase();
-    return `PRK-P${randomId}`;
-  }
   const toggleEditable = () => {
     setIsEditable(!isEditable);
   };
@@ -183,8 +188,8 @@ const AddProduct = () => {
         setFeatured(true);
 
         // Navigate to dashboard
-        navigation.navigate("Inventory Navigation", {
-          screen: "InventoryDashboard",
+        navigation.navigate(Routes.InventoryNavigation, {
+          screen: Routes.InventoryDashboard,
           params: { refreshList: true },
         });
       }
@@ -558,7 +563,6 @@ const styles = StyleSheet.create({
   },
   imageurlContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
     gap: 10,
     alignItems: "center",
     justifyContent: "center",

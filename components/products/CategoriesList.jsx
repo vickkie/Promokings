@@ -1,4 +1,4 @@
-import { FlatList, Text, View, ActivityIndicator, TouchableOpacity, RefreshControl } from "react-native";
+import { FlatList, Text, View,  TouchableOpacity, RefreshControl } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import { COLORS, SIZES } from "../../constants";
 import useFetch from "../../hook/useFetch";
@@ -16,7 +16,7 @@ const CategoriesList = () => {
     setRefreshing(true);
     try {
       refetch();
-    } catch (error) {
+    } catch (_error) {
     } finally {
       setRefreshing(false); // Ensure refreshing state is reset
     }
@@ -39,7 +39,7 @@ const CategoriesList = () => {
     checkNetInfo();
   }, []);
 
-  let isOffline = !NetInfo.useNetInfo().isConnected;
+  NetInfo.useNetInfo();
 
   if (isLoading) {
     return (

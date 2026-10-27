@@ -10,7 +10,7 @@ import Toast from "react-native-toast-message";
 import Icon from "../constants/icons";
 import * as FileSystem from "expo-file-system";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import useDelete from "../hook/useDelete2";
+import useDelete from "../hook/useDelete";
 import { VERSION_LONG, VERSION_SHORT, BACKEND_PORT } from "@env";
 import { useCart } from "../contexts/CartContext";
 import { useWish } from "../contexts/WishContext";
@@ -19,6 +19,7 @@ import COLOR_THIEF_SOURCE from "../constants/colorThiefSource";
 import { LinearGradient } from "expo-linear-gradient";
 import axios from "axios";
 import LottieView from "lottie-react-native";
+import Routes from "../navigation/routes";
 
 const ProfileScreen = ({ profileImageUrl }) => {
   const [gradientColors, setGradientColors] = useState(["rgb(43,58,68)", "rgb(177,196,199)"]);
@@ -26,6 +27,7 @@ const ProfileScreen = ({ profileImageUrl }) => {
   const [webViewKey, setWebViewKey] = useState(0);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
     setWebViewKey((prevKey) => prevKey + 1); // Force re-render when profileImageUrl changes
   }, [profileImageUrl]);
 
@@ -118,15 +120,16 @@ const ProfileScreen = ({ profileImageUrl }) => {
 const Profile = () => {
   const navigation = useNavigation();
   const { userData, userLogout, userLogin } = useContext(AuthContext);
-  const { deleteStatus, isDeleting, errorStatus, redelete } = useDelete(`user/`);
+  useDelete(`user/`);
   const [deleting, setDEleting] = useState(false);
   const { clearCart } = useCart();
   const { clearWishlist } = useWish();
 
-  const [userId, setUserId] = useState(null);
+  const [, setUserId] = useState(null);
 
   useEffect(() => {
     if (!userLogin) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       setUserId(1);
     } else if (userData && userData._id) {
       setUserId(userData._id);
@@ -153,7 +156,7 @@ const Profile = () => {
         text1: "Cache Cleared",
         text2: "All cached data and local storage have been removed.",
       });
-    } catch (error) {
+    } catch (_error) {
       // Show error message
       Toast.show({
         type: "error",
@@ -210,7 +213,7 @@ const Profile = () => {
         // Reset the navigation stack
         navigation.reset({
           index: 0,
-          routes: [{ name: "Bottom Navigation" }],
+          routes: [{ name: Routes.BottomNavigation }],
         });
         showToast("success", response?.data?.message, response?.data?.message2);
         setDEleting(false);
@@ -284,8 +287,9 @@ const Profile = () => {
     });
   };
 
+  const [loading, setLoading] = useState(true);
+
   const renderProfilePicture = () => {
-    const [loading, setLoading] = useState(true);
 
     if (!userLogin) {
       // User not logged in, show default image
@@ -350,7 +354,7 @@ const Profile = () => {
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-                <Text style={styles.regText}>Don't have an account? Register</Text>
+                <Text style={styles.regText}>Don&apos;t have an account? Register</Text>
               </TouchableOpacity>
             </View>
           )}

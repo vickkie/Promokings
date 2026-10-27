@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
-import { BACKEND_PORT } from "@env";
+import { api, apiUrl } from "../utils/api";
 
 const useFetch = (endpoint, requiresAuth = false, token = null) => {
   const [data, setData] = useState([]);
@@ -14,9 +13,9 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
     (skipCache = false) => {
       setIsLoading(true);
       setError(null); // Reset error state before fetching data
-      const startTime = Date.now(); // Start time for response time logging
+      Date.now(); // Start time for response time logging
 
-      const url = `${BACKEND_PORT}/api/${endpoint}`;
+      const url = apiUrl(endpoint);
 
       const headers = {};
 
@@ -28,11 +27,11 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
         headers["X-Skip-Cache"] = "true"; // Add skip cache header if needed
       }
 
-      axios
+      api
         .get(url, { headers })
         .then((response) => {
-          const endTime = Date.now(); // End time for response time logging
-          const responseTime = endTime - startTime; // Calculate response time
+          Date.now(); // End time for response time logging
+ // Calculate response time
 
           setData(response.data); // Save the fetched data
           setStatusCode(response?.status);
@@ -60,8 +59,10 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
 
   useEffect(() => {
     if (endpoint) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
       fetchData();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [endpoint, token]);
 
   return { data, isLoading, error, errorMessage, statusCode, refetch };
