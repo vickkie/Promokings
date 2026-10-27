@@ -30,6 +30,10 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     flexDirection: "row",
     gap: 6,
+    backgroundColor: "rgba(255,255,255,0.65)",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
   dot: {
     width: 8,
