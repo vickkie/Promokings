@@ -14,7 +14,12 @@ const ProductList = ({ sendDataToParent, routeParams }) => {
   const params = route.params || routeParams;
   const { routeParam, category } = params;
 
-  sendDataToParent(category); // Send category to parent
+  // Report the category to the parent after commit; calling the prop setter
+  // during render triggers React's set-state-in-render warning.
+  useEffect(() => {
+    sendDataToParent(category);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
+  }, [category]);
 
   // State for products and pagination
   const [products, setProducts] = useState([]);
