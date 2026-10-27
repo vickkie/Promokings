@@ -18,8 +18,6 @@ import { ProfileCompletionProvider } from "./components/auth/ProfileCompletionCo
 import { WishProvider } from "./contexts/WishContext";
 import { chatScreenOptions, systemScreenOptions } from "./screens_options/AppHeaderOptions";
 
-// import { navigationRef } from "./Helpers/NavigationService";
-
 // Screens from ./screens
 import {
   Cart,
@@ -123,11 +121,9 @@ import UpdateCheck from "./components/UpdateCheck";
 import DriverTabNavigation from "./navigation/DriverTabNavigator";
 import FinanceTabNavigation from "./navigation/FinanceTabNavigator";
 import SupplierTabNavigation from "./navigation/SupplierTabNavigation";
-// import OneSignalId from "./components/auth/oneSignal";
 import DispatcherTabNavigation from "./navigation/DispatcherTabNavigation ";
 
 import PushNotification from "./components/auth/pushNotification";
-// import { RouteProvider } from "./components/auth/RouteContext";
 
 enableScreens();
 
@@ -284,7 +280,6 @@ export default function App() {
                       ))}
                     </Stack.Navigator>
                     <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
-                    {/* <RouteProvider /> */}
                   </NavigationContainer>
                 </WishProvider>
               </CartProvider>

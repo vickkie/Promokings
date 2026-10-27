@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 
 import { Buffer } from "buffer";
 
@@ -12,6 +12,7 @@ import * as Yup from "yup";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { AuthContext } from "../components/auth/AuthContext";
+import GoogleSignInButton, { isGoogleSignInConfigured } from "../components/auth/GoogleSignInButton";
 import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
 
@@ -37,10 +38,31 @@ const LoginPage = ({ navigation }) => {
   const { login, getRole, hasRole } = useContext(AuthContext);
   const [loader, setLoader] = useState(false);
   const [userType, setUserType] = useState("customer");
-  const [obsecureText, setObsecureText] = useState(false);
+  const [obsecureText, setObsecureText] = useState(true);
+  const [googleEnabled, setGoogleEnabled] = useState(false);
 
-  React.useEffect(() => {
-    // console.log("Navigated to LoginPage");
+  // The Google button is shown only when the backend advertises it
+  // (GET /api/auth/capabilities) AND a Google client id is configured
+  // in the app .env. Google sign-in is customer-only - staff/supplier
+  // accounts keep using the password form.
+  useEffect(() => {
+    if (!isGoogleSignInConfigured()) {
+      return;
+    }
+    let isMounted = true;
+    axios
+      .get(`${BACKEND_PORT}/api/auth/capabilities`)
+      .then((res) => {
+        if (isMounted && res.data?.google?.enabled === true) {
+          setGoogleEnabled(true);
+        }
+      })
+      .catch(() => {
+        // Probe is best-effort - button stays hidden on failure.
+      });
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const inValidForm = () => {
@@ -63,8 +85,6 @@ const LoginPage = ({ navigation }) => {
       const endpoint = `${BACKEND_PORT}/auth/login`;
       const data = { ...values, userType };
 
-      console.log(endpoint);
-
       const response = await axios.post(endpoint, data);
 
       // console.log(response);
@@ -76,7 +96,6 @@ const LoginPage = ({ navigation }) => {
 
       // Store login data
       await login(response.data);
-      console.log(response.data);
 
       // Get role from AuthContext
       const role = getRole(response.data);
@@ -267,6 +286,8 @@ const LoginPage = ({ navigation }) => {
                   onPress={isValid ? handleSubmit : inValidForm}
                   isValid={isValid}
                 />
+
+                {googleEnabled && userType === "customer" && <GoogleSignInButton navigation={navigation} />}
 
                 <Text style={styles.registration} onPress={() => navigation.navigate("Register")}>
                   Create an Account

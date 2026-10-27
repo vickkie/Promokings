@@ -15,8 +15,10 @@ import * as ImagePicker from "expo-image-picker";
 import ButtonMain from "../../../components/ButtonMain";
 import Toast from "react-native-toast-message";
 
-// Global axios-retry
-axiosRetry(axios, { retries: 3 });
+// Dedicated instance: mutating the shared axios default would
+// silently replay order/payment POSTs app-wide (MB-SEC-008).
+const retryClient = axios.create();
+axiosRetry(retryClient, { retries: 3 });
 
 const InventoryProfile = () => {
   const { userData, userLogin, updateUserData, userLogout, hasRole } = useContext(AuthContext);
@@ -75,7 +77,7 @@ const InventoryProfile = () => {
     });
 
     try {
-      const response = await axios.post(`${BACKEND_PORT}/upload`, formData, {
+      const response = await retryClient.post(`${BACKEND_PORT}/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -121,7 +123,7 @@ const InventoryProfile = () => {
 
       const endpoint = `${BACKEND_PORT}/api/staff/updateDetails/${userData?._id}`;
 
-      const response = await axios.put(endpoint, userUpdateData, {
+      const response = await retryClient.put(endpoint, userUpdateData, {
         headers: {
           "Content-Type": "application/json",
         },

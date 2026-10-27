@@ -17,8 +17,10 @@ import Toast from "react-native-toast-message";
 import ProfileCompletion from "../ProfileCompletion";
 import { ProfileCompletionContext } from "../../../components/auth/ProfileCompletionContext";
 
-// Global axios-retry
-axiosRetry(axios, { retries: 3 });
+// Dedicated instance: mutating the shared axios default would
+// silently replay order/payment POSTs app-wide (MB-SEC-008).
+const retryClient = axios.create();
+axiosRetry(retryClient, { retries: 3 });
 
 const CompanyProfile = () => {
   const { userData, userLogin, updateUserData, userLogout, hasRole } = useContext(AuthContext);
@@ -101,7 +103,7 @@ const CompanyProfile = () => {
       const endpoint = `${BACKEND_PORT}/api/v2/supplier/${supplierProf}`;
       console.log(endpoint);
 
-      const response = await axios.put(endpoint, userUpdateData, {
+      const response = await retryClient.put(endpoint, userUpdateData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${userData?.TOKEN}`,
@@ -141,7 +143,7 @@ const CompanyProfile = () => {
 
     try {
       setLoading(true);
-      const response = await axios.get(routeport, {
+      const response = await retryClient.get(routeport, {
         headers: {
           Authorization: `Bearer ${userData.token}`,
         },

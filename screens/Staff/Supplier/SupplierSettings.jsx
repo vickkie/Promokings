@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { ScrollView, View, Text, Image, TouchableOpacity, Alert, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -13,6 +13,7 @@ import * as FileSystem from "expo-file-system";
 import useDelete from "../../../hook/useDelete2";
 import { VERSION_LONG, VERSION_SHORT } from "@env";
 import WebView from "react-native-webview";
+import COLOR_THIEF_SOURCE from "../../../constants/colorThiefSource";
 import { LinearGradient } from "expo-linear-gradient";
 
 // Function to clear cache
@@ -44,60 +45,59 @@ const ProfileScreen = ({ profileImageUrl }) => {
     setWebViewKey((prevKey) => prevKey + 1); // Force re-render when profileImageUrl changes
   }, [profileImageUrl]);
 
-  const extractColors = `
-  (function() {
-    console.log("✅ WebView script started");
-    window.ReactNativeWebView.postMessage(JSON.stringify({ type: "status", message: "WebView script started" }));
+  const webviewRef = useRef(null);
 
-    const img = new Image();
-    img.crossOrigin = "Anonymous";
-    img.src = "${profileImageUrl}";
-
-    img.onload = function() {
-      console.log("✅ Image loaded in WebView");
-      window.ReactNativeWebView.postMessage(JSON.stringify({ type: "status", message: "Image loaded in WebView" }));
-
-      try {
-        if (!window.ColorThief) {
-          throw new Error("ColorThief.js not loaded");
+  // Page script receives the image URL via postMessage - user-controlled data
+  // is never interpolated into executable code (MB-SEC-005). ColorThief is
+  // vendored locally; no remote script is fetched.
+  const webviewHtml = `
+  <html>
+    <head><script>${COLOR_THIEF_SOURCE}</script></head>
+    <body>
+      <script>
+        function extractColors(url) {
+          var img = new Image();
+          img.crossOrigin = "Anonymous";
+          img.onload = function () {
+            try {
+              var colorThief = new ColorThief();
+              var colors = colorThief.getPalette(img, 2);
+              window.ReactNativeWebView.postMessage(JSON.stringify({ type: "colors", data: colors }));
+            } catch (error) {
+              window.ReactNativeWebView.postMessage(
+                JSON.stringify({ type: "error", message: String(error && error.message) })
+              );
+            }
+          };
+          img.onerror = function () {
+            window.ReactNativeWebView.postMessage(JSON.stringify({ type: "error", message: "Image failed to load" }));
+          };
+          img.src = url;
         }
-
-        const colorThief = new ColorThief();
-        const colors = colorThief.getPalette(img, 2); // Extract 6 colors for a smooth gradient
-    
-
-        window.ReactNativeWebView.postMessage(JSON.stringify({ type: "colors", data: colors }));
-      } catch (error) {
-        console.error("❌ Color extraction failed:", error);
-        window.ReactNativeWebView.postMessage(JSON.stringify({ type: "error", message: error.message }));
-      }
-    };
-
-    img.onerror = function() {
-      console.error("❌ Image failed to load");
-      window.ReactNativeWebView.postMessage(JSON.stringify({ type: "error", message: "Image failed to load" }));
-    };
-  })();
-  `;
+        function onMessage(event) {
+          try {
+            var data = JSON.parse(event.data);
+            if (data && data.type === "profile-image" && typeof data.url === "string") {
+              extractColors(data.url);
+            }
+          } catch (e) {}
+        }
+        window.addEventListener("message", onMessage);
+        document.addEventListener("message", onMessage);
+      </script>
+    </body>
+  </html>`;
 
   const handleMessage = (event) => {
     try {
       const parsedMessage = JSON.parse(event.nativeEvent.data);
 
-      if (parsedMessage.type === "status") {
-        // console.log("ℹ️ Status:", parsedMessage.message);
-      } else if (parsedMessage.type === "colors" && Array.isArray(parsedMessage.data)) {
-        // Convert the extracted colors to rgb format
+      if (parsedMessage.type === "colors" && Array.isArray(parsedMessage.data)) {
         const smoothGradient = parsedMessage.data.map((color) => `rgb(${color.join(",")})`);
         setGradientColors(smoothGradient);
-        console.log(smoothGradient);
-      } else if (parsedMessage.type === "error") {
-        console.error("❌ Error:", parsedMessage.message);
-      } else {
-        console.warn("⚠️ Unknown message type received:", parsedMessage);
       }
     } catch (error) {
-      console.error("🚨 JSON Parse Error:", error);
+      console.error("WebView message parse error:", error);
     }
   };
 
@@ -116,19 +116,14 @@ const ProfileScreen = ({ profileImageUrl }) => {
         style={{ position: "absolute", width: "100%", height: "100%" }}
       >
         <WebView
+          ref={webviewRef}
           key={webViewKey} // Forces re-render when profileImageUrl changes
-          source={{
-            html: `
-          <html>
-            <head>
-              <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
-            </head>
-            <body></body>
-          </html>
-          `,
-          }}
-          injectedJavaScript={extractColors}
+          source={{ html: webviewHtml }}
+          onLoadEnd={() =>
+            webviewRef.current?.postMessage(JSON.stringify({ type: "profile-image", url: profileImageUrl || "" }))
+          }
           onMessage={handleMessage}
+          originWhitelist={["about:blank"]}
           style={{ width: 1, height: 1, opacity: 0 }}
         />
       </LinearGradient>

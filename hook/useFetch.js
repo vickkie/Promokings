@@ -2,10 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
 
-// const BACKEND_PORT = "http://192.168.100.218:3000";
-
-console.log(BACKEND_PORT);
-
 const useFetch = (endpoint, requiresAuth = false, token = null) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,8 +17,6 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
       const startTime = Date.now(); // Start time for response time logging
 
       const url = `${BACKEND_PORT}/api/${endpoint}`;
-
-      console.log(url);
 
       const headers = {};
 
@@ -50,7 +44,6 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
           setErrorMessage(message);
           setStatusCode(err.response?.status || null);
           setError(true);
-          console.log(err);
         })
         .finally(() => {
           setIsLoading(false);

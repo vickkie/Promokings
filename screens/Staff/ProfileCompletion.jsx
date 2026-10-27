@@ -6,13 +6,9 @@ import Icon from "../../constants/icons";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../../components/auth/AuthContext";
 import { ProfileCompletionContext } from "../../components/auth/ProfileCompletionContext";
-import axios from "axios";
-import axiosRetry from "axios-retry";
 
 import CompleteProfile from "../../components/bottomsheets/CompleteProfile";
 
-// Global axios-retry
-axiosRetry(axios, { retries: 3 });
 
 const ProfileCompletion = () => {
   const { userData, userLogin, updateUserData, userLogout, hasRole } = useContext(AuthContext);
