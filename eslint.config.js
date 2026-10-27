@@ -1,5 +1,6 @@
 const { defineConfig } = require('eslint/config');
 const expoConfig = require('eslint-config-expo/flat');
+const globals = require('globals');
 
 module.exports = defineConfig([
   ...expoConfig,
@@ -15,6 +16,12 @@ module.exports = defineConfig([
     rules: {
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
+    },
+  },
+  {
+    files: ['__tests__/**', 'jest.setup.js'],
+    languageOptions: {
+      globals: { ...globals.jest, ...globals.node },
     },
   },
 ]);
