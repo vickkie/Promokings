@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { BACKEND_PORT } from "@env";
+import { api, apiUrl } from "../utils/api";
 import logger from "../utils/logger";
 
 const usePost = (endpoint, requiresAuth = false, token = null) => {
@@ -12,7 +11,7 @@ const usePost = (endpoint, requiresAuth = false, token = null) => {
   const [responseData, setResponseData] = useState(null);
 
   const handleApiCall = () => {
-    const url = `${BACKEND_PORT}/api/${endpoint}`;
+    const url = apiUrl(endpoint);
     const headers = {};
 
     if (requiresAuth && token) {
@@ -21,7 +20,7 @@ const usePost = (endpoint, requiresAuth = false, token = null) => {
       logger.warn("Authorization is required but no token was provided.");
     }
 
-    return axios.post(url, data, {
+    return api.post(url, data, {
       headers,
       validateStatus: (status) => status >= 200 && status < 300,
     });

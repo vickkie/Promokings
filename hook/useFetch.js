@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
-import { BACKEND_PORT } from "@env";
+import { api, apiUrl } from "../utils/api";
 
 const useFetch = (endpoint, requiresAuth = false, token = null) => {
   const [data, setData] = useState([]);
@@ -16,7 +15,7 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
       setError(null); // Reset error state before fetching data
       Date.now(); // Start time for response time logging
 
-      const url = `${BACKEND_PORT}/api/${endpoint}`;
+      const url = apiUrl(endpoint);
 
       const headers = {};
 
@@ -28,7 +27,7 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
         headers["X-Skip-Cache"] = "true"; // Add skip cache header if needed
       }
 
-      axios
+      api
         .get(url, { headers })
         .then((response) => {
           Date.now(); // End time for response time logging
