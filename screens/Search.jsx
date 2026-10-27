@@ -41,6 +41,20 @@ const Search = () => {
     }
   };
 
+  // Debounced live search as the user types; clearing the field resets
+  // results instead of querying an empty term.
+  useEffect(() => {
+    if (!searchText.trim()) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
+      setSearchResults("");
+      setNodata(false);
+      return;
+    }
+    const timer = setTimeout(handleSearch, 350);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
+  }, [searchText]);
+
   return (
     <GestureHandlerRootView style={styles.searchRoot}>
       <SafeAreaView>
@@ -55,7 +69,6 @@ const Search = () => {
               onChangeText={(text) => {
                 setSearchText(text);
                 setNodata(false);
-                // handleSearch();
               }}
               onSubmitEditing={handleSearch}
               style={styles.searchInput}
