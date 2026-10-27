@@ -24,6 +24,23 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     resizeMode: "cover",
   },
+  dotsRow: {
+    position: "absolute",
+    bottom: SIZES.small,
+    alignSelf: "center",
+    flexDirection: "row",
+    gap: 6,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: COLORS.gray2,
+  },
+  dotActive: {
+    width: 18,
+    backgroundColor: COLORS.primary,
+  },
   containerWrapper: {
     borderRadius: SIZES.medium,
     backgroundColor: COLORS.themew,

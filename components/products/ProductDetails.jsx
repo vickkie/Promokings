@@ -1,8 +1,8 @@
-import { Text, TouchableOpacity, View, Image, ScrollView, ActivityIndicator } from "react-native";
+import { Text, TouchableOpacity, View, Image, ScrollView, ActivityIndicator, FlatList } from "react-native";
 import { useRoute } from "@react-navigation/native";
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 import { Ionicons, Fontisto } from "@expo/vector-icons";
-import { COLORS } from "../../constants";
+import { COLORS, SIZES } from "../../constants";
 import styles from "./productdetails.style";
 // import Animated from "react-native-reanimated";
 import Icon from "../../constants/icons";
@@ -12,6 +12,9 @@ import Toast from "react-native-toast-message";
 
 import { useCart } from "../../contexts/CartContext";
 import { useWish } from "../../contexts/WishContext";
+
+const GALLERY_VIEWABILITY = { itemVisiblePercentThreshold: 50 };
+
 const ProductDetails = ({ navigation }) => {
   const { addToCart, cart } = useCart();
   const { wishlist,  addToWishlist, removeFromWishlist } = useWish();
@@ -129,6 +132,17 @@ const ProductDetails = ({ navigation }) => {
 
   const transitionTag = item._id ? `${item._id}` : null;
 
+  // Product gallery: backend images[] when populated, else the single
+  // primary image so the slider never renders empty.
+  const gallery =
+    Array.isArray(item.images) && item.images.length > 0 ? item.images : [imageUri || item.imageUrl].filter(Boolean);
+  const [activeImage, setActiveImage] = useState(0);
+  const onViewableItemsChanged = useCallback(({ viewableItems }) => {
+    if (viewableItems.length > 0) {
+      setActiveImage(viewableItems[0].index ?? 0);
+    }
+  }, []);
+
   // console.log(imageUri);
 
   return (
@@ -160,7 +174,29 @@ const ProductDetails = ({ navigation }) => {
         </View>
 
         <View style={styles.imageWrapper}>
-          <Image source={{ uri: imageUri || item.imageUrl }} sharedTransitionTag={transitionTag} style={styles.image} />
+          {gallery.length > 1 ? (
+            <>
+              <FlatList
+                data={gallery}
+                keyExtractor={(uri, index) => `${uri}-${index}`}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item: uri }) => (
+                  <Image source={{ uri }} style={[styles.image, { width: SIZES.width }]} />
+                )}
+                onViewableItemsChanged={onViewableItemsChanged}
+                viewabilityConfig={GALLERY_VIEWABILITY}
+              />
+              <View style={styles.dotsRow}>
+                {gallery.map((uri, index) => (
+                  <View key={index} style={[styles.dot, index === activeImage && styles.dotActive]} />
+                ))}
+              </View>
+            </>
+          ) : (
+            <Image source={{ uri: gallery[0] }} sharedTransitionTag={transitionTag} style={styles.image} />
+          )}
         </View>
         <View style={styles.containerWrapper}>
           <View style={styles.details}>
