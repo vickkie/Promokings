@@ -21,6 +21,17 @@ const ErrorBoundary2 = ({ children }) => {
   return <ErrorBoundary FallbackComponent={ErrorFallback}>{children}</ErrorBoundary>;
 };
 
+// Wraps a screen component so a render crash is contained inside a scoped
+// fallback instead of unmounting the whole navigation container.
+export const withErrorBoundary = (Component) => {
+  const Wrapped = (props) => (
+    <ErrorBoundary2>
+      <Component {...props} />
+    </ErrorBoundary2>
+  );
+  return Wrapped;
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -9,7 +9,7 @@ import Toast from "react-native-toast-message";
 import toastConfig from "./utils/toastConfig";
 
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import ErrorBoundary2 from "./screens_options/ErrorBoundary";
+import ErrorBoundary2, { withErrorBoundary } from "./screens_options/ErrorBoundary";
 
 import { AuthProvider } from "./components/auth/AuthContext";
 import { CartProvider } from "./contexts/CartContext";
@@ -135,13 +135,13 @@ const Stack = createNativeStackNavigator();
 
 // Array of screen definitions
 const screens = [
-  { name: Routes.FinanceNavigation, component: requireRole(ROLES.FINANCE, FinanceTabNavigation), options: { headerShown: false } },
-  { name: Routes.SupplierNavigation, component: requireRole(ROLES.SUPPLIER, SupplierTabNavigation), options: { headerShown: false } },
-  { name: Routes.BottomNavigation, component: BottomTabNavigation, options: { headerShown: false } },
-  { name: Routes.InventoryNavigation, component: requireRole(ROLES.INVENTORY, InventoryTabNavigation), options: { headerShown: false } },
-  { name: Routes.SalesNavigation, component: requireRole(ROLES.SALES, SalesTabNavigation), options: { headerShown: false } },
-  { name: Routes.DriverNavigation, component: requireRole(ROLES.DRIVER, DriverTabNavigation), options: { headerShown: false } },
-  { name: Routes.DispatchNavigation, component: requireRole(ROLES.DISPATCHER, DispatcherTabNavigation), options: { headerShown: false } },
+  { name: Routes.FinanceNavigation, component: requireRole(ROLES.FINANCE, withErrorBoundary(FinanceTabNavigation)), options: { headerShown: false } },
+  { name: Routes.SupplierNavigation, component: requireRole(ROLES.SUPPLIER, withErrorBoundary(SupplierTabNavigation)), options: { headerShown: false } },
+  { name: Routes.BottomNavigation, component: withErrorBoundary(BottomTabNavigation), options: { headerShown: false } },
+  { name: Routes.InventoryNavigation, component: requireRole(ROLES.INVENTORY, withErrorBoundary(InventoryTabNavigation)), options: { headerShown: false } },
+  { name: Routes.SalesNavigation, component: requireRole(ROLES.SALES, withErrorBoundary(SalesTabNavigation)), options: { headerShown: false } },
+  { name: Routes.DriverNavigation, component: requireRole(ROLES.DRIVER, withErrorBoundary(DriverTabNavigation)), options: { headerShown: false } },
+  { name: Routes.DispatchNavigation, component: requireRole(ROLES.DISPATCHER, withErrorBoundary(DispatcherTabNavigation)), options: { headerShown: false } },
   { name: Routes.EditCategoriesList, component: requireRole(ROLES.INVENTORY, EditCategoriesList), options: { headerShown: false } },
   { name: Routes.Home, component: Home, options: { headerShown: false } },
   { name: Routes.EditCategory, component: requireRole(ROLES.INVENTORY, EditCategory), options: { headerShown: false } },
@@ -160,7 +160,7 @@ const screens = [
   { name: Routes.Favourites, component: Favourites, options: { headerShown: false } },
   { name: Routes.Categories, component: Categories, options: { headerShown: true } },
   { name: Routes.Cart, component: Cart, options: { headerShown: false } },
-  { name: Routes.Checkout, component: Checkout, options: { headerShown: false } },
+  { name: Routes.Checkout, component: withErrorBoundary(Checkout), options: { headerShown: false } },
   { name: Routes.Orders, component: Orders, options: { headerShown: false } },
   { name: Routes.Register, component: Register, options: { headerShown: false } },
   { name: Routes.UserDetails, component: UserDetails, options: { headerShown: false } },
