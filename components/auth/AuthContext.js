@@ -99,9 +99,12 @@ const AuthProvider = ({ children }) => {
         return;
       }
 
+      // Apply the bearer header before the state flush so effect-driven
+      // authenticated calls never dispatch without it (legacy renderer
+      // commits each setState immediately inside async functions).
+      setAuthToken(token);
       setUserData({ ...parsedData, TOKEN: token });
       setUserLogin(true);
-      setAuthToken(token);
     } catch (error) {
       logger.error("Error retrieving data:", error);
     }
@@ -109,9 +112,6 @@ const AuthProvider = ({ children }) => {
 
   const login = async (data) => {
     const { TOKEN, ...profile } = data || {};
-
-    setUserData(data);
-    setUserLogin(true);
 
     if (TOKEN) {
       setAuthToken(TOKEN);
@@ -121,6 +121,9 @@ const AuthProvider = ({ children }) => {
         logger.error("Failed to store auth token securely:", error);
       }
     }
+
+    setUserData(data);
+    setUserLogin(true);
 
     await AsyncStorage.setItem(STORAGE_KEYS.USER_ID, JSON.stringify(data?._id));
     await AsyncStorage.setItem(userProfileKey(data?._id), JSON.stringify(profile));
