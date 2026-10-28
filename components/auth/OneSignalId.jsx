@@ -69,12 +69,20 @@ export default function OneSignalId() {
       postSubscriptionId(event?.current?.id);
     };
 
+    // Foreground pushes are surfaced by PushNotification's in-app card; suppress
+    // the duplicate system banner.
+    const onForegroundWillDisplay = (event) => {
+      event.preventDefault();
+    };
+
+    OneSignal.Notifications.addEventListener("foregroundWillDisplay", onForegroundWillDisplay);
     OneSignal.User.pushSubscription.addEventListener("change", onSubscriptionChange);
     OneSignal.User.pushSubscription.getIdAsync()
       .then((id) => postSubscriptionId(id))
       .catch((err) => console.error("Failed to get OneSignal subscription id:", err));
 
     return () => {
+      OneSignal.Notifications.removeEventListener("foregroundWillDisplay", onForegroundWillDisplay);
       OneSignal.User.pushSubscription.removeEventListener("change", onSubscriptionChange);
       if (oneSignalInitialized) {
         OneSignal.logout();

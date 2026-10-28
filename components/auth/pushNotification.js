@@ -1,5 +1,6 @@
 import { useEffect, useContext, useRef, useState } from "react";
 import { Animated , View, Text, TouchableOpacity, Image, Vibration } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import * as Notifications from "expo-notifications";
 import { ensureNotificationPermission } from "./registerPushNotification";
 import { AuthContext } from "./AuthContext";
@@ -28,7 +29,7 @@ export default function PushNotification() {
   // State for in-app notification banner
   const [notification, setNotification] = useState(null);
 
-  const [slideAnim] = useState(() => new Animated.Value(-100)); // Initial position
+  const [slideAnim] = useState(() => new Animated.Value(-160)); // Initial position
 
   useEffect(() => {
     if (!userData || !userData._id) return;
@@ -38,15 +39,31 @@ export default function PushNotification() {
     // Foreground notification handling
     if (!notificationListenerRef.current) {
       notificationListenerRef.current = Notifications.addNotificationReceivedListener((notification) => {
-        console.log("Notification Received:", notification);
-
         // Avoid duplicate notifications
         if (lastNotificationIdRef.current === notification.request.identifier) {
           return;
         }
         lastNotificationIdRef.current = notification.request.identifier;
 
-        setNotification(notification.request.content);
+        // OneSignal delivers the message as raw FCM data: body lands in
+        // data.alert and our custom payload sits JSON-encoded in data.custom
+        // under key "a"; request.content fields stay null.
+        const content = notification.request.content;
+        const remoteData = notification.request.trigger?.remoteMessage?.data || {};
+        let additionalData = content.data;
+        if (!additionalData && typeof remoteData.custom === "string") {
+          try {
+            additionalData = JSON.parse(remoteData.custom)?.a || null;
+          } catch {
+            additionalData = null;
+          }
+        }
+
+        setNotification({
+          ...content,
+          body: content.body ?? remoteData.alert ?? null,
+          data: additionalData,
+        });
 
         // Haptic & vibration feedback
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -65,7 +82,7 @@ export default function PushNotification() {
         // Auto-hide after 8 seconds
         hideTimeoutRef.current = setTimeout(() => {
           Animated.timing(slideAnim, {
-            toValue: -100,
+            toValue: -160,
             duration: 300,
             useNativeDriver: true,
           }).start(() => setNotification(null));
@@ -77,7 +94,16 @@ export default function PushNotification() {
     if (!responseListenerRef.current) {
       responseListenerRef.current = Notifications.addNotificationResponseReceivedListener((response) => {
         console.log("Notification Clicked:", response);
-        const data = response.notification.request.content.data;
+        const request = response.notification.request;
+        let data = request.content.data;
+        const remoteData = request.trigger?.remoteMessage?.data || {};
+        if (!data && typeof remoteData.custom === "string") {
+          try {
+            data = JSON.parse(remoteData.custom)?.a || null;
+          } catch {
+            data = null;
+          }
+        }
         if (data?.conversationId) {
           navigation?.navigate("ChatScreen", {
             conversationId: data.conversationId,
@@ -108,14 +134,20 @@ export default function PushNotification() {
         <Animated.View
           style={{
             position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: "#128C7E",
-            padding: 12,
+            top: 8,
+            left: 8,
+            right: 8,
+            backgroundColor: "#ffffff",
+            borderRadius: 16,
+            padding: 14,
             flexDirection: "row",
-            alignItems: "center",
+            alignItems: "flex-start",
             zIndex: 1000,
+            elevation: 8,
+            shadowColor: "#000",
+            shadowOpacity: 0.15,
+            shadowRadius: 10,
+            shadowOffset: { width: 0, height: 4 },
             transform: [{ translateY: slideAnim }],
           }}
         >
@@ -129,20 +161,38 @@ export default function PushNotification() {
               }
               setNotification(null); // Hide after tap
             }}
-            style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
+            style={{ flexDirection: "row", alignItems: "flex-start", flex: 1 }}
           >
-            <Image
-              source={
-                notification.data?.avatar
-                  ? { uri: notification.data.avatar }
-                  : require("../../assets/images/userDefault.webp")
-              }
-              style={{ width: 40, height: 40, borderRadius: 20, marginRight: 10 }}
-            />
+            {notification.data?.avatar ? (
+              <Image
+                source={{ uri: notification.data.avatar }}
+                style={{ width: 34, height: 34, borderRadius: 17, marginRight: 12, marginTop: 2 }}
+              />
+            ) : (
+              <View
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 17,
+                  backgroundColor: "#111",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginRight: 12,
+                  marginTop: 2,
+                }}
+              >
+                <Ionicons name="notifications" size={18} color="#fff" />
+              </View>
+            )}
 
-            <View>
-              <Text style={{ color: "#fff", fontWeight: "bold" }}>{notification.title}</Text>
-              <Text style={{ color: "#fff" }}>{notification.body}</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontSize: 12, color: "#83829A" }}>promokings • now</Text>
+              <Text style={{ fontSize: 16, fontWeight: "700", color: "#111", marginTop: 2 }} numberOfLines={1}>
+                {notification.title}
+              </Text>
+              <Text style={{ fontSize: 14, color: "#83829A", marginTop: 2 }} numberOfLines={3}>
+                {notification.body}
+              </Text>
             </View>
           </TouchableOpacity>
         </Animated.View>
