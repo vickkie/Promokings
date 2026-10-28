@@ -124,6 +124,7 @@ import DispatcherTabNavigation from "./navigation/DispatcherTabNavigation";
 
 import PushNotification from "./components/auth/pushNotification";
 import OneSignalId from "./components/auth/OneSignalId";
+import FirebaseSessionSync from "./components/auth/FirebaseSessionSync";
 import SessionRoleRedirect from "./components/auth/SessionRoleRedirect";
 import NoAccessScreen from "./components/auth/NoAccessScreen";
 import { requireRole } from "./components/auth/RoleGuard";
@@ -277,6 +278,7 @@ export default function App() {
                   <NavigationContainer ref={navigationRef}>
                     <PushNotification />
                     <OneSignalId />
+                    <FirebaseSessionSync />
                     <SessionRoleRedirect />
                     <Stack.Navigator initialRouteName={Routes.BottomNavigation}>
                       {screens.map((screen, index) => (
