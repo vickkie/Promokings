@@ -94,20 +94,13 @@ const ChatListScreen = () => {
 
   const startChat = async (user) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/chat/start-chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          senderId: userData._id,
-          senderRole: userData.position ? "staff" : ROLES.CUSTOMER, // Default to "customer"
-          receiverId: user._id,
-          receiverRole: user.position ? "staff" : ROLES.CUSTOMER,
-        }),
+      // axios carries the global bearer header set on login; bare fetch would 401.
+      const response = await axios.post(`${BACKEND_URL}/api/chat/start-chat`, {
+        receiverId: user._id,
+        receiverRole: user.position ? "staff" : ROLES.CUSTOMER,
       });
 
-      if (!response.ok) throw new Error("Failed to start chat");
-
-      const chat = await response.json();
+      const chat = response.data;
       navigation.navigate("ChatScreen", { chatId: chat._id, chatWith: user, userData });
     } catch (error) {
       console.error("Error starting chat:", error);
