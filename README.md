@@ -137,6 +137,14 @@ is public. Server secrets (e.g. the OneSignal REST API key) must never be
 added to it. Detailed audit/security docs live under `docs_local/audit/`
 (local-only, gitignored - not shipped or committed).
 
+### Docs
+
+- `docs/SETUP.md` - install, dev client, commands
+- `docs/CONFIG.md` - env var reference and what must never be client-side
+- `docs/ARCHITECTURE.md` - session, navigation, push, backend integration
+- `docs/TESTING.md` - jest suite and lint
+- `docs/CONTRIBUTING.md` - branch, commit, code style rules
+
 ### Contributing
 
 If you'd like to contribute to this project, please follow the guidelines outlined in MIT license
