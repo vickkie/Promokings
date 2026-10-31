@@ -1,5 +1,6 @@
 import { useEffect, useContext, useRef, useState } from "react";
 import { Animated , View, Text, TouchableOpacity, Image, Vibration } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as Notifications from "expo-notifications";
 import { ensureNotificationPermission } from "./registerPushNotification";
@@ -19,6 +20,7 @@ Notifications.setNotificationHandler({
 export default function PushNotification() {
   const { userData } = useContext(AuthContext);
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
 
   // Store listeners to prevent duplicate subscriptions
   const notificationListenerRef = useRef(null);
@@ -149,7 +151,7 @@ export default function PushNotification() {
         <Animated.View
           style={{
             position: "absolute",
-            top: 8,
+            top: insets.top + 8,
             left: 8,
             right: 8,
             backgroundColor: "#ffffff",
