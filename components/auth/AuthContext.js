@@ -184,21 +184,13 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  // Utility function to check user's role
+  // Utility function to check user's role. Decoding lives in getRole so the
+  // two helpers cannot drift apart on claim shape.
   const hasRole = (requiredRole) => {
     if (!requiredRole || !userData?.TOKEN) {
       return false;
     }
-
-    try {
-      const decodedToken = jwtDecode(userData.TOKEN);
-      const userRole = decodedToken?.role || ROLES.CUSTOMER;
-
-      return userRole === requiredRole;
-    } catch (error) {
-      logger.error("Invalid token, cannot decode:", error);
-      return false;
-    }
+    return getRole(userData) === requiredRole;
   };
 
   const getRole = (data) => {

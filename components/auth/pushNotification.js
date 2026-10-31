@@ -1,5 +1,6 @@
 import { useEffect, useContext, useRef, useState } from "react";
 import { Animated , View, Text, TouchableOpacity, Image, Vibration } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import * as Notifications from "expo-notifications";
 import { ensureNotificationPermission } from "./registerPushNotification";
@@ -19,12 +20,16 @@ Notifications.setNotificationHandler({
 export default function PushNotification() {
   const { userData } = useContext(AuthContext);
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
 
   // Store listeners to prevent duplicate subscriptions
   const notificationListenerRef = useRef(null);
   const responseListenerRef = useRef(null);
   const hideTimeoutRef = useRef(null);
   const lastNotificationIdRef = useRef(null);
+  const queueRef = useRef([]);
+  const isShowingRef = useRef(false);
+  const showNextRef = useRef(() => {});
 
   // State for in-app notification banner
   const [notification, setNotification] = useState(null);
@@ -35,6 +40,38 @@ export default function PushNotification() {
     if (!userData || !userData._id) return;
 
     ensureNotificationPermission();
+
+    const showNext = () => {
+      const next = queueRef.current.shift();
+      if (!next) {
+        isShowingRef.current = false;
+        return;
+      }
+      isShowingRef.current = true;
+      setNotification(next);
+
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      Vibration.vibrate();
+
+      slideAnim.setValue(-160);
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+
+      hideTimeoutRef.current = setTimeout(() => {
+        Animated.timing(slideAnim, {
+          toValue: -160,
+          duration: 300,
+          useNativeDriver: true,
+        }).start(() => {
+          setNotification(null);
+          hideTimeoutRef.current = setTimeout(showNext, 250);
+        });
+      }, 4000);
+    };
+    showNextRef.current = showNext;
 
     // Foreground notification handling
     if (!notificationListenerRef.current) {
@@ -59,34 +96,12 @@ export default function PushNotification() {
           }
         }
 
-        setNotification({
+        queueRef.current.push({
           ...content,
           body: content.body ?? remoteData.alert ?? null,
           data: additionalData,
         });
-
-        // Haptic & vibration feedback
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        Vibration.vibrate();
-
-        // Slide-in animation
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-        }).start();
-
-        // Clear previous timeout before setting a new one
-        if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-
-        // Auto-hide after 8 seconds
-        hideTimeoutRef.current = setTimeout(() => {
-          Animated.timing(slideAnim, {
-            toValue: -160,
-            duration: 300,
-            useNativeDriver: true,
-          }).start(() => setNotification(null));
-        }, 8000);
+        if (!isShowingRef.current) showNext();
       });
     }
 
@@ -123,6 +138,8 @@ export default function PushNotification() {
         responseListenerRef.current = null;
       }
       if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+      queueRef.current = [];
+      isShowingRef.current = false;
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional minimal dep set to avoid refetch loops
   }, [userData?._id]);
@@ -134,7 +151,7 @@ export default function PushNotification() {
         <Animated.View
           style={{
             position: "absolute",
-            top: 8,
+            top: insets.top + 8,
             left: 8,
             right: 8,
             backgroundColor: "#ffffff",
@@ -153,13 +170,22 @@ export default function PushNotification() {
         >
           <TouchableOpacity
             onPress={() => {
+              if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
               if (notification.data?.conversationId) {
                 navigation.navigate("ChatScreen", {
                   conversationId: notification.data.conversationId,
                   chatWith: notification.data?.chatWith,
                 });
               }
-              setNotification(null); // Hide after tap
+              Animated.timing(slideAnim, {
+                toValue: -160,
+                duration: 250,
+                useNativeDriver: true,
+              }).start(() => {
+                setNotification(null);
+                isShowingRef.current = false;
+                showNextRef.current();
+              });
             }}
             style={{ flexDirection: "row", alignItems: "flex-start", flex: 1 }}
           >

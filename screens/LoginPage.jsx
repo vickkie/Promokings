@@ -179,7 +179,7 @@ const LoginPage = ({ navigation }) => {
                     }}
                   >
                     <View>
-                      <Text style={styles.choiceText}>Other</Text>
+                      <Text style={styles.choiceText}>Staff</Text>
                     </View>
                     <Icon name={userType === "staff" ? "check" : "checkempty"} size={18} />
                   </TouchableOpacity>
@@ -258,6 +258,9 @@ const LoginPage = ({ navigation }) => {
                       onPress={() => {
                         setObsecureText(!obsecureText);
                       }}
+                      accessibilityRole="button"
+                      accessibilityLabel={obsecureText ? "Show password" : "Hide password"}
+                      hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
                     >
                       <MaterialCommunityIcons size={18} name={obsecureText ? "eye-outline" : "eye-off-outline"} />
                     </TouchableOpacity>
