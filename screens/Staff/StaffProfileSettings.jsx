@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ScrollView, View, Text, Image, TouchableOpacity, Alert, StyleSheet, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -12,10 +12,7 @@ import Icon from "../../constants/icons";
 import * as FileSystem from "expo-file-system";
 import useDelete from "../../hook/useDelete";
 import { VERSION_LONG, VERSION_SHORT } from "@env";
-import WebView from "react-native-webview";
-import COLOR_THIEF_SOURCE from "../../constants/colorThiefSource";
-import { LinearGradient } from "expo-linear-gradient";
-import logger from "../../utils/logger";
+import ProfilePaletteBackdrop from "../../components/ProfilePaletteBackdrop";
 
 const clearCache = async () => {
   try {
@@ -33,101 +30,6 @@ const clearCache = async () => {
       text2: "There was an issue clearing the cache. Please try again later.",
     });
   }
-};
-
-const ProfileScreen = ({ profileImageUrl }) => {
-  const [gradientColors, setGradientColors] = useState(["rgb(43,58,68)", "rgb(177,196,199)"]);
-  const [webViewKey, setWebViewKey] = useState(0);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- legacy sync-state pattern kept to preserve behavior
-    setWebViewKey((prevKey) => prevKey + 1); // Force re-render when profileImageUrl changes
-  }, [profileImageUrl]);
-
-  const webviewRef = useRef(null);
-
-  // Page script receives the image URL via postMessage - user-controlled data
-  // is never interpolated into executable code (MB-SEC-005). ColorThief is
-  // vendored locally; no remote script is fetched.
-  const webviewHtml = `
-  <html>
-    <head><script>${COLOR_THIEF_SOURCE}</script></head>
-    <body>
-      <script>
-        function extractColors(url) {
-          var img = new Image();
-          img.crossOrigin = "Anonymous";
-          img.onload = function () {
-            try {
-              var colorThief = new ColorThief();
-              var colors = colorThief.getPalette(img, 2);
-              window.ReactNativeWebView.postMessage(JSON.stringify({ type: "colors", data: colors }));
-            } catch (error) {
-              window.ReactNativeWebView.postMessage(
-                JSON.stringify({ type: "error", message: String(error && error.message) })
-              );
-            }
-          };
-          img.onerror = function () {
-            window.ReactNativeWebView.postMessage(JSON.stringify({ type: "error", message: "Image failed to load" }));
-          };
-          img.src = url;
-        }
-        function onMessage(event) {
-          try {
-            var data = JSON.parse(event.data);
-            if (data && data.type === "profile-image" && typeof data.url === "string") {
-              extractColors(data.url);
-            }
-          } catch (e) {}
-        }
-        window.addEventListener("message", onMessage);
-        document.addEventListener("message", onMessage);
-      </script>
-    </body>
-  </html>`;
-
-  const handleMessage = (event) => {
-    try {
-      const parsedMessage = JSON.parse(event.nativeEvent.data);
-
-      if (parsedMessage.type === "colors" && Array.isArray(parsedMessage.data)) {
-        const smoothGradient = parsedMessage.data.map((color) => `rgb(${color.join(",")})`);
-        setGradientColors(smoothGradient);
-      }
-    } catch (error) {
-      logger.error("WebView message parse error:", error);
-    }
-  };
-
-  return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: gradientColors[0],
-        backgroundImage: `linear-gradient(180deg, ${gradientColors.join(" , ")})`,
-      }}
-    >
-      <LinearGradient
-        colors={gradientColors}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={{ position: "absolute", width: "100%", height: "100%" }}
-      >
-        <WebView
-          ref={webviewRef}
-          key={webViewKey} // Forces re-render when profileImageUrl changes
-          source={{ html: webviewHtml }}
-          onLoadEnd={() =>
-            webviewRef.current?.postMessage(JSON.stringify({ type: "profile-image", url: profileImageUrl || "" }))
-          }
-          onMessage={handleMessage}
-          originWhitelist={["about:blank"]}
-          style={{ width: 1, height: 1, opacity: 0 }}
-        />
-      </LinearGradient>
-    </View>
-  );
 };
 
 const MenuRow = ({ icon, label, onPress }) => (
@@ -271,7 +173,7 @@ const StaffProfileSettings = ({
       <SafeAreaView style={styles.container}>
         <StatusBar backgroundColor={COLORS.themey} />
         <View style={{ width: "100%", height: SIZES.height / 4, overflow: "hidden" }}>
-          <ProfileScreen
+          <ProfilePaletteBackdrop
             profileImageUrl={
               userData?.profilePicture
                 ? userData.profilePicture
